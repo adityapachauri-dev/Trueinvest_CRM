@@ -3,40 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRUE INVEST CRM - Mobile</title>
+    <title>TRUE INVEST CRM</title>
     <style>
         :root {
-            --bg-color: #eef2f7; --card-bg: #ffffff; --text-color: #333; --border-color: #ddd;
-            --accent-blue: #007bff; --whatsapp-green: #25D366; --notify-red: #ff4757; --highlight-today: #fff9c4;
+            --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
+            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
         }
         body.dark-mode {
-            --bg-color: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333; --highlight-today: #4d4600;
+            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
         }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding-bottom: 80px; transition: 0.3s; }
-        .container { width: 95%; margin: auto; padding: 10px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding-bottom: 80px; transition: 0.3s; }
+        .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        h1 { text-align: center; font-size: 1.5rem; margin-bottom: 15px; }
-        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 10px; display: none; font-weight: bold; }
+        h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 10px 0; }
+        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; display: none; font-size: 14px; font-weight: bold; }
 
-        form, .table-container, .shortcuts-legend { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        input, textarea, button, select { padding: 12px; margin: 8px 0; width: calc(100% - 26px); border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; }
+        form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; width: auto; padding: 12px 20px; }
-        .btn-whatsapp { background: var(--whatsapp-green) !important; }
+        label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; opacity: 0.8; }
+        input, textarea, button, select { 
+            padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
+            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box; 
+        }
+        
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; transition: 0.2s; }
+        button:active { opacity: 0.7; transform: scale(0.98); }
+        .btn-secondary { background: #606770; height: 40px; font-size: 14px; margin-top: 0; }
+        
+        /* Action Buttons */
+        .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; }
+        .btn-edit { background: #ffc107 !important; color: #000 !important; width: 55px !important; }
+        .btn-del { background: #fa3e3e !important; width: 55px !important; }
+
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); }
+        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); margin-bottom: 0; }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
-        .section-divider { background: #6c757d !important; color: white; font-size: 11px; text-align: left; }
-
-        /* Floating Add Button for Mobile */
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
+        th, td { padding: 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
+        th { background: var(--bg-color); font-weight: 600; }
         
-        .shortcuts-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; justify-content: center; }
-        kbd { background: #eee; color: #333; padding: 2px 4px; border-radius: 3px; }
+        .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
+        .section-divider { background: #606770 !important; color: white; font-size: 11px; text-align: left; padding: 6px 12px; font-weight: bold; }
+
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
     </style>
 </head>
@@ -49,43 +59,42 @@
 
     <form id="clientForm">
         <input type="hidden" id="editIndex" value="">
-        <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
-            <input type="text" id="name" placeholder="Client Name (Alt+N)" required>
-            <input type="tel" id="phone" placeholder="Phone Number" required>
-            <input type="text" id="location" placeholder="Location/Area">
+        <input type="text" id="name" placeholder="Client Name" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <input type="text" id="location" placeholder="Location">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <input type="text" id="propertyType" placeholder="Property Type">
             <input type="text" id="budget" placeholder="Budget">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div><label>Status</label><select id="status"><option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option></select></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
+            <div><label>Follow-up Date</label><input type="date" id="followup"></div>
         </div>
-        <textarea id="remark" placeholder="Remarks/Notes"></textarea>
-        <button type="submit" id="saveBtn" style="width: 100%;">Save Details (Alt+S)</button>
-        <button type="button" style="background:#6c757d; width: 100%;" onclick="resetForm()">Clear (Alt+C)</button>
+        
+        <textarea id="remark" placeholder="Remarks / Notes"></textarea>
+        
+        <button type="submit" id="saveBtn">Save Details</button>
+        <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
     </form>
 
     <div class="controls">
-        <button style="background:#6c757d" onclick="toggleDarkMode()">Dark (Alt+D)</button>
-        <button style="background:#28a745" onclick="downloadExcel()">Export CSV</button>
-        <button style="background:#dc3545" onclick="clearDuplicates()">Clean Duplicates</button>
-        <button style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
+        <button class="btn-secondary" style="background:#28a745" onclick="downloadExcel()">Export</button>
+        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import</button>
         <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
-        <input type="text" id="search" class="search-box" placeholder="Search (Alt+F)...">
+        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean</button>
+        <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr><th>Name</th><th>Phone</th><th>Location</th><th>Property</th><th>Status</th><th>Follow-up</th><th>Actions</th></tr>
+                <tr><th>Name</th><th>Phone</th><th>Location</th><th>Property</th><th>Status</th><th>Date</th><th>Action</th></tr>
             </thead>
             <tbody id="clientTable"></tbody>
         </table>
-    </div>
-
-    <div class="shortcuts-legend">
-        <span><kbd>Alt+N</kbd> New</span><span><kbd>Alt+S</kbd> Save</span><span><kbd>Alt+D</kbd> Dark</span><span><kbd>Alt+X</kbd> Clean</span>
     </div>
 </div>
 
@@ -93,128 +102,159 @@
     let clients = JSON.parse(localStorage.getItem('clients')) || [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    function getIndianVoice() {
-        const voices = window.speechSynthesis.getVoices();
-        return voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang === 'hi-IN') || voices[0];
-    }
-
-    function speakWithAccent(text) {
+    // --- SOUND ENGINE (Indian Accent) ---
+    function speak(text) {
         if ('speechSynthesis' in window) {
             const msg = new SpeechSynthesisUtterance(text);
-            msg.voice = getIndianVoice();
+            const voices = window.speechSynthesis.getVoices();
+            msg.voice = voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang === 'hi-IN') || voices[0];
             msg.rate = 0.9;
             window.speechSynthesis.speak(msg);
         }
     }
 
-    function checkReminders(isManual = false) {
-        const lastRun = localStorage.getItem('lastReminderDate');
+    function checkReminders(manual = false) {
         const dueToday = clients.filter(c => c.followup === todayStr);
         const alertBox = document.getElementById('reminderAlert');
         if (dueToday.length > 0) {
             alertBox.style.display = 'block';
             alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
-            if (isManual || lastRun !== todayStr) {
-                speakWithAccent(`Namaste. You have ${dueToday.length} follow ups.`);
-                if (!isManual) localStorage.setItem('lastReminderDate', todayStr);
+            if (manual || localStorage.getItem('lastReminder') !== todayStr) {
+                speak(`Namaste. You have ${dueToday.length} follow ups today.`);
+                if(!manual) localStorage.setItem('lastReminder', todayStr);
             }
-        } else { alertBox.style.display = 'none'; }
+        } else if (manual) { alert("No follow-ups today."); }
     }
 
+    // --- RENDER TABLE ---
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
+        const isDark = document.body.classList.contains('dark-mode');
+        
         const pinned = clients.filter(c => c.followup === todayStr);
         const others = clients.filter(c => c.followup !== todayStr);
-        const isDark = document.body.classList.contains('dark-mode');
 
-        const createRow = (c, isPinned) => {
-            const originalIndex = clients.indexOf(c);
-            const statusColor = {'Hot': isDark ? '#ff6b6b' : '#d9534f', 'Closed': '#5cb85c', 'Follow-up': '#f0ad4e'}[c.status] || '#5bc0de';
-            return `<tr class="${isPinned ? 'row-highlight' : ''}">
+        const createRow = (c) => {
+            const idx = clients.indexOf(c);
+            const sCol = {'Hot': isDark ? '#ff6b6b' : '#fa3e3e', 'Closed': '#28a745', 'Follow-up': '#f39c12'}[c.status] || '#1877f2';
+            return `<tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
                 <td>${c.name}</td><td>${c.phone}</td><td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td>
-                <td style="color:${statusColor}; font-weight:bold;">${c.status}</td><td>${c.followup || '-'}</td>
-                <td class="actions">
-                    <button class="btn-whatsapp" onclick='sendWhatsApp(${JSON.stringify(c)})'>WA</button>
-                    <button style="background:#ffc107; color:black;" onclick="editClient(${originalIndex})">Edit</button>
+                <td style="color:${sCol}; font-weight:bold;">${c.status}</td><td>${c.followup || '-'}</td>
+                <td style="display:flex; gap:6px; justify-content:center; border-bottom: none; padding: 8px;">
+                    <button class="btn-wa" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
+                    <button class="btn-edit" onclick="editClient(${idx})">Edit</button>
+                    <button class="btn-del" onclick="deleteClient(${idx})">Del</button>
                 </td></tr>`;
         };
 
         if (pinned.length > 0) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Priority Today</td></tr>`;
-            pinned.forEach(c => table.innerHTML += createRow(c, true));
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Others</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="7">Priority (Today)</td></tr>`;
+            pinned.forEach(c => table.innerHTML += createRow(c));
+            table.innerHTML += `<tr class="section-divider"><td colspan="7">Other Records</td></tr>`;
         }
-        others.forEach(c => table.innerHTML += createRow(c, false));
+        others.forEach(c => table.innerHTML += createRow(c));
     }
 
-    function sendWhatsApp(c) {
-        const phone = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${phone}?text=Hello ${c.name}, following up regarding the property in ${c.location || 'your area'}.`, '_blank');
+    // --- ACTIONS ---
+    function sendWA(c) {
+        const p = c.phone.replace(/\D/g, '');
+        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding the property in ${c.location || 'your area'}.`, '_blank');
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const editIndex = document.getElementById('editIndex').value;
         const data = {
             name: document.getElementById('name').value, phone: document.getElementById('phone').value,
             location: document.getElementById('location').value, propertyType: document.getElementById('propertyType').value,
             budget: document.getElementById('budget').value, status: document.getElementById('status').value,
             followup: document.getElementById('followup').value, remark: document.getElementById('remark').value
         };
-        if (editIndex === "") clients.push(data); else clients[parseInt(editIndex)] = data;
+        const editIdx = document.getElementById('editIndex').value;
+        if(editIdx === "") clients.push(data); else clients[parseInt(editIdx)] = data;
         localStorage.setItem('clients', JSON.stringify(clients));
-        resetForm(); renderTable(); checkReminders(false);
+        resetForm(); renderTable(); checkReminders();
     });
 
-    function editClient(index) {
-        const c = clients[index];
-        document.getElementById('editIndex').value = index;
-        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'followup', 'remark'].forEach(key => {
-            document.getElementById(key).value = c[key] || '';
+    function editClient(idx) {
+        const c = clients[idx];
+        document.getElementById('editIndex').value = idx;
+        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'followup', 'remark'].forEach(k => {
+            document.getElementById(k).value = c[k] || '';
         });
-        document.getElementById('saveBtn').innerText = "Update (Alt+S)";
+        document.getElementById('saveBtn').innerText = "Update Details";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function resetForm() {
-        document.getElementById('clientForm').reset();
-        document.getElementById('editIndex').value = "";
-        document.getElementById('saveBtn').innerText = "Save Details (Alt+S)";
+    function deleteClient(idx) {
+        if(confirm("Permanently delete this record?")) {
+            clients.splice(idx, 1);
+            localStorage.setItem('clients', JSON.stringify(clients));
+            renderTable();
+        }
     }
 
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        renderTable();
+    function resetForm() { 
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editIndex').value = ""; 
+        document.getElementById('saveBtn').innerText = "Save Details"; 
+    }
+
+    function toggleDarkMode() { 
+        document.body.classList.toggle('dark-mode'); 
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); 
+        renderTable(); 
     }
 
     function clearDuplicates() {
-        const unique = {};
-        clients.forEach(c => { unique[c.phone.replace(/\D/g, '')] = c; });
-        clients = Object.values(unique);
+        const initial = clients.length;
+        const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
+        clients = Object.values(u);
         localStorage.setItem('clients', JSON.stringify(clients));
-        renderTable(); alert("Duplicates Cleaned!");
+        renderTable();
+        alert(`Cleaned! Removed ${initial - clients.length} duplicates.`);
+    }
+
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const lines = e.target.result.split(/\r?\n/);
+                const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+                const keyMap = {'name':'name','phone':'phone','location':'location','property':'propertyType','budget':'budget','status':'status','followup':'followup','remark':'remark'};
+                
+                for(let i=1; i<lines.length; i++) {
+                    const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if(row.length < 2) continue;
+                    const c = {};
+                    headers.forEach((h, j) => { if(keyMap[h]) c[keyMap[h]] = row[j] ? row[j].trim().replace(/^"|"$/g, '') : ''; });
+                    clients.push(c);
+                }
+                localStorage.setItem('clients', JSON.stringify(clients));
+                renderTable(); alert("Import Successful!");
+            } catch(e) { alert("Error importing CSV. Check format."); }
+        };
+        reader.readAsText(file);
     }
 
     function downloadExcel() {
-        let csv = "Name,Phone,Location,Property,Status,Follow-up\n";
-        clients.forEach(c => csv += `"${c.name}","${c.phone}","${c.location}","${c.propertyType}","${c.status}","${c.followup}"\n`);
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CRM.csv'; a.click();
+        let csv = "Name,Phone,Location,Property,Budget,Status,Follow-up,Remark\n";
+        clients.forEach(c => csv += `"${c.name}","${c.phone}","${c.location}","${c.propertyType}","${c.budget}","${c.status}","${c.followup}","${c.remark}"\n`);
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = 'TrueInvest_Leads.csv'; a.click();
     }
 
+    // Init
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-    window.speechSynthesis.onvoiceschanged = getIndianVoice;
     document.getElementById('search').addEventListener('input', function() {
-        const val = this.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-        });
+        const v = this.value.toLowerCase();
+        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
     });
 
     renderTable();
-    window.addEventListener('load', () => setTimeout(() => checkReminders(false), 2000));
+    window.addEventListener('load', () => setTimeout(() => checkReminders(), 2000));
 </script>
 </body>
 </html>
