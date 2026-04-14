@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TRUE INVEST CRM</title>
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="YOUR_DIRECT_ICON_URL_HERE">
-    <link rel="icon" type="image/png" sizes="32x32" href="YOUR_DIRECT_ICON_URL_HERE">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
     <style>
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
@@ -22,55 +16,56 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: var(--bg-color); color: var(--text-color); margin: 0; 
-            padding-bottom: env(safe-area-inset-bottom, 100px); transition: 0.3s;
+            padding-bottom: env(safe-area-inset-bottom, 80px); transition: 0.3s;
             -webkit-tap-highlight-color: transparent;
         }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 15px 0; }
+        h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 10px 0; }
         .notification-bar { 
-            background: var(--notify-red); color: white; padding: 14px; 
-            text-align: center; border-radius: 10px; margin-bottom: 12px; 
-            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            background: var(--notify-red); color: white; padding: 12px; 
+            text-align: center; border-radius: 8px; margin-bottom: 12px; 
+            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
         }
 
-        form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
+        label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; opacity: 0.8; }
         input, textarea, button, select { 
             padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
             border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
             box-sizing: border-box; appearance: none; -webkit-appearance: none;
         }
         
-        .check-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        /* Checkbox Styling */
+        .check-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
         .check-item { 
             display: flex; align-items: center; gap: 8px; background: var(--bg-color); 
-            padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color);
+            padding: 8px 12px; border-radius: 20px; border: 1px solid var(--border-color);
         }
-        .check-item input[type="checkbox"] { width: 20px; height: 20px; margin: 0; -webkit-appearance: checkbox; }
-        .check-item label { margin: 0; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; -webkit-appearance: checkbox; }
+        .check-item label { margin: 0; font-size: 14px; cursor: pointer; }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; }
-        .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 8px; }
+        .btn-secondary { background: #606770; height: 40px; font-size: 14px; margin-top: 0; }
         
         .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; display: flex; align-items: center; justify-content: center; }
-        .btn-edit { background: #ffc107 !important; color: #000 !important; width: 50px !important; }
-        .btn-del { background: #fa3e3e !important; width: 50px !important; }
+        .btn-edit { background: #ffc107 !important; color: #000 !important; width: 55px !important; }
+        .btn-del { background: #fa3e3e !important; width: 55px !important; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); padding: 14px; }
+        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); }
 
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
-        th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; }
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 1150px; }
+        th, td { padding: 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
+        th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; }
         
         .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
-        .section-divider { background: #606770 !important; color: white; font-size: 11px; text-align: left; padding: 10px 15px; font-weight: bold; }
+        .section-divider { background: #606770 !important; color: white; font-size: 11px; text-align: left; padding: 8px 12px; font-weight: bold; }
         .visit-tick { color: #28a745; font-weight: bold; font-size: 18px; }
 
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
     </style>
 </head>
@@ -79,6 +74,7 @@
 <div class="container">
     <a href="#clientForm" class="fab">+</a>
     <h1>TRUE INVEST CRM</h1>
+    
     <div id="reminderAlert" class="notification-bar"></div>
 
     <form id="clientForm">
@@ -89,7 +85,6 @@
             <div><label>Follow-up Date</label><input type="date" id="followup"></div>
         </div>
 
-        <label>Primary Info</label>
         <input type="text" id="name" placeholder="Client Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
@@ -110,36 +105,35 @@
                 </select>
             </div>
             <div>
-                <label>Site Visit</label>
+                <label>Visit Done?</label>
                 <div class="check-item" style="height: 48px; justify-content: center; margin: 6px 0 12px 0;">
                     <input type="checkbox" id="visitDone">
-                    <label for="visitDone">Done</label>
                 </div>
             </div>
         </div>
 
-        <label>Lead Assignment</label>
+        <label>Lead Sent To</label>
         <div class="check-group">
             <div class="check-item">
-                <input type="checkbox" id="sendSunny">
-                <label for="sendSunny">Send to Sunny</label>
+                <input type="checkbox" id="sendSunny" value="Sunny">
+                <label for="sendSunny">Sunny</label>
             </div>
         </div>
 
-        <input type="text" id="budget" placeholder="Budget (e.g., 50L - 1Cr)">
-        <textarea id="remark" placeholder="Detailed Remarks"></textarea>
+        <input type="text" id="budget" placeholder="Budget">
+        <textarea id="remark" placeholder="Remarks / Notes"></textarea>
         
-        <button type="submit" id="saveBtn">Save Record</button>
-        <button type="button" class="btn-secondary" onclick="resetForm()">Cancel / Clear</button>
+        <button type="submit" id="saveBtn">Save Details</button>
+        <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">UI Theme</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
         <button class="btn-secondary" style="background:#28a745" onclick="downloadExcel()">Export CSV</button>
         <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
         <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Duplicates</button>
-        <input type="text" id="search" class="search-box" placeholder="Search leads by name, phone, or location...">
+        <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
     <div class="table-container">
@@ -167,14 +161,13 @@
     let clients = JSON.parse(localStorage.getItem('clients')) || [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- REFINED VOICE ENGINE ---
     function speak(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
             msg.voice = voices.find(v => v.lang.includes('en-IN')) || voices.find(v => v.lang.includes('hi-IN')) || voices[0];
-            msg.rate = 0.85;
+            msg.rate = 0.9;
             window.speechSynthesis.speak(msg);
         }
     }
@@ -182,22 +175,16 @@
     function checkReminders(manual = false) {
         const dueToday = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested' && c.status !== 'Closed');
         const alertBox = document.getElementById('reminderAlert');
-        
         if (dueToday.length > 0) {
             alertBox.style.display = 'block';
-            alertBox.innerHTML = `🔔 IMPORTANT: ${dueToday.length} follow-ups scheduled for today!`;
-            
-            if (manual || localStorage.getItem('lastRun') !== todayStr) {
-                speak(`Hello Aditya. You have ${dueToday.length} follow ups at the top of your list today.`);
-                if(!manual) localStorage.setItem('lastRun', todayStr);
+            alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
+            if (manual || localStorage.getItem('lastReminderDate') !== todayStr) {
+                speak(`Namaste. You have ${dueToday.length} follow-up calls for today.`);
+                if(!manual) localStorage.setItem('lastReminderDate', todayStr);
             }
-        } else {
-            alertBox.style.display = 'none';
-            if(manual) alert("No follow-ups for today.");
-        }
+        } else { alertBox.style.display = 'none'; }
     }
 
-    // --- RENDERING ENGINE ---
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
@@ -211,7 +198,7 @@
             const sCol = statusColors[c.status] || '#1877f2';
             const visitMark = c.visitDone ? '<span class="visit-tick">✓</span>' : '-';
 
-            return `<tr class="${c.followup === todayStr && c.status !== 'Not Interested' && c.status !== 'Closed' ? 'row-highlight' : ''}">
+            return `<tr class="${c.followup === todayStr && c.status !== 'Not Interested' ? 'row-highlight' : ''}">
                 <td>${c.leadDate || '-'}</td>
                 <td>${c.name}</td>
                 <td>${c.phone}</td>
@@ -230,17 +217,16 @@
         };
 
         if (pinned.length > 0) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="10">Urgent Priorities (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="10">Today's Priority Follow-ups</td></tr>`;
             pinned.forEach(c => table.innerHTML += createRow(c));
             table.innerHTML += `<tr class="section-divider"><td colspan="10">All Records</td></tr>`;
         }
         others.forEach(c => table.innerHTML += createRow(c));
     }
 
-    // --- BUSINESS ACTIONS ---
     function sendWA(c) {
         const p = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up from True Invest regarding your property interest.`, '_blank');
+        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding your interest in ${c.propertyType || 'property'}.`, '_blank');
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
@@ -259,11 +245,7 @@
             remark: document.getElementById('remark').value
         };
         const editIdx = document.getElementById('editIndex').value;
-        if(editIdx === "") {
-            clients.push(data);
-        } else {
-            clients[parseInt(editIdx)] = data;
-        }
+        if(editIdx === "") clients.push(data); else clients[parseInt(editIdx)] = data;
         localStorage.setItem('clients', JSON.stringify(clients));
         resetForm(); renderTable(); checkReminders(false);
     });
@@ -276,12 +258,12 @@
         });
         document.getElementById('visitDone').checked = c.visitDone || false;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Record";
+        document.getElementById('saveBtn').innerText = "Update Details";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function deleteClient(idx) {
-        if(confirm("Permanently delete this record?")) {
+        if(confirm("Permanently delete this lead?")) {
             clients.splice(idx, 1);
             localStorage.setItem('clients', JSON.stringify(clients));
             renderTable();
@@ -292,7 +274,7 @@
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editIndex').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save Record"; 
+        document.getElementById('saveBtn').innerText = "Save Details"; 
     }
 
     function toggleDarkMode() { 
@@ -304,22 +286,54 @@
     function clearDuplicates() {
         const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
         clients = Object.values(u); localStorage.setItem('clients', JSON.stringify(clients));
-        renderTable(); alert("Duplicate numbers cleaned.");
+        renderTable(); alert("Duplicates cleaned.");
     }
 
-    // --- REFINED IMPORT/EXPORT ---
     function importCSV(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
             const lines = e.target.result.split(/\r?\n/);
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
-            const map = {'leaddate':'leadDate','name':'name','phone':'phone','status':'status','visit':'visitDone','location':'location','property':'propertyType','budget':'budget','followup':'followup','remark':'remark','sentto':'sentTo'};
-            
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
             for(let i=1; i<lines.length; i++) {
                 const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if(row.length < 2) continue;
                 const c = {};
                 headers.forEach((h, j) => {
-                    let v = row[j] ? row
+                    let val = row[j] ? row[j].trim().replace(/^"|"$/g, '') : '';
+                    if (h === 'visit') c.visitDone = (val.toLowerCase() === 'yes' || val === 'true');
+                    else if (h === 'sentto') c.sentTo = val;
+                    else c[h] = val;
+                });
+                clients.push(c);
+            }
+            localStorage.setItem('clients', JSON.stringify(clients));
+            renderTable(); alert("Leads Imported!");
+        };
+        reader.readAsText(file);
+    }
+
+    function downloadExcel() {
+        let csv = "Lead Date,Name,Phone,Status,Sent To,Visit,Location,Property,Budget,Follow-up,Remark\n";
+        clients.forEach(c => {
+            const v = c.visitDone ? "Yes" : "No";
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.sentTo}","${v}","${c.location}","${c.propertyType}","${c.budget}","${c.followup}","${c.remark}"\n`;
+        });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = 'TrueInvest_Leads.csv'; a.click();
+    }
+
+    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+    document.getElementById('search').addEventListener('input', function() {
+        const v = this.value.toLowerCase();
+        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
+    });
+
+    renderTable();
+    document.addEventListener('touchstart', function() {
+        setTimeout(() => checkReminders(false), 1000);
+    }, {once: true});
+</script>
+</body>
+</html>
