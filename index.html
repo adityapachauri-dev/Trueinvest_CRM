@@ -61,7 +61,7 @@
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1250px; }
         th, td { padding: 14px 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; vertical-align: middle; }
         th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 11px; }
         
@@ -143,7 +143,7 @@
         </div>
 
         <label>Financials & Notes</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 50 Lacs)">
+        <input type="text" id="budget" placeholder="Budget (e.g. 50 Lacs / 1.2 Cr)">
         <textarea id="remark" placeholder="Additional Remarks..." rows="3"></textarea>
         
         <button type="submit" id="saveBtn">Save to Cloud</button>
@@ -163,7 +163,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
+                    <th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody id="clientTable"></tbody>
@@ -189,7 +189,7 @@
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- AUTHENTICATION ---
+    // --- AUTH ---
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
@@ -215,7 +215,7 @@
 
     function logout() { auth.signOut(); }
 
-    // --- DATA HANDLING ---
+    // --- DATA ---
     function loadData() {
         db.collection("leads").orderBy("leadDate", "desc").onSnapshot(snap => {
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -241,7 +241,7 @@
         };
         const id = document.getElementById('editId').value;
         const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => resetForm()).catch(err => alert("Firestore Error: " + err.message));
+        task.then(() => resetForm()).catch(err => alert("Error: " + err.message));
     });
 
     function renderTable() {
@@ -256,6 +256,7 @@
                 <td style="font-weight:bold">${c.name}</td>
                 <td>${c.phone}</td>
                 <td style="font-weight:bold; color:#1877f2">${c.status}</td>
+                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.sentTo || '-'}</td>
                 <td>${c.visitDone ? '✅' : '-'}</td>
                 <td>${c.location || '-'}</td>
@@ -271,10 +272,10 @@
             </tr>`;
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="10">Urgent Follow-ups (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += row(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="10">Database History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="11">Database History</td></tr>`;
         others.forEach(c => table.innerHTML += row(c));
     }
 
@@ -291,7 +292,7 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { if(confirm("Delete this lead?")) db.collection("leads").doc(id).delete(); }
+    function deleteLead(id) { if(confirm("Delete lead?")) db.collection("leads").doc(id).delete(); }
 
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
@@ -315,15 +316,15 @@
 
     // --- CSV TOOLS ---
     function downloadCSV() {
-        let csv = "Lead Date,Name,Phone,Status,Assigned To,Visit Done,Location,Property Type,Followup Date,Budget,Remark\n";
+        let csv = "Lead Date,Name,Phone,Status,Budget,Assigned To,Visit Done,Location,Property Type,Followup Date,Remark\n";
         clients.forEach(c => {
-            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.budget}","${c.remark}"\n`;
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `TrueInvest_Leads_${todayStr}.csv`;
+        a.download = `Leads_Export_${todayStr}.csv`;
         a.click();
     }
 
@@ -334,23 +335,23 @@
         reader.onload = function(e) {
             const rows = e.target.result.split('\n').slice(1);
             rows.forEach(row => {
-                const cols = row.split(',').map(c => c.replace(/"/g, ''));
+                const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length < 2) return;
                 db.collection("leads").add({
                     leadDate: cols[0] || todayStr,
-                    name: cols[1] || "Imported",
-                    phone: cols[2] || "000",
+                    name: cols[1] || "Unknown",
+                    phone: cols[2] || "0",
                     status: cols[3] || "New",
-                    sentTo: cols[4] || "",
-                    visitDone: cols[5] === "true",
-                    location: cols[6] || "",
-                    propertyType: cols[7] || "",
-                    followup: cols[8] || "",
-                    budget: cols[9] || "",
+                    budget: cols[4] || "",
+                    sentTo: cols[5] || "",
+                    visitDone: cols[6] === "true",
+                    location: cols[7] || "",
+                    propertyType: cols[8] || "",
+                    followup: cols[9] || "",
                     remark: cols[10] || ""
                 });
             });
-            alert("Import complete. Data syncing...");
+            alert("Import complete.");
         };
         reader.readAsText(file);
     }
@@ -366,7 +367,7 @@
                 seen.add(c.phone);
             }
         });
-        alert(`Clean up finished. Removed ${deleted} duplicates.`);
+        alert(`Cleanup complete. Removed ${deleted} duplicates.`);
     }
 
     // --- SEARCH ---
