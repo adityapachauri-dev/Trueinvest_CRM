@@ -3,37 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM | Pro Edition</title>
+    <title>TRUE INVEST CRM | Elite Edition</title>
     
     <style>
         :root {
-            --primary: #1877f2; --bg: #f0f2f5; --card: #ffffff; 
-            --text: #1c1e21; --border: #dddfe2; --whatsapp: #25D366;
+            --primary: #1877f2; --secondary: #00d2ff; --bg: #f0f2f5; 
+            --card: #ffffff; --text: #1c1e21; --border: #dddfe2;
+            --success: #25D366; --danger: #fa3e3e;
         }
         body.dark-mode { --bg: #18191a; --card: #242526; --text: #e4e6eb; --border: #3e4042; }
         
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 20px; 
+            transition: all 0.4s ease; overflow-x: hidden;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        .animate { animation: fadeIn 0.5s ease forwards; }
+
         .container { width: 100%; max-width: 500px; margin: auto; padding: 15px; box-sizing: border-box; }
         
-        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        h1 { margin: 0; font-size: 1.2rem; color: var(--primary); }
+        header { 
+            background: var(--card); padding: 20px; text-align: center; 
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0; font-size: 1.4rem; color: var(--primary); letter-spacing: 1px; }
 
-        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; border: 1px solid var(--border); }
-        
-        label { display: block; font-size: 11px; font-weight: 800; opacity: 0.6; margin-top: 10px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 15px; box-sizing: border-box; margin-top: 5px; }
+        .card { 
+            background: var(--card); padding: 20px; border-radius: 16px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin-bottom: 20px; 
+            border: 1px solid var(--border); transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-3px); }
 
-        .btn { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        label { display: block; font-size: 11px; font-weight: 800; opacity: 0.6; margin-top: 12px; text-transform: uppercase; }
+        input, select, textarea { 
+            width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; 
+            background: var(--bg); color: var(--text); font-size: 15px; box-sizing: border-box; 
+            margin-top: 6px; transition: border-color 0.3s;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        th, td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; }
-        th { background: var(--bg); font-weight: 700; font-size: 11px; }
+        .btn { 
+            width: 100%; padding: 15px; border-radius: 12px; border: none; 
+            font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
 
-        .status-hot { color: #fa3e3e; font-weight: bold; }
+        /* Status Pills */
+        .status { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .status-hot { background: #ffebee; color: #fa3e3e; }
+        .status-new { background: #e3f2fd; color: #1877f2; }
+
+        .table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); background: var(--card); }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th, td { padding: 16px; text-align: center; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg); font-weight: 700; text-transform: uppercase; font-size: 10px; color: var(--text); opacity: 0.7; }
+
         .hidden { display: none !important; }
+
+        /* Floating Button for Mobile */
+        .fab { 
+            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
+            background: var(--primary); color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4); text-decoration: none;
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -42,45 +85,60 @@
 </head>
 <body>
 
-<header><h1>TRUE INVEST CRM</h1></header>
+<header>
+    <h1>TRUE INVEST <span style="font-weight: 300;">ELITE</span></h1>
+</header>
 
-<div id="loginView" class="container">
+<div id="loginView" class="container animate">
     <div class="card">
-        <h2 style="text-align:center;">Secure Login</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="btn btn-primary" onclick="login()">Login</button>
-        <p id="err" style="color:red; text-align:center; font-size:12px; display:none;"></p>
+        <h2 style="text-align:center; margin-bottom: 25px;">Agent Login</h2>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="pass" placeholder="Security Key">
+        <button class="btn btn-primary" onclick="login()">Enter Dashboard</button>
+        <p id="err" style="color:var(--danger); text-align:center; font-size:13px; margin-top:15px; display:none;"></p>
     </div>
 </div>
 
-<div id="crmView" class="container hidden">
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-        <button class="btn btn-outline" style="width:auto;" onclick="auth.signOut()">Logout</button>
-        <button class="btn btn-outline" style="width:auto;" onclick="document.body.classList.toggle('dark-mode')">Theme</button>
+<div id="crmView" class="container hidden animate">
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px; gap: 10px;">
+        <button class="btn btn-outline" style="margin:0;" onclick="auth.signOut()">Logout</button>
+        <button class="btn btn-outline" style="margin:0;" onclick="document.body.classList.toggle('dark-mode')">🌙 Theme</button>
     </div>
 
     <form id="leadForm" class="card">
         <input type="hidden" id="editId">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <input type="date" id="leadDate">
-            <input type="date" id="followup">
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
+            <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
-        <input type="text" id="name" placeholder="Client Name" required>
+
+        <label>Client Details</label>
+        <input type="text" id="name" placeholder="Full Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <select id="status">
-                <option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option>
-            </select>
-            <input type="text" id="budget" placeholder="Budget (Lacs)">
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div><label>Status</label>
+                <select id="status">
+                    <option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option>
+                </select>
+            </div>
+            <div><label>Budget (Lacs)</label><input type="text" id="budget" placeholder="e.g. 50"></div>
         </div>
-        <textarea id="remark" placeholder="Notes..."></textarea>
-        <button type="submit" class="btn btn-primary" id="saveBtn">Save to Cloud</button>
+
+        <label>Requirements & Notes</label>
+        <textarea id="remark" placeholder="Property type, location, etc..." rows="3"></textarea>
+        
+        <button type="submit" class="btn btn-primary" id="saveBtn">🚀 Sync to Cloud</button>
     </form>
 
     <div class="card">
-        <input type="text" id="search" placeholder="Search your leads..." style="margin-bottom:10px;">
-        <button class="btn btn-outline" style="background:#f1f9f3" onclick="exportCSV()">Export CSV</button>
+        <label>Quick Search</label>
+        <input type="text" id="search" placeholder="Search by name, phone, or budget..." style="margin-bottom:15px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <button class="btn btn-outline" style="background:#f1f9f3; margin:0;" onclick="exportCSV()">📊 Export CSV</button>
+            <button class="btn btn-outline" style="background:#fff1f1; margin:0;" onclick="clearDups()">🧹 Clean Dups</button>
+        </div>
     </div>
 
     <div class="table-wrap">
@@ -94,7 +152,6 @@
 </div>
 
 <script>
-    // --- CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -109,31 +166,32 @@
     const db = firebase.firestore();
     let leads = [];
 
-    // --- AUTH ---
     function login() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('pass').value;
         auth.signInWithEmailAndPassword(e, p).catch(err => {
-            document.getElementById('err').innerText = err.message;
-            document.getElementById('err').style.display = 'block';
+            const errEl = document.getElementById('err');
+            errEl.innerText = "Error: Access Denied";
+            errEl.style.display = 'block';
         });
     }
 
     auth.onAuthStateChanged(user => {
+        const lv = document.getElementById('loginView');
+        const cv = document.getElementById('crmView');
         if(user) {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('crmView').classList.remove('hidden');
-            syncLeads();
+            lv.classList.add('hidden');
+            cv.classList.remove('hidden');
+            syncData();
         } else {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('crmView').classList.add('hidden');
+            lv.classList.remove('hidden');
+            cv.classList.add('hidden');
         }
     });
 
-    // --- DATA ---
-    function syncLeads() {
+    function syncData() {
         const user = auth.currentUser;
-        // SIMPLE QUERY: No complex sorting to avoid Index Errors
+        // Simplified Query: No database-side sorting to prevent Index Errors
         db.collection("leads").where("owner", "==", user.uid).onSnapshot(snap => {
             leads = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             render();
@@ -158,36 +216,38 @@
         task.then(() => {
             document.getElementById('leadForm').reset();
             document.getElementById('editId').value = "";
-            document.getElementById('saveBtn').innerText = "Save to Cloud";
+            document.getElementById('saveBtn').innerText = "🚀 Sync to Cloud";
         });
     });
 
     function render() {
         const body = document.getElementById('tableBody');
         body.innerHTML = '';
-        // Sort in memory instead of database to avoid Firebase Index errors
-        const sorted = leads.sort((a,b) => b.leadDate.localeCompare(a.leadDate));
         
-        sorted.forEach(l => {
+        // Sorting leads by date in memory (fixes the sorting error)
+        const sortedLeads = leads.sort((a,b) => b.leadDate.localeCompare(a.leadDate));
+
+        sortedLeads.forEach(l => {
             const tr = document.createElement('tr');
+            tr.className = "animate";
             tr.innerHTML = `
                 <td>${l.leadDate}</td>
-                <td><b>${l.name}</b></td>
-                <td>${l.phone}</td>
-                <td class="${l.status === 'Hot' ? 'status-hot' : ''}">${l.status}</td>
-                <td>${l.budget}</td>
-                <td>${l.followup}</td>
+                <td style="font-weight:bold">${l.name}</td>
+                <td><a href="tel:${l.phone}" style="text-decoration:none; color:inherit;">${l.phone}</a></td>
+                <td><span class="status status-${l.status.toLowerCase()}">${l.status}</span></td>
+                <td style="color:#28a745; font-weight:bold">${l.budget}</td>
+                <td>${l.followup || '-'}</td>
                 <td>
-                    <button onclick="edit('${l.id}')">Edit</button>
-                    <button onclick="wa('${l.phone}', '${l.name}')" style="color:green">WA</button>
-                    <button onclick="del('${l.id}')" style="color:red">Del</button>
+                    <button class="btn btn-outline" style="margin:0; padding:5px 10px; width:auto; display:inline-flex;" onclick="editLead('${l.id}')">Edit</button>
+                    <button class="btn btn-outline" style="margin:0; padding:5px 10px; width:auto; display:inline-flex; color:green;" onclick="wa('${l.phone}', '${l.name}')">WA</button>
+                    <button class="btn btn-outline" style="margin:0; padding:5px 10px; width:auto; display:inline-flex; color:red;" onclick="delLead('${l.id}')">Del</button>
                 </td>
             `;
             body.appendChild(tr);
         });
     }
 
-    function edit(id) {
+    function editLead(id) {
         const l = leads.find(x => x.id === id);
         document.getElementById('editId').value = l.id;
         document.getElementById('name').value = l.name;
@@ -197,17 +257,28 @@
         document.getElementById('status').value = l.status;
         document.getElementById('budget').value = l.budget;
         document.getElementById('remark').value = l.remark;
-        document.getElementById('saveBtn').innerText = "Update Lead";
+        document.getElementById('saveBtn').innerText = "✅ Update Lead";
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function del(id) { if(confirm("Delete lead?")) db.collection("leads").doc(id).delete(); }
-    function wa(n, name) { window.open(`https://wa.me/91${n.replace(/\D/g,'')}?text=Hello ${name}...`); }
+    function delLead(id) { if(confirm("Permanently delete?")) db.collection("leads").doc(id).delete(); }
+    function wa(n, name) { window.open(`https://wa.me/91${n.replace(/\D/g,'')}?text=Hello ${name}, regarding your property inquiry...`); }
+    
     function exportCSV() {
-        let csv = "Date,Name,Phone,Status,Budget\n";
-        leads.forEach(l => csv += `"${l.leadDate}","${l.name}","${l.phone}","${l.status}","${l.budget}"\n`);
+        let csv = "Date,Name,Phone,Status,Budget,Notes\n";
+        leads.forEach(l => csv += `"${l.leadDate}","${l.name}","${l.phone}","${l.status}","${l.budget}","${l.remark}"\n`);
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = "Leads.csv"; a.click();
+        a.download = "TRUE_INVEST_LEADS.csv"; a.click();
+    }
+
+    function clearDups() {
+        const seen = new Set();
+        leads.forEach(l => {
+            if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete();
+            else seen.add(l.phone);
+        });
+        alert("Cleanup complete!");
     }
 
     document.getElementById('search').addEventListener('input', e => {
