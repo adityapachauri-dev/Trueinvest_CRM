@@ -3,76 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Pro Edition</title>
+    <title>TRUE INVEST CRM | Pro Edition</title>
     
     <style>
         :root {
-            --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
-            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
+            --primary: #1877f2; --primary-dark: #166fe5; --bg-main: #f0f2f5; 
+            --card-bg: #ffffff; --text-main: #1c1e21; --text-sub: #65676b;
+            --border: #dddfe2; --whatsapp: #25D366; --danger: #fa3e3e; --warning: #ffc107;
         }
         body.dark-mode {
-            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
+            --bg-main: #18191a; --card-bg: #242526; --text-main: #e4e6eb; --text-sub: #b0b3b8; --border: #3e4042;
         }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg-color); color: var(--text-color); margin: 0; 
-            padding-bottom: env(safe-area-inset-bottom, 100px); transition: 0.3s;
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg-main); color: var(--text-main); margin: 0; 
+            padding-bottom: 80px; transition: background 0.3s;
         }
-        .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
+
+        .container { width: 100%; max-width: 600px; margin: auto; padding: 15px; box-sizing: border-box; }
         
-        h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 15px 0; }
-        
-        /* Error link box */
-        #indexErrorBox {
-            background: #fff0f0; border: 1px solid #ff0000; color: #b00000;
+        /* Header & Navigation */
+        header { 
+            background: var(--card-bg); padding: 20px; text-align: center; 
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+        }
+        header h1 { margin: 0; font-size: 1.2rem; letter-spacing: 1px; color: var(--primary); }
+
+        /* Professional Cards */
+        .glass-card { 
+            background: var(--card-bg); padding: 20px; border-radius: 16px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border);
+        }
+
+        /* Error/Index Handler UI */
+        #indexFixer {
+            background: #fff3cd; border-left: 5px solid #ffc107; color: #856404;
             padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: none;
         }
-        #indexErrorBox a { font-weight: bold; color: #1877f2; text-decoration: underline; }
+        #indexFixer a { color: var(--primary); font-weight: bold; }
 
-        .notification-bar { 
-            background: var(--notify-red); color: white; padding: 14px; 
-            text-align: center; border-radius: 10px; margin-bottom: 12px; 
-            display: none; font-size: 14px; font-weight: bold;
+        /* Form Styling */
+        label { display: block; font-size: 11px; font-weight: 800; color: var(--text-sub); margin: 10px 0 4px 0; text-transform: uppercase; }
+        input, select, textarea { 
+            width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px;
+            background: var(--bg-main); color: var(--text-main); font-size: 15px; box-sizing: border-box;
+            transition: border 0.2s;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .btn { 
+            width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: 700;
+            font-size: 15px; cursor: pointer; transition: 0.2s; margin-top: 10px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-main); }
+
+        /* Table & List View */
+        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th { background: var(--bg-main); padding: 15px; text-align: center; font-size: 11px; color: var(--text-sub); }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
+        
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+        .hot { background: #ffebee; color: #d32f2f; }
+        .new { background: #e3f2fd; color: #1976d2; }
+
+        /* Floating Action */
+        .fab { 
+            position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; 
+            background: var(--primary); color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 24px; box-shadow: 0 4px 20px rgba(24, 119, 242, 0.4); z-index: 200; text-decoration: none;
         }
 
-        form, .table-container, .login-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
-        input, textarea, button, select { 
-            padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
-            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
-            box-sizing: border-box;
-        }
-        
-        .check-item { 
-            display: flex; align-items: center; gap: 10px; background: var(--bg-color); 
-            padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-            margin-bottom: 12px; height: 50px;
-        }
-        .check-item input[type="checkbox"] { width: 20px; height: 20px; margin: 0; }
-
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; }
-        .btn-secondary { background: #606770; height: 44px; font-size: 14px; }
-        .btn-wa { background: var(--whatsapp-green) !important; flex: 1; }
-        .btn-edit { background: #ffc107 !important; color: #000 !important; flex: 1; }
-        .btn-del { background: #fa3e3e !important; flex: 1; }
-
-        .action-group { display: flex; gap: 4px; width: 160px; justify-content: center; }
-
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
-
-        .table-container { overflow-x: auto; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1250px; }
-        th, td { padding: 14px 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
-        th { background: var(--bg-color); font-weight: 700; font-size: 11px; }
-        
-        .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
-        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 10px 15px; font-weight: bold; }
-
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-decoration: none; }
         .hidden { display: none !important; }
+        
+        @media (max-width: 600px) {
+            .controls { grid-template-columns: 1fr; }
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -81,79 +91,100 @@
 </head>
 <body>
 
-<div id="loginView" class="container" style="margin-top: 50px;">
-    <h1>TRUE INVEST</h1>
-    <div class="login-card">
+<header>
+    <h1>TRUE INVEST <span style="font-weight: 300;">PRO</span></h1>
+</header>
+
+<div id="loginSection" class="container">
+    <div class="glass-card">
+        <h2 style="text-align:center; margin-top:0;">Partner Login</h2>
         <form id="loginForm">
-            <label>Agent Email</label>
-            <input type="email" id="loginEmail" placeholder="admin@trueinvest.com" required>
-            <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" required>
-            <button type="submit" id="loginBtn">Secure Login</button>
-            <div id="loginError" style="color: var(--notify-red); margin-top: 10px; text-align: center; font-size: 14px; display: none;"></div>
+            <label>Agent ID (Email)</label>
+            <input type="email" id="email" placeholder="agent@trueinvest.com" required>
+            <label>Security Key</label>
+            <input type="password" id="pass" placeholder="••••••••" required>
+            <button type="submit" class="btn btn-primary" id="loginBtn">Authorize Access</button>
+            <p id="loginErr" style="color:var(--danger); text-align:center; font-size:13px; margin-top:15px; display:none;"></p>
         </form>
     </div>
 </div>
 
-<div id="crmView" class="container hidden">
+<div id="appSection" class="container hidden">
     <a href="#clientForm" class="fab">+</a>
-    <h1>TRUE INVEST CRM</h1>
-    <button class="btn-secondary" style="margin-bottom: 15px; width: 100%;" onclick="logout()">Logout</button>
     
-    <div id="indexErrorBox"></div>
-    
-    <div id="reminderAlert" class="notification-bar"></div>
+    <div id="indexFixer"></div>
 
-    <form id="clientForm">
-        <input type="hidden" id="editId" value="">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
+    <div class="glass-card">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <span id="userName" style="font-weight:700; font-size:14px;"></span>
+            <button class="btn btn-outline" style="width:auto; padding: 6px 15px;" onclick="logout()">Logout</button>
         </div>
-        <label>Client Details</label>
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <input type="text" id="location" placeholder="Location">
-            <input type="text" id="propertyType" placeholder="Property Type">
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Status</label>
-                <select id="status">
-                    <option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option><option>Not Interested</option>
-                </select>
-            </div>
-            <div><label>Site Visit</label>
-                <div class="check-item"><input type="checkbox" id="visitDone"><label for="visitDone">Done</label></div>
-            </div>
-        </div>
-        <div class="check-item"><input type="checkbox" id="sendSunny"><label for="sendSunny">Assign to Sunny</label></div>
-        <label>Financials & Notes</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 80 Lacs)">
-        <textarea id="remark" placeholder="Remarks..." rows="3"></textarea>
-        <button type="submit" id="saveBtn">Save to Cloud</button>
-        <button type="button" class="btn-secondary" onclick="resetForm()">Cancel</button>
-    </form>
-
-    <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export</button>
-        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean</button>
-        <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
-    <div class="table-container">
-        <table>
+    <form id="clientForm" class="glass-card">
+        <input type="hidden" id="editId">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div><label>Registration Date</label><input type="date" id="leadDate"></div>
+            <div><label>Follow-up Plan</label><input type="date" id="followup"></div>
+        </div>
+
+        <label>Client Identity</label>
+        <input type="text" id="name" placeholder="Client Full Name" required>
+        <input type="tel" id="phone" placeholder="Phone (10 Digits)" required>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div><label>Requirement</label><input type="text" id="propertyType" placeholder="e.g. 3BHK"></div>
+            <div><label>Location</label><input type="text" id="location" placeholder="e.g. Noida"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+                <label>Lead Quality</label>
+                <select id="status">
+                    <option value="New">New Lead</option>
+                    <option value="Follow-up">In Progress</option>
+                    <option value="Hot">High Priority</option>
+                    <option value="Closed">Closed / Deal Done</option>
+                </select>
+            </div>
+            <div>
+                <label>Budget Range</label>
+                <input type="text" id="budget" placeholder="e.g. 1.2 Cr">
+            </div>
+        </div>
+
+        <label>Notes & Assignment</label>
+        <textarea id="remark" placeholder="Write lead history here..." rows="3"></textarea>
+        
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Sync to Cloud</button>
+            <button type="button" class="btn btn-outline" onclick="resetForm()">Clear</button>
+        </div>
+    </form>
+
+    <div class="glass-card">
+        <input type="text" id="search" placeholder="Quick Search Name, Phone or Location..." class="search-box" style="margin-bottom:15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <button class="btn btn-outline" onclick="toggleMode()">Theme</button>
+            <button class="btn btn-outline" style="background:#f1f9f3" onclick="exportData()">Export</button>
+            <button class="btn btn-outline" style="background:#fff1f1" onclick="cleanData()">Clean</button>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table id="leadTable">
             <thead>
-                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th></tr>
+                <tr>
+                    <th>Entry Date</th><th>Full Name</th><th>Contact</th><th>Status</th><th>Budget</th><th>Property</th><th>Location</th><th>Next Call</th><th>Management</th>
+                </tr>
             </thead>
-            <tbody id="clientTable"></tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // --- CONNECT TO TRUE INVEST CLOUD ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -166,149 +197,140 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    let leads = [];
+    const today = new Date().toISOString().split('T')[0];
 
-    let clients = [];
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    // --- AUTHENTICATION ---
+    // --- SESSION CONTROL ---
     auth.onAuthStateChanged(user => {
         if (user) {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('crmView').classList.remove('hidden');
-            loadData(); 
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            document.getElementById('userName').innerText = "Agent: " + user.email.split('@')[0].toUpperCase();
+            loadSync();
         } else {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('crmView').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
         }
     });
 
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+    document.getElementById('loginForm').addEventListener('submit', e => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        btn.innerText = "Loading...";
-        auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
+        btn.innerText = "Authenticating...";
+        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value)
             .catch(err => {
-                document.getElementById('loginError').innerText = err.message;
-                document.getElementById('loginError').style.display = 'block';
-                btn.innerText = "Secure Login";
+                const errBox = document.getElementById('loginErr');
+                errBox.innerText = "Invalid ID or Key. Try again.";
+                errBox.style.display = "block";
+                btn.innerText = "Authorize Access";
             });
     });
 
     function logout() { auth.signOut(); }
 
-    // --- DATA HANDLING ---
-    function loadData() {
+    // --- CORE DATA ENGINE ---
+    function loadSync() {
         const user = auth.currentUser;
-        if(!user) return;
-
-        db.collection("leads")
-          .where("ownerId", "==", user.uid) 
-          .orderBy("leadDate", "desc")
-          .onSnapshot(snap => {
-              clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              renderTable();
-              checkReminders();
-              document.getElementById('indexErrorBox').style.display = 'none';
-          }, err => {
-              // DETECT IF INDEX IS MISSING
-              if (err.message.includes("index")) {
-                  const link = err.message.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
-                  if (link) {
-                      document.getElementById('indexErrorBox').innerHTML = 
-                        `⚠️ <b>Database Setup Required:</b> To see your leads, please 
-                        <a href="${link}" target="_blank">Click here to enable database indexing</a>. 
-                        It takes 2 minutes to activate.`;
-                      document.getElementById('indexErrorBox').style.display = 'block';
-                  }
-              }
-          });
+        db.collection("leads").where("owner", "==", user.uid).orderBy("leadDate", "desc").onSnapshot(snap => {
+            leads = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            render();
+            document.getElementById('indexFixer').style.display = 'none';
+        }, err => {
+            if (err.message.includes("index")) {
+                const url = err.message.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
+                document.getElementById('indexFixer').innerHTML = `⚠️ <b>Setup Required:</b> Your database index is building. <a href="${url}" target="_blank">Click here to confirm setup</a>.`;
+                document.getElementById('indexFixer').style.display = 'block';
+            }
+        });
     }
 
     document.getElementById('clientForm').addEventListener('submit', e => {
         e.preventDefault();
         const user = auth.currentUser;
-        const data = {
-            ownerId: user.uid, ownerEmail: user.email,
-            leadDate: document.getElementById('leadDate').value || todayStr,
+        const payload = {
+            owner: user.uid,
+            agentEmail: user.email,
+            leadDate: document.getElementById('leadDate').value || today,
             followup: document.getElementById('followup').value || "",
-            name: document.getElementById('name').value, phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value || "", propertyType: document.getElementById('propertyType').value || "",
-            status: document.getElementById('status').value, visitDone: document.getElementById('visitDone').checked,
-            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
-            budget: document.getElementById('budget').value || "", remark: document.getElementById('remark').value || ""
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            propertyType: document.getElementById('propertyType').value || "",
+            location: document.getElementById('location').value || "",
+            status: document.getElementById('status').value,
+            budget: document.getElementById('budget').value || "",
+            remark: document.getElementById('remark').value || ""
         };
+
         const id = document.getElementById('editId').value;
-        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => resetForm()).catch(err => alert("Sync Error: " + err.message));
+        const action = id ? db.collection("leads").doc(id).update(payload) : db.collection("leads").add(payload);
+        
+        action.then(() => {
+            resetForm();
+        }).catch(err => alert("Sync Failed. Check Internet."));
     });
 
-    function renderTable() {
-        const table = document.getElementById('clientTable');
-        table.innerHTML = '';
-        const row = c => `
-            <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
-                <td>${c.leadDate || '-'}</td>
-                <td style="font-weight:bold">${c.name}</td>
-                <td>${c.phone}</td>
-                <td style="font-weight:bold; color:#1877f2">${c.status}</td>
-                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td>
-                <td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
-                <td><div class="action-group">
-                    <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                    <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
-                    <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
-                </div></td>
-            </tr>`;
-        clients.forEach(c => table.innerHTML += row(c));
+    function render() {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+        leads.forEach(l => {
+            const tr = document.createElement('tr');
+            if(l.followup === today) tr.style.background = "rgba(24, 119, 242, 0.05)";
+            tr.innerHTML = `
+                <td>${l.leadDate}</td>
+                <td style="font-weight:700">${l.name}</td>
+                <td><a href="tel:${l.phone}" style="text-decoration:none; color:inherit;">${l.phone}</a></td>
+                <td><span class="status-pill ${l.status.toLowerCase()}">${l.status}</span></td>
+                <td style="font-weight:700; color:#28a745">${l.budget}</td>
+                <td>${l.propertyType}</td>
+                <td>${l.location}</td>
+                <td>${l.followup || '-'}</td>
+                <td>
+                    <div class="action-group">
+                        <button class="btn btn-outline btn-wa" onclick="wa('${l.phone}', '${l.name}')" style="margin:0; padding:5px;">WA</button>
+                        <button class="btn btn-outline" onclick="edit('${l.id}')" style="margin:0; padding:5px;">Edit</button>
+                        <button class="btn btn-outline" onclick="del('${l.id}')" style="margin:0; padding:5px; color:var(--danger)">Del</button>
+                    </div>
+                </td>
+            `;
+            body.appendChild(tr);
+        });
     }
 
-    function editLead(id) {
-        const c = clients.find(x => x.id === id);
-        if(!c) return;
-        document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
-            document.getElementById(f).value = c[f] || '';
+    function edit(id) {
+        const l = leads.find(x => x.id === id);
+        document.getElementById('editId').value = l.id;
+        ['leadDate', 'followup', 'name', 'phone', 'propertyType', 'location', 'status', 'budget', 'remark'].forEach(f => {
+            document.getElementById(f).value = l[f] || '';
         });
-        document.getElementById('visitDone').checked = !!c.visitDone;
-        document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Lead Info";
+        document.getElementById('saveBtn').innerText = "Update Lead";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { if(confirm("Delete this lead?")) db.collection("leads").doc(id).delete(); }
-    function resetForm() { document.getElementById('clientForm').reset(); document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "Save to Cloud"; }
-    function sendWA(num, name) { window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, following up from True Invest.`, '_blank'); }
-    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-    function checkReminders() {
-        const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
-        document.getElementById('reminderAlert').style.display = count ? 'block' : 'none';
-        document.getElementById('reminderAlert').innerText = `🔔 Attention: ${count} follow-ups today!`;
-    }
+    function del(id) { if(confirm("Permanently delete?")) db.collection("leads").doc(id).delete(); }
+    function wa(num, name) { window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, True Invest follows up...`, '_blank'); }
+    function resetForm() { document.getElementById('clientForm').reset(); document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "Sync to Cloud"; }
+    function toggleMode() { document.body.classList.toggle('dark-mode'); }
 
-    function downloadCSV() {
-        let csv = "Date,Name,Phone,Status,Budget,Assigned,Visit,Location,Type,Followup,Remark\n";
-        clients.forEach(c => {
-            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
-        });
+    function exportData() {
+        let csv = "Date,Name,Phone,Status,Budget,Type,Location,Remark\n";
+        leads.forEach(l => csv += `"${l.leadDate}","${l.name}","${l.phone}","${l.status}","${l.budget}","${l.propertyType}","${l.location}","${l.remark}"\n`);
         const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        a.download = `Leads_${todayStr}.csv`;
+        a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = `Leads_Export.csv`;
         a.click();
     }
 
-    function clearDuplicates() {
+    function cleanData() {
         const seen = new Set();
-        clients.forEach(c => {
-            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete();
-            else seen.add(c.phone);
+        leads.forEach(l => {
+            if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete();
+            else seen.add(l.phone);
         });
-        alert("Duplicates removed.");
     }
 
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr').forEach(tr => {
+        document.querySelectorAll('#tableBody tr').forEach(tr => {
             tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     });
