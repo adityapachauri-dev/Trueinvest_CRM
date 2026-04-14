@@ -189,7 +189,7 @@
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- AUTH ---
+    // --- AUTHENTICATION ---
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
@@ -215,18 +215,32 @@
 
     function logout() { auth.signOut(); }
 
-    // --- DATA ---
+    // --- INDIVIDUAL DATA LOADING ---
     function loadData() {
-        db.collection("leads").orderBy("leadDate", "desc").onSnapshot(snap => {
-            clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-            renderTable();
-            checkReminders();
-        });
+        const user = auth.currentUser;
+        if(!user) return;
+
+        // FILTER: Only show leads where ownerId matches current user's UID
+        db.collection("leads")
+          .where("ownerId", "==", user.uid) 
+          .orderBy("leadDate", "desc")
+          .onSnapshot(snap => {
+              clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+              renderTable();
+              checkReminders();
+          }, err => {
+              console.error("Firestore Filter Error (Check your Console for the Index Link):", err.message);
+          });
     }
 
+    // --- SAVE LEAD WITH OWNER STAMP ---
     document.getElementById('clientForm').addEventListener('submit', e => {
         e.preventDefault();
+        const user = auth.currentUser;
+        
         const data = {
+            ownerId: user.uid,        // Private User Identity
+            ownerEmail: user.email,    // User Email reference
             leadDate: document.getElementById('leadDate').value || todayStr,
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value, 
@@ -275,7 +289,7 @@
             table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += row(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="11">Database History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="11">My Leads Database</td></tr>`;
         others.forEach(c => table.innerHTML += row(c));
     }
 
@@ -311,10 +325,10 @@
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Reminder: You have ${count} calls scheduled for today!`;
+        bar.innerText = `🔔 Reminder: You have ${count} site visits/calls scheduled for today!`;
     }
 
-    // --- CSV TOOLS ---
+    // --- CSV EXPORT/IMPORT ---
     function downloadCSV() {
         let csv = "Lead Date,Name,Phone,Status,Budget,Assigned To,Visit Done,Location,Property Type,Followup Date,Remark\n";
         clients.forEach(c => {
@@ -324,13 +338,14 @@
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Leads_Export_${todayStr}.csv`;
+        a.download = `MyLeads_${todayStr}.csv`;
         a.click();
     }
 
     function importCSV(event) {
         const file = event.target.files[0];
         if(!file) return;
+        const user = auth.currentUser;
         const reader = new FileReader();
         reader.onload = function(e) {
             const rows = e.target.result.split('\n').slice(1);
@@ -338,9 +353,11 @@
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length < 2) return;
                 db.collection("leads").add({
+                    ownerId: user.uid,
+                    ownerEmail: user.email,
                     leadDate: cols[0] || todayStr,
-                    name: cols[1] || "Unknown",
-                    phone: cols[2] || "0",
+                    name: cols[1],
+                    phone: cols[2],
                     status: cols[3] || "New",
                     budget: cols[4] || "",
                     sentTo: cols[5] || "",
@@ -358,16 +375,11 @@
 
     function clearDuplicates() {
         const seen = new Set();
-        let deleted = 0;
         clients.forEach(c => {
-            if(seen.has(c.phone)) {
-                db.collection("leads").doc(c.id).delete();
-                deleted++;
-            } else {
-                seen.add(c.phone);
-            }
+            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete();
+            else seen.add(c.phone);
         });
-        alert(`Cleanup complete. Removed ${deleted} duplicates.`);
+        alert("Cleanup complete.");
     }
 
     // --- SEARCH ---
