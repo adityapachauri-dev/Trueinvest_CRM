@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM</title>
+    <title>TRUE INVEST CRM - Cloud Edition</title>
     
-    <link rel="apple-touch-icon" sizes="180x180" href="YOUR_DIRECT_ICON_URL_HERE">
-    <link rel="icon" type="image/png" sizes="32x32" href="YOUR_DIRECT_ICON_URL_HERE">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
     <style>
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
@@ -34,7 +29,7 @@
             display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
         }
 
-        form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        form, .table-container, .login-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
         input, textarea, button, select { 
@@ -51,8 +46,10 @@
         .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; -webkit-appearance: checkbox; }
         .check-item label { margin: 0; font-size: 14px; font-weight: 600; cursor: pointer; }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; transition: 0.2s;}
+        button:active { opacity: 0.8; }
         .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
+        .btn-logout { background: var(--notify-red); margin-bottom: 15px; }
         
         .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; display: flex; align-items: center; justify-content: center; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; width: 50px !important; }
@@ -72,17 +69,42 @@
 
         .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
+
+        /* Utility classes for toggling views */
+        .hidden { display: none !important; }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<div class="container">
+<div id="loginView" class="container" style="margin-top: 50px;">
+    <h1>TRUE INVEST</h1>
+    <div class="login-card">
+        <h2 style="font-size: 1.1rem; text-align: center; margin-top: 0;">Agent Login</h2>
+        <form id="loginForm">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="admin@trueinvest.com" required>
+            
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter password" required>
+            
+            <button type="submit" id="loginBtn">Secure Login</button>
+            <div id="loginError" style="color: var(--notify-red); margin-top: 10px; text-align: center; font-size: 14px; display: none;"></div>
+        </form>
+    </div>
+</div>
+
+<div id="crmView" class="container hidden">
     <a href="#clientForm" class="fab">+</a>
     <h1>TRUE INVEST CRM</h1>
+    <button class="btn-secondary btn-logout" onclick="logout()">Logout</button>
     <div id="reminderAlert" class="notification-bar"></div>
 
     <form id="clientForm">
-        <input type="hidden" id="editIndex" value="">
+        <input type="hidden" id="editId" value="">
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div><label>Lead Date</label><input type="date" id="leadDate"></div>
@@ -125,7 +147,7 @@
         <input type="text" id="budget" placeholder="Budget">
         <textarea id="remark" placeholder="Remarks"></textarea>
         
-        <button type="submit" id="saveBtn">Save Record</button>
+        <button type="submit" id="saveBtn">Save Record to Cloud</button>
         <button type="button" class="btn-secondary" onclick="resetForm()">Clear / Cancel</button>
     </form>
 
@@ -151,10 +173,156 @@
 </div>
 
 <script>
-    let clients = JSON.parse(localStorage.getItem('clients')) || [];
-    const todayStr = new Date().toISOString().split('T')[0];
+    // ==========================================
+    // 1. FIREBASE CONFIGURATION
+    // REPLACE THESE VALUES WITH YOUR FIREBASE PROJECT KEYS
+    // ==========================================
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
 
-    // --- SOUND ENGINE ---
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ==========================================
+    // 2. GLOBAL VARIABLES
+    // ==========================================
+    let clients = [];
+    const todayStr = new Date().toISOString().split('T')[0];
+    const loginView = document.getElementById('loginView');
+    const crmView = document.getElementById('crmView');
+
+    // ==========================================
+    // 3. AUTHENTICATION LOGIC
+    // ==========================================
+    // Listen for login state changes
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is logged in
+            loginView.classList.add('hidden');
+            crmView.classList.remove('hidden');
+            loadDataFromCloud(); // Start listening to database
+        } else {
+            // User is logged out
+            loginView.classList.remove('hidden');
+            crmView.classList.add('hidden');
+        }
+    });
+
+    // Handle Login Form Submit
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const errorDiv = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if(firebaseConfig.apiKey === "YOUR_API_KEY") {
+            alert("⚠️ Please add your Firebase configuration keys to the code to enable login and database features!");
+            return;
+        }
+
+        loginBtn.innerText = "Authenticating...";
+        auth.signInWithEmailAndPassword(email, password)
+            .then(() => {
+                errorDiv.style.display = 'none';
+                loginBtn.innerText = "Secure Login";
+            })
+            .catch((error) => {
+                errorDiv.innerText = error.message;
+                errorDiv.style.display = 'block';
+                loginBtn.innerText = "Secure Login";
+            });
+    });
+
+    // Handle Logout
+    function logout() {
+        auth.signOut();
+    }
+
+    // ==========================================
+    // 4. CLOUD DATABASE LOGIC
+    // ==========================================
+    function loadDataFromCloud() {
+        // Real-time listener: Whenever data changes in the cloud, this runs automatically
+        db.collection("leads").orderBy("leadDate", "desc").onSnapshot((snapshot) => {
+            clients = [];
+            snapshot.forEach((doc) => {
+                clients.push({ id: doc.id, ...doc.data() });
+            });
+            renderTable();
+            checkReminders(false);
+        }, (error) => {
+            console.error("Error fetching leads: ", error);
+        });
+    }
+
+    // Save or Update Record
+    document.getElementById('clientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const data = {
+            leadDate: document.getElementById('leadDate').value,
+            followup: document.getElementById('followup').value,
+            name: document.getElementById('name').value, 
+            phone: document.getElementById('phone').value,
+            location: document.getElementById('location').value, 
+            propertyType: document.getElementById('propertyType').value,
+            status: document.getElementById('status').value,
+            visitDone: document.getElementById('visitDone').checked,
+            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
+            budget: document.getElementById('budget').value, 
+            remark: document.getElementById('remark').value,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        const editId = document.getElementById('editId').value;
+        
+        if(editId === "") {
+            // Create New Document
+            db.collection("leads").add(data).then(() => {
+                resetForm();
+            });
+        } else {
+            // Update Existing Document
+            db.collection("leads").doc(editId).update(data).then(() => {
+                resetForm();
+            });
+        }
+    });
+
+    function editClient(id) {
+        const c = clients.find(client => client.id === id);
+        if(!c) return;
+
+        document.getElementById('editId').value = c.id;
+        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(k => {
+            document.getElementById(k).value = c[k] || '';
+        });
+        document.getElementById('visitDone').checked = c.visitDone || false;
+        document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
+        document.getElementById('saveBtn').innerText = "Update Cloud Record";
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function deleteClient(id) {
+        if(confirm("Permanently delete this record from the cloud?")) {
+            db.collection("leads").doc(id).delete();
+        }
+    }
+
+    // ==========================================
+    // 5. SOUND ENGINE & REMINDERS
+    // ==========================================
     function speak(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -174,7 +342,7 @@
             alertBox.style.display = 'block';
             alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
             if (manual || localStorage.getItem('lastRunDate') !== todayStr) {
-                speak(`Namaste Aditya. You have ${dueToday.length} follow up calls for today.`);
+                speak(`Namaste. You have ${dueToday.length} follow up calls for today.`);
                 if(!manual) localStorage.setItem('lastRunDate', todayStr);
             }
         } else {
@@ -182,7 +350,9 @@
         }
     }
 
-    // --- RENDER LOGIC ---
+    // ==========================================
+    // 6. UI & RENDER LOGIC
+    // ==========================================
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
@@ -191,7 +361,7 @@
         const pinned = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested' && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== todayStr || c.status === 'Not Interested' || c.status === 'Closed');
 
-        const createRow = (c, originalIdx) => {
+        const createRow = (c) => {
             const sColors = {'Hot': isDark ? '#ff6b6b' : '#fa3e3e', 'Closed': '#28a745', 'Follow-up': '#f39c12', 'Not Interested': '#8e8e93'};
             const visitMark = c.visitDone ? '<span class="visit-tick">✓</span>' : '-';
 
@@ -202,17 +372,17 @@
                 <td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
                 <td style="display:flex; gap:6px; justify-content:center; border:none; padding:8px;">
                     <button class="btn-wa" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
-                    <button class="btn-edit" onclick="editClient(${originalIdx})">Edit</button>
-                    <button class="btn-del" onclick="deleteClient(${originalIdx})">Del</button>
+                    <button class="btn-edit" onclick="editClient('${c.id}')">Edit</button>
+                    <button class="btn-del" onclick="deleteClient('${c.id}')">Del</button>
                 </td></tr>`;
         };
 
         if (pinned.length > 0) {
             table.innerHTML += `<tr class="section-divider"><td colspan="10">Urgent Priorities (Today)</td></tr>`;
-            pinned.forEach(c => table.innerHTML += createRow(c, clients.indexOf(c)));
+            pinned.forEach(c => table.innerHTML += createRow(c));
             table.innerHTML += `<tr class="section-divider"><td colspan="10">All Leads</td></tr>`;
         }
-        others.forEach(c => table.innerHTML += createRow(c, clients.indexOf(c)));
+        others.forEach(c => table.innerHTML += createRow(c));
     }
 
     function sendWA(c) {
@@ -220,52 +390,10 @@
         window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding your property interest with True Invest.`, '_blank');
     }
 
-    document.getElementById('clientForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const data = {
-            leadDate: document.getElementById('leadDate').value,
-            followup: document.getElementById('followup').value,
-            name: document.getElementById('name').value, 
-            phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value, 
-            propertyType: document.getElementById('propertyType').value,
-            status: document.getElementById('status').value,
-            visitDone: document.getElementById('visitDone').checked,
-            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
-            budget: document.getElementById('budget').value, 
-            remark: document.getElementById('remark').value
-        };
-        const editIdx = document.getElementById('editIndex').value;
-        if(editIdx === "") clients.push(data);
-        else clients[parseInt(editIdx)] = data;
-        
-        localStorage.setItem('clients', JSON.stringify(clients));
-        resetForm(); renderTable(); checkReminders(false);
-    });
-
-    function editClient(idx) {
-        const c = clients[idx];
-        document.getElementById('editIndex').value = idx;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(k => {
-            document.getElementById(k).value = c[k] || '';
-        });
-        document.getElementById('visitDone').checked = c.visitDone || false;
-        document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Record";
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function deleteClient(idx) {
-        if(confirm("Permanently delete this record?")) {
-            clients.splice(idx, 1);
-            localStorage.setItem('clients', JSON.stringify(clients));
-            renderTable();
-        }
-    }
-
     function resetForm() { 
-        document.getElementById('clientForm').reset(); document.getElementById('editIndex').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save Record"; 
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editId').value = ""; 
+        document.getElementById('saveBtn').innerText = "Save Record to Cloud"; 
     }
 
     function toggleDarkMode() { 
@@ -274,35 +402,26 @@
         renderTable(); 
     }
 
+    // ==========================================
+    // 7. UTILITIES (Duplicates, Import, Export)
+    // ==========================================
     function clearDuplicates() {
-        const initial = clients.length;
-        const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
-        clients = Object.values(u); localStorage.setItem('clients', JSON.stringify(clients));
-        renderTable(); alert(`Cleaned ${initial - clients.length} duplicate leads.`);
-    }
+        const u = {}; 
+        let deletedCount = 0;
 
-    function importCSV(event) {
-        const file = event.target.files[0]; if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const lines = e.target.result.split(/\r?\n/);
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
-            const map = {'leaddate':'leadDate','name':'name','phone':'phone','status':'status','location':'location','property':'propertyType','budget':'budget','followup':'followup','remark':'remark','sentto':'sentTo'};
-            for(let i=1; i<lines.length; i++) {
-                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if(row.length < 2) continue;
-                const c = {};
-                headers.forEach((h, j) => {
-                    let v = row[j] ? row[j].trim().replace(/^"|"$/g, '') : '';
-                    if(map[h]) c[map[h]] = v;
-                    if(h === 'visit') c.visitDone = (v.toLowerCase() === 'yes' || v === 'true');
-                });
-                clients.push(c);
+        // Using reverse loop to keep the newest entered record if there's a duplicate phone
+        for (let i = clients.length - 1; i >= 0; i--) {
+            const c = clients[i];
+            const cleanPhone = c.phone.replace(/\D/g, '');
+            if (u[cleanPhone]) {
+                // Delete the duplicate from the database
+                db.collection("leads").doc(c.id).delete();
+                deletedCount++;
+            } else {
+                u[cleanPhone] = true;
             }
-            localStorage.setItem('clients', JSON.stringify(clients));
-            renderTable(); alert("Leads Imported!");
-        };
-        reader.readAsText(file);
+        }
+        alert(`Cleaned ${deletedCount} duplicate leads from the database.`);
     }
 
     function downloadExcel() {
@@ -312,13 +431,16 @@
         a.download = 'TrueInvest_CRM.csv'; a.click();
     }
 
+    // Setup visual theme
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+    
+    // Search function
     document.getElementById('search').addEventListener('input', function() {
         const v = this.value.toLowerCase();
         document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
     });
 
-    renderTable();
+    // Audio trigger on mobile
     document.addEventListener('touchstart', () => { setTimeout(() => checkReminders(false), 1000); }, {once: true});
 </script>
 </body>
