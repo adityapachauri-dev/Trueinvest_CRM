@@ -3,80 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM | Elite Edition</title>
+    <title>TRUE INVEST CRM</title>
     
     <style>
         :root {
-            --primary: #1877f2; --secondary: #00d2ff; --bg: #f0f2f5; 
-            --card: #ffffff; --text: #1c1e21; --border: #dddfe2;
-            --success: #25D366; --danger: #fa3e3e; --input-bg: #ffffff;
+            --bg: #F2F2F7; --card: #FFFFFF; --text: #000000; --label: #8E8E93;
+            --accent: #007AFF; --success: #34C759; --danger: #FF3B30; --border: #D1D1D6;
+            --input: #FFFFFF;
         }
-        /* FIXED DARK MODE COLORS */
-        body.dark-mode { 
-            --bg: #18191a; --card: #242526; --text: #e4e6eb; 
-            --border: #3e4042; --input-bg: #3a3b3c;
+        body.dark-mode {
+            --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; --label: #8E8E93;
+            --accent: #0A84FF; --border: #38383A; --input: #2C2C2E;
         }
         
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 20px; 
-            transition: background 0.3s ease, color 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; 
+            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 40px; 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); -webkit-font-smoothing: antialiased;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: fadeIn 0.4s ease forwards; }
+        /* iOS Spring Animations */
+        @keyframes iosReveal { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .ios-animate { animation: iosReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 
-        .container { width: 100%; max-width: 500px; margin: auto; padding: 15px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 480px; margin: auto; padding: 20px; box-sizing: border-box; }
         
         header { 
-            background: var(--card); padding: 15px; text-align: center; 
-            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px 20px 10px; text-align: left; 
+            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
-        header h1 { margin: 0; font-size: 1.3rem; color: var(--primary); }
+        header h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
 
         .card { 
-            background: var(--card); padding: 20px; border-radius: 16px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; 
-            border: 1px solid var(--border);
+            background: var(--card); padding: 20px; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; border: 0.5px solid var(--border);
         }
 
-        label { display: block; font-size: 11px; font-weight: 800; opacity: 0.7; margin-top: 12px; text-transform: uppercase; color: var(--text); }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--label); margin-bottom: 6px; padding-left: 4px; }
         input, select, textarea { 
-            width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: 12px; 
-            background: var(--input-bg); color: var(--text); font-size: 15px; box-sizing: border-box; 
-            margin-top: 6px; transition: 0.2s;
+            width: 100%; padding: 14px; border: none; border-radius: 12px; 
+            background: var(--input); color: var(--text); font-size: 17px; box-sizing: border-box; 
+            margin-bottom: 15px; transition: all 0.3s ease;
         }
-        input:focus { border-color: var(--primary); outline: none; }
 
-        /* BUTTONS WITH HIGH VISIBILITY */
+        /* Apple Styled Buttons */
         .btn { 
-            width: 100%; padding: 15px; border-radius: 12px; border: none; 
-            font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.2s;
+            width: 100%; padding: 16px; border-radius: 14px; border: none; 
+            font-weight: 600; font-size: 17px; cursor: pointer; transition: all 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn-primary { background: var(--primary); color: #ffffff; }
-        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
-        .btn-theme { background: #606770; color: white; width: auto; margin: 0; padding: 10px 15px; }
+        .btn-primary { background: var(--accent); color: #FFFFFF; }
+        .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
+        
+        .btn-ghost { background: var(--input); color: var(--accent); margin-bottom: 10px; }
 
-        /* STATUS PILLS */
-        .status { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-hot { background: #fa3e3e; color: white; }
-        .status-new { background: #e3f2fd; color: #1877f2; }
+        /* Multi-Option Action Center */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+        .action-btn { background: var(--input); color: var(--text); padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; border: 0.5px solid var(--border); text-align: center; cursor: pointer; }
 
-        .table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); background: var(--card); }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
-        th, td { padding: 16px; text-align: center; border-bottom: 1px solid var(--border); color: var(--text); }
-        th { background: var(--bg); font-weight: 700; text-transform: uppercase; font-size: 10px; }
-
+        /* Status & Table Styling */
+        .table-wrap { overflow-x: auto; border-radius: 20px; background: var(--card); border: 0.5px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th, td { padding: 16px; text-align: left; border-bottom: 0.5px solid var(--border); }
+        th { font-size: 12px; text-transform: uppercase; color: var(--label); }
+        
+        .pill { padding: 5px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; }
+        .hot { background: #FF3B3020; color: #FF3B30; }
+        
         .hidden { display: none !important; }
-
-        /* ACTION BUTTONS IN TABLE */
-        .row-btn { 
-            padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); 
-            background: var(--card); color: var(--text); font-weight: 600; cursor: pointer;
-            margin: 0 2px; font-size: 12px;
-        }
+        #csvFile { display: none; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -86,32 +81,32 @@
 <body>
 
 <header>
-    <h1>TRUE INVEST <span style="font-weight: 300;">ELITE</span></h1>
+    <h1>True Invest</h1>
 </header>
 
-<div id="loginView" class="container animate">
+<div id="loginView" class="container ios-animate">
     <div class="card">
-        <h2 style="text-align:center; margin-top:0;">Partner Login</h2>
-        <input type="email" id="email" placeholder="agent@trueinvest.com">
+        <h2 style="margin-top:0">Sign In</h2>
+        <input type="email" id="email" placeholder="Email">
         <input type="password" id="pass" placeholder="Password">
-        <button class="btn btn-primary" onclick="login()">Enter Dashboard</button>
-        <p id="err" style="color:var(--danger); text-align:center; font-size:13px; margin-top:15px; display:none;"></p>
+        <button class="btn btn-primary" onclick="login()">Continue</button>
+        <p id="err" style="color:var(--danger); text-align:center; font-size:14px; display:none;"></p>
     </div>
 </div>
 
 <div id="crmView" class="container hidden">
-    <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:15px;">
-        <button class="btn btn-outline" style="width:auto; margin:0; padding: 8px 15px;" onclick="auth.signOut()">Logout</button>
-        <button class="btn btn-theme" onclick="document.body.classList.toggle('dark-mode')">🌓 Theme</button>
+    <div class="ios-animate">
+        <button class="btn btn-ghost" onclick="auth.signOut()">Log Out</button>
+        <button class="btn btn-ghost" onclick="document.body.classList.toggle('dark-mode')">Switch Appearance</button>
     </div>
 
-    <form id="leadForm" class="card animate">
+    <form id="leadForm" class="card ios-animate" style="animation-delay: 0.1s;">
         <input type="hidden" id="editId">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
+            <div><label>Created</label><input type="date" id="leadDate"></div>
             <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
-        <label>Client Details</label>
+        <label>Client</label>
         <input type="text" id="name" placeholder="Full Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -120,25 +115,28 @@
                     <option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option>
                 </select>
             </div>
-            <div><label>Budget (Lacs)</label><input type="text" id="budget" placeholder="e.g. 75"></div>
+            <div><label>Budget</label><input type="text" id="budget" placeholder="Lacs"></div>
         </div>
-        <label>Requirements</label>
-        <textarea id="remark" placeholder="Property details, location etc." rows="2"></textarea>
+        <textarea id="remark" placeholder="Requirements..." rows="2"></textarea>
         <button type="submit" class="btn btn-primary" id="saveBtn">Save to Cloud</button>
     </form>
 
-    <div class="card animate" style="padding:15px;">
-        <input type="text" id="search" placeholder="Search by name or phone...">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-            <button class="btn btn-outline" style="margin:0; background:rgba(37, 211, 102, 0.1);" onclick="exportCSV()">Export CSV</button>
-            <button class="btn btn-outline" style="margin:0; background:rgba(250, 62, 62, 0.1);" onclick="clearDups()">Clean Dups</button>
+    <div class="card ios-animate" style="animation-delay: 0.2s;">
+        <label>Action Center</label>
+        <input type="text" id="search" placeholder="Search leads..." style="margin-bottom:10px;">
+        <div class="action-grid">
+            <div class="action-btn" onclick="exportCSV()">Export CSV</div>
+            <div class="action-btn" onclick="document.getElementById('csvFile').click()">Import CSV</div>
+            <div class="action-btn" onclick="clearDups()" style="color:var(--danger)">Clean Dups</div>
+            <div class="action-btn" onclick="resetForm()">New Form</div>
         </div>
+        <input type="file" id="csvFile" accept=".csv" onchange="importCSV(event)">
     </div>
 
-    <div class="table-wrap animate">
+    <div class="table-wrap ios-animate" style="animation-delay: 0.3s;">
         <table>
             <thead>
-                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Follow-up</th><th>Management</th></tr>
+                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Manage</th></tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
@@ -162,8 +160,7 @@
 
     function login() {
         auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(err => {
-            document.getElementById('err').innerText = "Access Denied";
-            document.getElementById('err').style.display = 'block';
+            document.getElementById('err').innerText = "Access Denied"; document.getElementById('err').style.display = 'block';
         });
     }
 
@@ -171,14 +168,14 @@
         if(user) {
             document.getElementById('loginView').classList.add('hidden');
             document.getElementById('crmView').classList.remove('hidden');
-            syncLeads();
+            sync();
         } else {
             document.getElementById('loginView').classList.remove('hidden');
             document.getElementById('crmView').classList.add('hidden');
         }
     });
 
-    function syncLeads() {
+    function sync() {
         const user = auth.currentUser;
         db.collection("leads").where("owner", "==", user.uid).onSnapshot(snap => {
             leads = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -201,31 +198,24 @@
         };
         const id = document.getElementById('editId').value;
         const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => {
-            document.getElementById('leadForm').reset();
-            document.getElementById('editId').value = "";
-            document.getElementById('saveBtn').innerText = "Save to Cloud";
-        });
+        task.then(() => resetForm());
     });
 
     function render() {
         const body = document.getElementById('tableBody');
         body.innerHTML = '';
         const sorted = leads.sort((a,b) => b.leadDate.localeCompare(a.leadDate));
-
         sorted.forEach(l => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${l.leadDate}</td>
                 <td style="font-weight:700">${l.name}</td>
-                <td>${l.phone}</td>
-                <td><span class="status status-${l.status.toLowerCase()}">${l.status}</span></td>
-                <td style="color:#28a745; font-weight:700">${l.budget}</td>
-                <td>${l.followup || '-'}</td>
+                <td><a href="tel:${l.phone}" style="color:inherit; text-decoration:none">${l.phone}</a></td>
+                <td><span class="pill ${l.status === 'Hot' ? 'hot' : ''}">${l.status}</span></td>
+                <td><b>${l.budget}</b></td>
                 <td>
-                    <button class="row-btn" onclick="editLead('${l.id}')">Edit</button>
-                    <button class="row-btn" style="color:#25D366" onclick="wa('${l.phone}', '${l.name}')">WA</button>
-                    <button class="row-btn" style="color:#fa3e3e" onclick="delLead('${l.id}')">Del</button>
+                    <button class="action-btn" onclick="editLead('${l.id}')">Edit</button>
+                    <button class="action-btn" style="color:var(--success)" onclick="wa('${l.phone}', '${l.name}')">WA</button>
                 </td>
             `;
             body.appendChild(tr);
@@ -235,34 +225,45 @@
     function editLead(id) {
         const l = leads.find(x => x.id === id);
         document.getElementById('editId').value = l.id;
-        document.getElementById('name').value = l.name;
-        document.getElementById('phone').value = l.phone;
-        document.getElementById('leadDate').value = l.leadDate;
-        document.getElementById('followup').value = l.followup;
-        document.getElementById('status').value = l.status;
-        document.getElementById('budget').value = l.budget;
-        document.getElementById('remark').value = l.remark;
-        document.getElementById('saveBtn').innerText = "Update Record";
+        ['name', 'phone', 'leadDate', 'followup', 'status', 'budget', 'remark'].forEach(f => {
+            document.getElementById(f).value = l[f] || '';
+        });
+        document.getElementById('saveBtn').innerText = "Update Lead";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function delLead(id) { if(confirm("Delete this lead?")) db.collection("leads").doc(id).delete(); }
-    function wa(n, name) { window.open(`https://wa.me/91${n.replace(/\D/g,'')}?text=Hello ${name}, following up regarding property inquiry...`); }
+    function wa(n, name) { window.open(`https://wa.me/91${n.replace(/\D/g,'')}?text=Hello ${name}...`); }
+
+    function importCSV(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        const user = auth.currentUser;
+        reader.onload = function(e) {
+            const rows = e.target.result.split('\n').slice(1);
+            rows.forEach(row => {
+                const c = row.split(',').map(v => v.replace(/"/g, '').trim());
+                if(c[1]) db.collection("leads").add({ owner: user.uid, leadDate: c[0], name: c[1], phone: c[2], status: c[3] || "New", budget: c[4] || "" });
+            });
+            alert("Import Complete");
+        };
+        reader.readAsText(file);
+    }
+
     function exportCSV() {
         let csv = "Date,Name,Phone,Status,Budget\n";
         leads.forEach(l => csv += `"${l.leadDate}","${l.name}","${l.phone}","${l.status}","${l.budget}"\n`);
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = "TRUE_INVEST_LEADS.csv"; a.click();
+        a.download = "Leads.csv"; a.click();
     }
+
     function clearDups() {
         const seen = new Set();
-        leads.forEach(l => {
-            if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete();
-            else seen.add(l.phone);
-        });
-        alert("Duplicates cleaned!");
+        leads.forEach(l => { if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete(); else seen.add(l.phone); });
     }
+
+    function resetForm() { document.getElementById('leadForm').reset(); document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "Save to Cloud"; }
+
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#tableBody tr').forEach(tr => {
