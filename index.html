@@ -1,77 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRUE INVEST CRM</title>
-    
     <style>
-        :root {
-            --bg: #F2F2F7; --card: #FFFFFF; --text: #000000; --label: #8E8E93;
-            --accent: #007AFF; --success: #34C759; --danger: #FF3B30; --border: #D1D1D6;
-            --input: #FFFFFF;
-        }
-        body.dark-mode {
-            --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; --label: #8E8E93;
-            --accent: #0A84FF; --border: #38383A; --input: #2C2C2E;
-        }
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 10px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1877f2; margin-top: 0; }
         
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; 
-            background: var(--bg); color: var(--text); margin: 0; padding-bottom: 40px; 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); -webkit-font-smoothing: antialiased;
-        }
-
-        /* iOS Spring Animations */
-        @keyframes iosReveal { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .ios-animate { animation: iosReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-
-        .container { width: 100%; max-width: 480px; margin: auto; padding: 20px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
         
-        header { 
-            padding: 30px 20px 10px; text-align: left; 
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        }
-        header h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-blue { background: #1877f2; color: white; margin-bottom: 5px; }
+        .btn-green { background: #25D366; color: white; width: auto; padding: 5px 10px; font-size: 12px; }
+        .btn-red { background: #fa3e3e; color: white; width: auto; padding: 5px 10px; font-size: 12px; }
+        .btn-grey { background: #606770; color: white; margin-top: 5px; }
 
-        .card { 
-            background: var(--card); padding: 20px; border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; border: 0.5px solid var(--border);
-        }
-
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--label); margin-bottom: 6px; padding-left: 4px; }
-        input, select, textarea { 
-            width: 100%; padding: 14px; border: none; border-radius: 12px; 
-            background: var(--input); color: var(--text); font-size: 17px; box-sizing: border-box; 
-            margin-bottom: 15px; transition: all 0.3s ease;
-        }
-
-        /* Apple Styled Buttons */
-        .btn { 
-            width: 100%; padding: 16px; border-radius: 14px; border: none; 
-            font-weight: 600; font-size: 17px; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-primary { background: var(--accent); color: #FFFFFF; }
-        .btn-primary:active { transform: scale(0.96); opacity: 0.8; }
-        
-        .btn-ghost { background: var(--input); color: var(--accent); margin-bottom: 10px; }
-
-        /* Multi-Option Action Center */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-        .action-btn { background: var(--input); color: var(--text); padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; border: 0.5px solid var(--border); text-align: center; cursor: pointer; }
-
-        /* Status & Table Styling */
-        .table-wrap { overflow-x: auto; border-radius: 20px; background: var(--card); border: 0.5px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th, td { padding: 16px; text-align: left; border-bottom: 0.5px solid var(--border); }
-        th { font-size: 12px; text-transform: uppercase; color: var(--label); }
-        
-        .pill { padding: 5px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; }
-        .hot { background: #FF3B3020; color: #FF3B30; }
-        
-        .hidden { display: none !important; }
-        #csvFile { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f8f8f8; }
+        .hidden { display: none; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -80,63 +29,53 @@
 </head>
 <body>
 
-<header>
-    <h1>True Invest</h1>
-</header>
-
-<div id="loginView" class="container ios-animate">
-    <div class="card">
-        <h2 style="margin-top:0">Sign In</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Password">
-        <button class="btn btn-primary" onclick="login()">Continue</button>
-        <p id="err" style="color:var(--danger); text-align:center; font-size:14px; display:none;"></p>
-    </div>
+<div id="authView" class="container">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="pass" placeholder="Password">
+    <button class="btn btn-blue" onclick="login()">Login</button>
 </div>
 
-<div id="crmView" class="container hidden">
-    <div class="ios-animate">
-        <button class="btn btn-ghost" onclick="auth.signOut()">Log Out</button>
-        <button class="btn btn-ghost" onclick="document.body.classList.toggle('dark-mode')">Switch Appearance</button>
-    </div>
+<div id="appView" class="container hidden">
+    <h2>True Invest CRM</h2>
+    <button class="btn btn-grey" onclick="auth.signOut()" style="width:auto; float:right">Logout</button>
+    <div style="clear:both"></div>
 
-    <form id="leadForm" class="card ios-animate" style="animation-delay: 0.1s;">
+    <form id="leadForm">
         <input type="hidden" id="editId">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div><label>Created</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
-        </div>
-        <label>Client</label>
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-            <div><label>Status</label>
+        <label>Client Name</label>
+        <input type="text" id="name" required>
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
+        
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1">
+                <label>Status</label>
                 <select id="status">
                     <option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option>
                 </select>
             </div>
-            <div><label>Budget</label><input type="text" id="budget" placeholder="Lacs"></div>
+            <div style="flex:1">
+                <label>Budget (Lacs)</label>
+                <input type="text" id="budget">
+            </div>
         </div>
-        <textarea id="remark" placeholder="Requirements..." rows="2"></textarea>
-        <button type="submit" class="btn btn-primary" id="saveBtn">Save to Cloud</button>
+
+        <label>Next Follow-up</label>
+        <input type="date" id="followup">
+        
+        <label>Notes</label>
+        <textarea id="remark" rows="2"></textarea>
+        
+        <button type="submit" class="btn btn-blue" id="saveBtn">Save Lead</button>
     </form>
 
-    <div class="card ios-animate" style="animation-delay: 0.2s;">
-        <label>Action Center</label>
-        <input type="text" id="search" placeholder="Search leads..." style="margin-bottom:10px;">
-        <div class="action-grid">
-            <div class="action-btn" onclick="exportCSV()">Export CSV</div>
-            <div class="action-btn" onclick="document.getElementById('csvFile').click()">Import CSV</div>
-            <div class="action-btn" onclick="clearDups()" style="color:var(--danger)">Clean Dups</div>
-            <div class="action-btn" onclick="resetForm()">New Form</div>
-        </div>
-        <input type="file" id="csvFile" accept=".csv" onchange="importCSV(event)">
-    </div>
-
-    <div class="table-wrap ios-animate" style="animation-delay: 0.3s;">
+    <input type="text" id="search" placeholder="Search leads..." style="margin-top:20px">
+    
+    <div style="overflow-x:auto">
         <table>
             <thead>
-                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Manage</th></tr>
+                <tr><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Actions</th></tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
@@ -145,7 +84,7 @@
 
 <script>
     const firebaseConfig = {
-        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
+        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY",
         authDomain: "truecrm-6cf8e.firebaseapp.com",
         projectId: "truecrm-6cf8e",
         storageBucket: "truecrm-6cf8e.firebasestorage.app",
@@ -159,23 +98,23 @@
     let leads = [];
 
     function login() {
-        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('pass').value).catch(err => {
-            document.getElementById('err').innerText = "Access Denied"; document.getElementById('err').style.display = 'block';
-        });
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+        auth.signInWithEmailAndPassword(e, p).catch(err => alert("Login Failed"));
     }
 
     auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('crmView').classList.remove('hidden');
-            sync();
+            document.getElementById('authView').classList.add('hidden');
+            document.getElementById('appView').classList.remove('hidden');
+            fetchData();
         } else {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('crmView').classList.add('hidden');
+            document.getElementById('authView').classList.remove('hidden');
+            document.getElementById('appView').classList.add('hidden');
         }
     });
 
-    function sync() {
+    function fetchData() {
         const user = auth.currentUser;
         db.collection("leads").where("owner", "==", user.uid).onSnapshot(snap => {
             leads = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -190,83 +129,57 @@
             owner: user.uid,
             name: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
-            leadDate: document.getElementById('leadDate').value || new Date().toISOString().split('T')[0],
-            followup: document.getElementById('followup').value || "",
             status: document.getElementById('status').value,
-            budget: document.getElementById('budget').value || "",
-            remark: document.getElementById('remark').value || ""
+            budget: document.getElementById('budget').value,
+            followup: document.getElementById('followup').value,
+            remark: document.getElementById('remark').value,
+            date: new Date().toISOString().split('T')[0]
         };
         const id = document.getElementById('editId').value;
-        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => resetForm());
+        if(id) db.collection("leads").doc(id).update(data);
+        else db.collection("leads").add(data);
+        
+        document.getElementById('leadForm').reset();
+        document.getElementById('editId').value = "";
+        document.getElementById('saveBtn').innerText = "Save Lead";
     });
 
     function render() {
         const body = document.getElementById('tableBody');
         body.innerHTML = '';
-        const sorted = leads.sort((a,b) => b.leadDate.localeCompare(a.leadDate));
-        sorted.forEach(l => {
+        leads.sort((a,b) => b.date.localeCompare(a.date)).forEach(l => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${l.leadDate}</td>
-                <td style="font-weight:700">${l.name}</td>
-                <td><a href="tel:${l.phone}" style="color:inherit; text-decoration:none">${l.phone}</a></td>
-                <td><span class="pill ${l.status === 'Hot' ? 'hot' : ''}">${l.status}</span></td>
-                <td><b>${l.budget}</b></td>
+                <td>${l.name}</td>
+                <td>${l.phone}</td>
+                <td>${l.status}</td>
+                <td>${l.budget}</td>
                 <td>
-                    <button class="action-btn" onclick="editLead('${l.id}')">Edit</button>
-                    <button class="action-btn" style="color:var(--success)" onclick="wa('${l.phone}', '${l.name}')">WA</button>
+                    <button class="btn-green" onclick="wa('${l.phone}', '${l.name}')">WA</button>
+                    <button class="btn-blue" style="width:auto; font-size:12px; padding:5px" onclick="edit('${l.id}')">Edit</button>
                 </td>
             `;
             body.appendChild(tr);
         });
     }
 
-    function editLead(id) {
+    function edit(id) {
         const l = leads.find(x => x.id === id);
         document.getElementById('editId').value = l.id;
-        ['name', 'phone', 'leadDate', 'followup', 'status', 'budget', 'remark'].forEach(f => {
-            document.getElementById(f).value = l[f] || '';
-        });
+        document.getElementById('name').value = l.name;
+        document.getElementById('phone').value = l.phone;
+        document.getElementById('status').value = l.status;
+        document.getElementById('budget').value = l.budget;
+        document.getElementById('followup').value = l.followup;
+        document.getElementById('remark').value = l.remark;
         document.getElementById('saveBtn').innerText = "Update Lead";
-        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function wa(n, name) { window.open(`https://wa.me/91${n.replace(/\D/g,'')}?text=Hello ${name}...`); }
 
-    function importCSV(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        const user = auth.currentUser;
-        reader.onload = function(e) {
-            const rows = e.target.result.split('\n').slice(1);
-            rows.forEach(row => {
-                const c = row.split(',').map(v => v.replace(/"/g, '').trim());
-                if(c[1]) db.collection("leads").add({ owner: user.uid, leadDate: c[0], name: c[1], phone: c[2], status: c[3] || "New", budget: c[4] || "" });
-            });
-            alert("Import Complete");
-        };
-        reader.readAsText(file);
-    }
-
-    function exportCSV() {
-        let csv = "Date,Name,Phone,Status,Budget\n";
-        leads.forEach(l => csv += `"${l.leadDate}","${l.name}","${l.phone}","${l.status}","${l.budget}"\n`);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = "Leads.csv"; a.click();
-    }
-
-    function clearDups() {
-        const seen = new Set();
-        leads.forEach(l => { if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete(); else seen.add(l.phone); });
-    }
-
-    function resetForm() { document.getElementById('leadForm').reset(); document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "Save to Cloud"; }
-
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#tableBody tr').forEach(tr => {
+        document.querySelectorAll('tbody tr').forEach(tr => {
             tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     });
