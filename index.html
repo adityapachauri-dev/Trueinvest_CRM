@@ -48,6 +48,7 @@
 
         button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; transition: 0.2s;}
         button:active { opacity: 0.8; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
         .btn-logout { background: var(--notify-red); margin-bottom: 15px; }
         
@@ -70,7 +71,6 @@
         .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
 
-        /* Utility classes for toggling views */
         .hidden { display: none !important; }
     </style>
 
@@ -116,7 +116,7 @@
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <input type="text" id="location" placeholder="Location">
-            <input type="text" id="propertyType" placeholder="Property Type">
+            <input type="text" id="propertyType" placeholder="Property Type (e.g. Builder Floor)">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -175,7 +175,7 @@
 <script>
     // ==========================================
     // 1. FIREBASE CONFIGURATION
-    // REPLACE THESE VALUES WITH YOUR REAL FIREBASE PROJECT KEYS!
+    // REPLACE THESE VALUES WITH YOUR REAL FIREBASE KEYS
     // ==========================================
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
@@ -186,7 +186,6 @@
         appId: "1:791381407537:web:45e9946a939f8d23b56210"
     };
 
-    // Initialize Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -198,13 +197,13 @@
     // ==========================================
     let clients = [];
     
-    // Calculate today's date adjusted for local timezone offset
     const today = new Date();
     const offset = today.getTimezoneOffset() * 60000;
     const todayStr = (new Date(today - offset)).toISOString().split('T')[0];
 
     const loginView = document.getElementById('loginView');
     const crmView = document.getElementById('crmView');
+    let hasInteracted = false;
 
     // ==========================================
     // 3. AUTHENTICATION LOGIC
@@ -228,15 +227,19 @@
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.innerText = "Authenticating...";
+        loginBtn.disabled = true;
+
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
                 errorDiv.style.display = 'none';
                 loginBtn.innerText = "Secure Login";
+                loginBtn.disabled = false;
             })
             .catch((error) => {
                 errorDiv.innerText = error.message;
                 errorDiv.style.display = 'block';
                 loginBtn.innerText = "Secure Login";
+                loginBtn.disabled = false;
             });
     });
 
@@ -254,7 +257,7 @@
                 clients.push({ id: doc.id, ...doc.data() });
             });
             renderTable();
-            checkReminders(false);
+            if (hasInteracted) checkReminders(false);
         }, (error) => {
             console.error("Error fetching leads: ", error);
         });
@@ -281,11 +284,12 @@
         const editId = document.getElementById('editId').value;
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.innerText = "Saving...";
+        saveBtn.disabled = true;
         
         if(editId === "") {
-            db.collection("leads").add(data).then(() => resetForm());
+            db.collection("leads").add(data).then(() => { resetForm(); saveBtn.disabled = false; });
         } else {
-            db.collection("leads").doc(editId).update(data).then(() => resetForm());
+            db.collection("leads").doc(editId).update(data).then(() => { resetForm(); saveBtn.disabled = false; });
         }
     });
 
@@ -347,6 +351,14 @@
         }
     }
 
+    // Allow audio to play after the user's first interaction with the app
+    document.addEventListener('click', () => { 
+        if(!hasInteracted) {
+            hasInteracted = true;
+            checkReminders(false);
+        }
+    }, {once: true});
+
     // ==========================================
     // 6. UI & RENDER LOGIC
     // ==========================================
@@ -368,7 +380,7 @@
                 <td>${c.sentTo || '-'}</td><td>${visitMark}</td><td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
                 <td style="display:flex; gap:6px; justify-content:center; border:none; padding:8px;">
-                    <button class="btn-wa" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
+                    <button class="btn-wa" onclick='sendWA(${JSON.stringify(c).replace(/'/g, "&#39;")})'>WA</button>
                     <button class="btn-edit" onclick="editClient('${c.id}')">Edit</button>
                     <button class="btn-del" onclick="deleteClient('${c.id}')">Del</button>
                 </td></tr>`;
@@ -383,8 +395,10 @@
     }
 
     function sendWA(c) {
+        if (!c.phone) return alert("No phone number provided for this lead.");
         const p = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding your property interest with True Invest.`, '_blank');
+        // Formatted with 91 for regional defaults to ensure WhatsApp API parses correctly
+        window.open(`https://wa.me/91${p}?text=Hello ${c.name}, following up regarding your property interest with True Invest.`, '_blank');
     }
 
     function toggleDarkMode() { 
@@ -402,6 +416,8 @@
 
         for (let i = clients.length - 1; i >= 0; i--) {
             const c = clients[i];
+            if (!c.phone) continue; // Prevent crashes on empty phone records
+
             const cleanPhone = c.phone.replace(/\D/g, '');
             if (u[cleanPhone]) {
                 db.collection("leads").doc(c.id).delete();
@@ -416,7 +432,6 @@
     function downloadExcel() {
         let csv = "Lead Date,Name,Phone,Status,Sent To,Visit,Location,Property,Budget,Follow-up,Remark\n";
         
-        // Use a helper function to safely escape strings for CSV formats
         const escapeCSV = (str) => {
             if (str === null || str === undefined) return '""';
             const safeStr = String(str).replace(/"/g, '""');
@@ -433,6 +448,22 @@
         a.click();
     }
 
+    // Custom robust CSV parser to prevent empty columns from shifting data
+    function parseCSVRow(str) {
+        let arr = [];
+        let quote = false;
+        let col = '';
+        for (let i = 0; i < str.length; i++) {
+            let cc = str[i], nc = str[i+1];
+            if (cc === '"' && quote && nc === '"') { col += '"'; i++; continue; }
+            if (cc === '"') { quote = !quote; continue; }
+            if (cc === ',' && !quote) { arr.push(col.trim()); col = ''; continue; }
+            col += cc;
+        }
+        arr.push(col.trim());
+        return arr;
+    }
+
     function importCSV(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -443,16 +474,11 @@
             const rows = text.split('\n');
             let importedCount = 0;
 
-            // Skip header row (i = 1)
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i].trim();
                 if (!row) continue;
 
-                // Simple regex to handle comma separation even inside quotes
-                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                if (!cols) continue;
-
-                const cleanCols = cols.map(c => c.replace(/^"|"$/g, '').trim());
+                const cleanCols = parseCSVRow(row);
 
                 if (cleanCols.length >= 3 && cleanCols[1] !== "") { 
                     const data = {
@@ -483,11 +509,10 @@
     
     document.getElementById('search').addEventListener('input', function() {
         const v = this.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
+        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => {
+            r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none';
+        });
     });
-
-    // Audio trigger on mobile - required because browsers block unprompted audio
-    document.addEventListener('touchstart', () => { setTimeout(() => checkReminders(false), 1000); }, {once: true});
 </script>
 </body>
 </html>
