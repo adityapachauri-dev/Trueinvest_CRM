@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRUE INVEST CRM - Mobile</title>
+    <title>TRUE INVEST CRM - Mobile Pro</title>
     <style>
         :root {
             --bg-color: #eef2f7; --card-bg: #ffffff; --text-color: #333; --border-color: #ddd;
@@ -21,21 +21,20 @@
         form, .table-container, .shortcuts-legend { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; }
         input, textarea, button, select { padding: 12px; margin: 8px 0; width: calc(100% - 26px); border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; }
         
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; width: auto; padding: 12px 20px; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; width: auto; padding: 12px 20px; border-radius: 8px; }
         .btn-whatsapp { background: var(--whatsapp-green) !important; }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         th, td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
         .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
-        .section-divider { background: #6c757d !important; color: white; font-size: 11px; text-align: left; }
+        .section-divider { background: #6c757d !important; color: white; font-size: 11px; text-align: left; padding: 8px; }
 
-        /* Floating Add Button for Mobile */
         .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
         
-        .shortcuts-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; justify-content: center; }
+        .shortcuts-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; justify-content: center; opacity: 0.7; }
         kbd { background: #eee; color: #333; padding: 2px 4px; border-radius: 3px; }
         #csvImport { display: none; }
     </style>
@@ -49,7 +48,7 @@
 
     <form id="clientForm">
         <input type="hidden" id="editIndex" value="">
-        <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
             <input type="text" id="name" placeholder="Client Name (Alt+N)" required>
             <input type="tel" id="phone" placeholder="Phone Number" required>
             <input type="text" id="location" placeholder="Location/Area">
@@ -57,8 +56,9 @@
             <input type="text" id="budget" placeholder="Budget">
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: end;">
             <div><label>Status</label><select id="status"><option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option></select></div>
+            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
             <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
         <textarea id="remark" placeholder="Remarks/Notes"></textarea>
@@ -67,25 +67,26 @@
     </form>
 
     <div class="controls">
-        <button style="background:#6c757d" onclick="toggleDarkMode()">Dark (Alt+D)</button>
+        <button style="background:#6c757d" onclick="toggleDarkMode()">Dark Mode (Alt+D)</button>
         <button style="background:#28a745" onclick="downloadExcel()">Export CSV</button>
-        <button style="background:#dc3545" onclick="clearDuplicates()">Clean Duplicates</button>
         <button style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
-        <input type="text" id="search" class="search-box" placeholder="Search (Alt+F)...">
+        <button style="background:#dc3545" onclick="clearDuplicates()">Clean Duplicates</button>
+        <button style="background:#f39c12" onclick="initAudioAndCheck(true)">Reminders (Alt+R)</button>
+        <input type="text" id="search" class="search-box" placeholder="Search by name, phone, or location (Alt+F)...">
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr><th>Name</th><th>Phone</th><th>Location</th><th>Property</th><th>Status</th><th>Follow-up</th><th>Actions</th></tr>
+                <tr><th>Name</th><th>Phone</th><th>Location</th><th>Property</th><th>Budget</th><th>Status</th><th>Follow-up</th><th>Actions</th></tr>
             </thead>
             <tbody id="clientTable"></tbody>
         </table>
     </div>
 
     <div class="shortcuts-legend">
-        <span><kbd>Alt+N</kbd> New</span><span><kbd>Alt+S</kbd> Save</span><span><kbd>Alt+D</kbd> Dark</span><span><kbd>Alt+X</kbd> Clean</span>
+        <span><kbd>Alt+N</kbd> New</span><span><kbd>Alt+S</kbd> Save</span><span><kbd>Alt+F</kbd> Search</span><span><kbd>Alt+D</kbd> Dark</span>
     </div>
 </div>
 
@@ -93,6 +94,56 @@
     let clients = JSON.parse(localStorage.getItem('clients')) || [];
     const todayStr = new Date().toISOString().split('T')[0];
 
+    // --- BULLETPROOF IMPORT LOGIC ---
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const text = e.target.result;
+                const rows = text.split(/\r?\n/);
+                if (rows.length < 2) return alert("File is empty or invalid.");
+
+                // Clean headers
+                const headers = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+                
+                const keyMap = {
+                    'name': 'name', 'phone': 'phone', 'location': 'location', 
+                    'property': 'propertyType', 'budget': 'budget', 
+                    'status': 'status', 'leaddate': 'leadDate', 
+                    'follow-up': 'followup', 'followup': 'followup', 
+                    'remark': 'remark', 'assigned': 'leadTo'
+                };
+
+                const newClients = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // Handles commas inside quotes
+                    if (row.length < 2) continue;
+
+                    const client = {};
+                    headers.forEach((header, index) => {
+                        const internalKey = keyMap[header] || header;
+                        let val = row[index] ? row[index].trim().replace(/^"|"$/g, '') : '';
+                        client[internalKey] = val;
+                    });
+                    newClients.push(client);
+                }
+
+                clients = [...clients, ...newClients];
+                localStorage.setItem('clients', JSON.stringify(clients));
+                renderTable();
+                alert(`Successfully imported ${newClients.length} records!`);
+            } catch (err) {
+                console.error(err);
+                alert("Error parsing CSV. Please check the file format.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- VOICE & REMINDERS ---
     function getIndianVoice() {
         const voices = window.speechSynthesis.getVoices();
         return voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang === 'hi-IN') || voices[0];
@@ -108,112 +159,112 @@
     }
 
     function checkReminders(isManual = false) {
-        const lastRun = localStorage.getItem('lastReminderDate');
-        const dueToday = clients.filter(c => c.followup === todayStr);
+        const today = new Date().toISOString().split('T')[0];
+        const dueToday = clients.filter(c => c.followup === today);
         const alertBox = document.getElementById('reminderAlert');
         if (dueToday.length > 0) {
             alertBox.style.display = 'block';
-            alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
-            if (isManual || lastRun !== todayStr) {
-                speakWithAccent(`Namaste. You have ${dueToday.length} follow ups.`);
-                if (!isManual) localStorage.setItem('lastReminderDate', todayStr);
+            alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today! (Pinned to top)`;
+            if (isManual || localStorage.getItem('lastRun') !== today) {
+                speakWithAccent(`Namaste. You have ${dueToday.length} follow ups today.`);
+                if(!isManual) localStorage.setItem('lastRun', today);
             }
         } else { alertBox.style.display = 'none'; }
     }
 
+    function initAudioAndCheck(m) { speakWithAccent("Checking."); checkReminders(m); }
+
+    // --- RENDERING ---
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
+        const isDark = document.body.classList.contains('dark-mode');
         const pinned = clients.filter(c => c.followup === todayStr);
         const others = clients.filter(c => c.followup !== todayStr);
-        const isDark = document.body.classList.contains('dark-mode');
 
         const createRow = (c, isPinned) => {
-            const originalIndex = clients.indexOf(c);
-            const statusColor = {'Hot': isDark ? '#ff6b6b' : '#d9534f', 'Closed': '#5cb85c', 'Follow-up': '#f0ad4e'}[c.status] || '#5bc0de';
+            const idx = clients.indexOf(c);
+            const sCol = {'Hot': isDark ? '#ff6b6b' : '#d9534f', 'Closed': '#5cb85c', 'Follow-up': '#f0ad4e'}[c.status] || '#5bc0de';
             return `<tr class="${isPinned ? 'row-highlight' : ''}">
                 <td>${c.name}</td><td>${c.phone}</td><td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td>
-                <td style="color:${statusColor}; font-weight:bold;">${c.status}</td><td>${c.followup || '-'}</td>
+                <td>${c.budget || '-'}</td><td style="color:${sCol}; font-weight:bold;">${c.status}</td>
+                <td>${c.followup || '-'}</td>
                 <td class="actions">
-                    <button class="btn-whatsapp" onclick='sendWhatsApp(${JSON.stringify(c)})'>WA</button>
-                    <button style="background:#ffc107; color:black;" onclick="editClient(${originalIndex})">Edit</button>
+                    <button class="btn-whatsapp" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
+                    <button style="background:#ffc107; color:black;" onclick="editClient(${idx})">Edit</button>
                 </td></tr>`;
         };
 
         if (pinned.length > 0) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Priority Today</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="8">Today's Priority</td></tr>`;
             pinned.forEach(c => table.innerHTML += createRow(c, true));
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Others</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="8">All Others</td></tr>`;
         }
         others.forEach(c => table.innerHTML += createRow(c, false));
     }
 
-    function sendWhatsApp(c) {
-        const phone = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${phone}?text=Hello ${c.name}, following up regarding the property in ${c.location || 'your area'}.`, '_blank');
+    // --- ACTIONS ---
+    function sendWA(c) {
+        const p = c.phone.replace(/\D/g, '');
+        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding the property in ${c.location || 'your area'}.`, '_blank');
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const editIndex = document.getElementById('editIndex').value;
         const data = {
             name: document.getElementById('name').value, phone: document.getElementById('phone').value,
             location: document.getElementById('location').value, propertyType: document.getElementById('propertyType').value,
             budget: document.getElementById('budget').value, status: document.getElementById('status').value,
-            followup: document.getElementById('followup').value, remark: document.getElementById('remark').value
+            leadDate: document.getElementById('leadDate').value, followup: document.getElementById('followup').value,
+            remark: document.getElementById('remark').value
         };
-        if (editIndex === "") clients.push(data); else clients[parseInt(editIndex)] = data;
+        const editIdx = document.getElementById('editIndex').value;
+        if(editIdx === "") clients.push(data); else clients[parseInt(editIdx)] = data;
         localStorage.setItem('clients', JSON.stringify(clients));
         resetForm(); renderTable(); checkReminders(false);
     });
 
-    function editClient(index) {
-        const c = clients[index];
-        document.getElementById('editIndex').value = index;
-        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'followup', 'remark'].forEach(key => {
-            document.getElementById(key).value = c[key] || '';
+    function editClient(idx) {
+        const c = clients[idx];
+        document.getElementById('editIndex').value = idx;
+        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'leadDate', 'followup', 'remark'].forEach(k => {
+            document.getElementById(k).value = c[k] || '';
         });
-        document.getElementById('saveBtn').innerText = "Update (Alt+S)";
+        document.getElementById('saveBtn').innerText = "Update Details";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function resetForm() {
-        document.getElementById('clientForm').reset();
-        document.getElementById('editIndex').value = "";
-        document.getElementById('saveBtn').innerText = "Save Details (Alt+S)";
-    }
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        renderTable();
-    }
-
-    function clearDuplicates() {
-        const unique = {};
-        clients.forEach(c => { unique[c.phone.replace(/\D/g, '')] = c; });
-        clients = Object.values(unique);
-        localStorage.setItem('clients', JSON.stringify(clients));
+    function resetForm() { document.getElementById('clientForm').reset(); document.getElementById('editIndex').value = ""; document.getElementById('saveBtn').innerText = "Save Details"; }
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); renderTable(); }
+    function clearDuplicates() { 
+        const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
+        clients = Object.values(u); localStorage.setItem('clients', JSON.stringify(clients));
         renderTable(); alert("Duplicates Cleaned!");
     }
 
     function downloadExcel() {
-        let csv = "Name,Phone,Location,Property,Status,Follow-up\n";
-        clients.forEach(c => csv += `"${c.name}","${c.phone}","${c.location}","${c.propertyType}","${c.status}","${c.followup}"\n`);
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CRM.csv'; a.click();
+        let csv = "Name,Phone,Location,Property,Budget,Status,Lead Date,Follow-up,Remark\n";
+        clients.forEach(c => csv += `"${c.name}","${c.phone}","${c.location}","${c.propertyType}","${c.budget}","${c.status}","${c.leadDate}","${c.followup}","${c.remark}"\n`);
+        const b = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'TrueInvest_CRM.csv'; a.click();
     }
 
+    // Keyboard
+    window.addEventListener('keydown', e => {
+        if(e.altKey && e.key === 'n') document.getElementById('name').focus();
+        if(e.altKey && e.key === 's') document.getElementById('clientForm').requestSubmit();
+        if(e.altKey && e.key === 'f') document.getElementById('search').focus();
+        if(e.altKey && e.key === 'd') toggleDarkMode();
+    });
+
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-    window.speechSynthesis.onvoiceschanged = getIndianVoice;
     document.getElementById('search').addEventListener('input', function() {
-        const val = this.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-        });
+        const v = this.value.toLowerCase();
+        document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
     });
 
     renderTable();
+    window.speechSynthesis.onvoiceschanged = getIndianVoice;
     window.addEventListener('load', () => setTimeout(() => checkReminders(false), 2000));
 </script>
 </body>
