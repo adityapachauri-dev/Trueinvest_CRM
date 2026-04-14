@@ -175,10 +175,10 @@
 <script>
     // ==========================================
     // 1. FIREBASE CONFIGURATION
-    // REPLACE THESE VALUES WITH YOUR FIREBASE PROJECT KEYS
+    // REPLACE THESE VALUES WITH YOUR REAL FIREBASE PROJECT KEYS!
     // ==========================================
     const firebaseConfig = {
-        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY",
+        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
         projectId: "truecrm-6cf8e",
         storageBucket: "truecrm-6cf8e.firebasestorage.app",
@@ -197,39 +197,35 @@
     // 2. GLOBAL VARIABLES
     // ==========================================
     let clients = [];
-    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // Calculate today's date adjusted for local timezone offset
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000;
+    const todayStr = (new Date(today - offset)).toISOString().split('T')[0];
+
     const loginView = document.getElementById('loginView');
     const crmView = document.getElementById('crmView');
 
     // ==========================================
     // 3. AUTHENTICATION LOGIC
     // ==========================================
-    // Listen for login state changes
     auth.onAuthStateChanged(user => {
         if (user) {
-            // User is logged in
             loginView.classList.add('hidden');
             crmView.classList.remove('hidden');
-            loadDataFromCloud(); // Start listening to database
+            loadDataFromCloud(); 
         } else {
-            // User is logged out
             loginView.classList.remove('hidden');
             crmView.classList.add('hidden');
         }
     });
 
-    // Handle Login Form Submit
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         const errorDiv = document.getElementById('loginError');
         const loginBtn = document.getElementById('loginBtn');
-
-        if(firebaseConfig.apiKey === "YOUR_API_KEY") {
-            alert("⚠️ Please add your Firebase configuration keys to the code to enable login and database features!");
-            return;
-        }
 
         loginBtn.innerText = "Authenticating...";
         auth.signInWithEmailAndPassword(email, password)
@@ -244,7 +240,6 @@
             });
     });
 
-    // Handle Logout
     function logout() {
         auth.signOut();
     }
@@ -253,7 +248,6 @@
     // 4. CLOUD DATABASE LOGIC
     // ==========================================
     function loadDataFromCloud() {
-        // Real-time listener: Whenever data changes in the cloud, this runs automatically
         db.collection("leads").orderBy("leadDate", "desc").onSnapshot((snapshot) => {
             clients = [];
             snapshot.forEach((doc) => {
@@ -266,7 +260,6 @@
         });
     }
 
-    // Save or Update Record
     document.getElementById('clientForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -286,17 +279,13 @@
         };
 
         const editId = document.getElementById('editId').value;
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.innerText = "Saving...";
         
         if(editId === "") {
-            // Create New Document
-            db.collection("leads").add(data).then(() => {
-                resetForm();
-            });
+            db.collection("leads").add(data).then(() => resetForm());
         } else {
-            // Update Existing Document
-            db.collection("leads").doc(editId).update(data).then(() => {
-                resetForm();
-            });
+            db.collection("leads").doc(editId).update(data).then(() => resetForm());
         }
     });
 
@@ -318,6 +307,14 @@
         if(confirm("Permanently delete this record from the cloud?")) {
             db.collection("leads").doc(id).delete();
         }
+    }
+
+    function resetForm() { 
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editId').value = ""; 
+        document.getElementById('visitDone').checked = false;
+        document.getElementById('sendSunny').checked = false;
+        document.getElementById('saveBtn').innerText = "Save Record to Cloud"; 
     }
 
     // ==========================================
@@ -390,12 +387,6 @@
         window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding your property interest with True Invest.`, '_blank');
     }
 
-    function resetForm() { 
-        document.getElementById('clientForm').reset(); 
-        document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save Record to Cloud"; 
-    }
-
     function toggleDarkMode() { 
         document.body.classList.toggle('dark-mode'); 
         localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); 
@@ -409,12 +400,10 @@
         const u = {}; 
         let deletedCount = 0;
 
-        // Using reverse loop to keep the newest entered record if there's a duplicate phone
         for (let i = clients.length - 1; i >= 0; i--) {
             const c = clients[i];
             const cleanPhone = c.phone.replace(/\D/g, '');
             if (u[cleanPhone]) {
-                // Delete the duplicate from the database
                 db.collection("leads").doc(c.id).delete();
                 deletedCount++;
             } else {
@@ -426,21 +415,78 @@
 
     function downloadExcel() {
         let csv = "Lead Date,Name,Phone,Status,Sent To,Visit,Location,Property,Budget,Follow-up,Remark\n";
-        clients.forEach(c => csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.sentTo}","${c.visitDone ? "Yes" : "No"}","${c.location}","${c.propertyType}","${c.budget}","${c.followup}","${c.remark}"\n`);
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = 'TrueInvest_CRM.csv'; a.click();
+        
+        // Use a helper function to safely escape strings for CSV formats
+        const escapeCSV = (str) => {
+            if (str === null || str === undefined) return '""';
+            const safeStr = String(str).replace(/"/g, '""');
+            return `"${safeStr}"`;
+        };
+
+        clients.forEach(c => {
+            csv += `${escapeCSV(c.leadDate)},${escapeCSV(c.name)},${escapeCSV(c.phone)},${escapeCSV(c.status)},${escapeCSV(c.sentTo)},${escapeCSV(c.visitDone ? "Yes" : "No")},${escapeCSV(c.location)},${escapeCSV(c.propertyType)},${escapeCSV(c.budget)},${escapeCSV(c.followup)},${escapeCSV(c.remark)}\n`;
+        });
+        
+        const a = document.createElement('a'); 
+        a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = 'TrueInvest_CRM.csv'; 
+        a.click();
     }
 
-    // Setup visual theme
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const rows = text.split('\n');
+            let importedCount = 0;
+
+            // Skip header row (i = 1)
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i].trim();
+                if (!row) continue;
+
+                // Simple regex to handle comma separation even inside quotes
+                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!cols) continue;
+
+                const cleanCols = cols.map(c => c.replace(/^"|"$/g, '').trim());
+
+                if (cleanCols.length >= 3 && cleanCols[1] !== "") { 
+                    const data = {
+                        leadDate: cleanCols[0] || '',
+                        name: cleanCols[1] || '',
+                        phone: cleanCols[2] || '',
+                        status: cleanCols[3] || 'New',
+                        sentTo: cleanCols[4] || '',
+                        visitDone: cleanCols[5] === 'Yes',
+                        location: cleanCols[6] || '',
+                        propertyType: cleanCols[7] || '',
+                        budget: cleanCols[8] || '',
+                        followup: cleanCols[9] || '',
+                        remark: cleanCols[10] || '',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    db.collection("leads").add(data);
+                    importedCount++;
+                }
+            }
+            alert(`Successfully queued ${importedCount} leads for upload!`);
+            document.getElementById('csvImport').value = ''; 
+        };
+        reader.readAsText(file);
+    }
+
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     
-    // Search function
     document.getElementById('search').addEventListener('input', function() {
         const v = this.value.toLowerCase();
         document.querySelectorAll('#clientTable tr:not(.section-divider)').forEach(r => r.style.display = r.innerText.toLowerCase().includes(v) ? '' : 'none');
     });
 
-    // Audio trigger on mobile
+    // Audio trigger on mobile - required because browsers block unprompted audio
     document.addEventListener('touchstart', () => { setTimeout(() => checkReminders(false), 1000); }, {once: true});
 </script>
 </body>
