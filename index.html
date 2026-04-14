@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TRUE INVEST CRM</title>
     <style>
         :root {
@@ -12,42 +12,61 @@
         body.dark-mode {
             --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding-bottom: 80px; transition: 0.3s; }
+        
+        /* General Setup */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-color); color: var(--text-color); margin: 0; 
+            padding-bottom: env(safe-area-inset-bottom, 80px); transition: 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
         h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 10px 0; }
-        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; display: none; font-size: 14px; font-weight: bold; }
+        .notification-bar { 
+            background: var(--notify-red); color: white; padding: 12px; 
+            text-align: center; border-radius: 8px; margin-bottom: 12px; 
+            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        }
 
         form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
+        /* Mobile Input Styling - iOS specific fixes */
         label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; opacity: 0.8; }
         input, textarea, button, select { 
             padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
-            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box; 
+            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
+            box-sizing: border-box; appearance: none; -webkit-appearance: none;
         }
         
-        .check-container { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
-        .check-container input { width: 20px; height: 20px; margin: 0; }
+        /* Site Visit Checkbox */
+        .check-container { display: flex; align-items: center; justify-content: center; gap: 10px; height: 48px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); }
+        .check-container input[type="checkbox"] { width: 22px; height: 22px; margin: 0; -webkit-appearance: checkbox; }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 8px; }
         .btn-secondary { background: #606770; height: 40px; font-size: 14px; margin-top: 0; }
         
-        .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; }
+        /* Table Actions */
+        .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; display: flex; align-items: center; justify-content: center; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; width: 55px !important; }
         .btn-del { background: #fa3e3e !important; width: 55px !important; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); }
 
+        /* Responsive Table */
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 1050px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         th, td { padding: 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
+        th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; }
         
         .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
         .section-divider { background: #606770 !important; color: white; font-size: 11px; text-align: left; padding: 8px 12px; font-weight: bold; }
         .visit-tick { color: #28a745; font-weight: bold; font-size: 18px; }
 
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
+        /* Floating Add Button */
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
+        
         #csvImport { display: none; }
     </style>
 </head>
@@ -61,13 +80,18 @@
 
     <form id="clientForm">
         <input type="hidden" id="editIndex" value="">
-        <input type="text" id="name" placeholder="Client Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        <input type="text" id="location" placeholder="Location">
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
+            <div><label>Follow-up Date</label><input type="date" id="followup"></div>
+        </div>
+
+        <input type="text" id="name" placeholder="Client Name" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <input type="text" id="location" placeholder="Location">
             <input type="text" id="propertyType" placeholder="Property Type">
-            <input type="text" id="budget" placeholder="Budget">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -82,36 +106,43 @@
                 </select>
             </div>
             <div>
-                <label>Site Visit Done</label>
-                <div class="check-container" style="height: 44px; border: 1px solid var(--border-color); border-radius: 8px; justify-content: center;">
+                <label>Visit Done?</label>
+                <div class="check-container">
                     <input type="checkbox" id="visitDone">
                 </div>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up Date</label><input type="date" id="followup"></div>
-        </div>
+        <input type="text" id="budget" placeholder="Budget">
+        <textarea id="remark" placeholder="Remarks / Notes"></textarea>
         
-        <textarea id="remark" placeholder="Remarks"></textarea>
         <button type="submit" id="saveBtn">Save Details</button>
         <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
     </form>
 
     <div class="controls">
         <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadExcel()">Export</button>
-        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import</button>
+        <button class="btn-secondary" style="background:#28a745" onclick="downloadExcel()">Export CSV</button>
+        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
-        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean</button>
+        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Duplicates</button>
         <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
     <div class="table-container">
         <table>
             <thead>
-                <tr><th>Lead Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Visit</th><th>Location</th><th>Property</th><th>Follow-up</th><th>Action</th></tr>
+                <tr>
+                    <th>Lead Date</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Visit</th>
+                    <th>Location</th>
+                    <th>Property</th>
+                    <th>Follow-up</th>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody id="clientTable"></tbody>
         </table>
@@ -122,27 +153,30 @@
     let clients = JSON.parse(localStorage.getItem('clients')) || [];
     const todayStr = new Date().toISOString().split('T')[0];
 
+    // Voice Engine - Optimized for iOS/Android
     function speak(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
-            msg.voice = voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang === 'hi-IN') || voices[0];
+            // Try to find Indian English voice
+            msg.voice = voices.find(v => v.lang.includes('en-IN')) || voices.find(v => v.lang.includes('hi-IN')) || voices[0];
             msg.rate = 0.9;
             window.speechSynthesis.speak(msg);
         }
     }
 
     function checkReminders(manual = false) {
-        const dueToday = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested');
+        const dueToday = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested' && c.status !== 'Closed');
         const alertBox = document.getElementById('reminderAlert');
         
         if (dueToday.length > 0) {
             alertBox.style.display = 'block';
             alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
-            if (manual || localStorage.getItem('lastRunDate') !== todayStr) {
+            
+            if (manual || localStorage.getItem('lastReminderDate') !== todayStr) {
                 speak(`Namaste. You have ${dueToday.length} follow-up calls for today.`);
-                if(!manual) localStorage.setItem('lastRunDate', todayStr);
+                if(!manual) localStorage.setItem('lastReminderDate', todayStr);
             }
         } else {
             alertBox.style.display = 'none';
@@ -154,8 +188,8 @@
         table.innerHTML = '';
         const isDark = document.body.classList.contains('dark-mode');
         
-        const pinned = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested');
-        const others = clients.filter(c => c.followup !== todayStr || c.status === 'Not Interested');
+        const pinned = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested' && c.status !== 'Closed');
+        const others = clients.filter(c => c.followup !== todayStr || c.status === 'Not Interested' || c.status === 'Closed');
 
         const createRow = (c) => {
             const idx = clients.indexOf(c);
@@ -170,54 +204,58 @@
 
             return `<tr class="${c.followup === todayStr && c.status !== 'Not Interested' ? 'row-highlight' : ''}">
                 <td>${c.leadDate || '-'}</td>
-                <td>${c.name}</td><td>${c.phone}</td>
+                <td>${c.name}</td>
+                <td>${c.phone}</td>
                 <td style="color:${sCol}; font-weight:bold;">${c.status}</td>
                 <td>${visitMark}</td>
-                <td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
+                <td>${c.location || '-'}</td>
+                <td>${c.propertyType || '-'}</td>
+                <td>${c.followup || '-'}</td>
                 <td style="display:flex; gap:6px; justify-content:center; border:none; padding:8px;">
                     <button class="btn-wa" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
                     <button class="btn-edit" onclick="editClient(${idx})">Edit</button>
                     <button class="btn-del" onclick="deleteClient(${idx})">Del</button>
-                </td></tr>`;
+                </td>
+            </tr>`;
         };
 
         if (pinned.length > 0) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="9">Urgent Follow-ups</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="9">Today's Priority Follow-ups</td></tr>`;
             pinned.forEach(c => table.innerHTML += createRow(c));
-            table.innerHTML += `<tr class="section-divider"><td colspan="9">General List</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="9">All Records</td></tr>`;
         }
         others.forEach(c => table.innerHTML += createRow(c));
     }
 
     function sendWA(c) {
         const p = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${p}?text=Hello ${c.name}, this is regarding your inquiry with True Invest...`, '_blank');
+        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding your interest in ${c.propertyType || 'the property'}.`, '_blank');
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {
+            leadDate: document.getElementById('leadDate').value,
+            followup: document.getElementById('followup').value,
             name: document.getElementById('name').value, 
             phone: document.getElementById('phone').value,
             location: document.getElementById('location').value, 
             propertyType: document.getElementById('propertyType').value,
-            budget: document.getElementById('budget').value, 
             status: document.getElementById('status').value,
-            leadDate: document.getElementById('leadDate').value,
-            followup: document.getElementById('followup').value, 
-            remark: document.getElementById('remark').value,
-            visitDone: document.getElementById('visitDone').checked
+            visitDone: document.getElementById('visitDone').checked,
+            budget: document.getElementById('budget').value, 
+            remark: document.getElementById('remark').value
         };
         const editIdx = document.getElementById('editIndex').value;
         if(editIdx === "") clients.push(data); else clients[parseInt(editIdx)] = data;
         localStorage.setItem('clients', JSON.stringify(clients));
-        resetForm(); renderTable(); checkReminders();
+        resetForm(); renderTable(); checkReminders(false);
     });
 
     function editClient(idx) {
         const c = clients[idx];
         document.getElementById('editIndex').value = idx;
-        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'leadDate', 'followup', 'remark'].forEach(k => {
+        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(k => {
             document.getElementById(k).value = c[k] || '';
         });
         document.getElementById('visitDone').checked = c.visitDone || false;
@@ -226,10 +264,11 @@
     }
 
     function deleteClient(idx) {
-        if(confirm("Delete this lead?")) {
+        if(confirm("Permanently delete this lead?")) {
             clients.splice(idx, 1);
             localStorage.setItem('clients', JSON.stringify(clients));
             renderTable();
+            checkReminders(false);
         }
     }
 
@@ -248,7 +287,7 @@
     function clearDuplicates() {
         const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
         clients = Object.values(u); localStorage.setItem('clients', JSON.stringify(clients));
-        renderTable(); alert("Duplicates Cleaned.");
+        renderTable(); alert("Duplicate numbers removed.");
     }
 
     function importCSV(event) {
@@ -264,14 +303,13 @@
                 const c = {};
                 headers.forEach((h, j) => {
                     let val = row[j] ? row[j].trim().replace(/^"|"$/g, '') : '';
-                    if (h === 'visit') c.visitDone = (val.toLowerCase() === 'yes' || val === '✓');
-                    else if (h === 'leaddate') c.leadDate = val;
+                    if (h === 'visit') c.visitDone = (val.toLowerCase() === 'yes' || val === 'true');
                     else c[h] = val;
                 });
                 clients.push(c);
             }
             localStorage.setItem('clients', JSON.stringify(clients));
-            renderTable(); alert("Data Imported.");
+            renderTable(); alert("Leads Imported!");
         };
         reader.readAsText(file);
     }
@@ -283,9 +321,10 @@
             csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${v}","${c.location}","${c.propertyType}","${c.budget}","${c.followup}","${c.remark}"\n`;
         });
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = 'Leads_Export.csv'; a.click();
+        a.download = 'TrueInvestLeads.csv'; a.click();
     }
 
+    // Init Logic
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
     document.getElementById('search').addEventListener('input', function() {
         const v = this.value.toLowerCase();
@@ -293,7 +332,11 @@
     });
 
     renderTable();
-    window.addEventListener('load', () => setTimeout(() => checkReminders(), 2000));
+    // iOS fix for SpeechSynthesis: needs a user interaction to play audio. 
+    // This will play once the user taps anywhere on the screen.
+    document.addEventListener('touchstart', function() {
+        setTimeout(() => checkReminders(false), 1000);
+    }, {once: true});
 </script>
 </body>
 </html>
