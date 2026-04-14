@@ -16,7 +16,7 @@
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
         h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 10px 0; }
-        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; display: none; font-size: 14px; font-weight: bold; }
 
         form, .table-container { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
@@ -26,10 +26,12 @@
             border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box; 
         }
         
+        .check-container { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+        .check-container input { width: 20px; height: 20px; margin: 0; }
+
         button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; }
         .btn-secondary { background: #606770; height: 40px; font-size: 14px; margin-top: 0; }
         
-        /* Actions */
         .btn-wa { background: var(--whatsapp-green) !important; width: 44px !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; width: 55px !important; }
         .btn-del { background: #fa3e3e !important; width: 55px !important; }
@@ -38,11 +40,12 @@
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1050px; }
         th, td { padding: 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; }
         
         .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
         .section-divider { background: #606770 !important; color: white; font-size: 11px; text-align: left; padding: 8px 12px; font-weight: bold; }
+        .visit-tick { color: #28a745; font-weight: bold; font-size: 18px; }
 
         .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
@@ -61,14 +64,36 @@
         <input type="text" id="name" placeholder="Client Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
         <input type="text" id="location" placeholder="Location">
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <input type="text" id="propertyType" placeholder="Property Type">
             <input type="text" id="budget" placeholder="Budget">
         </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Status</label><select id="status"><option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option></select></div>
+            <div>
+                <label>Status</label>
+                <select id="status">
+                    <option>New</option>
+                    <option>Follow-up</option>
+                    <option>Hot</option>
+                    <option>Closed</option>
+                    <option>Not Interested</option>
+                </select>
+            </div>
+            <div>
+                <label>Site Visit Done</label>
+                <div class="check-container" style="height: 44px; border: 1px solid var(--border-color); border-radius: 8px; justify-content: center;">
+                    <input type="checkbox" id="visitDone">
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
             <div><label>Follow-up Date</label><input type="date" id="followup"></div>
         </div>
+        
         <textarea id="remark" placeholder="Remarks"></textarea>
         <button type="submit" id="saveBtn">Save Details</button>
         <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
@@ -86,7 +111,7 @@
     <div class="table-container">
         <table>
             <thead>
-                <tr><th>Name</th><th>Phone</th><th>Location</th><th>Property</th><th>Status</th><th>Date</th><th>Action</th></tr>
+                <tr><th>Lead Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Visit</th><th>Location</th><th>Property</th><th>Follow-up</th><th>Action</th></tr>
             </thead>
             <tbody id="clientTable"></tbody>
         </table>
@@ -97,7 +122,6 @@
     let clients = JSON.parse(localStorage.getItem('clients')) || [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- AUTOMATIC VOICE NOTIFICATION ---
     function speak(text) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -110,38 +134,46 @@
     }
 
     function checkReminders(manual = false) {
-        const dueToday = clients.filter(c => c.followup === todayStr);
+        const dueToday = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested');
         const alertBox = document.getElementById('reminderAlert');
         
         if (dueToday.length > 0) {
             alertBox.style.display = 'block';
-            alertBox.innerHTML = `🔔 You have ${dueToday.length} follow-ups today!`;
-            
-            // Automation logic: Speak only once a day unless button clicked
+            alertBox.innerHTML = `🔔 ${dueToday.length} Follow-ups Today!`;
             if (manual || localStorage.getItem('lastRunDate') !== todayStr) {
-                speak(`Namaste. You have ${dueToday.length} follow-ups pinned at the top for today.`);
+                speak(`Namaste. You have ${dueToday.length} follow-up calls for today.`);
                 if(!manual) localStorage.setItem('lastRunDate', todayStr);
             }
         } else {
             alertBox.style.display = 'none';
-            if(manual) alert("No follow-ups for today.");
         }
     }
 
-    // --- RENDER TABLE (With Top Pinning) ---
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
         const isDark = document.body.classList.contains('dark-mode');
-        const pinned = clients.filter(c => c.followup === todayStr);
-        const others = clients.filter(c => c.followup !== todayStr);
+        
+        const pinned = clients.filter(c => c.followup === todayStr && c.status !== 'Not Interested');
+        const others = clients.filter(c => c.followup !== todayStr || c.status === 'Not Interested');
 
         const createRow = (c) => {
             const idx = clients.indexOf(c);
-            const sCol = {'Hot': isDark ? '#ff6b6b' : '#fa3e3e', 'Closed': '#28a745', 'Follow-up': '#f39c12'}[c.status] || '#1877f2';
-            return `<tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
-                <td>${c.name}</td><td>${c.phone}</td><td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td>
-                <td style="color:${sCol}; font-weight:bold;">${c.status}</td><td>${c.followup || '-'}</td>
+            const statusColors = {
+                'Hot': isDark ? '#ff6b6b' : '#fa3e3e',
+                'Closed': '#28a745',
+                'Follow-up': '#f39c12',
+                'Not Interested': '#8e8e93'
+            };
+            const sCol = statusColors[c.status] || '#1877f2';
+            const visitMark = c.visitDone ? '<span class="visit-tick">✓</span>' : '-';
+
+            return `<tr class="${c.followup === todayStr && c.status !== 'Not Interested' ? 'row-highlight' : ''}">
+                <td>${c.leadDate || '-'}</td>
+                <td>${c.name}</td><td>${c.phone}</td>
+                <td style="color:${sCol}; font-weight:bold;">${c.status}</td>
+                <td>${visitMark}</td>
+                <td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
                 <td style="display:flex; gap:6px; justify-content:center; border:none; padding:8px;">
                     <button class="btn-wa" onclick='sendWA(${JSON.stringify(c)})'>WA</button>
                     <button class="btn-edit" onclick="editClient(${idx})">Edit</button>
@@ -150,38 +182,45 @@
         };
 
         if (pinned.length > 0) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Priority Today</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="9">Urgent Follow-ups</td></tr>`;
             pinned.forEach(c => table.innerHTML += createRow(c));
-            table.innerHTML += `<tr class="section-divider"><td colspan="7">Other Leads</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="9">General List</td></tr>`;
         }
         others.forEach(c => table.innerHTML += createRow(c));
     }
 
     function sendWA(c) {
         const p = c.phone.replace(/\D/g, '');
-        window.open(`https://wa.me/${p}?text=Hello ${c.name}, following up regarding the property in ${c.location || 'your area'}.`, '_blank');
+        window.open(`https://wa.me/${p}?text=Hello ${c.name}, this is regarding your inquiry with True Invest...`, '_blank');
     }
 
     document.getElementById('clientForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {
-            name: document.getElementById('name').value, phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value, propertyType: document.getElementById('propertyType').value,
-            budget: document.getElementById('budget').value, status: document.getElementById('status').value,
-            followup: document.getElementById('followup').value, remark: document.getElementById('remark').value
+            name: document.getElementById('name').value, 
+            phone: document.getElementById('phone').value,
+            location: document.getElementById('location').value, 
+            propertyType: document.getElementById('propertyType').value,
+            budget: document.getElementById('budget').value, 
+            status: document.getElementById('status').value,
+            leadDate: document.getElementById('leadDate').value,
+            followup: document.getElementById('followup').value, 
+            remark: document.getElementById('remark').value,
+            visitDone: document.getElementById('visitDone').checked
         };
         const editIdx = document.getElementById('editIndex').value;
         if(editIdx === "") clients.push(data); else clients[parseInt(editIdx)] = data;
         localStorage.setItem('clients', JSON.stringify(clients));
-        resetForm(); renderTable(); checkReminders(false);
+        resetForm(); renderTable(); checkReminders();
     });
 
     function editClient(idx) {
         const c = clients[idx];
         document.getElementById('editIndex').value = idx;
-        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'followup', 'remark'].forEach(k => {
+        ['name', 'phone', 'location', 'propertyType', 'budget', 'status', 'leadDate', 'followup', 'remark'].forEach(k => {
             document.getElementById(k).value = c[k] || '';
         });
+        document.getElementById('visitDone').checked = c.visitDone || false;
         document.getElementById('saveBtn').innerText = "Update Details";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
@@ -195,7 +234,8 @@
     }
 
     function resetForm() { 
-        document.getElementById('clientForm').reset(); document.getElementById('editIndex').value = ""; 
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editIndex').value = ""; 
         document.getElementById('saveBtn').innerText = "Save Details"; 
     }
 
@@ -206,10 +246,9 @@
     }
 
     function clearDuplicates() {
-        const initial = clients.length;
         const u = {}; clients.forEach(c => { u[c.phone.replace(/\D/g, '')] = c; });
         clients = Object.values(u); localStorage.setItem('clients', JSON.stringify(clients));
-        renderTable(); alert(`Cleaned ${initial - clients.length} duplicates.`);
+        renderTable(); alert("Duplicates Cleaned.");
     }
 
     function importCSV(event) {
@@ -218,26 +257,33 @@
         const reader = new FileReader();
         reader.onload = (e) => {
             const lines = e.target.result.split(/\r?\n/);
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
-            const keyMap = {'name':'name','phone':'phone','location':'location','property':'propertyType','budget':'budget','status':'status','followup':'followup'};
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
             for(let i=1; i<lines.length; i++) {
                 const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if(row.length < 2) continue;
                 const c = {};
-                headers.forEach((h, j) => { if(keyMap[h]) c[keyMap[h]] = row[j] ? row[j].trim().replace(/^"|"$/g, '') : ''; });
+                headers.forEach((h, j) => {
+                    let val = row[j] ? row[j].trim().replace(/^"|"$/g, '') : '';
+                    if (h === 'visit') c.visitDone = (val.toLowerCase() === 'yes' || val === '✓');
+                    else if (h === 'leaddate') c.leadDate = val;
+                    else c[h] = val;
+                });
                 clients.push(c);
             }
             localStorage.setItem('clients', JSON.stringify(clients));
-            renderTable(); alert("Imported!");
+            renderTable(); alert("Data Imported.");
         };
         reader.readAsText(file);
     }
 
     function downloadExcel() {
-        let csv = "Name,Phone,Location,Property,Budget,Status,Follow-up\n";
-        clients.forEach(c => csv += `"${c.name}","${c.phone}","${c.location}","${c.propertyType}","${c.budget}","${c.status}","${c.followup}"\n`);
+        let csv = "Lead Date,Name,Phone,Status,Visit,Location,Property,Budget,Follow-up,Remark\n";
+        clients.forEach(c => {
+            const v = c.visitDone ? "Yes" : "No";
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${v}","${c.location}","${c.propertyType}","${c.budget}","${c.followup}","${c.remark}"\n`;
+        });
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-        a.download = 'CRM_Export.csv'; a.click();
+        a.download = 'Leads_Export.csv'; a.click();
     }
 
     if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
@@ -247,7 +293,7 @@
     });
 
     renderTable();
-    window.addEventListener('load', () => setTimeout(() => checkReminders(false), 2000));
+    window.addEventListener('load', () => setTimeout(() => checkReminders(), 2000));
 </script>
 </body>
 </html>
