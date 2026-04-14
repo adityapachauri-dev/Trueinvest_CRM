@@ -172,7 +172,7 @@
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // --- FIREBASE INITIALIZATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -189,7 +189,7 @@
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- AUTHENTICATION ---
+    // --- AUTHENTICATION FLOW ---
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
@@ -204,10 +204,10 @@
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        btn.innerText = "Loading...";
+        btn.innerText = "Processing...";
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                document.getElementById('loginError').innerText = err.message;
+                document.getElementById('loginError').innerText = "Access Denied: " + err.message;
                 document.getElementById('loginError').style.display = 'block';
                 btn.innerText = "Secure Login";
             });
@@ -215,12 +215,12 @@
 
     function logout() { auth.signOut(); }
 
-    // --- INDIVIDUAL DATA LOADING ---
+    // --- DATA HANDLING (INDIVIDUAL FILTERING) ---
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
 
-        // FILTER: Only show leads where ownerId matches current user's UID
+        // Fetch only leads owned by the logged-in user
         db.collection("leads")
           .where("ownerId", "==", user.uid) 
           .orderBy("leadDate", "desc")
@@ -229,18 +229,18 @@
               renderTable();
               checkReminders();
           }, err => {
-              console.error("Firestore Filter Error (Check your Console for the Index Link):", err.message);
+              console.error("Database Filter Error:", err.message);
+              // Note: If you see an error here, check browser console for the Index Link.
           });
     }
 
-    // --- SAVE LEAD WITH OWNER STAMP ---
     document.getElementById('clientForm').addEventListener('submit', e => {
         e.preventDefault();
         const user = auth.currentUser;
         
         const data = {
-            ownerId: user.uid,        // Private User Identity
-            ownerEmail: user.email,    // User Email reference
+            ownerId: user.uid,        
+            ownerEmail: user.email,    
             leadDate: document.getElementById('leadDate').value || todayStr,
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value, 
@@ -253,9 +253,14 @@
             budget: document.getElementById('budget').value || "", 
             remark: document.getElementById('remark').value || ""
         };
+
         const id = document.getElementById('editId').value;
         const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => resetForm()).catch(err => alert("Error: " + err.message));
+        
+        task.then(() => {
+            resetForm();
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+        }).catch(err => alert("Sync Failed: " + err.message));
     });
 
     function renderTable() {
@@ -286,10 +291,10 @@
             </tr>`;
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Tasks (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += row(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="11">My Leads Database</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="11">My Personal Lead History</td></tr>`;
         others.forEach(c => table.innerHTML += row(c));
     }
 
@@ -302,11 +307,11 @@
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Record";
+        document.getElementById('saveBtn').innerText = "Update Lead Info";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { if(confirm("Delete lead?")) db.collection("leads").doc(id).delete(); }
+    function deleteLead(id) { if(confirm("Permanently delete this lead?")) db.collection("leads").doc(id).delete(); }
 
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
@@ -316,7 +321,7 @@
 
     function sendWA(num, name) { 
         const cleanNum = num.replace(/\D/g,'');
-        window.open(`https://wa.me/91${cleanNum}?text=Hello ${name}, following up from True Invest.`, '_blank'); 
+        window.open(`https://wa.me/91${cleanNum}?text=Hello ${name}, reaching out regarding your real estate inquiry.`, '_blank'); 
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
@@ -325,20 +330,19 @@
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Reminder: You have ${count} site visits/calls scheduled for today!`;
+        bar.innerText = `🔔 Attention: You have ${count} site visits/calls scheduled for today!`;
     }
 
-    // --- CSV EXPORT/IMPORT ---
+    // --- UTILITIES ---
     function downloadCSV() {
         let csv = "Lead Date,Name,Phone,Status,Budget,Assigned To,Visit Done,Location,Property Type,Followup Date,Remark\n";
         clients.forEach(c => {
             csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `MyLeads_${todayStr}.csv`;
+        a.href = window.URL.createObjectURL(blob);
+        a.download = `MyCRM_Leads_${todayStr}.csv`;
         a.click();
     }
 
@@ -353,36 +357,29 @@
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length < 2) return;
                 db.collection("leads").add({
-                    ownerId: user.uid,
-                    ownerEmail: user.email,
-                    leadDate: cols[0] || todayStr,
-                    name: cols[1],
-                    phone: cols[2],
-                    status: cols[3] || "New",
-                    budget: cols[4] || "",
-                    sentTo: cols[5] || "",
-                    visitDone: cols[6] === "true",
-                    location: cols[7] || "",
-                    propertyType: cols[8] || "",
-                    followup: cols[9] || "",
-                    remark: cols[10] || ""
+                    ownerId: user.uid, ownerEmail: user.email,
+                    leadDate: cols[0] || todayStr, name: cols[1], phone: cols[2],
+                    status: cols[3] || "New", budget: cols[4] || "", sentTo: cols[5] || "",
+                    visitDone: cols[6] === "true", location: cols[7] || "",
+                    propertyType: cols[8] || "", followup: cols[9] || "", remark: cols[10] || ""
                 });
             });
-            alert("Import complete.");
+            alert("Bulk Import Successful.");
         };
         reader.readAsText(file);
     }
 
     function clearDuplicates() {
         const seen = new Set();
+        let deleted = 0;
         clients.forEach(c => {
-            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete();
-            else seen.add(c.phone);
+            if(seen.has(c.phone)) { db.collection("leads").doc(c.id).delete(); deleted++; }
+            else { seen.add(c.phone); }
         });
-        alert("Cleanup complete.");
+        alert(`Cleanup Finished: Removed ${deleted} duplicates.`);
     }
 
-    // --- SEARCH ---
+    // --- LIVE SEARCH ---
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => {
