@@ -67,7 +67,6 @@
         
         .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
         .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 10px 15px; font-weight: bold; }
-        .visit-tick { color: #28a745; font-weight: bold; font-size: 18px; }
 
         .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
         #csvImport { display: none; }
@@ -153,7 +152,7 @@
 
     <div class="controls">
         <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadExcel()">Export CSV</button>
+        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export CSV</button>
         <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
         <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Dups</button>
@@ -173,7 +172,7 @@
 </div>
 
 <script>
-    // Config
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -190,7 +189,7 @@
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Auth
+    // --- AUTHENTICATION ---
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
@@ -216,7 +215,7 @@
 
     function logout() { auth.signOut(); }
 
-    // Data
+    // --- DATA HANDLING ---
     function loadData() {
         db.collection("leads").orderBy("leadDate", "desc").onSnapshot(snap => {
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -228,21 +227,21 @@
     document.getElementById('clientForm').addEventListener('submit', e => {
         e.preventDefault();
         const data = {
-            leadDate: document.getElementById('leadDate').value,
-            followup: document.getElementById('followup').value,
+            leadDate: document.getElementById('leadDate').value || todayStr,
+            followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value, 
             phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value, 
-            propertyType: document.getElementById('propertyType').value,
+            location: document.getElementById('location').value || "", 
+            propertyType: document.getElementById('propertyType').value || "",
             status: document.getElementById('status').value,
             visitDone: document.getElementById('visitDone').checked,
             sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
-            budget: document.getElementById('budget').value, 
-            remark: document.getElementById('remark').value
+            budget: document.getElementById('budget').value || "", 
+            remark: document.getElementById('remark').value || ""
         };
         const id = document.getElementById('editId').value;
         const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => resetForm());
+        task.then(() => resetForm()).catch(err => alert("Firestore Error: " + err.message));
     });
 
     function renderTable() {
@@ -281,12 +280,15 @@
 
     function editLead(id) {
         const c = clients.find(x => x.id === id);
+        if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => document.getElementById(f).value = c[f] || '');
-        document.getElementById('visitDone').checked = c.visitDone;
+        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
+            document.getElementById(f).value = c[f] || '';
+        });
+        document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
         document.getElementById('saveBtn').innerText = "Update Record";
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function deleteLead(id) { if(confirm("Delete this lead?")) db.collection("leads").doc(id).delete(); }
@@ -297,12 +299,12 @@
         document.getElementById('saveBtn').innerText = "Save to Cloud"; 
     }
 
-    function sendWA(num, name) { window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, following up from True Invest.`, '_blank'); }
-
-    function toggleDarkMode() { 
-        document.body.classList.toggle('dark-mode'); 
-        renderTable(); 
+    function sendWA(num, name) { 
+        const cleanNum = num.replace(/\D/g,'');
+        window.open(`https://wa.me/91${cleanNum}?text=Hello ${name}, following up from True Invest.`, '_blank'); 
     }
+
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function checkReminders() {
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
@@ -311,17 +313,63 @@
         bar.innerText = `🔔 Reminder: You have ${count} site visits/calls scheduled for today!`;
     }
 
-    // Duplicate Cleanup
-    function clearDuplicates() {
-        const seen = new Set();
+    // --- CSV TOOLS ---
+    function downloadCSV() {
+        let csv = "Lead Date,Name,Phone,Status,Assigned To,Visit Done,Location,Property Type,Followup Date,Budget,Remark\n";
         clients.forEach(c => {
-            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete();
-            else seen.add(c.phone);
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.budget}","${c.remark}"\n`;
         });
-        alert("Duplicate cleanup complete.");
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `TrueInvest_Leads_${todayStr}.csv`;
+        a.click();
     }
 
-    // Search Logic
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const rows = e.target.result.split('\n').slice(1);
+            rows.forEach(row => {
+                const cols = row.split(',').map(c => c.replace(/"/g, ''));
+                if(cols.length < 2) return;
+                db.collection("leads").add({
+                    leadDate: cols[0] || todayStr,
+                    name: cols[1] || "Imported",
+                    phone: cols[2] || "000",
+                    status: cols[3] || "New",
+                    sentTo: cols[4] || "",
+                    visitDone: cols[5] === "true",
+                    location: cols[6] || "",
+                    propertyType: cols[7] || "",
+                    followup: cols[8] || "",
+                    budget: cols[9] || "",
+                    remark: cols[10] || ""
+                });
+            });
+            alert("Import complete. Data syncing...");
+        };
+        reader.readAsText(file);
+    }
+
+    function clearDuplicates() {
+        const seen = new Set();
+        let deleted = 0;
+        clients.forEach(c => {
+            if(seen.has(c.phone)) {
+                db.collection("leads").doc(c.id).delete();
+                deleted++;
+            } else {
+                seen.add(c.phone);
+            }
+        });
+        alert(`Clean up finished. Removed ${deleted} duplicates.`);
+    }
+
+    // --- SEARCH ---
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => {
