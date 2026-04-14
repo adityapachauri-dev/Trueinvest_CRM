@@ -3,70 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST | Master CRM</title>
+    <title>TRUE INVEST CRM | Master</title>
     <style>
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
-            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
+            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e;
         }
         body.dark-mode {
-            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
+            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042;
         }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; 
-            background: var(--bg-color); color: var(--text-color); margin: 0; padding-bottom: 80px; transition: 0.3s;
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg-color); color: var(--text-color); margin: 0; padding-bottom: 30px;
         }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        .header { text-align: center; margin: 15px 0; }
-        .role-badge { font-size: 10px; background: var(--accent-blue); color: white; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
-
-        form, .table-container, .card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
-        input, select, textarea, button { 
+        h1 { text-align: center; font-size: 1.5rem; margin-bottom: 5px; }
+        .role-indicator { text-align: center; font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--accent-blue); margin-bottom: 15px; }
+
+        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: 0.7; }
+        input, select, button { 
             padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
             border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box; 
         }
         
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; border-radius: 10px; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; }
         .btn-sync { background: var(--whatsapp-green) !important; }
-        .btn-owner { background: #673ab7 !important; margin-top: 5px; }
+        .btn-owner { background: #673ab7 !important; }
 
-        .owner-section { display: none; border-top: 3px solid #673ab7; padding-top: 15px; }
+        .owner-only { display: none; border-top: 4px solid #673ab7; padding-top: 20px; }
         
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 10px; border-bottom: 1px solid var(--border-color); text-align: left; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: left; font-size: 14px; }
+        th { background: var(--bg-color); }
         
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none; z-index: 100; }
+        .sync-badge { font-size: 10px; background: #eee; padding: 2px 5px; border-radius: 4px; color: #666; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <a href="#formSection" class="fab">＋</a>
-    
-    <div class="header">
-        <h1>TRUE INVEST</h1>
-        <div id="roleIndicator" class="role-badge">Employee View</div>
-    </div>
+    <h1>TRUE INVEST</h1>
+    <div id="roleText" class="role-indicator">Employee Workspace</div>
 
     <div class="card">
-        <label>Access Mode</label>
-        <select id="accessMode" onchange="toggleRole()">
-            <option value="employee">Employee (Personal Leads)</option>
-            <option value="owner">Owner (All Employee Leads)</option>
+        <label>Switch User Mode</label>
+        <select id="roleSelect" onchange="handleRoleChange()">
+            <option value="employee">Employee (Personal Entry)</option>
+            <option value="owner">Owner (Master Admin)</option>
         </select>
-        <input type="text" id="employeeName" placeholder="Employee Name (for syncing)">
+        <input type="text" id="agentName" placeholder="Your Name (Employee Name)">
     </div>
 
-    <div id="formSection" class="card">
-        <h3>Add/Edit Lead</h3>
-        <input type="hidden" id="editIndex">
-        <input type="text" id="name" placeholder="Client Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        
+    <div id="entryForm" class="card">
+        <h3>New Lead Entry</h3>
+        <input type="text" id="clientName" placeholder="Client Name">
+        <input type="tel" id="clientPhone" placeholder="Phone Number">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <input type="text" id="location" placeholder="Location">
             <select id="status">
@@ -76,156 +70,140 @@
                 <option>Closed</option>
             </select>
         </div>
-        
-        <label>Follow-up Date</label>
-        <input type="date" id="followup">
-        
-        <button onclick="saveLead()">Save to Device</button>
-        <button class="btn-sync" onclick="syncToCloud()">Sync to Owner's Sheet</button>
+        <button onclick="saveToLocal()">Save to Phone</button>
+        <button class="btn-sync" onclick="syncAllToCloud()">Sync Leads to Owner</button>
     </div>
 
-    <input type="text" id="search" placeholder="Search local leads..." style="border: 2px solid var(--accent-blue)">
-
-    <div class="table-container">
-        <h4 id="tableTitle">My Local Leads</h4>
-        <table>
-            <thead>
-                <tr><th>Name</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody id="clientTable"></tbody>
-        </table>
-    </div>
-
-    <div id="ownerSection" class="owner-section card">
-        <h3 style="color:#673ab7">Owner's Master Cloud</h3>
-        <button class="btn-owner" onclick="fetchCloudData()">Refresh Cloud Data</button>
-        <div class="table-container" style="margin-top:15px">
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>My Local Leads</h3>
+            <button style="width:auto; padding:5px 10px; font-size:12px;" onclick="clearLocal()">Clear All</button>
+        </div>
+        <div style="overflow-x:auto">
             <table>
-                <thead>
-                    <tr><th>Agent</th><th>Client</th><th>Status</th></tr>
-                </thead>
-                <tbody id="cloudTable"></tbody>
+                <thead><tr><th>Name</th><th>Status</th></tr></thead>
+                <tbody id="localTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="ownerDashboard" class="owner-only card">
+        <h3 style="color:#673ab7">Master Database (Cloud)</h3>
+        <button class="btn-owner" onclick="loadCloudData()">Refresh from Google Sheets</button>
+        <div style="overflow-x:auto; margin-top:15px;">
+            <table>
+                <thead><tr><th>Agent</th><th>Client</th><th>Status</th></tr></thead>
+                <tbody id="cloudTableBody"></tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // --- CONFIGURATION ---
-    const SCRIPT_URL = "PASTE_YOUR_URL_HERE"; 
-    let clients = JSON.parse(localStorage.getItem('clients')) || [];
+    // --- SETTINGS ---
+    const SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE"; 
+    const OWNER_PIN = "1234"; 
+    let localLeads = JSON.parse(localStorage.getItem('myLeads')) || [];
 
     // --- ROLE LOGIC ---
-    function toggleRole() {
-        const mode = document.getElementById('accessMode').value;
-        const ownerSection = document.getElementById('ownerSection');
-        const roleBadge = document.getElementById('roleIndicator');
-        
-        if(mode === 'owner') {
-            const pin = prompt("Enter Owner Pin:");
-            if(pin === "1234") { // Set your own PIN here
-                ownerSection.style.display = 'block';
-                roleBadge.innerText = "Owner Mode";
-                roleBadge.style.background = "#673ab7";
-                fetchCloudData();
+    function handleRoleChange() {
+        const role = document.getElementById('roleSelect').value;
+        if(role === 'owner') {
+            const pass = prompt("Enter Admin PIN:");
+            if(pass === OWNER_PIN) {
+                document.getElementById('ownerDashboard').style.display = 'block';
+                document.getElementById('entryForm').style.display = 'none';
+                document.getElementById('roleText').innerText = "Owner Dashboard";
+                loadCloudData();
             } else {
-                alert("Wrong PIN");
-                document.getElementById('accessMode').value = 'employee';
+                alert("Incorrect PIN");
+                document.getElementById('roleSelect').value = 'employee';
             }
         } else {
-            ownerSection.style.display = 'none';
-            roleBadge.innerText = "Employee View";
-            roleBadge.style.background = "#1877f2";
+            document.getElementById('ownerDashboard').style.display = 'none';
+            document.getElementById('entryForm').style.display = 'block';
+            document.getElementById('roleText').innerText = "Employee Workspace";
         }
     }
 
-    // --- DATA LOGIC ---
-    function saveLead() {
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        if(!name || !phone) return alert("Enter Name and Phone");
+    // --- LOCAL LOGIC ---
+    function saveToLocal() {
+        const agent = document.getElementById('agentName').value;
+        const name = document.getElementById('clientName').value;
+        const phone = document.getElementById('clientPhone').value;
 
-        const data = {
-            name, phone,
+        if(!agent || !name || !phone) return alert("Fill Agent Name, Client Name, and Phone");
+
+        const lead = {
+            employeeName: agent,
+            name: name,
+            phone: phone,
             location: document.getElementById('location').value,
             status: document.getElementById('status').value,
-            followup: document.getElementById('followup').value,
-            agent: document.getElementById('employeeName').value || "Unknown"
+            followup: new Date().toLocaleDateString(),
+            remark: "Local Entry"
         };
 
-        clients.push(data);
-        localStorage.setItem('clients', JSON.stringify(clients));
+        localLeads.push(lead);
+        localStorage.setItem('myLeads', JSON.stringify(localLeads));
         renderLocalTable();
-        alert("Saved locally! Don't forget to Sync.");
+        alert("Saved to device memory.");
     }
 
     function renderLocalTable() {
-        const table = document.getElementById('clientTable');
-        table.innerHTML = "";
-        clients.forEach((c, idx) => {
-            table.innerHTML += `<tr>
-                <td><strong>${c.name}</strong><br>${c.phone}</td>
-                <td>${c.status}</td>
-                <td><button onclick="deleteLead(${idx})" style="background:#ff5252; padding:5px; font-size:10px">Del</button></td>
-            </tr>`;
-        });
+        const tbody = document.getElementById('localTableBody');
+        tbody.innerHTML = localLeads.map(l => `<tr><td>${l.name}</td><td>${l.status}</td></tr>`).join('');
     }
 
-    function deleteLead(idx) {
-        if(confirm("Delete locally?")) {
-            clients.splice(idx, 1);
-            localStorage.setItem('clients', JSON.stringify(clients));
+    function clearLocal() {
+        if(confirm("Delete local memory? (Does not delete Cloud data)")) {
+            localLeads = [];
+            localStorage.removeItem('myLeads');
             renderLocalTable();
         }
     }
 
-    // --- CLOUD SYNC (THE BRIDGE) ---
-    async function syncToCloud() {
-        const agent = document.getElementById('employeeName').value;
-        if(!agent) return alert("Please enter your Employee Name first.");
-        
+    // --- CLOUD LOGIC ---
+    async function syncAllToCloud() {
+        if(localLeads.length === 0) return alert("No leads to sync.");
         const btn = event.target;
         btn.innerText = "Syncing...";
         
-        // Sync the latest lead added
-        const lastLead = clients[clients.length - 1];
-        if(!lastLead) return alert("No data to sync");
-
         try {
+            // We sync the most recent lead added
+            const lastLead = localLeads[localLeads.length - 1];
             await fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify(lastLead)
             });
-            alert("Lead synced to Owner's Master Sheet!");
+            alert("Success: Lead sent to Owner's Master Sheet!");
         } catch (e) {
-            alert("Sync Failed. Check Script URL.");
+            alert("Sync Failed: Check Script URL or Internet.");
+        } finally {
+            btn.innerText = "Sync Leads to Owner";
         }
-        btn.innerText = "Sync to Cloud";
     }
 
-    async function fetchCloudData() {
-        const table = document.getElementById('cloudTable');
-        table.innerHTML = "Fetching...";
+    async function loadCloudData() {
+        const tbody = document.getElementById('cloudTableBody');
+        tbody.innerHTML = "Fetching...";
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
-            table.innerHTML = "";
-            data.forEach(row => {
-                table.innerHTML += `<tr>
-                    <td>${row.employeeName}</td>
-                    <td>${row.name}</td>
-                    <td>${row.status}</td>
-                </tr>`;
-            });
+            tbody.innerHTML = data.reverse().map(l => `<tr>
+                <td><strong>${l.employeeName}</strong></td>
+                <td>${l.name}<br><small>${l.phone}</small></td>
+                <td>${l.status}</td>
+            </tr>`).join('');
         } catch (e) {
-            table.innerHTML = "Could not load cloud data.";
+            tbody.innerHTML = "Error loading cloud data.";
         }
     }
 
-    // Init
+    // Initialize
     renderLocalTable();
-    if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
 </script>
+
 </body>
 </html>
