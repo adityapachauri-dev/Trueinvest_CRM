@@ -72,7 +72,10 @@
         .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 10px 15px; font-weight: bold; }
 
         .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
-        #csvImport { display: none; }
+        
+        .watermark { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.5; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-top: 1px solid var(--border-color); }
+        .watermark span { color: var(--accent-blue); font-size: 14px; }
+        
         .hidden { display: none !important; }
     </style>
 
@@ -104,10 +107,9 @@
 
     <form id="clientForm">
         <input type="hidden" id="editId" value="">
-        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up Rem.</label><input type="date" id="followup"></div>
+            <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
 
         <label>Client Details</label>
@@ -154,11 +156,13 @@
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export CSV</button>
-        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
-        <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
-        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Dups</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
+        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export</button>
+        
+        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import</button>
+        <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
+        
+        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean</button>
         <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
@@ -172,10 +176,14 @@
             <tbody id="clientTable"></tbody>
         </table>
     </div>
+
+    <div class="watermark">
+        CREATED BY <br>
+        <span>ADITYA PACHAURI</span>
+    </div>
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -192,64 +200,39 @@
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- 1. OPTIMIZED VIEW SWITCHER ---
     function showView(viewId) {
         document.getElementById('loginView').classList.add('hidden');
         document.getElementById('crmView').classList.add('hidden');
         document.getElementById(viewId).classList.remove('hidden');
     }
 
-    // --- 2. AUTH STATE ---
     auth.onAuthStateChanged(user => {
-        if (user) {
-            showView('crmView');
-            loadData(); 
-        } else {
-            showView('loginView');
-        }
+        if (user) { showView('crmView'); loadData(); } 
+        else { showView('loginView'); }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-
-        btn.disabled = true;
-        btn.innerText = "Authenticating...";
-
-        auth.signInWithEmailAndPassword(email, pass)
+        btn.disabled = true; btn.innerText = "Processing...";
+        auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.disabled = false;
-                btn.innerText = "Secure Login";
+                btn.disabled = false; btn.innerText = "Secure Login";
                 const errDiv = document.getElementById('loginError');
-                errDiv.innerText = "Access Denied: " + err.message;
-                errDiv.style.display = 'block';
+                errDiv.innerText = "Access Denied: " + err.message; errDiv.style.display = 'block';
             });
     });
 
     function logout() { auth.signOut(); }
 
-    // --- 3. DATA ENGINE ---
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
-
-        // Show loading state in table
-        document.getElementById('clientTable').innerHTML = '<tr><td colspan="11">Connecting to secure cloud...</td></tr>';
-
-        db.collection("leads")
-          .where("ownerId", "==", user.uid) 
-          .orderBy("leadDate", "desc")
+        document.getElementById('clientTable').innerHTML = '<tr><td colspan="11">Syncing Data...</td></tr>';
+        db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              window.requestAnimationFrame(() => {
-                  renderTable();
-                  checkReminders();
-              });
-          }, err => {
-              console.error("DB Error:", err);
-              document.getElementById('clientTable').innerHTML = `<tr><td colspan="11" style="color:red">Sync Error: ${err.message}</td></tr>`;
+              renderTable(); checkReminders();
           });
     }
 
@@ -257,105 +240,79 @@
         e.preventDefault();
         const user = auth.currentUser;
         const data = {
-            ownerId: user.uid,
-            ownerEmail: user.email,    
+            ownerId: user.uid, ownerEmail: user.email,    
             leadDate: document.getElementById('leadDate').value || todayStr,
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value, 
             phone: document.getElementById('phone').value,
             location: document.getElementById('location').value || "", 
             propertyType: document.getElementById('propertyType').value || "",
-            status: document.getElementById('status').value,
+            status: document.getElementById('status').value, 
             visitDone: document.getElementById('visitDone').checked,
-            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
+            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "", 
             budget: document.getElementById('budget').value || "", 
             remark: document.getElementById('remark').value || ""
         };
-
         const id = document.getElementById('editId').value;
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
-        saveBtn.innerText = "Syncing...";
 
         const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        
         task.then(() => {
             resetForm();
             saveBtn.disabled = false;
         }).catch(err => {
-            alert("Cloud Sync Failed: " + err.message);
+            alert("Sync Failed: " + err.message);
             saveBtn.disabled = false;
-            saveBtn.innerText = "Retry Save";
         });
     });
 
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
-        
         const urgent = clients.filter(c => c.followup === todayStr && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== todayStr || c.status === 'Closed');
 
-        const generateRow = c => {
-            const doneBtn = (c.followup && c.followup !== "") ? 
-                `<button class="btn-done" onclick="markFollowupDone('${c.id}')">Done</button>` : '';
-
-            return `
+        const generateRow = c => `
             <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
-                <td>${c.leadDate || '-'}</td>
-                <td style="font-weight:bold">${c.name}</td>
-                <td>${c.phone}</td>
-                <td style="font-weight:bold; color:#1877f2">${c.status}</td>
-                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.sentTo || '-'}</td>
-                <td>${c.visitDone ? '✅' : '-'}</td>
-                <td>${c.location || '-'}</td>
-                <td>${c.propertyType || '-'}</td>
-                <td>${c.followup || '-'}</td>
-                <td>
-                    <div class="action-group">
-                        <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
-                        <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                        ${doneBtn}
-                        <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
-                        <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
-                    </div>
-                </td>
+                <td>${c.leadDate || '-'}</td><td style="font-weight:bold">${c.name}</td><td>${c.phone}</td>
+                <td style="color:#1877f2; font-weight:bold">${c.status}</td><td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
+                <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td><td>${c.location || '-'}</td>
+                <td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
+                <td><div class="action-group">
+                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
+                    <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
+                    ${c.followup ? `<button class="btn-done" onclick="markFollowupDone('${c.id}')">Done</button>` : ''}
+                    <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
+                    <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
+                </div></td>
             </tr>`;
-        };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Scheduled Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="11">All Lead History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="11">Lead History</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
     }
 
-    // --- 4. ACTION HELPERS ---
-    function markFollowupDone(id) {
-        if(confirm("Confirm follow-up completed? This clears today's reminder.")) {
-            db.collection("leads").doc(id).update({ followup: "", status: "Follow-up" });
-        }
+    function markFollowupDone(id) { 
+        if(confirm("Complete follow-up?")) db.collection("leads").doc(id).update({ followup: "", status: "Follow-up" }); 
     }
 
     function editLead(id) {
         const c = clients.find(x => x.id === id);
         if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
-            document.getElementById(f).value = c[f] || '';
-        });
+        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => document.getElementById(f).value = c[f] || '');
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Lead Info";
+        document.getElementById('saveBtn').innerText = "Update Lead";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { 
-        if(confirm("Permanently delete this lead?")) db.collection("leads").doc(id).delete(); 
-    }
-
+    function deleteLead(id) { if(confirm("Delete lead?")) db.collection("leads").doc(id).delete(); }
+    
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editId').value = ""; 
@@ -363,8 +320,7 @@
     }
 
     function sendWA(num, name) { 
-        const cleanNum = num.replace(/\D/g,'');
-        window.open(`https://wa.me/91${cleanNum}?text=Hello ${name}, reaching out regarding your inquiry at True Invest.`, '_blank'); 
+        window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, regarding your real estate inquiry.`, '_blank'); 
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
@@ -373,60 +329,45 @@
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: ${count} Client follow-ups are due today!`;
+        bar.innerText = `🔔 Attention: ${count} follow-ups scheduled today!`;
     }
 
-    // --- 5. UTILITY FUNCTIONS ---
     function downloadCSV() {
-        let csv = "Lead Date,Name,Phone,Status,Budget,Assigned To,Visit Done,Location,Property Type,Followup Date,Remark\n";
-        clients.forEach(c => {
-            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(blob);
-        a.download = `True_Invest_Export_${todayStr}.csv`;
-        a.click();
+        let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup,Remark\n";
+        clients.forEach(c => csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`);
+        const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        a.download = `Leads_${todayStr}.csv`; a.click();
     }
 
-    function importCSV(event) {
-        const file = event.target.files[0];
-        if(!file) return;
-        const user = auth.currentUser;
+    function importCSV(e) {
+        const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const rows = e.target.result.split('\n').slice(1);
-            rows.forEach(row => {
+        reader.onload = function(ev) {
+            ev.target.result.split('\n').slice(1).forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length < 2) return;
-                db.collection("leads").add({
-                    ownerId: user.uid, ownerEmail: user.email,
-                    leadDate: cols[0] || todayStr, name: cols[1], phone: cols[2],
-                    status: cols[3] || "New", budget: cols[4] || "", sentTo: cols[5] || "",
-                    visitDone: cols[6] === "true", location: cols[7] || "",
-                    propertyType: cols[8] || "", followup: cols[9] || "", remark: cols[10] || ""
+                if(cols.length >= 2) db.collection("leads").add({ 
+                    ownerId: auth.currentUser.uid, ownerEmail: auth.currentUser.email, 
+                    leadDate: cols[0], name: cols[1], phone: cols[2], status: cols[3] || "New", 
+                    budget: cols[4], sentTo: cols[5], visitDone: cols[6] === "true", 
+                    location: cols[7], propertyType: cols[8], followup: cols[9], remark: cols[10] 
                 });
             });
-            alert("Bulk Sync Successful.");
+            alert("Sync Complete");
+            e.target.value = ""; // Clear file input so same file can be imported again
         };
         reader.readAsText(file);
     }
 
     function clearDuplicates() {
         const seen = new Set();
-        let deleted = 0;
-        clients.forEach(c => {
-            if(seen.has(c.phone)) { db.collection("leads").doc(c.id).delete(); deleted++; }
-            else { seen.add(c.phone); }
-        });
-        alert(`Cleanup: Removed ${deleted} duplicate numbers.`);
+        clients.forEach(c => { if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete(); else seen.add(c.phone); });
+        alert("Duplicates Cleaned");
     }
 
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr').forEach(tr => {
-            if(tr.classList.contains('section-divider')) return;
-            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
+        document.querySelectorAll('#clientTable tr').forEach(tr => { 
+            if(!tr.classList.contains('section-divider')) tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
         });
     });
 </script>
