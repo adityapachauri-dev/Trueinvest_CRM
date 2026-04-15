@@ -291,7 +291,7 @@
             </tr>`;
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Tasks (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += row(c));
         }
         table.innerHTML += `<tr class="section-divider"><td colspan="11">My Personal Lead History</td></tr>`;
@@ -330,7 +330,7 @@
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: You have ${count} site visits/calls scheduled for today!`;
+        bar.innerText = `🔔 Attention: You have ${count} calls scheduled for today!`;
     }
 
     // --- UTILITIES ---
