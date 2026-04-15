@@ -51,17 +51,20 @@
         .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
         .btn-logout { background: var(--notify-red); margin-bottom: 15px; }
         
-        .btn-wa { background: var(--whatsapp-green) !important; flex: 1; }
-        .btn-edit { background: #ffc107 !important; color: #000 !important; flex: 1; }
-        .btn-del { background: #fa3e3e !important; flex: 1; }
+        .btn-wa { background: var(--whatsapp-green) !important; }
+        .btn-call { background: #007bff !important; }
+        .btn-done { background: #28a745 !important; color: white !important; }
+        .btn-edit { background: #ffc107 !important; color: #000 !important; }
+        .btn-del { background: #fa3e3e !important; }
 
-        .action-group { display: flex; gap: 4px; width: 160px; justify-content: center; }
+        .action-group { display: flex; gap: 6px; width: auto; min-width: 280px; justify-content: center; }
+        .action-group button { height: 38px; font-size: 12px; padding: 0 10px; flex: 1; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1250px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1300px; }
         th, td { padding: 14px 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; vertical-align: middle; }
         th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 11px; }
         
@@ -215,12 +218,10 @@
 
     function logout() { auth.signOut(); }
 
-    // --- DATA HANDLING (INDIVIDUAL FILTERING) ---
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
 
-        // Fetch only leads owned by the logged-in user
         db.collection("leads")
           .where("ownerId", "==", user.uid) 
           .orderBy("leadDate", "desc")
@@ -229,8 +230,7 @@
               renderTable();
               checkReminders();
           }, err => {
-              console.error("Database Filter Error:", err.message);
-              // Note: If you see an error here, check browser console for the Index Link.
+              console.error("Database Error:", err.message);
           });
     }
 
@@ -259,7 +259,6 @@
         
         task.then(() => {
             resetForm();
-            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
         }).catch(err => alert("Sync Failed: " + err.message));
     });
 
@@ -269,7 +268,7 @@
         const urgent = clients.filter(c => c.followup === todayStr && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== todayStr || c.status === 'Closed');
 
-        const row = c => `
+        const generateRow = c => `
             <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
                 <td>${c.leadDate || '-'}</td>
                 <td style="font-weight:bold">${c.name}</td>
@@ -283,7 +282,9 @@
                 <td>${c.followup || '-'}</td>
                 <td>
                     <div class="action-group">
+                        <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
                         <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
+                        <button class="btn-done" onclick="markFollowupDone('${c.id}')">Done</button>
                         <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
                         <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
                     </div>
@@ -292,10 +293,20 @@
 
         if(urgent.length) {
             table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
-            urgent.forEach(c => table.innerHTML += row(c));
+            urgent.forEach(c => table.innerHTML += generateRow(c));
         }
         table.innerHTML += `<tr class="section-divider"><td colspan="11">My Personal Lead History</td></tr>`;
-        others.forEach(c => table.innerHTML += row(c));
+        others.forEach(c => table.innerHTML += generateRow(c));
+    }
+
+    // --- QUICK ACTION FUNCTIONS ---
+    function markFollowupDone(id) {
+        if(confirm("Follow-up completed? This clears the date and reminder.")) {
+            db.collection("leads").doc(id).update({
+                followup: "",
+                status: "Follow-up" 
+            }).catch(err => alert("Update failed: " + err.message));
+        }
     }
 
     function editLead(id) {
@@ -342,7 +353,7 @@
         const blob = new Blob([csv], { type: 'text/csv' });
         const a = document.createElement('a');
         a.href = window.URL.createObjectURL(blob);
-        a.download = `MyCRM_Leads_${todayStr}.csv`;
+        a.download = `TRUE_INVEST_Leads_${todayStr}.csv`;
         a.click();
     }
 
@@ -379,7 +390,6 @@
         alert(`Cleanup Finished: Removed ${deleted} duplicates.`);
     }
 
-    // --- LIVE SEARCH ---
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => {
@@ -387,7 +397,6 @@
             tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     });
-
 </script>
 </body>
 </html>
