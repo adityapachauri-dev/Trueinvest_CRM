@@ -330,7 +330,7 @@
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: You have ${count} calls scheduled for today!`;
+        bar.innerText = `🔔 Attention: You have ${count} Follow-ups scheduled for today!`;
     }
 
     // --- UTILITIES ---
