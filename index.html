@@ -22,19 +22,6 @@
         }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        /* Smooth Transition Loader */
-        #loaderOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999;
-        }
-        .spinner {
-            width: 40px; height: 40px; border: 4px solid var(--border-color);
-            border-top: 4px solid var(--accent-blue); border-radius: 50%;
-            animation: spin 0.8s linear infinite; margin-bottom: 12px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 15px 0; }
         .notification-bar { 
             background: var(--notify-red); color: white; padding: 14px; 
@@ -43,6 +30,7 @@
         }
 
         form, .table-container, .login-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
         input, textarea, button, select { 
             padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
@@ -60,24 +48,23 @@
 
         button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; transition: 0.2s;}
         button:active { transform: scale(0.98); opacity: 0.9; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
         .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
         .btn-logout { background: var(--notify-red); margin-bottom: 15px; }
         
-        /* Action UI */
+        .action-group { display: flex; gap: 5px; min-width: 250px; justify-content: center; }
+        .action-group button { height: 36px; font-size: 11px; padding: 0 8px; flex: 1; margin: 0; }
         .btn-wa { background: var(--whatsapp-green) !important; }
         .btn-call { background: #007bff !important; color: white !important; }
         .btn-done { background: #28a745 !important; color: white !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
         .btn-del { background: #fa3e3e !important; color: white !important; }
 
-        .action-group { display: flex; gap: 5px; min-width: 250px; justify-content: center; }
-        .action-group button { height: 34px; font-size: 11px; padding: 0 8px; flex: 1; margin: 0; }
-
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1300px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
         th, td { padding: 12px 8px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; vertical-align: middle; }
         th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 11px; }
         
@@ -85,6 +72,7 @@
         .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 10px 15px; font-weight: bold; }
 
         .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
+        #csvImport { display: none; }
         .hidden { display: none !important; }
     </style>
 
@@ -93,8 +81,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
-<div id="loaderOverlay"><div class="spinner"></div><p id="loaderText">Syncing Cloud...</p></div>
 
 <div id="loginView" class="container" style="margin-top: 50px;">
     <h1>TRUE INVEST</h1>
@@ -118,42 +104,78 @@
 
     <form id="clientForm">
         <input type="hidden" id="editId" value="">
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
+            <div><label>Follow-up Rem.</label><input type="date" id="followup"></div>
         </div>
+
+        <label>Client Details</label>
         <input type="text" id="name" placeholder="Full Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <input type="text" id="location" placeholder="Location">
             <input type="text" id="propertyType" placeholder="Property Type">
         </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Status</label><select id="status"><option>New</option><option>Follow-up</option><option>Hot</option><option>Closed</option><option>Not Interested</option></select></div>
-            <div><label>Site Visit</label><div class="check-item"><input type="checkbox" id="visitDone"><label for="visitDone">Done</label></div></div>
+            <div>
+                <label>Status</label>
+                <select id="status">
+                    <option>New</option>
+                    <option>Follow-up</option>
+                    <option>Hot</option>
+                    <option>Closed</option>
+                    <option>Not Interested</option>
+                </select>
+            </div>
+            <div>
+                <label>Site Visit</label>
+                <div class="check-item">
+                    <input type="checkbox" id="visitDone">
+                    <label for="visitDone">Done</label>
+                </div>
+            </div>
         </div>
-        <div class="check-item"><input type="checkbox" id="sendSunny"><label for="sendSunny">Assign lead to Sunny</label></div>
-        <input type="text" id="budget" placeholder="Budget">
-        <textarea id="remark" placeholder="Remarks..." rows="2"></textarea>
+
+        <label>Assignment</label>
+        <div class="check-item">
+            <input type="checkbox" id="sendSunny">
+            <label for="sendSunny">Assign lead to Sunny</label>
+        </div>
+
+        <label>Financials & Notes</label>
+        <input type="text" id="budget" placeholder="Budget (e.g. 50 Lacs / 1.2 Cr)">
+        <textarea id="remark" placeholder="Additional Remarks..." rows="3"></textarea>
+        
         <button type="submit" id="saveBtn">Save to Cloud</button>
         <button type="button" class="btn-secondary" onclick="resetForm()">Cancel</button>
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Theme</button>
+        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export CSV</button>
+        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import CSV</button>
+        <input type="file" id="csvImport" accept=".csv" onchange="importCSV(event)">
+        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Dups</button>
         <input type="text" id="search" class="search-box" placeholder="Search leads...">
     </div>
 
     <div class="table-container">
         <table>
-            <thead><tr><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
+                </tr>
+            </thead>
             <tbody id="clientTable"></tbody>
         </table>
     </div>
 </div>
 
 <script>
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -166,103 +188,155 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+
     let clients = [];
     const todayStr = new Date().toISOString().split('T')[0];
 
-    function showLoader(text) {
-        document.getElementById('loaderText').innerText = text;
-        document.getElementById('loaderOverlay').style.display = 'flex';
+    // --- 1. OPTIMIZED VIEW SWITCHER ---
+    function showView(viewId) {
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('crmView').classList.add('hidden');
+        document.getElementById(viewId).classList.remove('hidden');
     }
-    function hideLoader() { document.getElementById('loaderOverlay').style.display = 'none'; }
 
-    // --- AUTH FLOW ---
+    // --- 2. AUTH STATE ---
     auth.onAuthStateChanged(user => {
         if (user) {
-            document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('crmView').classList.remove('hidden');
+            showView('crmView');
             loadData(); 
         } else {
-            document.getElementById('loginView').classList.remove('hidden');
-            document.getElementById('crmView').classList.add('hidden');
-            hideLoader();
+            showView('loginView');
         }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        showLoader("Authenticating Agent...");
-        auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
+        const btn = document.getElementById('loginBtn');
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+
+        btn.disabled = true;
+        btn.innerText = "Authenticating...";
+
+        auth.signInWithEmailAndPassword(email, pass)
             .catch(err => {
-                hideLoader();
-                document.getElementById('loginError').innerText = "Access Denied: " + err.message;
-                document.getElementById('loginError').style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = "Secure Login";
+                const errDiv = document.getElementById('loginError');
+                errDiv.innerText = "Access Denied: " + err.message;
+                errDiv.style.display = 'block';
             });
     });
 
-    function logout() { showLoader("Securely Logging Out..."); auth.signOut(); }
+    function logout() { auth.signOut(); }
 
-    // --- DATA HANDLING ---
+    // --- 3. DATA ENGINE ---
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
-        
-        showLoader("Syncing Database...");
-        
+
+        // Show loading state in table
+        document.getElementById('clientTable').innerHTML = '<tr><td colspan="11">Connecting to secure cloud...</td></tr>';
+
         db.collection("leads")
           .where("ownerId", "==", user.uid) 
           .orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              renderTable();
-              checkReminders();
-              hideLoader(); 
+              window.requestAnimationFrame(() => {
+                  renderTable();
+                  checkReminders();
+              });
           }, err => {
-              hideLoader();
-              console.error("Firestore error:", err);
+              console.error("DB Error:", err);
+              document.getElementById('clientTable').innerHTML = `<tr><td colspan="11" style="color:red">Sync Error: ${err.message}</td></tr>`;
           });
     }
+
+    document.getElementById('clientForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        const data = {
+            ownerId: user.uid,
+            ownerEmail: user.email,    
+            leadDate: document.getElementById('leadDate').value || todayStr,
+            followup: document.getElementById('followup').value || "",
+            name: document.getElementById('name').value, 
+            phone: document.getElementById('phone').value,
+            location: document.getElementById('location').value || "", 
+            propertyType: document.getElementById('propertyType').value || "",
+            status: document.getElementById('status').value,
+            visitDone: document.getElementById('visitDone').checked,
+            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
+            budget: document.getElementById('budget').value || "", 
+            remark: document.getElementById('remark').value || ""
+        };
+
+        const id = document.getElementById('editId').value;
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerText = "Syncing...";
+
+        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
+        
+        task.then(() => {
+            resetForm();
+            saveBtn.disabled = false;
+        }).catch(err => {
+            alert("Cloud Sync Failed: " + err.message);
+            saveBtn.disabled = false;
+            saveBtn.innerText = "Retry Save";
+        });
+    });
 
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
+        
         const urgent = clients.filter(c => c.followup === todayStr && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== todayStr || c.status === 'Closed');
 
         const generateRow = c => {
-            // DONE BUTTON LOGIC: ONLY IF FOLLOW-UP EXISTS
             const doneBtn = (c.followup && c.followup !== "") ? 
                 `<button class="btn-done" onclick="markFollowupDone('${c.id}')">Done</button>` : '';
 
             return `
             <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
-                <td>${c.leadDate || '-'}</td><td>${c.name}</td><td>${c.phone}</td>
+                <td>${c.leadDate || '-'}</td>
+                <td style="font-weight:bold">${c.name}</td>
+                <td>${c.phone}</td>
                 <td style="font-weight:bold; color:#1877f2">${c.status}</td>
                 <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td>
-                <td>${c.location || '-'}</td><td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
-                <td><div class="action-group">
-                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
-                    <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                    ${doneBtn}
-                    <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
-                    <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
-                </div></td></tr>`;
+                <td>${c.sentTo || '-'}</td>
+                <td>${c.visitDone ? '✅' : '-'}</td>
+                <td>${c.location || '-'}</td>
+                <td>${c.propertyType || '-'}</td>
+                <td>${c.followup || '-'}</td>
+                <td>
+                    <div class="action-group">
+                        <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
+                        <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
+                        ${doneBtn}
+                        <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
+                        <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
+                    </div>
+                </td>
+            </tr>`;
         };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent Follow-ups (Scheduled Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="11">My Lead History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="11">All Lead History</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
     }
 
+    // --- 4. ACTION HELPERS ---
     function markFollowupDone(id) {
-        showLoader("Clearing Reminder...");
-        db.collection("leads").doc(id).update({ 
-            followup: "", 
-            status: "Follow-up" 
-        }).then(hideLoader);
+        if(confirm("Confirm follow-up completed? This clears today's reminder.")) {
+            db.collection("leads").doc(id).update({ followup: "", status: "Follow-up" });
+        }
     }
 
     function editLead(id) {
@@ -278,44 +352,76 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    document.getElementById('clientForm').addEventListener('submit', e => {
-        e.preventDefault();
-        showLoader("Saving to Cloud...");
-        const user = auth.currentUser;
-        const data = {
-            ownerId: user.uid, ownerEmail: user.email, 
-            leadDate: document.getElementById('leadDate').value || todayStr,
-            followup: document.getElementById('followup').value, 
-            name: document.getElementById('name').value, 
-            phone: document.getElementById('phone').value, 
-            location: document.getElementById('location').value, 
-            propertyType: document.getElementById('propertyType').value, 
-            status: document.getElementById('status').value,
-            visitDone: document.getElementById('visitDone').checked, 
-            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "",
-            budget: document.getElementById('budget').value, 
-            remark: document.getElementById('remark').value
-        };
-        const id = document.getElementById('editId').value;
-        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => { hideLoader(); resetForm(); }).catch(err => { hideLoader(); alert(err.message); });
-    });
+    function deleteLead(id) { 
+        if(confirm("Permanently delete this lead?")) db.collection("leads").doc(id).delete(); 
+    }
 
-    function deleteLead(id) { if(confirm("Permanently delete this lead?")) { showLoader("Removing..."); db.collection("leads").doc(id).delete().then(hideLoader); } }
-    function resetForm() { document.getElementById('clientForm').reset(); document.getElementById('editId').value = ""; document.getElementById('saveBtn').innerText = "Save to Cloud"; }
-    function sendWA(num, name) { window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, reaching out regarding your real estate inquiry.`, '_blank'); }
+    function resetForm() { 
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editId').value = ""; 
+        document.getElementById('saveBtn').innerText = "Save to Cloud"; 
+    }
+
+    function sendWA(num, name) { 
+        const cleanNum = num.replace(/\D/g,'');
+        window.open(`https://wa.me/91${cleanNum}?text=Hello ${name}, reaching out regarding your inquiry at True Invest.`, '_blank'); 
+    }
+
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
     function checkReminders() {
         const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
         const bar = document.getElementById('reminderAlert');
         bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: ${count} Follow-ups scheduled today!`;
+        bar.innerText = `🔔 Attention: ${count} Client follow-ups are due today!`;
     }
+
+    // --- 5. UTILITY FUNCTIONS ---
     function downloadCSV() {
-        let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
-        clients.forEach(c => csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`);
-        const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `TRUE_INVEST_Leads_${todayStr}.csv`; a.click();
+        let csv = "Lead Date,Name,Phone,Status,Budget,Assigned To,Visit Done,Location,Property Type,Followup Date,Remark\n";
+        clients.forEach(c => {
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = `True_Invest_Export_${todayStr}.csv`;
+        a.click();
     }
+
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const user = auth.currentUser;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const rows = e.target.result.split('\n').slice(1);
+            rows.forEach(row => {
+                const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
+                if(cols.length < 2) return;
+                db.collection("leads").add({
+                    ownerId: user.uid, ownerEmail: user.email,
+                    leadDate: cols[0] || todayStr, name: cols[1], phone: cols[2],
+                    status: cols[3] || "New", budget: cols[4] || "", sentTo: cols[5] || "",
+                    visitDone: cols[6] === "true", location: cols[7] || "",
+                    propertyType: cols[8] || "", followup: cols[9] || "", remark: cols[10] || ""
+                });
+            });
+            alert("Bulk Sync Successful.");
+        };
+        reader.readAsText(file);
+    }
+
+    function clearDuplicates() {
+        const seen = new Set();
+        let deleted = 0;
+        clients.forEach(c => {
+            if(seen.has(c.phone)) { db.collection("leads").doc(c.id).delete(); deleted++; }
+            else { seen.add(c.phone); }
+        });
+        alert(`Cleanup: Removed ${deleted} duplicate numbers.`);
+    }
+
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => {
