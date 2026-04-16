@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM | Enterprise Elite</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>TRUE INVEST | Mobile CRM Elite</title>
     
     <style>
         :root {
             --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.4);
-            --bg-canvas: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --bg: #f8fafc;
+            --card: rgba(255, 255, 255, 0.9);
+            --text: #0f172a;
+            --muted: #64748b;
             --border: #e2e8f0;
             --hot: #ef4444;
             --closed: #10b981;
@@ -21,26 +22,27 @@
         }
 
         .dark-mode {
-            --bg-canvas: #020617;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.85);
+            --text: #f1f5f9;
+            --muted: #94a3b8;
             --border: #1e293b;
         }
 
-        /* Mobile & UI Reset */
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        /* dedicated mobile reset */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        
         body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            background: var(--bg-canvas); color: var(--text-main); 
-            margin: 0; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            padding-bottom: calc(100px + var(--safe-bottom));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            margin: 0; padding-bottom: calc(100px + var(--safe-bottom));
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
         }
 
         .container { width: 100%; max-width: 1200px; margin: auto; padding: 16px; }
 
-        /* Elastic Entrance Animation */
+        /* Elastic Animations */
         @keyframes springIn {
             0% { transform: scale(0.9) translateY(40px); opacity: 0; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
@@ -49,64 +51,81 @@
         @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
 
         .glass-card {
-            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border); border-radius: 28px; padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 20px;
-            animation: springIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+            animation: springIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
         }
 
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        /* Mobile Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
         .stat-card { 
-            background: var(--card-bg); padding: 18px 10px; border-radius: 20px; text-align: center;
+            background: var(--card); padding: 15px 10px; border-radius: 20px; text-align: center;
             border: 1px solid var(--border); animation: springIn 0.6s ease backwards;
         }
-        .stat-card label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .stat-card span { font-size: 24px; font-weight: 900; color: var(--primary); }
+        .stat-card label { display: block; font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+        .stat-card span { font-size: 22px; font-weight: 900; color: var(--primary); }
 
-        /* Forms & Inputs */
+        /* iOS/Android Style Form Components */
+        label { display: block; font-size: 11px; font-weight: 700; margin: 8px 0 4px 6px; color: var(--muted); }
         input, select, textarea { 
             width: 100%; padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border);
-            background: var(--bg-canvas); color: var(--text-main); font-size: 16px; transition: 0.3s ease;
+            background: var(--bg); color: var(--text); font-size: 16px; transition: 0.3s;
+            appearance: none; -webkit-appearance: none;
         }
-        input:focus { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px var(--primary-glow); }
-        label { display: block; font-size: 11px; font-weight: 700; margin: 10px 0 5px 5px; color: var(--text-muted); }
+        input:focus { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15); }
 
         .check-item { 
-            display: flex; align-items: center; gap: 10px; background: var(--bg-canvas); 
+            display: flex; align-items: center; gap: 10px; background: var(--bg); 
             padding: 14px; border-radius: 16px; border: 2px solid var(--border); margin: 8px 0;
+            cursor: pointer;
         }
-        .check-item input { width: 22px; height: 22px; accent-color: var(--primary); }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--primary); -webkit-appearance: checkbox; }
 
-        /* Buttons & Haptics */
+        /* Haptic Buttons */
         button { cursor: pointer; border: none; border-radius: 16px; font-weight: 700; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        button:active { transform: scale(0.92); opacity: 0.8; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; height: 56px; font-size: 16px; }
-        .btn-danger { background: var(--hot) !important; color: white; }
+        button:active { transform: scale(0.9) !important; opacity: 0.8; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; height: 58px; font-size: 16px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
 
-        /* Table Design */
-        .table-container { border-radius: 28px; overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border); }
+        /* Table optimized for horizontal touch swiping */
+        .table-container { border-radius: 24px; overflow-x: auto; background: var(--card); border: 1px solid var(--border); -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 1300px; }
-        th, td { padding: 18px; border-bottom: 1px solid var(--border); text-align: left; }
-        th { font-size: 11px; text-transform: uppercase; color: var(--text-muted); background: rgba(0,0,0,0.02); }
+        th, td { padding: 16px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { font-size: 10px; text-transform: uppercase; color: var(--muted); background: rgba(0,0,0,0.02); }
         
         .row-priority { background: rgba(239, 68, 68, 0.05) !important; border-left: 6px solid var(--hot); }
-        .badge { padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; position: relative; overflow: hidden; display: inline-block; }
+
+        .badge { 
+            padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; 
+            position: relative; overflow: hidden; display: inline-block;
+        }
+        .badge::after {
+            content: ''; position: absolute; top: -50%; left: -100%; width: 100%; height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: rotate(30deg); animation: shine 3s infinite;
+        }
+
         .status-hot { background: #fee2e2; color: #ef4444; }
         .status-closed { background: #d1fae5; color: #10b981; }
 
         .action-group { display: flex; gap: 8px; }
-        .action-group button { width: 42px; height: 42px; border-radius: 12px; }
+        .action-group button { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 
+        /* Floating App UI Components */
         .fab { 
             position: fixed; bottom: calc(30px + var(--safe-bottom)); right: 25px; 
-            width: 68px; height: 68px; background: var(--primary); color: white; 
+            width: 70px; height: 70px; background: var(--primary); color: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            font-size: 32px; text-decoration: none; box-shadow: 0 15px 35px var(--primary-glow); z-index: 1000;
+            font-size: 32px; text-decoration: none; box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4); z-index: 1000;
         }
 
-        .notification-bar { background: var(--hot); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; margin-bottom: 25px; display: none; }
-        .watermark { text-align: center; margin-top: 60px; opacity: 0.5; font-size: 11px; font-weight: 800; letter-spacing: 2px; }
+        .notification-bar { 
+            background: var(--hot); color: white; padding: 18px; border-radius: 20px; 
+            text-align: center; font-weight: 800; margin-bottom: 20px; display: none;
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .watermark { text-align: center; margin-top: 60px; opacity: 0.5; font-size: 10px; font-weight: 800; letter-spacing: 2px; }
         .watermark span { color: var(--primary); font-size: 18px; display: block; margin-top: 5px; }
         .hidden { display: none !important; }
     </style>
@@ -119,13 +138,13 @@
 
 <div id="loginView" class="container" style="margin-top: 80px;">
     <div class="glass-card" style="max-width: 420px; margin: auto;">
-        <h1 style="text-align: center; font-weight: 900; letter-spacing: -2px; background: linear-gradient(to right, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TRUE INVEST</h1>
+        <h1 style="text-align: center; font-weight: 900; letter-spacing: -2px; color: var(--primary);">TRUE INVEST</h1>
         <form id="loginForm">
             <label>Work Email</label>
-            <input type="email" id="loginEmail" placeholder="email@trueinvest.com" required>
-            <label>Security Password</label>
+            <input type="email" id="loginEmail" placeholder="name@trueinvest.com" required>
+            <label>Secure Password</label>
             <input type="password" id="loginPassword" placeholder="••••••••" required>
-            <button type="submit" id="loginBtn" class="btn-primary" style="margin-top: 25px;">AUTHORIZE & ENTRY</button>
+            <button type="submit" id="loginBtn" class="btn-primary" style="margin-top: 25px;">VERIFY & ENTER</button>
             <div id="loginError" style="color:var(--hot); margin-top:15px; text-align:center; font-weight:700; display:none;"></div>
         </form>
     </div>
@@ -135,8 +154,8 @@
     <a href="#clientForm" class="fab" onclick="window.scrollTo({top:0, behavior:'smooth'})">＋</a>
     
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 style="margin:0; font-weight:900;">TRUE INVEST CRM</h2>
-        <button class="btn-danger" style="padding: 10px 18px; font-size: 11px; width:auto; border-radius:12px;" onclick="logout()">LOGOUT</button>
+        <h2 style="margin:0; font-weight:900;">Elite CRM Portal</h2>
+        <button class="btn-primary" style="background:#64748b; width:auto; height:38px; font-size:11px; padding:0 18px;" onclick="logout()">LOGOUT</button>
     </div>
 
     <div class="stats-grid">
@@ -151,19 +170,19 @@
         <form id="clientForm">
             <input type="hidden" id="editId" value="">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div><label>Capture Date</label><input type="date" id="leadDate"></div>
+                <div><label>Lead Date</label><input type="date" id="leadDate"></div>
                 <div><label>Follow-up</label><input type="date" id="followup"></div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
-                <div><label>Name</label><input type="text" id="name" placeholder="Client Name" required></div>
-                <div><label>Phone</label><input type="tel" id="phone" placeholder="91-xxxxxxxxxx" required></div>
+                <div><label>Client Name</label><input type="text" id="name" placeholder="Name" required></div>
+                <div><label>Phone</label><input type="tel" id="phone" placeholder="Phone" required></div>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 10px;">
-                <div><label>Locality</label><input type="text" id="location" placeholder="e.g. Crossing"></div>
+                <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
                 <div><label>Property Type</label><input type="text" id="propertyType" placeholder="e.g. 3BHK"></div>
-                <div><label>Budget</label><input type="text" id="budget" placeholder="e.g. 1.80 Cr"></div>
+                <div><label>Budget</label><input type="text" id="budget" placeholder="Budget"></div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
@@ -179,32 +198,30 @@
                 </div>
             </div>
 
-            <label>Intelligence Remarks</label>
-            <textarea id="remark" placeholder="Meeting notes..." rows="3"></textarea>
+            <label>Lead Remarks</label>
+            <textarea id="remark" placeholder="Meeting details..." rows="3"></textarea>
             
-            <div style="display: flex; gap: 12px; margin-top: 25px;">
-                <button type="submit" id="saveBtn" class="btn-primary">SYNC TO CLOUD</button>
-                <button type="button" class="btn-danger" style="width:120px; background:#64748b!important" onclick="resetForm()">RESET</button>
-            </div>
+            <button type="submit" id="saveBtn" class="btn-primary" style="margin-top: 25px;">SYNC TO CLOUD DB</button>
+            <button type="button" onclick="resetForm()" style="width:100%; background:none; color:var(--muted); margin-top:12px; font-size:12px;">Reset Fields</button>
         </form>
     </div>
 
     <div class="glass-card">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px;">
-            <button class="btn-primary" style="background:#64748b; height:45px; font-size:12px;" onclick="toggleDarkMode()">UI Theme</button>
-            <button class="btn-primary" style="background:#10b981; height:45px; font-size:12px;" onclick="downloadCSV()">Export CSV</button>
-            <button class="btn-primary" style="background:#3b82f6; height:45px; font-size:12px;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+            <button class="btn-primary" style="background:#64748b; height:48px; font-size:12px;" onclick="toggleDarkMode()">UI Theme</button>
+            <button class="btn-primary" style="background:var(--closed); height:48px; font-size:12px;" onclick="downloadCSV()">Export Leads</button>
+            <button class="btn-primary" style="background:#3b82f6; height:48px; font-size:12px;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
             <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
-            <button class="btn-primary" style="background:var(--hot); height:45px; font-size:11px;" onclick="clearDuplicates()">Cleanup</button>
+            <button class="btn-primary" style="background:var(--hot); height:48px; font-size:11px;" onclick="clearDuplicates()">Cleanup Dupes</button>
         </div>
-        <input type="text" id="search" placeholder="🔍 Search database..." style="border: 2px solid var(--primary);">
+        <input type="text" id="search" placeholder="🔍 Instant search by name, phone, loc..." style="border: 2px solid var(--primary);">
     </div>
 
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>S.No</th><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
+                    <th>S.No</th><th>Date</th><th>Client</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody id="clientTable"></tbody>
@@ -231,14 +248,14 @@
     let clients = [];
     const getToday = () => new Date().toLocaleDateString('en-CA');
 
-    // Theme Engine
+    // Persistent Theme Engine
     if (localStorage.getItem('crmTheme') === 'dark') document.body.classList.add('dark-mode');
     function toggleDarkMode() {
         const isDark = document.body.classList.toggle('dark-mode');
         localStorage.setItem('crmTheme', isDark ? 'dark' : 'light');
     }
 
-    // Auth Controller
+    // Auth State Monitor
     auth.onAuthStateChanged(user => {
         if (user) { 
             document.getElementById('loginView').classList.add('hidden');
@@ -256,7 +273,7 @@
         btn.innerText = "AUTHENTICATING...";
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.innerText = "AUTHORIZE ACCESS";
+                btn.innerText = "VERIFY & ENTER";
                 document.getElementById('loginError').innerText = "Access Denied: " + err.message;
                 document.getElementById('loginError').style.display = 'block';
             });
@@ -264,7 +281,7 @@
 
     function logout() { auth.signOut(); }
 
-    // Cloud Data Sync
+    // Logic & Cloud Data
     function loadData() {
         db.collection("leads").where("ownerId", "==", auth.currentUser.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
@@ -281,9 +298,9 @@
         document.getElementById('statHot').innerText = clients.filter(c => c.status === 'Hot').length;
         document.getElementById('statFollow').innerText = followCount;
 
-        const bar = document.getElementById('reminderAlert');
-        bar.style.display = followCount ? 'block' : 'none';
-        bar.innerText = `🚨 ACTION: You have ${followCount} follow-ups required today!`;
+        const alert = document.getElementById('reminderAlert');
+        alert.style.display = followCount ? 'block' : 'none';
+        alert.innerText = `🚨 MOBILE ACTION: You have ${followCount} follow-ups scheduled for today!`;
     }
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
@@ -313,7 +330,7 @@
             btn.style.background = 'var(--closed)';
             btn.innerText = '✓ CLOUD UPDATED';
             setTimeout(() => { resetForm(); btn.style.background = 'var(--primary)'; }, 1000);
-        } catch (err) { alert(err.message); btn.innerText = 'SYNC TO CLOUD'; }
+        } catch (err) { alert("Sync Failed: " + err.message); btn.innerText = 'SYNC TO CLOUD DB'; }
     });
 
     function renderTable() {
@@ -322,6 +339,7 @@
         table.innerHTML = '';
         let serial = 1;
 
+        // Sorting: High priority follow-ups first
         const sorted = [...clients].sort((a,b) => (a.followup === today ? -1 : 1));
 
         sorted.forEach(c => {
@@ -334,14 +352,14 @@
                 <td style="font-weight:800; color:var(--primary)">${c.name}</td>
                 <td style="font-weight:700">${c.phone}</td>
                 <td><span class="badge ${c.status === 'Hot' ? 'status-hot' : 'status-closed'}">${c.status}</span></td>
-                <td style="color:#10b981; font-weight:bold">${c.budget || '-'}</td>
+                <td style="color:var(--closed); font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.sentTo || '-'}</td>
                 <td>${c.visitDone ? '✅' : '❌'}</td>
                 <td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td>
                 <td style="font-weight:800; color:var(--primary)">${c.followup || '-'}</td>
                 <td><div class="action-group">
-                    <button style="background:#10b981; color:white" onclick='markDone("${c.id}")'>✓</button>
+                    <button style="background:var(--closed); color:white" title="Mark Done" onclick='markDone("${c.id}")'>✓</button>
                     <button style="background:#3b82f6; color:white" onclick="window.location.href='tel:${c.phone}'">📞</button>
                     <button style="background:var(--wa-green); color:white" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
                     <button style="background:#f59e0b; color:white" onclick="editLead('${c.id}')">✎</button>
@@ -366,11 +384,18 @@
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
         document.getElementById('saveBtn').innerText = "UPDATE CLOUD RECORD";
         window.scrollTo({top: 0, behavior: 'smooth'});
+        
+        // Mobile Focus Flash
+        document.getElementById('formSection').style.transform = "scale(1.02)";
+        setTimeout(() => document.getElementById('formSection').style.transform = "scale(1)", 200);
     }
 
     function deleteLead(id) { 
-        if(confirm("Confirm: Delete lead permanently?")) {
-            db.collection("leads").doc(id).delete();
+        if(confirm("Confirm: Permanently delete lead?")) {
+            const row = document.querySelector(`button[onclick*="${id}"]`).closest('tr');
+            row.style.transform = 'translateX(100%)';
+            row.style.opacity = '0';
+            setTimeout(() => db.collection("leads").doc(id).delete(), 400);
         }
     }
 
@@ -378,10 +403,11 @@
         const seen = new Set();
         const toDelete = [];
         clients.forEach(c => {
-            if(seen.has(c.phone.trim())) toDelete.push(c.id);
-            else seen.add(c.phone.trim());
+            const p = c.phone.trim();
+            if(seen.has(p)) toDelete.push(c.id);
+            else seen.add(p);
         });
-        if(toDelete.length && confirm(`Remove ${toDelete.length} duplicates?`)) {
+        if(toDelete.length && confirm(`Remove ${toDelete.length} duplicate phone numbers?`)) {
             const batch = db.batch();
             toDelete.forEach(id => batch.delete(db.collection("leads").doc(id)));
             await batch.commit();
@@ -391,20 +417,20 @@
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "SYNC TO CLOUD"; 
+        document.getElementById('saveBtn').innerText = "SYNC TO CLOUD DB"; 
     }
 
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
-        const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${name}, this is Aditya from True Invest...`, '_blank'); 
+        const msg = encodeURIComponent(`Hi ${name}, this is regarding our property discussion...`);
+        window.open(`https://wa.me/${clean.length === 10 ? '91'+clean : clean}?text=${msg}`, '_blank'); 
     }
 
     function downloadCSV() {
         let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
         clients.forEach(c => { csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`; });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        a.download = `Leads_Master.csv`; a.click();
+        a.download = `Leads_Report.csv`; a.click();
     }
 
     function importCSV(e) {
@@ -424,7 +450,7 @@
                 }
             });
             await batch.commit();
-            alert("Sync Complete");
+            alert("Mobile Sync Success");
         };
         reader.readAsText(e.target.files[0]);
     }
