@@ -9,9 +9,11 @@
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
             --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
+            --hot-bg: #ffebe9; --hot-text: #d93025; --closed-bg: #e6f4ea; --closed-text: #1e8e3e;
         }
         body.dark-mode {
             --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
+            --hot-bg: #4c1e1e; --hot-text: #ff8a80; --closed-bg: #1b3320; --closed-text: #81c995;
         }
         
         body { 
@@ -22,69 +24,72 @@
         }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 15px 0; }
+        h1 { text-align: center; font-size: 1.5rem; font-weight: 800; margin: 20px 0; letter-spacing: -0.5px; color: var(--accent-blue); }
 
-        /* Stats Dashboard */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        /* Modern Dashboard Cards */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-card { 
-            background: var(--card-bg); padding: 12px 5px; border-radius: 10px; 
-            text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            background: var(--card-bg); padding: 15px 5px; border-radius: 16px; 
+            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border-color);
         }
-        .stat-card label { display: block; font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 4px; }
-        .stat-card span { font-size: 18px; font-weight: 900; color: var(--accent-blue); }
+        .stat-card label { display: block; font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 5px; text-transform: uppercase; }
+        .stat-card span { font-size: 22px; font-weight: 900; }
 
         .notification-bar { 
             background: var(--notify-red); color: white; padding: 14px; 
-            text-align: center; border-radius: 10px; margin-bottom: 12px; 
-            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            text-align: center; border-radius: 12px; margin-bottom: 15px; 
+            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(250, 62, 62, 0.3);
         }
 
-        form, .table-container, .login-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        form, .table-container, .login-card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border-color); }
         
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; opacity: 0.7; }
+        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; opacity: 0.8; }
         input, textarea, button, select { 
-            padding: 12px; margin: 6px 0 12px 0; width: 100%; border: 1px solid var(--border-color); 
-            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
-            box-sizing: border-box; appearance: none; -webkit-appearance: none;
+            padding: 14px; margin: 6px 0 14px 0; width: 100%; border: 1.5px solid var(--border-color); 
+            border-radius: 12px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
+            box-sizing: border-box; transition: 0.2s;
         }
-        
+        input:focus, select:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1); }
+
+        .badge { padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; }
+        .status-hot { background: var(--hot-bg); color: var(--hot-text); }
+        .status-closed { background: var(--closed-bg); color: var(--closed-text); }
+        .status-default { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); }
+
         .check-item { 
-            display: flex; align-items: center; gap: 10px; background: var(--bg-color); 
-            padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-            margin-bottom: 12px; height: 50px; box-sizing: border-box;
+            display: flex; align-items: center; gap: 12px; background: var(--bg-color); 
+            padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);
+            margin-bottom: 14px; cursor: pointer;
         }
-        .check-item input[type="checkbox"] { width: 20px; height: 20px; margin: 0; -webkit-appearance: checkbox; cursor: pointer;}
-        .check-item label { margin: 0; font-size: 14px; font-weight: 600; cursor: pointer; opacity: 1; text-transform: none; }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; -webkit-appearance: checkbox;}
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 50px; border-radius: 10px; font-size: 16px; transition: 0.2s;}
-        button:active { transform: scale(0.98); opacity: 0.9; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
-        .btn-logout { background: var(--notify-red); margin-bottom: 15px; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 14px; font-size: 16px; transition: 0.2s; }
+        button:active { transform: scale(0.96); opacity: 0.9; }
+        .btn-secondary { background: #606770; height: 46px; font-size: 14px; }
+        .btn-danger { background: var(--notify-red) !important; color: white !important; }
         
-        .action-group { display: flex; gap: 5px; min-width: 250px; justify-content: center; }
-        .action-group button { height: 36px; font-size: 11px; padding: 0 8px; flex: 1; margin: 0; }
+        /* Action Buttons UX */
+        .action-group { display: flex; gap: 8px; min-width: 320px; justify-content: center; }
+        .action-group button { height: 40px; font-size: 11px; padding: 0 12px; flex: 1; margin: 0; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-wa { background: var(--whatsapp-green) !important; }
-        .btn-call { background: #007bff !important; color: white !important; }
-        .btn-done { background: #28a745 !important; color: white !important; }
+        .btn-call { background: #007bff !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
-        .btn-del { background: #fa3e3e !important; color: white !important; }
 
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
 
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
-        th, td { padding: 12px 8px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; vertical-align: middle; }
-        th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+        .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
+        th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
+        th { background: var(--bg-color); font-weight: 800; font-size: 10px; color: #606770; text-transform: uppercase; letter-spacing: 1px; }
         
-        .row-highlight { background-color: var(--highlight-today) !important; font-weight: 600; }
-        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 10px 15px; font-weight: bold; }
+        .row-highlight { background-color: var(--highlight-today) !important; border-left: 6px solid var(--notify-red); }
+        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 15px; font-weight: 800; }
 
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 100; text-decoration: none; }
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 68px; height: 68px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4); z-index: 100; text-decoration: none; border: 3px solid white; }
         
-        .watermark { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.5; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-top: 1px solid var(--border-color); }
-        .watermark span { color: var(--accent-blue); font-size: 14px; }
+        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.5; font-size: 11px; font-weight: 700; border-top: 1px solid var(--border-color); line-height: 1.6; }
+        .watermark span { color: var(--accent-blue); font-size: 15px; display: block; }
         
         .hidden { display: none !important; }
     </style>
@@ -95,52 +100,57 @@
 </head>
 <body>
 
-<div id="loginView" class="container" style="margin-top: 50px;">
+<div id="loginView" class="container" style="margin-top: 100px;">
     <h1>TRUE INVEST</h1>
     <div class="login-card">
         <form id="loginForm">
-            <label>Agent Email</label>
-            <input type="email" id="loginEmail" placeholder="admin@trueinvest.com" required>
-            <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" required>
-            <button type="submit" id="loginBtn">Secure Login</button>
-            <div id="loginError" style="color: var(--notify-red); margin-top: 10px; text-align: center; font-size: 14px; display: none;"></div>
+            <label>Agent Access Portal</label>
+            <input type="email" id="loginEmail" placeholder="Work Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit" id="loginBtn">Authenticate & Login</button>
+            <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; font-weight: 600; display: none;"></div>
         </form>
     </div>
 </div>
 
 <div id="crmView" class="container hidden">
-    <a href="#clientForm" class="fab">+</a>
-    <h1>TRUE INVEST CRM</h1>
-    <button class="btn-secondary btn-logout" onclick="logout()">Logout</button>
+    <a href="#clientForm" class="fab">＋</a>
+    <h1>TRUE INVEST PRO</h1>
+    <button class="btn-secondary" style="background:var(--notify-red); color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout</button>
 
     <div class="stats-grid">
-        <div class="stat-card"><label>Total</label><span id="statTotal">0</span></div>
-        <div class="stat-card" style="border-bottom: 3px solid #fa3e3e;"><label>Hot</label><span id="statHot">0</span></div>
-        <div class="stat-card" style="border-bottom: 3px solid #1877f2;"><label>Follow-ups</label><span id="statFollow">0</span></div>
+        <div class="stat-card"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
+        <div class="stat-card"><label>🔥 Hot</label><span id="statHot" style="color:var(--hot-text)">0</span></div>
+        <div class="stat-card"><label>⏰ Today</label><span id="statFollow">0</span></div>
     </div>
 
     <div id="reminderAlert" class="notification-bar"></div>
 
     <form id="clientForm">
         <input type="hidden" id="editId" value="">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div><label>Lead In-Date</label><input type="date" id="leadDate"></div>
+            <div><label>Next Follow-up</label><input type="date" id="followup"></div>
         </div>
 
-        <label>Client Details</label>
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <label>Primary Contact</label>
+        <input type="text" id="name" placeholder="Client Full Name" required>
+        <input type="tel" id="phone" placeholder="Mobile Number" required>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <input type="text" id="location" placeholder="Location">
-            <input type="text" id="propertyType" placeholder="Property Type">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <input type="text" id="location" placeholder="Locality/Area">
+            <select id="propertyType">
+                <option value="">Property Category</option>
+                <option>Residential Flat</option>
+                <option>Commercial Space</option>
+                <option>Residential Plot</option>
+                <option>Luxury Villa</option>
+            </select>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
-                <label>Status</label>
+                <label>Lead Status</label>
                 <select id="status">
                     <option>New</option>
                     <option>Follow-up</option>
@@ -150,37 +160,34 @@
                 </select>
             </div>
             <div>
-                <label>Site Visit</label>
+                <label>Visitation</label>
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
-                    <label for="visitDone">Done</label>
+                    <label for="visitDone">Site Visit Done</label>
                 </div>
             </div>
         </div>
 
-        <label>Assignment</label>
         <div class="check-item">
             <input type="checkbox" id="sendSunny">
-            <label for="sendSunny">Assign lead to Sunny</label>
+            <label for="sendSunny">Assign this lead to Sunny</label>
         </div>
 
-        <label>Financials & Notes</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 50 Lacs / 1.2 Cr)">
-        <textarea id="remark" placeholder="Additional Remarks..." rows="3"></textarea>
+        <label>Financials & Remarks</label>
+        <input type="text" id="budget" placeholder="Budget (e.g., 95 Lacs)">
+        <textarea id="remark" placeholder="Notes..." rows="3"></textarea>
         
-        <button type="submit" id="saveBtn">Save to Cloud</button>
-        <button type="button" class="btn-secondary" onclick="resetForm()">Cancel</button>
+        <button type="submit" id="saveBtn">Sync to Cloud Database</button>
+        <button type="button" class="btn-secondary" style="width:100%; margin-top:10px" onclick="resetForm()">Reset Form</button>
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Theme</button>
-        <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export</button>
-        
-        <button class="btn-secondary" style="background:#17a2b8" onclick="document.getElementById('csvImport').click()">Import</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">UI Theme</button>
+        <button class="btn-secondary" style="background:#28a745; color:white;" onclick="downloadCSV()">Export Data</button>
+        <button class="btn-secondary" style="background:#17a2b8; color:white;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
-        
-        <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean</button>
-        <input type="text" id="search" class="search-box" placeholder="Search leads...">
+        <button class="btn-secondary btn-danger" onclick="clearDuplicates()">Clean Dupes</button>
+        <input type="text" id="search" class="search-box" placeholder="🔍 Search name, phone, or area...">
     </div>
 
     <div class="table-container">
@@ -188,15 +195,15 @@
             <thead>
                 <tr>
                     <th>S.No</th>
-                    <th>Lead ID</th>
+                    <th>Ref ID</th>
                     <th>Date</th>
                     <th>Name</th>
                     <th>Phone</th>
                     <th>Status</th>
                     <th>Budget</th>
-                    <th>Assign</th>
+                    <th>Assigned</th>
                     <th>Visit</th>
-                    <th>Loc</th>
+                    <th>Location</th>
                     <th>Type</th>
                     <th>Follow-up</th>
                     <th>Actions</th>
@@ -207,7 +214,8 @@
     </div>
 
     <div class="watermark">
-        CREATED BY <br>
+        ENTERPRISE REAL ESTATE CRM<br>
+        DESIGNED & DEVELOPED BY<br>
         <span>ADITYA PACHAURI</span>
     </div>
 </div>
@@ -227,7 +235,11 @@
     const db = firebase.firestore();
 
     let clients = [];
-    const getToday = () => new Date().toISOString().split('T')[0];
+    // Date Logic Fix: Using local string instead of ISO to prevent day-slip
+    const getToday = () => {
+        const d = new Date();
+        return d.toLocaleDateString('en-CA'); // Returns YYYY-MM-DD
+    };
 
     function showView(viewId) {
         document.getElementById('loginView').classList.add('hidden');
@@ -243,10 +255,10 @@
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        btn.disabled = true; btn.innerText = "Processing...";
+        btn.disabled = true; btn.innerText = "Authenticating...";
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.disabled = false; btn.innerText = "Secure Login";
+                btn.disabled = false; btn.innerText = "Authenticate & Login";
                 const errDiv = document.getElementById('loginError');
                 errDiv.innerText = "Access Denied: " + err.message; errDiv.style.display = 'block';
             });
@@ -257,7 +269,6 @@
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
-        document.getElementById('clientTable').innerHTML = '<tr><td colspan="13">Syncing Data...</td></tr>';
         db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -278,18 +289,18 @@
 
         const bar = document.getElementById('reminderAlert');
         bar.style.display = follow ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: ${follow} follow-ups scheduled today!`;
+        bar.innerText = `🔔 SCHEDULE ALERT: ${follow} follow-ups to complete today!`;
     }
 
     document.getElementById('clientForm').addEventListener('submit', e => {
         e.preventDefault();
         const user = auth.currentUser;
         const data = {
-            ownerId: user.uid, ownerEmail: user.email,    
+            ownerId: user.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "",
-            name: document.getElementById('name').value, 
-            phone: document.getElementById('phone').value,
+            name: document.getElementById('name').value.trim(), 
+            phone: document.getElementById('phone').value.trim(),
             location: document.getElementById('location').value || "", 
             propertyType: document.getElementById('propertyType').value || "",
             status: document.getElementById('status').value, 
@@ -306,10 +317,7 @@
         task.then(() => {
             resetForm();
             saveBtn.disabled = false;
-        }).catch(err => {
-            alert("Sync Failed: " + err.message);
-            saveBtn.disabled = false;
-        });
+        }).catch(err => { alert(err.message); saveBtn.disabled = false; });
     });
 
     function renderTable() {
@@ -321,70 +329,80 @@
         const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== today || c.status === 'Closed');
 
-        const generateRow = c => {
-            const shortId = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
+        const generateRow = (c) => {
+            const shortId = c.id ? c.id.substring(c.id.length - 4).toUpperCase() : 'NEW';
+            let badgeClass = 'status-default';
+            if(c.status === 'Hot') badgeClass = 'status-hot';
+            if(c.status === 'Closed') badgeClass = 'status-closed';
+
             return `
             <tr class="${c.followup === today ? 'row-highlight' : ''}">
-                <td style="font-size: 11px; opacity: 0.6;">${serial++}</td>
-                <td style="font-family: monospace; font-weight: bold; color: #606770;">#${shortId}</td>
-                <td>${c.leadDate || '-'}</td><td style="font-weight:bold">${c.name}</td><td>${c.phone}</td>
-                <td style="color:${c.status === 'Hot' ? '#fa3e3e' : '#1877f2'}; font-weight:bold">${c.status}</td>
+                <td style="opacity:0.5">${serial++}</td>
+                <td style="font-family:monospace; font-weight:700; color:var(--accent-blue)">#${shortId}</td>
+                <td>${c.leadDate}</td>
+                <td style="font-weight:800">${c.name}</td>
+                <td style="font-weight:600">${c.phone}</td>
+                <td><span class="badge ${badgeClass}">${c.status}</span></td>
                 <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td><td>${c.location || '-'}</td>
-                <td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
+                <td>${c.sentTo || '-'}</td>
+                <td>${c.visitDone ? '✅' : '❌'}</td>
+                <td>${c.location || '-'}</td>
+                <td>${c.propertyType || '-'}</td>
+                <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
                 <td><div class="action-group">
-                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">Call</button>
+                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
                     <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                    ${c.followup ? `<button class="btn-done" onclick="markFollowupDone('${c.id}')">Done</button>` : ''}
-                    <button class="btn-edit" onclick="editLead('${c.id}')">Edit</button>
-                    <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
+                    <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
+                    <button class="btn-danger" onclick="deleteLead('${c.id}')">DEL</button>
                 </div></td>
             </tr>`;
         };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="13">Urgent (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="13">🚨 PRIORITY: TODAY'S FOLLOW-UPS</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="13">Lead History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="13">📁 ALL REGISTERED LEADS</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
-    }
-
-    function markFollowupDone(id) { 
-        if(confirm("Complete follow-up?")) db.collection("leads").doc(id).update({ followup: "", status: "Follow-up" }); 
     }
 
     function editLead(id) {
         const c = clients.find(x => x.id === id);
         if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => document.getElementById(f).value = c[f] || '');
+        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
+            document.getElementById(f).value = c[f] || '';
+        });
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Lead";
+        document.getElementById('saveBtn').innerText = "Update Lead Record";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { if(confirm("Delete lead?")) db.collection("leads").doc(id).delete(); }
+    function deleteLead(id) { 
+        if(confirm("⚠ DANGER: Are you sure you want to permanently delete this lead? This action cannot be undone.")) {
+            db.collection("leads").doc(id).delete().catch(err => alert("Error deleting: " + err.message)); 
+        }
+    }
     
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save to Cloud"; 
+        document.getElementById('saveBtn').innerText = "Sync to Cloud Database"; 
     }
 
     function sendWA(num, name) { 
-        window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=Hello ${name}, regarding your real estate inquiry.`, '_blank'); 
+        const clean = num.replace(/\D/g,'');
+        const finalNum = clean.length === 10 ? '91'+clean : clean;
+        window.open(`https://wa.me/${finalNum}?text=Hello ${name}, regarding your inquiry with True Invest.`, '_blank'); 
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function downloadCSV() {
-        let csv = "SNo,LeadID,Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup,Remark\n";
-        let s = 1;
+        let csv = "ID,Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
         clients.forEach(c => {
-            const sid = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
-            csv += `"${s++}","${sid}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
+            csv += `"${c.id}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`;
         });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
         a.download = `Leads_${getToday()}.csv`; a.click();
@@ -398,29 +416,32 @@
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length >= 4) {
                     db.collection("leads").add({ 
-                        ownerId: auth.currentUser.uid, ownerEmail: auth.currentUser.email, 
-                        leadDate: cols[2] || getToday(), name: cols[3], phone: cols[4], status: cols[5] || "New", 
-                        budget: cols[6], sentTo: cols[7], visitDone: cols[8] === "true", 
-                        location: cols[9], propertyType: cols[10], followup: cols[11], remark: cols[12] 
+                        ownerId: auth.currentUser.uid, leadDate: cols[1] || getToday(), 
+                        name: cols[2], phone: cols[3], status: cols[4] || "New", 
+                        budget: cols[5], sentTo: cols[6], visitDone: cols[7] === "true", 
+                        location: cols[8], propertyType: cols[9], followup: cols[11] 
                     });
                 }
             });
-            alert("Syncing Imported Leads...");
-            e.target.value = "";
         };
         reader.readAsText(file);
     }
 
     function clearDuplicates() {
         const seen = new Set();
-        clients.forEach(c => { if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete(); else seen.add(c.phone); });
-        alert("Duplicates Cleaned");
+        clients.forEach(c => { 
+            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete(); 
+            else seen.add(c.phone); 
+        });
+        alert("Cleanup complete.");
     }
 
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { 
-            if(!tr.classList.contains('section-divider')) tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
+            if(!tr.classList.contains('section-divider')) {
+                tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
+            }
         });
     });
 </script>
