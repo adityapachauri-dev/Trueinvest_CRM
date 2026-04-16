@@ -26,7 +26,6 @@
         
         h1 { text-align: center; font-size: 1.6rem; font-weight: 800; margin: 20px 0; letter-spacing: -0.5px; color: var(--accent-blue); }
 
-        /* Dashboard */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-card { 
             background: var(--card-bg); padding: 15px 5px; border-radius: 16px; 
@@ -137,14 +136,14 @@
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <input type="text" id="location" placeholder="Locality">
-            <select id="propertyType">
-                <option value="">Property Type</option>
-                <option>Residential Flat</option>
-                <option>Commercial Space</option>
-                <option>Plot / Land</option>
-                <option>Luxury Villa</option>
-            </select>
+            <div>
+                <label>Locality</label>
+                <input type="text" id="location" placeholder="e.g. Noida Sec 1">
+            </div>
+            <div>
+                <label>Property Type</label>
+                <input type="text" id="propertyType" placeholder="e.g. 3BHK, Plot">
+            </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -162,14 +161,14 @@
                 <label>Visit</label>
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
-                    <label for="visitDone">Site Visit Done</label>
+                    <label for="visitDone" style="margin:0">Site Visit Done</label>
                 </div>
             </div>
         </div>
 
         <div class="check-item">
             <input type="checkbox" id="sendSunny">
-            <label for="sendSunny">Assign lead to Sunny</label>
+            <label for="sendSunny" style="margin:0">Assign lead to Sunny</label>
         </div>
 
         <label>Budget & Remarks</label>
