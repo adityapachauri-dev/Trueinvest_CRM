@@ -3,76 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Lock n key Edition</title>
+    <title>TRUE INVEST CRM - Pro Max</title>
     
     <style>
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
-            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
-            --hot-lead: #ff4757; --warm-lead: #ffa502;
+            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; 
+            --header-height: 60px;
         }
         body.dark-mode {
-            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
+            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042;
         }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg-color); color: var(--text-color); margin: 0; 
-            padding-bottom: 100px; transition: 0.3s;
+            font-family: -apple-system, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; 
+            padding-top: var(--header-height); padding-bottom: 80px; transition: 0.3s;
         }
+
+        /* Fixed Header - Features won't vanish */
+        .sticky-header {
+            position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
+            background: var(--accent-blue); color: white; display: flex; 
+            align-items: center; justify-content: space-between; padding: 0 15px;
+            z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
         .container { width: 100%; max-width: 600px; margin: auto; padding: 12px; box-sizing: border-box; }
         
-        h1 { text-align: center; font-size: 1.6rem; font-weight: 800; margin: 20px 0; color: var(--accent-blue); letter-spacing: 1px; }
-        .notification-bar { 
-            background: var(--notify-red); color: white; padding: 14px; 
-            text-align: center; border-radius: 10px; margin-bottom: 12px; 
-            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        /* Persistent Dashboard */
+        .dashboard { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; 
+            margin-bottom: 20px; position: sticky; top: var(--header-height); 
+            background: var(--bg-color); padding: 10px 0; z-index: 900;
+        }
+        .stat-card { background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .stat-card b { display: block; font-size: 1.2rem; color: var(--accent-blue); }
+        .stat-card small { font-size: 0.7rem; opacity: 0.7; font-weight: bold; }
+
+        form, .table-container, .login-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        
+        input, select, textarea { 
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); 
+            border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box;
         }
 
-        form, .table-container, .login-card { background: var(--card-bg); padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; opacity: 0.7; }
-        input, textarea, button, select { 
-            padding: 14px; margin-bottom: 15px; width: 100%; border: 1.5px solid var(--border-color); 
-            border-radius: 10px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
-            box-sizing: border-box; transition: 0.2s;
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { 
+            cursor: pointer; border: none; font-weight: bold; height: 48px; border-radius: 10px; 
+            transition: 0.2s; font-size: 14px;
         }
-        input:focus { border-color: var(--accent-blue); outline: none; }
+        .btn-main { background: var(--accent-blue); color: white; width: 100%; margin-top: 10px; }
+        .btn-action { height: 35px; font-size: 11px; flex: 1; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
-        .check-item { 
-            display: flex; align-items: center; gap: 10px; background: var(--bg-color); 
-            padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
-            margin-bottom: 15px; height: 54px; box-sizing: border-box;
+        /* Table Styles */
+        .table-container { overflow-x: auto; border: none; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; font-size: 11px; opacity: 0.6; padding: 10px; text-transform: uppercase; }
+        td { padding: 12px 10px; border-top: 1px solid var(--border-color); }
+
+        /* Floating Action Button */
+        .fab { 
+            position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; 
+            background: var(--whatsapp-green); color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 30px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none;
         }
-        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: bold; height: 54px; border-radius: 10px; font-size: 16px; }
-        button:active { transform: scale(0.97); }
-        .btn-secondary { background: #606770; height: 44px; font-size: 14px; margin-top: 0; }
-        
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .badge-hot { background: var(--hot-lead); color: white; }
-        .badge-warm { background: var(--warm-lead); color: white; }
-
-        .action-group { display: flex; gap: 8px; justify-content: center; }
-        .action-group button { height: 38px; font-size: 12px; padding: 0 10px; flex: 1; margin: 0; }
-        .btn-wa { background: var(--whatsapp-green) !important; }
-        .btn-call { background: #007bff !important; }
-
-        .table-container { overflow-x: auto; border-radius: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-        th, td { padding: 15px 10px; border-bottom: 1px solid var(--border-color); text-align: left; font-size: 14px; }
-        th { background: var(--bg-color); font-weight: 700; font-size: 12px; }
-        
-        .row-highlight { background-color: var(--highlight-today) !important; border-left: 5px solid var(--notify-red); }
-        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; padding: 10px 15px; font-weight: bold; }
-
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); z-index: 100; text-decoration: none; }
-        
-        .watermark { text-align: center; margin-top: 40px; padding: 25px; opacity: 0.6; font-size: 12px; letter-spacing: 2px; border-top: 1px solid var(--border-color); }
-        .watermark span { color: var(--accent-blue); font-size: 15px; font-weight: 800; }
+        .rating-stars { color: #ffc107; font-size: 14px; margin-top: 4px; }
+        .hot-tag { background: #ffebee; color: #d32f2f; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
         
         .hidden { display: none !important; }
     </style>
@@ -83,123 +81,93 @@
 </head>
 <body>
 
-<div id="loginView" class="container" style="margin-top: 80px;">
-    <h1>TRUE INVEST</h1>
+<div id="loginView" class="container" style="padding-top: 100px;">
+    <center><h1>TRUE INVEST</h1><p>Secure Cloud CRM</p></center>
     <div class="login-card">
-        <form id="loginForm">
-            <label>Master Access</label>
-            <input type="email" id="loginEmail" placeholder="admin@trueinvest.com" required>
-            <input type="password" id="loginPassword" placeholder="Enter PIN" required>
-            <button type="submit" id="loginBtn">Unlock CRM</button>
-            <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; font-weight: bold; display: none;"></div>
-        </form>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button class="btn-main" onclick="login()">Login to Dashboard</button>
     </div>
 </div>
 
-<div id="crmView" class="container hidden">
-    <a href="#clientForm" class="fab">＋</a>
-    <h1>TRUE INVEST CRM</h1>
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="btn-secondary" onclick="logout()" style="flex:1">Logout</button>
-        <button class="btn-secondary" onclick="toggleDarkMode()" style="flex:1">Theme</button>
+<div id="crmView" class="hidden">
+    <div class="sticky-header">
+        <b style="font-size: 1.1rem;">TRUE INVEST</b>
+        <div>
+            <span onclick="toggleDarkMode()" style="cursor:pointer; margin-right: 15px;">🌓</span>
+            <span onclick="logout()" style="cursor:pointer; font-size: 0.8rem; border: 1px solid white; padding: 4px 8px; border-radius: 5px;">LOGOUT</span>
+        </div>
     </div>
-    
-    <div id="reminderAlert" class="notification-bar"></div>
 
-    <form id="clientForm">
-        <input type="hidden" id="editId" value="">
-        
-        <div class="grid-2">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
+    <div class="container">
+        <div class="dashboard">
+            <div class="stat-card"><small>TOTAL</small><b id="statTotal">0</b></div>
+            <div class="stat-card"><small>HOT LEADS</small><b id="statHot" style="color:var(--notify-red)">0</b></div>
+            <div class="stat-card"><small>FOLLOW-UP</small><b id="statToday" style="color:var(--whatsapp-green)">0</b></div>
         </div>
 
-        <label>Client Identity</label>
-        <input type="text" id="name" placeholder="Client Name" required>
-        <input type="tel" id="phone" placeholder="91XXXXXXXXXX" required>
-        
-        <div class="grid-2">
-            <input type="text" id="location" placeholder="City/Area">
-            <input type="text" id="propertyType" placeholder="Flat/Plot (Lock n key)">
-        </div>
-
-        <div class="grid-2">
-            <div>
-                <label>Priority Status</label>
+        <form id="leadForm">
+            <input type="hidden" id="editId">
+            <div class="btn-group">
+                <input type="date" id="leadDate" title="Lead Date">
+                <input type="date" id="followup" title="Follow-up Date">
+            </div>
+            <input type="text" id="name" placeholder="Client Full Name" required>
+            <input type="tel" id="phone" placeholder="Phone Number (10 Digits)" required>
+            
+            <div class="btn-group">
+                <input type="text" id="budget" placeholder="Budget (e.g. 50L)">
                 <select id="status">
-                    <option>New</option>
-                    <option>Hot</option>
-                    <option>Warm</option>
+                    <option>New Lead</option>
+                    <option>Follow-up</option>
+                    <option>Hot Lead</option>
+                    <option>Site Visit</option>
                     <option>Closed</option>
                     <option>Not Interested</option>
                 </select>
             </div>
-            <div>
-                <label>Site Visit</label>
-                <div class="check-item">
-                    <input type="checkbox" id="visitDone">
-                    <label for="visitDone">Visited</label>
-                </div>
+            
+            <select id="priority">
+                <option value="1">⭐ Low Priority</option>
+                <option value="3" selected>⭐⭐ Medium Priority</option>
+                <option value="5">⭐⭐⭐ High Priority</option>
+            </select>
+
+            <textarea id="remark" placeholder="Detailed Notes / Call History..." rows="3"></textarea>
+            
+            <button type="submit" class="btn-main" id="saveBtn">SAVE LEAD TO CLOUD</button>
+            <button type="button" onclick="resetForm()" style="width:100%; background:none; color:gray; font-size: 12px; margin-top:5px;">Cancel / Clear Form</button>
+        </form>
+
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="search" placeholder="🔍 Search name, phone, or budget..." style="border: 2px solid var(--accent-blue);">
+            <div class="btn-group">
+                <button onclick="downloadCSV()" style="background:#6c757d; color:white;">📥 Export CSV</button>
+                <button onclick="clearDuplicates()" style="background:#dc3545; color:white;">🧹 Clean Data</button>
             </div>
         </div>
 
-        <div class="grid-2">
-            <div>
-                <label>Budget Range</label>
-                <input type="text" id="budget" placeholder="e.g. 1.80 Cr">
-            </div>
-            <div>
-                <label>Assigned To</label>
-                <select id="sendTo">
-                    <option value="">Admin (Me)</option>
-                    <option value="Sunny">Sunny</option>
-                </select>
-            </div>
-        </div>
-
-        <label>Deal Remarks</label>
-        <textarea id="remark" placeholder="Conversation summary..." rows="2"></textarea>
-        
-        <button type="submit" id="saveBtn">Save Record to Cloud</button>
-    </form>
-
-    <div class="controls" style="margin-bottom: 20px;">
-        <input type="text" id="search" class="search-box" style="border: 2px solid var(--accent-blue); height: 50px;" placeholder="🔍 Search by name, phone or location...">
-        <div class="grid-2" style="margin-top:10px">
-            <button class="btn-secondary" style="background:#28a745" onclick="downloadCSV()">Export Data</button>
-            <button class="btn-secondary" style="background:#dc3545" onclick="clearDuplicates()">Clean Junk</button>
+        <div class="table-container">
+            <table id="leadTable">
+                <thead>
+                    <tr>
+                        <th>Client Details</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clientTableBody"></tbody>
+            </table>
         </div>
     </div>
-
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Lead Name</th>
-                    <th>Status</th>
-                    <th>Phone</th>
-                    <th>Project</th>
-                    <th>Budget</th>
-                    <th>Assign</th>
-                    <th>Follow-up</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="clientTable"></tbody>
-        </table>
-    </div>
-
-    <div class="watermark">
-        CORE SYSTEM DEVELOPED BY <br>
-        <span>ADITYA PACHAURI</span>
-    </div>
+    
+    <a href="https://wa.me/919999999999" class="fab" target="_blank">💬</a>
 </div>
 
 <script>
-    // Config as provided by user
+    // Firebase Setup
     const firebaseConfig = {
-        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
+        apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY",
         authDomain: "truecrm-6cf8e.firebaseapp.com",
         projectId: "truecrm-6cf8e",
         storageBucket: "truecrm-6cf8e.firebasestorage.app",
@@ -210,170 +178,153 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-
-    let clients = [];
-    const todayStr = new Date().toISOString().split('T')[0];
+    let leads = [];
+    const today = new Date().toISOString().split('T')[0];
 
     // Auth Listeners
     auth.onAuthStateChanged(user => {
-        if (user) { 
+        if (user) {
             document.getElementById('loginView').classList.add('hidden');
             document.getElementById('crmView').classList.remove('hidden');
-            loadData(); 
-        } else { 
-            document.getElementById('crmView').classList.add('hidden');
+            fetchLeads();
+        } else {
             document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('crmView').classList.add('hidden');
         }
     });
 
-    // Login Logic
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('loginBtn');
-        btn.disabled = true; btn.innerText = "Syncing...";
-        auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
-            .catch(err => {
-                btn.disabled = false; btn.innerText = "Unlock CRM";
-                const errDiv = document.getElementById('loginError');
-                errDiv.innerText = "❌ Incorrect Access Credentials"; errDiv.style.display = 'block';
-            });
-    });
+    function login() {
+        const e = document.getElementById('loginEmail').value;
+        const p = document.getElementById('loginPassword').value;
+        auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
+    }
 
     function logout() { auth.signOut(); }
 
-    // Load Data with Real-time Snapshots
-    function loadData() {
-        const user = auth.currentUser;
-        db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
-          .onSnapshot(snap => {
-              clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              renderTable(); 
-              checkReminders();
-          });
+    // Fetch Data
+    function fetchLeads() {
+        db.collection("leads").where("ownerId", "==", auth.currentUser.uid)
+        .onSnapshot(snap => {
+            leads = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+            updateStats();
+            renderTable();
+        });
     }
 
-    // Save/Update Logic
-    document.getElementById('clientForm').addEventListener('submit', e => {
+    // Save Data
+    document.getElementById('leadForm').addEventListener('submit', e => {
         e.preventDefault();
-        const user = auth.currentUser;
-        const data = {
-            ownerId: user.uid,
-            leadDate: document.getElementById('leadDate').value || todayStr,
-            followup: document.getElementById('followup').value || "",
-            name: document.getElementById('name').value, 
-            phone: document.getElementById('phone').value,
-            location: document.getElementById('location').value || "", 
-            propertyType: document.getElementById('propertyType').value || "",
-            status: document.getElementById('status').value, 
-            visitDone: document.getElementById('visitDone').checked,
-            sentTo: document.getElementById('sendTo').value, 
-            budget: document.getElementById('budget').value || "", 
-            remark: document.getElementById('remark').value || ""
-        };
         const id = document.getElementById('editId').value;
-        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => {
-            document.getElementById('clientForm').reset();
-            document.getElementById('editId').value = "";
-            document.getElementById('saveBtn').innerText = "Save Record to Cloud";
-        });
+        const data = {
+            ownerId: auth.currentUser.uid,
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            leadDate: document.getElementById('leadDate').value || today,
+            followup: document.getElementById('followup').value,
+            budget: document.getElementById('budget').value,
+            status: document.getElementById('status').value,
+            priority: document.getElementById('priority').value,
+            remark: document.getElementById('remark').value,
+            timestamp: new Date().getTime()
+        };
+
+        if(id) db.collection("leads").doc(id).update(data);
+        else db.collection("leads").add(data);
+        
+        resetForm();
     });
 
-    // Render Table with Conditional Coloring
     function renderTable() {
-        const table = document.getElementById('clientTable');
-        table.innerHTML = '';
-        let serial = 1;
+        const body = document.getElementById('clientTableBody');
+        body.innerHTML = "";
+        
+        // Sorting: High Priority & Today's Follow-ups first
+        const sorted = [...leads].sort((a,b) => b.priority - a.priority);
 
-        clients.forEach(c => {
-            const isToday = c.followup === todayStr;
-            const statusClass = c.status === 'Hot' ? 'badge-hot' : (c.status === 'Warm' ? 'badge-warm' : '');
+        sorted.forEach(l => {
+            const isHot = l.status.includes("Hot");
+            const isToday = l.followup === today;
             
-            table.innerHTML += `
-            <tr class="${isToday ? 'row-highlight' : ''}">
-                <td>${serial++}</td>
-                <td><strong>${c.name}</strong></td>
-                <td><span class="badge ${statusClass}">${c.status}</span></td>
-                <td>${c.phone}</td>
-                <td>${c.propertyType || '-'}</td>
-                <td>₹ ${c.budget || '-'}</td>
-                <td>${c.sentTo || 'Admin'}</td>
-                <td>${c.followup || '-'}</td>
-                <td>
-                    <div class="action-group">
-                        <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">📞</button>
-                        <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>💬</button>
-                        <button style="background:#ffc107" onclick="editLead('${c.id}')">✏️</button>
-                        <button style="background:#fa3e3e" onclick="deleteLead('${c.id}')">🗑️</button>
-                    </div>
-                </td>
-            </tr>`;
+            body.innerHTML += `
+                <tr style="${isToday ? 'background: #fff9c4' : ''}">
+                    <td>
+                        <b>${l.name}</b> ${isHot ? '<span class="hot-tag">HOT</span>' : ''}<br>
+                        <small>${l.phone} | ${l.budget || 'No Budget'}</small>
+                        <div class="rating-stars">${'⭐'.repeat(l.priority)}</div>
+                    </td>
+                    <td><small>${l.status}</small><br><small style="color:blue">${l.followup || ''}</small></td>
+                    <td>
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-action" style="background:var(--accent-blue); color:white;" onclick="window.location.href='tel:${l.phone}'">CALL</button>
+                            <button class="btn-action" style="background:var(--whatsapp-green); color:white;" onclick="sendWA('${l.phone}', '${l.name}')">WA</button>
+                            <button class="btn-action" style="background:#ffc107;" onclick="editLead('${l.id}')">EDIT</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
         });
+    }
+
+    function updateStats() {
+        document.getElementById('statTotal').innerText = leads.length;
+        document.getElementById('statHot').innerText = leads.filter(l => l.status.includes("Hot")).length;
+        document.getElementById('statToday').innerText = leads.filter(l => l.followup === today).length;
     }
 
     function editLead(id) {
-        const c = clients.find(x => x.id === id);
-        if(!c) return;
-        document.getElementById('editId').value = c.id;
-        document.getElementById('name').value = c.name;
-        document.getElementById('phone').value = c.phone;
-        document.getElementById('status').value = c.status;
-        document.getElementById('followup').value = c.followup;
-        document.getElementById('budget').value = c.budget;
-        document.getElementById('propertyType').value = c.propertyType;
-        document.getElementById('sendTo').value = c.sentTo || "";
-        document.getElementById('saveBtn').innerText = "Update Record";
+        const l = leads.find(x => x.id === id);
+        document.getElementById('editId').value = l.id;
+        document.getElementById('name').value = l.name;
+        document.getElementById('phone').value = l.phone;
+        document.getElementById('budget').value = l.budget;
+        document.getElementById('status').value = l.status;
+        document.getElementById('followup').value = l.followup;
+        document.getElementById('priority').value = l.priority;
+        document.getElementById('remark').value = l.remark;
+        document.getElementById('saveBtn').innerText = "UPDATE LEAD DETAILS";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function sendWA(num, name) { 
-        let cleanNum = num.replace(/\D/g,'');
-        if(cleanNum.length === 10) cleanNum = "91" + cleanNum;
-        window.open(`https://wa.me/${cleanNum}?text=Hello ${name}, Aditya here from Lock n key. Regarding your property inquiry...`, '_blank'); 
+    function sendWA(num, name) {
+        const msg = `Hi ${name}, following up regarding your requirement.`;
+        window.open(`https://wa.me/91${num.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`);
     }
 
-    function deleteLead(id) { if(confirm("Confirm Delete?")) db.collection("leads").doc(id).delete(); }
+    function resetForm() {
+        document.getElementById('leadForm').reset();
+        document.getElementById('editId').value = "";
+        document.getElementById('saveBtn').innerText = "SAVE LEAD TO CLOUD";
+    }
+
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
-    function checkReminders() {
-        const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
-        const bar = document.getElementById('reminderAlert');
-        bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention Aditya: ${count} Client Follow-ups due today!`;
+    function downloadCSV() {
+        let csv = "Name,Phone,Status,Budget,Followup,Notes\n";
+        leads.forEach(l => {
+            csv += `"${l.name}","${l.phone}","${l.status}","${l.budget}","${l.followup}","${l.remark}"\n`;
+        });
+        const blob = new Blob(["\ufeff", csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `Leads_Backup.csv`; a.click();
     }
 
     function clearDuplicates() {
         const seen = new Set();
-        clients.forEach(c => { 
-            if(seen.has(c.phone)) db.collection("leads").doc(c.id).delete(); 
-            else seen.add(c.phone); 
+        leads.forEach(l => {
+            if(seen.has(l.phone)) db.collection("leads").doc(l.id).delete();
+            else seen.add(l.phone);
         });
-        alert("Database Cleaned!");
+        alert("Duplicates removed successfully!");
     }
 
-    // Enhanced Search
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr').forEach(tr => { 
-            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
+        document.querySelectorAll('#clientTableBody tr').forEach(tr => {
+            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     });
-
-    function downloadCSV() {
-        let csv = "Name,Phone,Status,Budget,Location,Type,Followup,Remark\n";
-        clients.forEach(c => {
-            csv += `"${c.name}","${c.phone}","${c.status}","${c.budget}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', `Leads_Report_${todayStr}.csv`);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
 </script>
+
 </body>
 </html>
