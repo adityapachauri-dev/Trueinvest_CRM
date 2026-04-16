@@ -23,6 +23,16 @@
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
         
         h1 { text-align: center; font-size: 1.4rem; font-weight: 700; margin: 15px 0; }
+
+        /* Stats Dashboard */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .stat-card { 
+            background: var(--card-bg); padding: 12px 5px; border-radius: 10px; 
+            text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .stat-card label { display: block; font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 4px; }
+        .stat-card span { font-size: 18px; font-weight: 900; color: var(--accent-blue); }
+
         .notification-bar { 
             background: var(--notify-red); color: white; padding: 14px; 
             text-align: center; border-radius: 10px; margin-bottom: 12px; 
@@ -103,6 +113,13 @@
     <a href="#clientForm" class="fab">+</a>
     <h1>TRUE INVEST CRM</h1>
     <button class="btn-secondary btn-logout" onclick="logout()">Logout</button>
+
+    <div class="stats-grid">
+        <div class="stat-card"><label>Total</label><span id="statTotal">0</span></div>
+        <div class="stat-card" style="border-bottom: 3px solid #fa3e3e;"><label>Hot</label><span id="statHot">0</span></div>
+        <div class="stat-card" style="border-bottom: 3px solid #1877f2;"><label>Follow-ups</label><span id="statFollow">0</span></div>
+    </div>
+
     <div id="reminderAlert" class="notification-bar"></div>
 
     <form id="clientForm">
@@ -210,7 +227,7 @@
     const db = firebase.firestore();
 
     let clients = [];
-    const todayStr = new Date().toISOString().split('T')[0];
+    const getToday = () => new Date().toISOString().split('T')[0];
 
     function showView(viewId) {
         document.getElementById('loginView').classList.add('hidden');
@@ -244,8 +261,24 @@
         db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              renderTable(); checkReminders();
+              renderTable();
+              updateDashboard();
           });
+    }
+
+    function updateDashboard() {
+        const today = getToday();
+        const total = clients.length;
+        const hot = clients.filter(c => c.status === 'Hot').length;
+        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
+
+        document.getElementById('statTotal').innerText = total;
+        document.getElementById('statHot').innerText = hot;
+        document.getElementById('statFollow').innerText = follow;
+
+        const bar = document.getElementById('reminderAlert');
+        bar.style.display = follow ? 'block' : 'none';
+        bar.innerText = `🔔 Attention: ${follow} follow-ups scheduled today!`;
     }
 
     document.getElementById('clientForm').addEventListener('submit', e => {
@@ -253,7 +286,7 @@
         const user = auth.currentUser;
         const data = {
             ownerId: user.uid, ownerEmail: user.email,    
-            leadDate: document.getElementById('leadDate').value || todayStr,
+            leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value, 
             phone: document.getElementById('phone').value,
@@ -279,24 +312,24 @@
         });
     });
 
-    let serialCounter = 1;
-
     function renderTable() {
         const table = document.getElementById('clientTable');
+        const today = getToday();
         table.innerHTML = '';
-        serialCounter = 1;
+        let serial = 1;
 
-        const urgent = clients.filter(c => c.followup === todayStr && c.status !== 'Closed');
-        const others = clients.filter(c => c.followup !== todayStr || c.status === 'Closed');
+        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed');
+        const others = clients.filter(c => c.followup !== today || c.status === 'Closed');
 
         const generateRow = c => {
             const shortId = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
             return `
-            <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
-                <td style="font-size: 11px; opacity: 0.6;">${serialCounter++}</td>
+            <tr class="${c.followup === today ? 'row-highlight' : ''}">
+                <td style="font-size: 11px; opacity: 0.6;">${serial++}</td>
                 <td style="font-family: monospace; font-weight: bold; color: #606770;">#${shortId}</td>
                 <td>${c.leadDate || '-'}</td><td style="font-weight:bold">${c.name}</td><td>${c.phone}</td>
-                <td style="color:#1877f2; font-weight:bold">${c.status}</td><td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
+                <td style="color:${c.status === 'Hot' ? '#fa3e3e' : '#1877f2'}; font-weight:bold">${c.status}</td>
+                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td><td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td><td>${c.followup || '-'}</td>
                 <td><div class="action-group">
@@ -346,22 +379,15 @@
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
-    function checkReminders() {
-        const count = clients.filter(c => c.followup === todayStr && c.status !== 'Closed').length;
-        const bar = document.getElementById('reminderAlert');
-        bar.style.display = count ? 'block' : 'none';
-        bar.innerText = `🔔 Attention: ${count} follow-ups scheduled today!`;
-    }
-
     function downloadCSV() {
         let csv = "SNo,LeadID,Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup,Remark\n";
-        serialCounter = 1;
+        let s = 1;
         clients.forEach(c => {
             const sid = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
-            csv += `"${serialCounter++}","${sid}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
+            csv += `"${s++}","${sid}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
         });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        a.download = `Leads_${todayStr}.csv`; a.click();
+        a.download = `Leads_${getToday()}.csv`; a.click();
     }
 
     function importCSV(e) {
@@ -370,16 +396,16 @@
         reader.onload = function(ev) {
             ev.target.result.split('\n').slice(1).forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length >= 4) { // Basic validation
+                if(cols.length >= 4) {
                     db.collection("leads").add({ 
                         ownerId: auth.currentUser.uid, ownerEmail: auth.currentUser.email, 
-                        leadDate: cols[2] || todayStr, name: cols[3], phone: cols[4], status: cols[5] || "New", 
+                        leadDate: cols[2] || getToday(), name: cols[3], phone: cols[4], status: cols[5] || "New", 
                         budget: cols[6], sentTo: cols[7], visitDone: cols[8] === "true", 
                         location: cols[9], propertyType: cols[10], followup: cols[11], remark: cols[12] 
                     });
                 }
             });
-            alert("Sync Complete");
+            alert("Syncing Imported Leads...");
             e.target.value = "";
         };
         reader.readAsText(file);
