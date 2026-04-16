@@ -3,99 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Enterprise Edition</title>
+    <title>TRUE INVEST CRM | Enterprise Elite</title>
     
     <style>
         :root {
-            --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
-            --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
-            --hot-bg: #ffebe9; --hot-text: #d93025; --closed-bg: #e6f4ea; --closed-text: #1e8e3e;
-            --done-bg: #e7f3ff; --done-text: #1877f2;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg-canvas: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --hot: #ef4444;
+            --closed: #10b981;
+            --wa-green: #25D366;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
-        body.dark-mode {
-            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
-            --hot-bg: #4c1e1e; --hot-text: #ff8a80; --closed-bg: #1b3320; --closed-text: #81c995;
+
+        .dark-mode {
+            --bg-canvas: #020617;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
         }
-        
+
+        /* Mobile & UI Reset */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg-color); color: var(--text-color); margin: 0; 
-            padding-bottom: env(safe-area-inset-bottom, 100px); transition: 0.3s;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background: var(--bg-canvas); color: var(--text-main); 
+            margin: 0; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-bottom: calc(100px + var(--safe-bottom));
+            overflow-x: hidden;
         }
-        .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
-        
-        h1 { text-align: center; font-size: 1.6rem; font-weight: 800; margin: 20px 0; letter-spacing: -0.5px; color: var(--accent-blue); }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .container { width: 100%; max-width: 1200px; margin: auto; padding: 16px; }
+
+        /* Elastic Entrance Animation */
+        @keyframes springIn {
+            0% { transform: scale(0.9) translateY(40px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+
+        .glass-card {
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 28px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); margin-bottom: 20px;
+            animation: springIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+        }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .stat-card { 
-            background: var(--card-bg); padding: 15px 5px; border-radius: 16px; 
-            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border-color);
+            background: var(--card-bg); padding: 18px 10px; border-radius: 20px; text-align: center;
+            border: 1px solid var(--border); animation: springIn 0.6s ease backwards;
         }
-        .stat-card label { display: block; font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 5px; text-transform: uppercase; }
-        .stat-card span { font-size: 22px; font-weight: 900; }
+        .stat-card label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .stat-card span { font-size: 24px; font-weight: 900; color: var(--primary); }
 
-        .notification-bar { 
-            background: var(--notify-red); color: white; padding: 14px; 
-            text-align: center; border-radius: 12px; margin-bottom: 15px; 
-            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(250, 62, 62, 0.3);
+        /* Forms & Inputs */
+        input, select, textarea { 
+            width: 100%; padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border);
+            background: var(--bg-canvas); color: var(--text-main); font-size: 16px; transition: 0.3s ease;
         }
-
-        form, .table-container, .login-card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border-color); }
-        
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; opacity: 0.8; }
-        
-        input, textarea, button, select { 
-            padding: 14px; margin: 6px 0 14px 0; width: 100%; border: 1.5px solid var(--border-color); 
-            border-radius: 12px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
-            box-sizing: border-box; transition: 0.2s;
-            appearance: none; -webkit-appearance: none;
-        }
-        
-        input[type="date"], select { height: 52px; }
-
-        input:focus, select:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1); }
-
-        .badge { padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; }
-        .status-hot { background: var(--hot-bg); color: var(--hot-text); }
-        .status-closed { background: var(--closed-bg); color: var(--closed-text); }
-        .status-default { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color); }
+        input:focus { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px var(--primary-glow); }
+        label { display: block; font-size: 11px; font-weight: 700; margin: 10px 0 5px 5px; color: var(--text-muted); }
 
         .check-item { 
-            display: flex; align-items: center; gap: 12px; background: var(--bg-color); 
-            padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);
-            margin-bottom: 14px; cursor: pointer; height: 52px; box-sizing: border-box;
+            display: flex; align-items: center; gap: 10px; background: var(--bg-canvas); 
+            padding: 14px; border-radius: 16px; border: 2px solid var(--border); margin: 8px 0;
         }
-        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; -webkit-appearance: checkbox;}
+        .check-item input { width: 22px; height: 22px; accent-color: var(--primary); }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 14px; font-size: 16px; transition: 0.2s; }
-        button:active { transform: scale(0.96); opacity: 0.9; }
-        .btn-secondary { background: #606770; height: 46px; font-size: 14px; }
-        .btn-danger { background: var(--notify-red) !important; color: white !important; }
-        
-        .action-group { display: flex; gap: 8px; min-width: 320px; justify-content: center; }
-        .action-group button { height: 40px; font-size: 11px; padding: 0 12px; flex: 1; margin: 0; border-radius: 10px; text-transform: uppercase; }
-        .btn-wa { background: var(--whatsapp-green) !important; }
-        .btn-call { background: #007bff !important; }
-        .btn-edit { background: #ffc107 !important; color: #000 !important; }
-        .btn-done { background: #28a745 !important; color: #fff !important; }
+        /* Buttons & Haptics */
+        button { cursor: pointer; border: none; border-radius: 16px; font-weight: 700; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        button:active { transform: scale(0.92); opacity: 0.8; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; height: 56px; font-size: 16px; }
+        .btn-danger { background: var(--hot) !important; color: white; }
 
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
-        .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
+        /* Table Design */
+        .table-container { border-radius: 28px; overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 1300px; }
+        th, td { padding: 18px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { font-size: 11px; text-transform: uppercase; color: var(--text-muted); background: rgba(0,0,0,0.02); }
+        
+        .row-priority { background: rgba(239, 68, 68, 0.05) !important; border-left: 6px solid var(--hot); }
+        .badge { padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; position: relative; overflow: hidden; display: inline-block; }
+        .status-hot { background: #fee2e2; color: #ef4444; }
+        .status-closed { background: #d1fae5; color: #10b981; }
 
-        .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
-        th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        th { background: var(--bg-color); font-weight: 800; font-size: 10px; color: #606770; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .row-highlight { background-color: var(--highlight-today) !important; border-left: 6px solid var(--notify-red); }
-        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 15px; font-weight: 800; }
+        .action-group { display: flex; gap: 8px; }
+        .action-group button { width: 42px; height: 42px; border-radius: 12px; }
 
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 68px; height: 68px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4); z-index: 100; text-decoration: none; border: 3px solid white; }
-        
-        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.5; font-size: 11px; font-weight: 700; border-top: 1px solid var(--border-color); }
-        .watermark span { color: var(--accent-blue); font-size: 15px; display: block; }
-        
+        .fab { 
+            position: fixed; bottom: calc(30px + var(--safe-bottom)); right: 25px; 
+            width: 68px; height: 68px; background: var(--primary); color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 32px; text-decoration: none; box-shadow: 0 15px 35px var(--primary-glow); z-index: 1000;
+        }
+
+        .notification-bar { background: var(--hot); color: white; padding: 18px; border-radius: 20px; text-align: center; font-weight: 800; margin-bottom: 25px; display: none; }
+        .watermark { text-align: center; margin-top: 60px; opacity: 0.5; font-size: 11px; font-weight: 800; letter-spacing: 2px; }
+        .watermark span { color: var(--primary); font-size: 18px; display: block; margin-top: 5px; }
         .hidden { display: none !important; }
     </style>
 
@@ -105,127 +117,104 @@
 </head>
 <body>
 
-<div id="loginView" class="container" style="margin-top: 100px;">
-    <h1>TRUE INVEST</h1>
-    <div class="login-card">
+<div id="loginView" class="container" style="margin-top: 80px;">
+    <div class="glass-card" style="max-width: 420px; margin: auto;">
+        <h1 style="text-align: center; font-weight: 900; letter-spacing: -2px; background: linear-gradient(to right, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TRUE INVEST</h1>
         <form id="loginForm">
-            <label>Agent Portal Access</label>
-            <input type="email" id="loginEmail" placeholder="Work Email" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" id="loginBtn">Authorize & Entry</button>
-            <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; font-weight: 600; display: none;"></div>
+            <label>Work Email</label>
+            <input type="email" id="loginEmail" placeholder="email@trueinvest.com" required>
+            <label>Security Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+            <button type="submit" id="loginBtn" class="btn-primary" style="margin-top: 25px;">AUTHORIZE & ENTRY</button>
+            <div id="loginError" style="color:var(--hot); margin-top:15px; text-align:center; font-weight:700; display:none;"></div>
         </form>
     </div>
 </div>
 
 <div id="crmView" class="container hidden">
-    <a href="#clientForm" class="fab">＋</a>
-    <h1>TRUE INVEST CRM</h1>
-    <button class="btn-secondary" style="background:var(--notify-red); color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout</button>
+    <a href="#clientForm" class="fab" onclick="window.scrollTo({top:0, behavior:'smooth'})">＋</a>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 style="margin:0; font-weight:900;">TRUE INVEST CRM</h2>
+        <button class="btn-danger" style="padding: 10px 18px; font-size: 11px; width:auto; border-radius:12px;" onclick="logout()">LOGOUT</button>
+    </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-        <div class="stat-card"><label>🔥 Hot</label><span id="statHot" style="color:var(--hot-text)">0</span></div>
+        <div class="stat-card"><label>Total</label><span id="statTotal">0</span></div>
+        <div class="stat-card"><label>🔥 Hot</label><span id="statHot" style="color:var(--hot)">0</span></div>
         <div class="stat-card"><label>⏰ Today</label><span id="statFollow">0</span></div>
     </div>
 
     <div id="reminderAlert" class="notification-bar"></div>
 
-    <form id="clientForm">
-        <input type="hidden" id="editId" value="">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-            <div><label>Follow-up</label><input type="date" id="followup"></div>
-        </div>
+    <div class="glass-card">
+        <form id="clientForm">
+            <input type="hidden" id="editId" value="">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div><label>Capture Date</label><input type="date" id="leadDate"></div>
+                <div><label>Follow-up</label><input type="date" id="followup"></div>
+            </div>
 
-        <label>Client Details</label>
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div>
-                <label>Locality</label>
-                <input type="text" id="location" placeholder="e.g. Noida Sec 1">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div><label>Name</label><input type="text" id="name" placeholder="Client Name" required></div>
+                <div><label>Phone</label><input type="tel" id="phone" placeholder="91-xxxxxxxxxx" required></div>
             </div>
-            <div>
-                <label>Property Type</label>
-                <input type="text" id="propertyType" placeholder="e.g. 3BHK, Plot">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div><label>Locality</label><input type="text" id="location" placeholder="e.g. Crossing"></div>
+                <div><label>Property Type</label><input type="text" id="propertyType" placeholder="e.g. 3BHK"></div>
+                <div><label>Budget</label><input type="text" id="budget" placeholder="e.g. 1.80 Cr"></div>
             </div>
-        </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div>
-                <label>Status</label>
-                <select id="status">
-                    <option>New</option>
-                    <option>Follow-up</option>
-                    <option>Hot</option>
-                    <option>Closed</option>
-                    <option>Not Interested</option>
-                    <option>Follow-up Done</option>
-                </select>
-            </div>
-            <div>
-                <label>Visit</label>
-                <div class="check-item">
-                    <input type="checkbox" id="visitDone">
-                    <label for="visitDone" style="margin:0">Site Visit Done</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+                <div><label>Status</label>
+                    <select id="status">
+                        <option>New</option><option>Follow-up</option><option>Hot</option>
+                        <option>Closed</option><option>Not Interested</option><option>Follow-up Done</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div class="check-item" style="flex:1; margin:0"><input type="checkbox" id="visitDone"> <label style="margin:0">Visit</label></div>
+                    <div class="check-item" style="flex:1; margin:0"><input type="checkbox" id="sendSunny"> <label style="margin:0">Sunny</label></div>
                 </div>
             </div>
+
+            <label>Intelligence Remarks</label>
+            <textarea id="remark" placeholder="Meeting notes..." rows="3"></textarea>
+            
+            <div style="display: flex; gap: 12px; margin-top: 25px;">
+                <button type="submit" id="saveBtn" class="btn-primary">SYNC TO CLOUD</button>
+                <button type="button" class="btn-danger" style="width:120px; background:#64748b!important" onclick="resetForm()">RESET</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px;">
+            <button class="btn-primary" style="background:#64748b; height:45px; font-size:12px;" onclick="toggleDarkMode()">UI Theme</button>
+            <button class="btn-primary" style="background:#10b981; height:45px; font-size:12px;" onclick="downloadCSV()">Export CSV</button>
+            <button class="btn-primary" style="background:#3b82f6; height:45px; font-size:12px;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
+            <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
+            <button class="btn-primary" style="background:var(--hot); height:45px; font-size:11px;" onclick="clearDuplicates()">Cleanup</button>
         </div>
-
-        <div class="check-item">
-            <input type="checkbox" id="sendSunny">
-            <label for="sendSunny" style="margin:0">Assign lead to Sunny</label>
-        </div>
-
-        <label>Budget & Remarks</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 1.25 Cr)">
-        <textarea id="remark" placeholder="Detailed notes..." rows="3"></textarea>
-        
-        <button type="submit" id="saveBtn">Save to Cloud Database</button>
-        <button type="button" class="btn-secondary" style="width:100%; margin-top:10px" onclick="resetForm()">Clear Form</button>
-    </form>
-
-    <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-        <button class="btn-secondary" style="background:#28a745; color:white;" onclick="downloadCSV()">Export</button>
-        <button class="btn-secondary" style="background:#17a2b8; color:white;" onclick="document.getElementById('csvImport').click()">Import</button>
-        <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
-        <button class="btn-secondary btn-danger" onclick="clearDuplicates()">Clean Dupes</button>
-        <input type="text" id="search" class="search-box" placeholder="🔍 Search leads by name, phone...">
+        <input type="text" id="search" placeholder="🔍 Search database..." style="border: 2px solid var(--primary);">
     </div>
 
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>S.No</th>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Budget</th>
-                    <th>Assign</th>
-                    <th>Visit</th>
-                    <th>Loc</th>
-                    <th>Type</th>
-                    <th>Follow-up</th>
-                    <th>Actions</th>
+                    <th>S.No</th><th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody id="clientTable"></tbody>
         </table>
     </div>
 
-    <div class="watermark">
-        SYSTEM DESIGNED BY<br>
-        <span>ADITYA PACHAURI</span>
-    </div>
+    <div class="watermark">SYSTEM DESIGNED BY<br><span>ADITYA PACHAURI</span></div>
 </div>
 
 <script>
-    // Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -235,50 +224,39 @@
         appId: "1:791381407537:web:45e9946a939f8d23b56210"
     };
 
-    // Fix: Prevent double initialization
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
     let clients = [];
     const getToday = () => new Date().toLocaleDateString('en-CA');
 
-    // FIX: Persistent Dark Mode Logic
-    (function initDarkMode() {
-        if (localStorage.getItem('darkMode') === 'enabled') {
-            document.body.classList.add('dark-mode');
-        }
-    })();
-
+    // Theme Engine
+    if (localStorage.getItem('crmTheme') === 'dark') document.body.classList.add('dark-mode');
     function toggleDarkMode() {
         const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+        localStorage.setItem('crmTheme', isDark ? 'dark' : 'light');
     }
 
-    function showView(viewId) {
-        document.getElementById('loginView').classList.add('hidden');
-        document.getElementById('crmView').classList.add('hidden');
-        document.getElementById(viewId).classList.remove('hidden');
-    }
-
+    // Auth Controller
     auth.onAuthStateChanged(user => {
         if (user) { 
-            showView('crmView'); 
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('crmView').classList.remove('hidden');
             loadData(); 
         } else { 
-            showView('loginView'); 
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('crmView').classList.add('hidden');
         }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        btn.disabled = true; btn.innerText = "Connecting...";
+        btn.innerText = "AUTHENTICATING...";
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.disabled = false; btn.innerText = "Authorize & Entry";
+                btn.innerText = "AUTHORIZE ACCESS";
                 document.getElementById('loginError').innerText = "Access Denied: " + err.message;
                 document.getElementById('loginError').style.display = 'block';
             });
@@ -286,10 +264,9 @@
 
     function logout() { auth.signOut(); }
 
+    // Cloud Data Sync
     function loadData() {
-        const user = auth.currentUser;
-        if(!user) return;
-        db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
+        db.collection("leads").where("ownerId", "==", auth.currentUser.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
               renderTable();
@@ -299,24 +276,20 @@
 
     function updateDashboard() {
         const today = getToday();
-        const total = clients.length;
-        const hot = clients.filter(c => c.status === 'Hot').length;
-        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done').length;
-
-        document.getElementById('statTotal').innerText = total;
-        document.getElementById('statHot').innerText = hot;
-        document.getElementById('statFollow').innerText = follow;
+        const followCount = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done').length;
+        document.getElementById('statTotal').innerText = clients.length;
+        document.getElementById('statHot').innerText = clients.filter(c => c.status === 'Hot').length;
+        document.getElementById('statFollow').innerText = followCount;
 
         const bar = document.getElementById('reminderAlert');
-        bar.style.display = follow ? 'block' : 'none';
-        bar.innerText = `🚨 ACTION: ${follow} follow-ups required today!`;
+        bar.style.display = followCount ? 'block' : 'none';
+        bar.innerText = `🚨 ACTION: You have ${followCount} follow-ups required today!`;
     }
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const user = auth.currentUser;
         const data = {
-            ownerId: user.uid,
+            ownerId: auth.currentUser.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value.trim(), 
@@ -330,21 +303,17 @@
             remark: document.getElementById('remark').value || ""
         };
         const id = document.getElementById('editId').value;
-        const saveBtn = document.getElementById('saveBtn');
-        saveBtn.disabled = true;
-
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = 'SYNCING...';
+        
         try {
-            if (id) {
-                await db.collection("leads").doc(id).update(data);
-            } else {
-                await db.collection("leads").add(data);
-            }
-            resetForm();
-        } catch (err) {
-            alert(err.message);
-        } finally {
-            saveBtn.disabled = false;
-        }
+            if (id) await db.collection("leads").doc(id).update(data);
+            else await db.collection("leads").add(data);
+            
+            btn.style.background = 'var(--closed)';
+            btn.innerText = '✓ CLOUD UPDATED';
+            setTimeout(() => { resetForm(); btn.style.background = 'var(--primary)'; }, 1000);
+        } catch (err) { alert(err.message); btn.innerText = 'SYNC TO CLOUD'; }
     });
 
     function renderTable() {
@@ -353,70 +322,55 @@
         table.innerHTML = '';
         let serial = 1;
 
-        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done');
-        const others = clients.filter(c => c.followup !== today || c.status === 'Closed' || c.status === 'Follow-up Done');
+        const sorted = [...clients].sort((a,b) => (a.followup === today ? -1 : 1));
 
-        const generateRow = (c) => {
-            let badge = 'status-default';
-            if(c.status === 'Hot') badge = 'status-hot';
-            if(c.status === 'Closed' || c.status === 'Follow-up Done') badge = 'status-closed';
+        sorted.forEach(c => {
+            const row = document.createElement('tr');
+            if(c.followup === today && c.status !== 'Closed') row.className = 'row-priority';
 
-            return `
-            <tr class="${c.followup === today ? 'row-highlight' : ''}">
-                <td style="opacity:0.5">${serial++}</td>
-                <td>${c.leadDate}</td>
-                <td style="font-weight:800">${c.name}</td>
-                <td style="font-weight:600">${c.phone}</td>
-                <td><span class="badge ${badge}">${c.status}</span></td>
-                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
+            row.innerHTML = `
+                <td style="opacity:0.4">#${serial++}</td>
+                <td style="font-size:12px">${c.leadDate}</td>
+                <td style="font-weight:800; color:var(--primary)">${c.name}</td>
+                <td style="font-weight:700">${c.phone}</td>
+                <td><span class="badge ${c.status === 'Hot' ? 'status-hot' : 'status-closed'}">${c.status}</span></td>
+                <td style="color:#10b981; font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.sentTo || '-'}</td>
                 <td>${c.visitDone ? '✅' : '❌'}</td>
                 <td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td>
-                <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
+                <td style="font-weight:800; color:var(--primary)">${c.followup || '-'}</td>
                 <td><div class="action-group">
-                    <button class="btn-done" title="Mark Done" onclick='markFollowupDone("${c.id}")'>✓</button>
-                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
-                    <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                    <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
-                    <button class="btn-danger" onclick="deleteLead('${c.id}')">DEL</button>
+                    <button style="background:#10b981; color:white" onclick='markDone("${c.id}")'>✓</button>
+                    <button style="background:#3b82f6; color:white" onclick="window.location.href='tel:${c.phone}'">📞</button>
+                    <button style="background:var(--wa-green); color:white" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
+                    <button style="background:#f59e0b; color:white" onclick="editLead('${c.id}')">✎</button>
+                    <button class="btn-danger" onclick="deleteLead('${c.id}')">✕</button>
                 </div></td>
-            </tr>`;
-        };
-
-        if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="12">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
-            urgent.forEach(c => table.innerHTML += generateRow(c));
-        }
-        table.innerHTML += `<tr class="section-divider"><td colspan="12">📁 LEAD HISTORY</td></tr>`;
-        others.forEach(c => table.innerHTML += generateRow(c));
+            `;
+            table.appendChild(row);
+        });
     }
 
-    function markFollowupDone(id) {
-        if(confirm("Mark this follow-up as completed?")) {
-            db.collection("leads").doc(id).update({
-                status: "Follow-up Done",
-                followup: "" 
-            }).catch(err => alert(err.message));
-        }
+    function markDone(id) {
+        db.collection("leads").doc(id).update({ status: "Follow-up Done", followup: "" });
     }
 
     function editLead(id) {
         const c = clients.find(x => x.id === id);
-        if(!c) return;
         document.getElementById('editId').value = c.id;
         ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
             document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
-        document.getElementById('saveBtn').innerText = "Update Lead";
+        document.getElementById('saveBtn').innerText = "UPDATE CLOUD RECORD";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function deleteLead(id) { 
-        if(confirm("Permanently delete this lead?")) {
-            db.collection("leads").doc(id).delete(); 
+        if(confirm("Confirm: Delete lead permanently?")) {
+            db.collection("leads").doc(id).delete();
         }
     }
 
@@ -424,72 +378,53 @@
         const seen = new Set();
         const toDelete = [];
         clients.forEach(c => {
-            const p = c.phone.trim();
-            if(seen.has(p)) toDelete.push(c.id);
-            else seen.add(p);
+            if(seen.has(c.phone.trim())) toDelete.push(c.id);
+            else seen.add(c.phone.trim());
         });
-
-        if(toDelete.length === 0) return alert("No duplicates found.");
-        if(confirm(`Delete ${toDelete.length} duplicates?`)) {
+        if(toDelete.length && confirm(`Remove ${toDelete.length} duplicates?`)) {
             const batch = db.batch();
             toDelete.forEach(id => batch.delete(db.collection("leads").doc(id)));
             await batch.commit();
-            alert("Cleanup Successful.");
         }
     }
-    
+
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save to Cloud Database"; 
+        document.getElementById('saveBtn').innerText = "SYNC TO CLOUD"; 
     }
 
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
         const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, this is from True Invest.`, '_blank'); 
+        window.open(`https://wa.me/${final}?text=Hi ${name}, this is Aditya from True Invest...`, '_blank'); 
     }
 
     function downloadCSV() {
         let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
         clients.forEach(c => { csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`; });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        a.download = `Leads_${getToday()}.csv`; a.click();
+        a.download = `Leads_Master.csv`; a.click();
     }
 
-    // FIX: Optimized CSV Import with Batch Commit
     function importCSV(e) {
-        const user = auth.currentUser;
         const reader = new FileReader();
         reader.onload = async (ev) => {
             const batch = db.batch();
             const rows = ev.target.result.split('\n').slice(1);
-            let count = 0;
-
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length >= 3 && cols[1]) { // Basic validation
+                if(cols[1]) {
                     const newRef = db.collection("leads").doc();
                     batch.set(newRef, { 
-                        ownerId: user.uid, 
-                        leadDate: cols[0] || getToday(), 
-                        name: cols[1], 
-                        phone: cols[2], 
-                        status: cols[3] || "New", 
-                        budget: cols[4] || "", 
-                        sentTo: cols[5] || "", 
-                        visitDone: cols[6] === "true", 
-                        location: cols[7] || "", 
-                        propertyType: cols[8] || "", 
-                        followup: cols[9] || "" 
+                        ownerId: auth.currentUser.uid, leadDate: cols[0] || getToday(), name: cols[1], phone: cols[2], 
+                        status: cols[3] || "New", budget: cols[4] || "", sentTo: cols[5] || "", 
+                        visitDone: cols[6] === "true", location: cols[7] || "", propertyType: cols[8] || "", followup: cols[9] || "" 
                     });
-                    count++;
                 }
             });
-            if(count > 0) {
-                await batch.commit();
-                alert(`Imported ${count} leads successfully.`);
-            }
+            await batch.commit();
+            alert("Sync Complete");
         };
         reader.readAsText(e.target.files[0]);
     }
@@ -497,7 +432,7 @@
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { 
-            if(!tr.classList.contains('section-divider')) tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
+            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
         });
     });
 </script>
