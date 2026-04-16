@@ -10,6 +10,7 @@
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
             --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
             --hot-bg: #ffebe9; --hot-text: #d93025; --closed-bg: #e6f4ea; --closed-text: #1e8e3e;
+            --done-bg: #e7f3ff; --done-text: #1877f2;
         }
         body.dark-mode {
             --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
@@ -72,12 +73,13 @@
         .btn-wa { background: var(--whatsapp-green) !important; }
         .btn-call { background: #007bff !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
+        .btn-done { background: #28a745 !important; color: #fff !important; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
 
         .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
         th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
         th { background: var(--bg-color); font-weight: 800; font-size: 10px; color: #606770; text-transform: uppercase; letter-spacing: 1px; }
         
@@ -155,6 +157,7 @@
                     <option>Hot</option>
                     <option>Closed</option>
                     <option>Not Interested</option>
+                    <option>Follow-up Done</option>
                 </select>
             </div>
             <div>
@@ -193,7 +196,6 @@
             <thead>
                 <tr>
                     <th>S.No</th>
-                    <th>ID</th>
                     <th>Date</th>
                     <th>Name</th>
                     <th>Phone</th>
@@ -218,6 +220,7 @@
 </div>
 
 <script>
+    // Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -274,7 +277,7 @@
         const today = getToday();
         const total = clients.length;
         const hot = clients.filter(c => c.status === 'Hot').length;
-        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
+        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done').length;
 
         document.getElementById('statTotal').innerText = total;
         document.getElementById('statHot').innerText = hot;
@@ -317,19 +320,17 @@
         table.innerHTML = '';
         let serial = 1;
 
-        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed');
-        const others = clients.filter(c => c.followup !== today || c.status === 'Closed');
+        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done');
+        const others = clients.filter(c => c.followup !== today || c.status === 'Closed' || c.status === 'Follow-up Done');
 
         const generateRow = (c) => {
-            const shortId = c.id ? c.id.substring(c.id.length - 4).toUpperCase() : 'NEW';
             let badge = 'status-default';
             if(c.status === 'Hot') badge = 'status-hot';
-            if(c.status === 'Closed') badge = 'status-closed';
+            if(c.status === 'Closed' || c.status === 'Follow-up Done') badge = 'status-closed';
 
             return `
             <tr class="${c.followup === today ? 'row-highlight' : ''}">
                 <td style="opacity:0.5">${serial++}</td>
-                <td style="font-family:monospace; font-weight:700; color:var(--accent-blue)">#${shortId}</td>
                 <td>${c.leadDate}</td>
                 <td style="font-weight:800">${c.name}</td>
                 <td style="font-weight:600">${c.phone}</td>
@@ -341,6 +342,7 @@
                 <td>${c.propertyType || '-'}</td>
                 <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
                 <td><div class="action-group">
+                    <button class="btn-done" title="Mark Done" onclick='markFollowupDone("${c.id}")'>✓</button>
                     <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
                     <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
                     <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
@@ -350,11 +352,20 @@
         };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="13">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="12">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="13">📁 LEAD HISTORY</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="12">📁 LEAD HISTORY</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
+    }
+
+    function markFollowupDone(id) {
+        if(confirm("Mark this follow-up as completed?")) {
+            db.collection("leads").doc(id).update({
+                status: "Follow-up Done",
+                followup: "" 
+            }).catch(err => alert(err.message));
+        }
     }
 
     function editLead(id) {
@@ -409,8 +420,8 @@
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function downloadCSV() {
-        let csv = "ID,Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
-        clients.forEach(c => { csv += `"${c.id}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`; });
+        let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
+        clients.forEach(c => { csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`; });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
         a.download = `Leads_${getToday()}.csv`; a.click();
     }
@@ -423,10 +434,10 @@
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length >= 4) {
                     db.collection("leads").add({ 
-                        ownerId: user.uid, leadDate: cols[1] || getToday(), name: cols[2], 
-                        phone: cols[3], status: cols[4] || "New", budget: cols[5], 
-                        sentTo: cols[6], visitDone: cols[7] === "true", 
-                        location: cols[8], propertyType: cols[9], followup: cols[10] 
+                        ownerId: user.uid, leadDate: cols[0] || getToday(), name: cols[1], 
+                        phone: cols[2], status: cols[3] || "New", budget: cols[4], 
+                        sentTo: cols[5], visitDone: cols[6] === "true", 
+                        location: cols[7], propertyType: cols[8], followup: cols[9] 
                     });
                 }
             });
