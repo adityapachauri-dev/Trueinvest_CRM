@@ -45,18 +45,14 @@
         
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; opacity: 0.8; }
         
-        /* Fixed Input Uniformity */
         input, textarea, button, select { 
             padding: 14px; margin: 6px 0 14px 0; width: 100%; border: 1.5px solid var(--border-color); 
             border-radius: 12px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
             box-sizing: border-box; transition: 0.2s;
-            appearance: none; -webkit-appearance: none; /* Removes default iOS styling */
+            appearance: none; -webkit-appearance: none;
         }
         
-        /* Specific Fix for Date and Select to match height */
-        input[type="date"], select {
-            height: 52px;
-        }
+        input[type="date"], select { height: 52px; }
 
         input:focus, select:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1); }
 
@@ -192,7 +188,7 @@
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Dark Mode</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Dark Mode</button>
         <button class="btn-secondary" style="background:#28a745; color:white;" onclick="downloadCSV()">Export</button>
         <button class="btn-secondary" style="background:#17a2b8; color:white;" onclick="document.getElementById('csvImport').click()">Import</button>
         <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
@@ -239,12 +235,27 @@
         appId: "1:791381407537:web:45e9946a939f8d23b56210"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // Fix: Prevent double initialization
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.firestore();
 
     let clients = [];
     const getToday = () => new Date().toLocaleDateString('en-CA');
+
+    // FIX: Persistent Dark Mode Logic
+    (function initDarkMode() {
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+        }
+    })();
+
+    function toggleDarkMode() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    }
 
     function showView(viewId) {
         document.getElementById('loginView').classList.add('hidden');
@@ -253,8 +264,12 @@
     }
 
     auth.onAuthStateChanged(user => {
-        if (user) { showView('crmView'); loadData(); } 
-        else { showView('loginView'); }
+        if (user) { 
+            showView('crmView'); 
+            loadData(); 
+        } else { 
+            showView('loginView'); 
+        }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -297,7 +312,7 @@
         bar.innerText = `🚨 ACTION: ${follow} follow-ups required today!`;
     }
 
-    document.getElementById('clientForm').addEventListener('submit', e => {
+    document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = auth.currentUser;
         const data = {
@@ -318,9 +333,18 @@
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
 
-        const task = id ? db.collection("leads").doc(id).update(data) : db.collection("leads").add(data);
-        task.then(() => { resetForm(); saveBtn.disabled = false; })
-            .catch(err => { alert(err.message); saveBtn.disabled = false; });
+        try {
+            if (id) {
+                await db.collection("leads").doc(id).update(data);
+            } else {
+                await db.collection("leads").add(data);
+            }
+            resetForm();
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            saveBtn.disabled = false;
+        }
     });
 
     function renderTable() {
@@ -423,10 +447,8 @@
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
         const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${name}, this is from True Invest.`, '_blank'); 
+        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, this is from True Invest.`, '_blank'); 
     }
-
-    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function downloadCSV() {
         let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
@@ -435,22 +457,39 @@
         a.download = `Leads_${getToday()}.csv`; a.click();
     }
 
+    // FIX: Optimized CSV Import with Batch Commit
     function importCSV(e) {
         const user = auth.currentUser;
         const reader = new FileReader();
-        reader.onload = (ev) => {
-            ev.target.result.split('\n').slice(1).forEach(row => {
+        reader.onload = async (ev) => {
+            const batch = db.batch();
+            const rows = ev.target.result.split('\n').slice(1);
+            let count = 0;
+
+            rows.forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length >= 4) {
-                    db.collection("leads").add({ 
-                        ownerId: user.uid, leadDate: cols[0] || getToday(), name: cols[1], 
-                        phone: cols[2], status: cols[3] || "New", budget: cols[4], 
-                        sentTo: cols[5], visitDone: cols[6] === "true", 
-                        location: cols[7], propertyType: cols[8], followup: cols[9] 
+                if(cols.length >= 3 && cols[1]) { // Basic validation
+                    const newRef = db.collection("leads").doc();
+                    batch.set(newRef, { 
+                        ownerId: user.uid, 
+                        leadDate: cols[0] || getToday(), 
+                        name: cols[1], 
+                        phone: cols[2], 
+                        status: cols[3] || "New", 
+                        budget: cols[4] || "", 
+                        sentTo: cols[5] || "", 
+                        visitDone: cols[6] === "true", 
+                        location: cols[7] || "", 
+                        propertyType: cols[8] || "", 
+                        followup: cols[9] || "" 
                     });
+                    count++;
                 }
             });
-            alert("Import Complete.");
+            if(count > 0) {
+                await batch.commit();
+                alert(`Imported ${count} leads successfully.`);
+            }
         };
         reader.readAsText(e.target.files[0]);
     }
