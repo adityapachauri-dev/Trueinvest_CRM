@@ -64,7 +64,7 @@
         .search-box { grid-column: span 2; border: 2px solid var(--accent-blue); height: 50px; }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
         th, td { padding: 12px 8px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 14px; vertical-align: middle; }
         th { background: var(--bg-color); position: sticky; top: 0; z-index: 10; font-weight: 700; text-transform: uppercase; font-size: 11px; }
         
@@ -170,7 +170,19 @@
         <table>
             <thead>
                 <tr>
-                    <th>Date</th><th>Name</th><th>Phone</th><th>Status</th><th>Budget</th><th>Assign</th><th>Visit</th><th>Loc</th><th>Type</th><th>Follow-up</th><th>Actions</th>
+                    <th>S.No</th>
+                    <th>Lead ID</th>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Budget</th>
+                    <th>Assign</th>
+                    <th>Visit</th>
+                    <th>Loc</th>
+                    <th>Type</th>
+                    <th>Follow-up</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="clientTable"></tbody>
@@ -228,7 +240,7 @@
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
-        document.getElementById('clientTable').innerHTML = '<tr><td colspan="11">Syncing Data...</td></tr>';
+        document.getElementById('clientTable').innerHTML = '<tr><td colspan="13">Syncing Data...</td></tr>';
         db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -267,14 +279,22 @@
         });
     });
 
+    let serialCounter = 1;
+
     function renderTable() {
         const table = document.getElementById('clientTable');
         table.innerHTML = '';
+        serialCounter = 1;
+
         const urgent = clients.filter(c => c.followup === todayStr && c.status !== 'Closed');
         const others = clients.filter(c => c.followup !== todayStr || c.status === 'Closed');
 
-        const generateRow = c => `
+        const generateRow = c => {
+            const shortId = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
+            return `
             <tr class="${c.followup === todayStr ? 'row-highlight' : ''}">
+                <td style="font-size: 11px; opacity: 0.6;">${serialCounter++}</td>
+                <td style="font-family: monospace; font-weight: bold; color: #606770;">#${shortId}</td>
                 <td>${c.leadDate || '-'}</td><td style="font-weight:bold">${c.name}</td><td>${c.phone}</td>
                 <td style="color:#1877f2; font-weight:bold">${c.status}</td><td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.sentTo || '-'}</td><td>${c.visitDone ? '✅' : '-'}</td><td>${c.location || '-'}</td>
@@ -287,12 +307,13 @@
                     <button class="btn-del" onclick="deleteLead('${c.id}')">Del</button>
                 </div></td>
             </tr>`;
+        };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="11">Urgent (Today)</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="13">Urgent (Today)</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="11">Lead History</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="13">Lead History</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
     }
 
@@ -333,8 +354,12 @@
     }
 
     function downloadCSV() {
-        let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup,Remark\n";
-        clients.forEach(c => csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`);
+        let csv = "SNo,LeadID,Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup,Remark\n";
+        serialCounter = 1;
+        clients.forEach(c => {
+            const sid = c.id ? c.id.substring(c.id.length - 5).toUpperCase() : 'NEW';
+            csv += `"${serialCounter++}","${sid}","${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}","${c.remark}"\n`;
+        });
         const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
         a.download = `Leads_${todayStr}.csv`; a.click();
     }
@@ -345,15 +370,17 @@
         reader.onload = function(ev) {
             ev.target.result.split('\n').slice(1).forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length >= 2) db.collection("leads").add({ 
-                    ownerId: auth.currentUser.uid, ownerEmail: auth.currentUser.email, 
-                    leadDate: cols[0], name: cols[1], phone: cols[2], status: cols[3] || "New", 
-                    budget: cols[4], sentTo: cols[5], visitDone: cols[6] === "true", 
-                    location: cols[7], propertyType: cols[8], followup: cols[9], remark: cols[10] 
-                });
+                if(cols.length >= 4) { // Basic validation
+                    db.collection("leads").add({ 
+                        ownerId: auth.currentUser.uid, ownerEmail: auth.currentUser.email, 
+                        leadDate: cols[2] || todayStr, name: cols[3], phone: cols[4], status: cols[5] || "New", 
+                        budget: cols[6], sentTo: cols[7], visitDone: cols[8] === "true", 
+                        location: cols[9], propertyType: cols[10], followup: cols[11], remark: cols[12] 
+                    });
+                }
             });
             alert("Sync Complete");
-            e.target.value = ""; // Clear file input so same file can be imported again
+            e.target.value = "";
         };
         reader.readAsText(file);
     }
