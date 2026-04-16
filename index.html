@@ -114,8 +114,8 @@
 
 <div id="crmView" class="container hidden">
     <a href="#clientForm" class="fab">＋</a>
-    <h1>TRUE INVEST PRO</h1>
-    <button class="btn-secondary" style="background:var(--notify-red); color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout Session</button>
+    <h1>TRUE INVEST CRM</h1>
+    <button class="btn-secondary" style="background:var(--notify-red); color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout</button>
 
     <div class="stats-grid">
         <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -181,7 +181,7 @@
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">UI Mode</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Dark Mode</button>
         <button class="btn-secondary" style="background:#28a745; color:white;" onclick="downloadCSV()">Export</button>
         <button class="btn-secondary" style="background:#17a2b8; color:white;" onclick="document.getElementById('csvImport').click()">Import</button>
         <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
