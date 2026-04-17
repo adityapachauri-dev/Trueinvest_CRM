@@ -174,9 +174,9 @@
             </div>
         </div>
 
-        <div class="check-item">
+        <div class="check-item" style="background: #e7f3ff; border-color: #1877f2;">
             <input type="checkbox" id="sendSunny">
-            <label for="sendSunny" style="margin:0">Assign lead to Sunny</label>
+            <label for="sendSunny" style="margin:0; color:#1877f2;">🤖 Auto-Assign (Distributor Bot)</label>
         </div>
 
         <label>Budget & Remarks</label>
@@ -225,7 +225,6 @@
 </div>
 
 <script>
-    // Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -235,17 +234,14 @@
         appId: "1:791381407537:web:45e9946a939f8d23b56210"
     };
 
-    // Fix: Prevent double initialization
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const auth = firebase.auth();
     const db = firebase.firestore();
 
     let clients = [];
+    const team = ["Sunny", "Aditya"]; 
     const getToday = () => new Date().toLocaleDateString('en-CA');
 
-    // FIX: Persistent Dark Mode Logic
     (function initDarkMode() {
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
@@ -312,9 +308,29 @@
         bar.innerText = `🚨 ACTION: ${follow} follow-ups required today!`;
     }
 
+    // FIXED: Distributor Bot logic - Won't change existing assignments
+    function getDistributedAgent() {
+        const index = Math.floor(Math.random() * team.length);
+        return team[index];
+    }
+
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = auth.currentUser;
+        const isAutoAssign = document.getElementById('sendSunny').checked;
+        const id = document.getElementById('editId').value;
+        
+        let finalAssignee = "";
+        
+        if (id) {
+            // EDITING MODE: Keep original assignee if already exists
+            const existing = clients.find(x => x.id === id);
+            finalAssignee = (existing && existing.sentTo) ? existing.sentTo : (isAutoAssign ? getDistributedAgent() : "");
+        } else {
+            // NEW LEAD: Assign only if checked
+            finalAssignee = isAutoAssign ? getDistributedAgent() : "";
+        }
+
         const data = {
             ownerId: user.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
@@ -325,11 +341,11 @@
             propertyType: document.getElementById('propertyType').value || "",
             status: document.getElementById('status').value, 
             visitDone: document.getElementById('visitDone').checked,
-            sentTo: document.getElementById('sendSunny').checked ? "Sunny" : "", 
+            sentTo: finalAssignee, 
             budget: document.getElementById('budget').value || "", 
             remark: document.getElementById('remark').value || ""
         };
-        const id = document.getElementById('editId').value;
+
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
 
@@ -341,7 +357,7 @@
             }
             resetForm();
         } catch (err) {
-            alert(err.message);
+            alert("Database Error: " + err.message);
         } finally {
             saveBtn.disabled = false;
         }
@@ -369,7 +385,7 @@
                 <td style="font-weight:600">${c.phone}</td>
                 <td><span class="badge ${badge}">${c.status}</span></td>
                 <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.sentTo || '-'}</td>
+                <td style="font-weight:bold; color:#f39c12">${c.sentTo || '-'}</td>
                 <td>${c.visitDone ? '✅' : '❌'}</td>
                 <td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td>
@@ -409,7 +425,7 @@
             document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
-        document.getElementById('sendSunny').checked = c.sentTo === "Sunny";
+        document.getElementById('sendSunny').checked = !!c.sentTo;
         document.getElementById('saveBtn').innerText = "Update Lead";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
@@ -457,7 +473,6 @@
         a.download = `Leads_${getToday()}.csv`; a.click();
     }
 
-    // FIX: Optimized CSV Import with Batch Commit
     function importCSV(e) {
         const user = auth.currentUser;
         const reader = new FileReader();
@@ -468,7 +483,7 @@
 
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
-                if(cols.length >= 3 && cols[1]) { // Basic validation
+                if(cols.length >= 3 && cols[1]) { 
                     const newRef = db.collection("leads").doc();
                     batch.set(newRef, { 
                         ownerId: user.uid, 
