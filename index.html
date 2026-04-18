@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Enterprise Edition</title>
+    <title>TRUE INVEST CRM - Black Edition</title>
     
     <style>
         :root {
             --bg-color: #f0f2f5; --card-bg: #ffffff; --text-color: #1c1e21; --border-color: #dddfe2;
             --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
             --hot-bg: #ffebe9; --hot-text: #d93025; --closed-bg: #e6f4ea; --closed-text: #1e8e3e;
-            --done-bg: #e7f3ff; --done-text: #1877f2;
         }
+        /* PURE BLACK DARK MODE */
         body.dark-mode {
-            --bg-color: #18191a; --card-bg: #242526; --text-color: #e4e6eb; --border-color: #3e4042; --highlight-today: #4d4600;
-            --hot-bg: #4c1e1e; --hot-text: #ff8a80; --closed-bg: #1b3320; --closed-text: #81c995;
+            --bg-color: #000000; --card-bg: #121212; --text-color: #ffffff; --border-color: #2c2c2c; --highlight-today: #2a2600;
+            --hot-bg: #3d0000; --hot-text: #ff5252; --closed-bg: #002b00; --closed-text: #69f0ae;
         }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: var(--bg-color); color: var(--text-color); margin: 0; 
-            padding-bottom: env(safe-area-inset-bottom, 100px); transition: 0.3s;
+            padding-bottom: env(safe-area-inset-bottom, 100px); transition: 0.2s;
             -webkit-tap-highlight-color: transparent;
         }
         .container { width: 100%; max-width: 500px; margin: auto; padding: 12px; box-sizing: border-box; }
@@ -30,7 +30,7 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-card { 
             background: var(--card-bg); padding: 15px 5px; border-radius: 16px; 
-            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border-color);
+            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 1px solid var(--border-color);
         }
         .stat-card label { display: block; font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 5px; text-transform: uppercase; }
         .stat-card span { font-size: 22px; font-weight: 900; }
@@ -38,10 +38,10 @@
         .notification-bar { 
             background: var(--notify-red); color: white; padding: 14px; 
             text-align: center; border-radius: 12px; margin-bottom: 15px; 
-            display: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 15px rgba(250, 62, 62, 0.3);
+            display: none; font-size: 14px; font-weight: bold;
         }
 
-        form, .table-container, .login-card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border-color); }
+        form, .table-container, .login-card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 25px; border: 1px solid var(--border-color); }
         
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; opacity: 0.8; }
         
@@ -53,8 +53,7 @@
         }
         
         input[type="date"], select { height: 52px; }
-
-        input:focus, select:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1); }
+        input:focus, select:focus { border-color: var(--accent-blue); outline: none; }
 
         .badge { padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; }
         .status-hot { background: var(--hot-bg); color: var(--hot-text); }
@@ -64,21 +63,20 @@
         .check-item { 
             display: flex; align-items: center; gap: 12px; background: var(--bg-color); 
             padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);
-            margin-bottom: 14px; cursor: pointer; height: 52px; box-sizing: border-box;
+            margin-bottom: 14px; height: 52px; box-sizing: border-box;
         }
-        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; -webkit-appearance: checkbox;}
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; -webkit-appearance: checkbox;}
 
         button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 14px; font-size: 16px; transition: 0.2s; }
         button:active { transform: scale(0.96); opacity: 0.9; }
-        .btn-secondary { background: #606770; height: 46px; font-size: 14px; }
+        .btn-secondary { background: #333; color: #fff; height: 46px; font-size: 14px; border: 1px solid #444; }
         .btn-danger { background: var(--notify-red) !important; color: white !important; }
         
-        .action-group { display: flex; gap: 8px; min-width: 320px; justify-content: center; }
-        .action-group button { height: 40px; font-size: 11px; padding: 0 12px; flex: 1; margin: 0; border-radius: 10px; text-transform: uppercase; }
+        .action-group { display: flex; gap: 8px; min-width: 250px; justify-content: center; }
+        .action-group button { height: 40px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 10px; }
         .btn-wa { background: var(--whatsapp-green) !important; }
         .btn-call { background: #007bff !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
-        .btn-done { background: #28a745 !important; color: #fff !important; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
@@ -86,14 +84,14 @@
         .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; min-width: 1400px; }
         th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        th { background: var(--bg-color); font-weight: 800; font-size: 10px; color: #606770; text-transform: uppercase; letter-spacing: 1px; }
+        th { background: rgba(255,255,255,0.05); font-weight: 800; font-size: 10px; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 6px solid var(--notify-red); }
-        .section-divider { background: #4b4f56 !important; color: white; font-size: 12px; text-align: left; padding: 15px; font-weight: 800; }
+        .section-divider { background: #1a1a1a !important; color: #666; font-size: 12px; text-align: left; padding: 15px; font-weight: 800; }
 
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 68px; height: 68px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4); z-index: 100; text-decoration: none; border: 3px solid white; }
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 68px; height: 68px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 25px rgba(24, 119, 242, 0.5); z-index: 100; text-decoration: none; border: 3px solid #000; }
         
-        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.5; font-size: 11px; font-weight: 700; border-top: 1px solid var(--border-color); }
+        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.4; font-size: 11px; font-weight: 700; border-top: 1px solid var(--border-color); }
         .watermark span { color: var(--accent-blue); font-size: 15px; display: block; }
         
         .hidden { display: none !important; }
@@ -103,16 +101,16 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
-<body>
+<body class="dark-mode">
 
 <div id="loginView" class="container" style="margin-top: 100px;">
     <h1>TRUE INVEST</h1>
     <div class="login-card">
         <form id="loginForm">
-            <label>Agent Portal Access</label>
+            <label>Secure CRM Login</label>
             <input type="email" id="loginEmail" placeholder="Work Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" id="loginBtn">Authorize & Entry</button>
+            <button type="submit" id="loginBtn">Authorize Entry</button>
             <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; font-weight: 600; display: none;"></div>
         </form>
     </div>
@@ -121,7 +119,7 @@
 <div id="crmView" class="container hidden">
     <a href="#clientForm" class="fab">＋</a>
     <h1>TRUE INVEST CRM</h1>
-    <button class="btn-secondary" style="background:var(--notify-red); color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout</button>
+    <button class="btn-secondary" style="background:var(--notify-red); border:none; color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout System</button>
 
     <div class="stats-grid">
         <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -143,14 +141,8 @@
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div>
-                <label>Locality</label>
-                <input type="text" id="location" placeholder="e.g. Noida Sec 1">
-            </div>
-            <div>
-                <label>Property Type</label>
-                <input type="text" id="propertyType" placeholder="e.g. 3BHK, Plot">
-            </div>
+            <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
+            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="3BHK, Plot etc."></div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -160,6 +152,7 @@
                     <option>New</option>
                     <option>Follow-up</option>
                     <option>Hot</option>
+                    <option>Broker</option>
                     <option>Closed</option>
                     <option>Not Interested</option>
                     <option>Follow-up Done</option>
@@ -174,26 +167,21 @@
             </div>
         </div>
 
-        <div class="check-item" style="background: #e7f3ff; border-color: #1877f2;">
-            <input type="checkbox" id="sendSunny">
-            <label for="sendSunny" style="margin:0; color:#1877f2;">🤖 Auto-Assign (Distributor Bot)</label>
-        </div>
-
         <label>Budget & Remarks</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 1.25 Cr)">
-        <textarea id="remark" placeholder="Detailed notes..." rows="3"></textarea>
+        <input type="text" id="budget" placeholder="Budget (e.g. 1.50 Cr)">
+        <textarea id="remark" placeholder="Detailed Lead Notes..." rows="3"></textarea>
         
-        <button type="submit" id="saveBtn">Save to Cloud Database</button>
+        <button type="submit" id="saveBtn">Save to Cloud</button>
         <button type="button" class="btn-secondary" style="width:100%; margin-top:10px" onclick="resetForm()">Clear Form</button>
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-        <button class="btn-secondary" style="background:#28a745; color:white;" onclick="downloadCSV()">Export</button>
-        <button class="btn-secondary" style="background:#17a2b8; color:white;" onclick="document.getElementById('csvImport').click()">Import</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">Dark Mode</button>
+        <button class="btn-secondary" style="background:#1e8e3e; color:white; border:none;" onclick="downloadCSV()">Excel Export</button>
+        <button class="btn-secondary" style="background:#17a2b8; color:white; border:none;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
         <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
-        <button class="btn-secondary btn-danger" onclick="clearDuplicates()">Clean Dupes</button>
-        <input type="text" id="search" class="search-box" placeholder="🔍 Search leads by name, phone...">
+        <button class="btn-secondary btn-danger" style="border:none" onclick="clearDuplicates()">Cleanup</button>
+        <input type="text" id="search" class="search-box" placeholder="🔍 Search leads...">
     </div>
 
     <div class="table-container">
@@ -206,11 +194,11 @@
                     <th>Phone</th>
                     <th>Status</th>
                     <th>Budget</th>
-                    <th>Assign</th>
                     <th>Visit</th>
                     <th>Loc</th>
                     <th>Type</th>
                     <th>Follow-up</th>
+                    <th>Remarks</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -239,11 +227,14 @@
     const db = firebase.firestore();
 
     let clients = [];
-    const team = ["Sunny", "Aditya"]; 
     const getToday = () => new Date().toLocaleDateString('en-CA');
 
+    // Persistence for Dark Mode
     (function initDarkMode() {
-        if (localStorage.getItem('darkMode') === 'enabled') {
+        const mode = localStorage.getItem('darkMode');
+        if (mode === 'disabled') {
+            document.body.classList.remove('dark-mode');
+        } else {
             document.body.classList.add('dark-mode');
         }
     })();
@@ -260,12 +251,8 @@
     }
 
     auth.onAuthStateChanged(user => {
-        if (user) { 
-            showView('crmView'); 
-            loadData(); 
-        } else { 
-            showView('loginView'); 
-        }
+        if (user) { showView('crmView'); loadData(); } 
+        else { showView('loginView'); }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -274,8 +261,8 @@
         btn.disabled = true; btn.innerText = "Connecting...";
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.disabled = false; btn.innerText = "Authorize & Entry";
-                document.getElementById('loginError').innerText = "Access Denied: " + err.message;
+                btn.disabled = false; btn.innerText = "Authorize Entry";
+                document.getElementById('loginError').innerText = "Access Error: " + err.message;
                 document.getElementById('loginError').style.display = 'block';
             });
     });
@@ -308,29 +295,11 @@
         bar.innerText = `🚨 ACTION: ${follow} follow-ups required today!`;
     }
 
-    // FIXED: Distributor Bot logic - Won't change existing assignments
-    function getDistributedAgent() {
-        const index = Math.floor(Math.random() * team.length);
-        return team[index];
-    }
-
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = auth.currentUser;
-        const isAutoAssign = document.getElementById('sendSunny').checked;
         const id = document.getElementById('editId').value;
         
-        let finalAssignee = "";
-        
-        if (id) {
-            // EDITING MODE: Keep original assignee if already exists
-            const existing = clients.find(x => x.id === id);
-            finalAssignee = (existing && existing.sentTo) ? existing.sentTo : (isAutoAssign ? getDistributedAgent() : "");
-        } else {
-            // NEW LEAD: Assign only if checked
-            finalAssignee = isAutoAssign ? getDistributedAgent() : "";
-        }
-
         const data = {
             ownerId: user.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
@@ -341,7 +310,6 @@
             propertyType: document.getElementById('propertyType').value || "",
             status: document.getElementById('status').value, 
             visitDone: document.getElementById('visitDone').checked,
-            sentTo: finalAssignee, 
             budget: document.getElementById('budget').value || "", 
             remark: document.getElementById('remark').value || ""
         };
@@ -350,17 +318,11 @@
         saveBtn.disabled = true;
 
         try {
-            if (id) {
-                await db.collection("leads").doc(id).update(data);
-            } else {
-                await db.collection("leads").add(data);
-            }
+            if (id) { await db.collection("leads").doc(id).update(data); } 
+            else { await db.collection("leads").add(data); }
             resetForm();
-        } catch (err) {
-            alert("Database Error: " + err.message);
-        } finally {
-            saveBtn.disabled = false;
-        }
+        } catch (err) { alert("DB Error: " + err.message); } 
+        finally { saveBtn.disabled = false; }
     });
 
     function renderTable() {
@@ -379,19 +341,18 @@
 
             return `
             <tr class="${c.followup === today ? 'row-highlight' : ''}">
-                <td style="opacity:0.5">${serial++}</td>
+                <td style="opacity:0.3">${serial++}</td>
                 <td>${c.leadDate}</td>
                 <td style="font-weight:800">${c.name}</td>
                 <td style="font-weight:600">${c.phone}</td>
                 <td><span class="badge ${badge}">${c.status}</span></td>
                 <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td style="font-weight:bold; color:#f39c12">${c.sentTo || '-'}</td>
                 <td>${c.visitDone ? '✅' : '❌'}</td>
                 <td>${c.location || '-'}</td>
                 <td>${c.propertyType || '-'}</td>
                 <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
+                <td style="font-size:10px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.remark || '-'}</td>
                 <td><div class="action-group">
-                    <button class="btn-done" title="Mark Done" onclick='markFollowupDone("${c.id}")'>✓</button>
                     <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
                     <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
                     <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
@@ -404,17 +365,8 @@
             table.innerHTML += `<tr class="section-divider"><td colspan="12">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="12">📁 LEAD HISTORY</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="12">📁 DATABASE HISTORY</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
-    }
-
-    function markFollowupDone(id) {
-        if(confirm("Mark this follow-up as completed?")) {
-            db.collection("leads").doc(id).update({
-                status: "Follow-up Done",
-                followup: "" 
-            }).catch(err => alert(err.message));
-        }
     }
 
     function editLead(id) {
@@ -422,18 +374,15 @@
         if(!c) return;
         document.getElementById('editId').value = c.id;
         ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
-            document.getElementById(f).value = c[f] || '';
+            if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
-        document.getElementById('sendSunny').checked = !!c.sentTo;
-        document.getElementById('saveBtn').innerText = "Update Lead";
+        document.getElementById('saveBtn').innerText = "Update Record";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function deleteLead(id) { 
-        if(confirm("Permanently delete this lead?")) {
-            db.collection("leads").doc(id).delete(); 
-        }
+        if(confirm("Confirm Deletion?")) { db.collection("leads").doc(id).delete(); }
     }
 
     async function clearDuplicates() {
@@ -445,32 +394,38 @@
             else seen.add(p);
         });
 
-        if(toDelete.length === 0) return alert("No duplicates found.");
-        if(confirm(`Delete ${toDelete.length} duplicates?`)) {
+        if(toDelete.length === 0) return alert("Clean! No duplicates.");
+        if(confirm(`Remove ${toDelete.length} duplicates?`)) {
             const batch = db.batch();
             toDelete.forEach(id => batch.delete(db.collection("leads").doc(id)));
             await batch.commit();
-            alert("Cleanup Successful.");
+            alert("Database Optimized.");
         }
     }
     
     function resetForm() { 
         document.getElementById('clientForm').reset(); 
         document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save to Cloud Database"; 
+        document.getElementById('saveBtn').innerText = "Save to Cloud"; 
     }
 
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
         const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, this is from True Invest.`, '_blank'); 
+        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, regarding your property inquiry from True Invest...`, '_blank'); 
     }
 
     function downloadCSV() {
-        let csv = "Date,Name,Phone,Status,Budget,Assign,Visit,Loc,Type,Followup\n";
-        clients.forEach(c => { csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.sentTo}","${c.visitDone}","${c.location}","${c.propertyType}","${c.followup}"\n`; });
-        const a = document.createElement('a'); a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        a.download = `Leads_${getToday()}.csv`; a.click();
+        let csv = "Lead Date,Name,Phone,Status,Budget,Visit Done,Location,Type,Followup,Full Remarks\n";
+        clients.forEach(c => { 
+            const safeRemark = (c.remark || '').replace(/"/g, '""').replace(/\n/g, ' ');
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.visitDone ? 'Yes':'No'}","${c.location}","${c.propertyType}","${c.followup}","${safeRemark}"\n`; 
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", `Leads_Full_Export_${getToday()}.csv`);
+        link.click();
     }
 
     function importCSV(e) {
@@ -480,31 +435,17 @@
             const batch = db.batch();
             const rows = ev.target.result.split('\n').slice(1);
             let count = 0;
-
             rows.forEach(row => {
                 const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
                 if(cols.length >= 3 && cols[1]) { 
                     const newRef = db.collection("leads").doc();
                     batch.set(newRef, { 
-                        ownerId: user.uid, 
-                        leadDate: cols[0] || getToday(), 
-                        name: cols[1], 
-                        phone: cols[2], 
-                        status: cols[3] || "New", 
-                        budget: cols[4] || "", 
-                        sentTo: cols[5] || "", 
-                        visitDone: cols[6] === "true", 
-                        location: cols[7] || "", 
-                        propertyType: cols[8] || "", 
-                        followup: cols[9] || "" 
+                        ownerId: user.uid, leadDate: cols[0], name: cols[1], phone: cols[2], status: cols[3], budget: cols[4], visitDone: cols[5]==='Yes', location: cols[6], propertyType: cols[7], followup: cols[8], remark: cols[9]
                     });
                     count++;
                 }
             });
-            if(count > 0) {
-                await batch.commit();
-                alert(`Imported ${count} leads successfully.`);
-            }
+            if(count > 0) { await batch.commit(); alert(`Imported ${count} leads.`); }
         };
         reader.readAsText(e.target.files[0]);
     }
