@@ -155,7 +155,6 @@
                     <option>Broker</option>
                     <option>Closed</option>
                     <option>Not Interested</option>
-                    <option>Follow-up Done</option>
                 </select>
             </div>
             <div>
@@ -229,14 +228,10 @@
     let clients = [];
     const getToday = () => new Date().toLocaleDateString('en-CA');
 
-    // Persistence for Dark Mode
     (function initDarkMode() {
         const mode = localStorage.getItem('darkMode');
-        if (mode === 'disabled') {
-            document.body.classList.remove('dark-mode');
-        } else {
-            document.body.classList.add('dark-mode');
-        }
+        if (mode === 'disabled') { document.body.classList.remove('dark-mode'); } 
+        else { document.body.classList.add('dark-mode'); }
     })();
 
     function toggleDarkMode() {
@@ -284,7 +279,7 @@
         const today = getToday();
         const total = clients.length;
         const hot = clients.filter(c => c.status === 'Hot').length;
-        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done').length;
+        const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
 
         document.getElementById('statTotal').innerText = total;
         document.getElementById('statHot').innerText = hot;
@@ -331,13 +326,13 @@
         table.innerHTML = '';
         let serial = 1;
 
-        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed' && c.status !== 'Follow-up Done');
-        const others = clients.filter(c => c.followup !== today || c.status === 'Closed' || c.status === 'Follow-up Done');
+        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed');
+        const others = clients.filter(c => c.followup !== today || c.status === 'Closed');
 
         const generateRow = (c) => {
             let badge = 'status-default';
             if(c.status === 'Hot') badge = 'status-hot';
-            if(c.status === 'Closed' || c.status === 'Follow-up Done') badge = 'status-closed';
+            if(c.status === 'Closed') badge = 'status-closed';
 
             return `
             <tr class="${c.followup === today ? 'row-highlight' : ''}">
@@ -424,7 +419,7 @@
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.setAttribute("download", `Leads_Full_Export_${getToday()}.csv`);
+        link.setAttribute("download", `TRUE_INVEST_LEADS_${getToday()}.csv`);
         link.click();
     }
 
