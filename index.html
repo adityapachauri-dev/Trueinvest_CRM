@@ -78,8 +78,16 @@
         .btn-call { background: #007bff !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
 
+        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .form-row-3 { grid-template-columns: 1fr; gap: 0px; }
+            .form-row-2 { gap: 8px; }
+        }
 
         .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; min-width: 1500px; }
@@ -131,7 +139,7 @@
 
     <form id="clientForm">
         <input type="hidden" id="editId" value="">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-row-2">
             <div><label>Lead Date</label><input type="date" id="leadDate"></div>
             <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
@@ -140,17 +148,21 @@
         <input type="text" id="name" placeholder="Full Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-row-3">
             <div>
                 <label>Project</label>
                 <select id="projectCategory">
                     <option value="">Select Project</option>
-                    <option value="Builder Floor">Builder Floor</option>
-                    <option value="Lock n key Homes">Lock n key Homes</option>
+                    <option value="Sai Garden">Sai Garden</option>
+                    <option value="Lock n key Exclusive">Lock n key Exclusive</option>
+                    <option value="Greater Noida West">Greater Noida West</option>
                 </select>
             </div>
             <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
-            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="2BHK, 3BHK, etc."></div>
+            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="2BHK, 3BHK, Plot etc."></div>
+        </div>
+
+        <div class="form-row-2">
             <div>
                 <label>Status</label>
                 <select id="status">
@@ -162,7 +174,7 @@
                     <option>Not Interested</option>
                 </select>
             </div>
-            <div style="grid-column: span 2;">
+            <div>
                 <label>Visit</label>
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
@@ -268,26 +280,32 @@
             });
     });
 
-    function logout() { auth.signOut(); }
+    function logout() { 
+        auth.signOut(); 
+        clients = []; 
+        document.getElementById('clientTable').innerHTML = ''; 
+    }
 
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
         
-        // FIX: Removed .orderBy("leadDate", "desc") to prevent Firestore composite index crash. 
-        // Data is now sorted locally in Javascript directly below.
         db.collection("leads").where("ownerId", "==", user.uid)
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
               
-              // Secure local sorting (Newest dates first)
-              clients.sort((a, b) => new Date(b.leadDate) - new Date(a.leadDate));
+              // Secure local sorting with fallback for empty dates to prevent crashes
+              clients.sort((a, b) => {
+                  let dateA = a.leadDate ? new Date(a.leadDate) : new Date(0);
+                  let dateB = b.leadDate ? new Date(b.leadDate) : new Date(0);
+                  return dateB - dateA;
+              });
               
               renderTable();
               updateDashboard();
           }, error => {
               console.error("Database connection issue:", error);
-              alert("Could not load leads. Please check your Firebase Database Rules.");
+              alert("Could not load leads. Please check your Firebase connection.");
           });
     }
 
@@ -432,7 +450,7 @@
         let csv = "Lead Date,Name,Phone,Project,Status,Budget,Visit Done,Location,Type,Followup,Full Remarks\n";
         clients.forEach(c => { 
             const safeRemark = (c.remark || '').replace(/"/g, '""').replace(/\n/g, ' ');
-            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.projectCategory || ''}","${c.status}","${c.budget}","${c.visitDone ? 'Yes':'No'}","${c.location}","${c.propertyType}","${c.followup}","${safeRemark}"\n`; 
+            csv += `"${c.leadDate || ''}","${c.name || ''}","${c.phone || ''}","${c.projectCategory || ''}","${c.status || ''}","${c.budget || ''}","${c.visitDone ? 'Yes':'No'}","${c.location || ''}","${c.propertyType || ''}","${c.followup || ''}","${safeRemark}"\n`; 
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
@@ -444,23 +462,63 @@
     function importCSV(e) {
         const user = auth.currentUser;
         const reader = new FileReader();
+        
+        // Custom parser to handle commas inside quotes properly
+        const parseCSVRow = (row) => {
+            let cols = [];
+            let inQuotes = false;
+            let col = '';
+            for (let i = 0; i < row.length; i++) {
+                let char = row[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) { cols.push(col.trim()); col = ''; }
+                else col += char;
+            }
+            cols.push(col.trim());
+            return cols;
+        };
+
         reader.onload = async (ev) => {
             const batch = db.batch();
-            const rows = ev.target.result.split('\n').slice(1);
+            const rows = ev.target.result.split('\n').filter(r => r.trim() !== ''); // ignore empty lines
+            if(rows.length <= 1) return alert("No valid data found in CSV.");
+            
+            const dataRows = rows.slice(1); // skip headers
             let count = 0;
-            rows.forEach(row => {
-                const cols = row.split(',').map(c => c.replace(/"/g, '').trim());
+            
+            dataRows.forEach(row => {
+                const cols = parseCSVRow(row).map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"')); // Clean quotes
                 if(cols.length >= 3 && cols[1]) { 
                     const newRef = db.collection("leads").doc();
                     batch.set(newRef, { 
-                        ownerId: user.uid, leadDate: cols[0] || getToday(), name: cols[1], phone: cols[2], projectCategory: cols[3] || '', status: cols[4] || 'New', budget: cols[5] || '', visitDone: cols[6]==='Yes', location: cols[7] || '', propertyType: cols[8] || '', followup: cols[9] || '', remark: cols[10] || ''
+                        ownerId: user.uid, 
+                        leadDate: cols[0] || getToday(), 
+                        name: cols[1], 
+                        phone: cols[2], 
+                        projectCategory: cols[3] || '', 
+                        status: cols[4] || 'New', 
+                        budget: cols[5] || '', 
+                        visitDone: cols[6] === 'Yes', 
+                        location: cols[7] || '', 
+                        propertyType: cols[8] || '', 
+                        followup: cols[9] || '', 
+                        remark: cols[10] || ''
                     });
                     count++;
                 }
             });
-            if(count > 0) { await batch.commit(); alert(`Imported ${count} leads.`); }
+            if(count > 0) { 
+                try {
+                    await batch.commit(); 
+                    alert(`Imported ${count} leads successfully.`); 
+                } catch(err) {
+                    alert("Import Error: " + err.message);
+                }
+            }
         };
         reader.readAsText(e.target.files[0]);
+        // Reset file input so you can upload the same file again if needed
+        e.target.value = '';
     }
 
     document.getElementById('search').addEventListener('input', e => {
