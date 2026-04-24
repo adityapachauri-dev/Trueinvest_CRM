@@ -82,7 +82,7 @@
         .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
 
         .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
         th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
         th { background: rgba(255,255,255,0.05); font-weight: 800; font-size: 10px; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
         
@@ -141,11 +141,16 @@
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+                <label>Project</label>
+                <select id="projectCategory">
+                    <option value="">Select Project</option>
+                    <option value="Sai Garden">Builder Floor</option>
+                    <option value="Lock n key Exclusive">Lock n key Homes</option>
+                </select>
+            </div>
             <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
-            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="3BHK, Plot etc."></div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="2BHK, 3BHK, etc."></div>
             <div>
                 <label>Status</label>
                 <select id="status">
@@ -157,7 +162,7 @@
                     <option>Not Interested</option>
                 </select>
             </div>
-            <div>
+            <div style="grid-column: span 2;">
                 <label>Visit</label>
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
@@ -191,6 +196,7 @@
                     <th>Date</th>
                     <th>Name</th>
                     <th>Phone</th>
+                    <th>Project</th>
                     <th>Status</th>
                     <th>Budget</th>
                     <th>Visit</th>
@@ -267,11 +273,21 @@
     function loadData() {
         const user = auth.currentUser;
         if(!user) return;
-        db.collection("leads").where("ownerId", "==", user.uid).orderBy("leadDate", "desc")
+        
+        // FIX: Removed .orderBy("leadDate", "desc") to prevent Firestore composite index crash. 
+        // Data is now sorted locally in Javascript directly below.
+        db.collection("leads").where("ownerId", "==", user.uid)
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+              
+              // Secure local sorting (Newest dates first)
+              clients.sort((a, b) => new Date(b.leadDate) - new Date(a.leadDate));
+              
               renderTable();
               updateDashboard();
+          }, error => {
+              console.error("Database connection issue:", error);
+              alert("Could not load leads. Please check your Firebase Database Rules.");
           });
     }
 
@@ -301,6 +317,7 @@
             followup: document.getElementById('followup').value || "",
             name: document.getElementById('name').value.trim(), 
             phone: document.getElementById('phone').value.trim(),
+            projectCategory: document.getElementById('projectCategory').value || "",
             location: document.getElementById('location').value || "", 
             propertyType: document.getElementById('propertyType').value || "",
             status: document.getElementById('status').value, 
@@ -340,6 +357,7 @@
                 <td>${c.leadDate}</td>
                 <td style="font-weight:800">${c.name}</td>
                 <td style="font-weight:600">${c.phone}</td>
+                <td style="color:var(--accent-blue); font-weight:bold">${c.projectCategory || '-'}</td>
                 <td><span class="badge ${badge}">${c.status}</span></td>
                 <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
                 <td>${c.visitDone ? '✅' : '❌'}</td>
@@ -357,10 +375,10 @@
         };
 
         if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="12">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
+            table.innerHTML += `<tr class="section-divider"><td colspan="13">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
             urgent.forEach(c => table.innerHTML += generateRow(c));
         }
-        table.innerHTML += `<tr class="section-divider"><td colspan="12">📁 DATABASE HISTORY</td></tr>`;
+        table.innerHTML += `<tr class="section-divider"><td colspan="13">📁 DATABASE HISTORY</td></tr>`;
         others.forEach(c => table.innerHTML += generateRow(c));
     }
 
@@ -368,7 +386,7 @@
         const c = clients.find(x => x.id === id);
         if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
+        ['leadDate', 'followup', 'name', 'phone', 'projectCategory', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
             if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
@@ -384,8 +402,8 @@
         const seen = new Set();
         const toDelete = [];
         clients.forEach(c => {
-            const p = c.phone.trim();
-            if(seen.has(p)) toDelete.push(c.id);
+            const p = (c.phone || '').trim();
+            if(seen.has(p) && p !== "") toDelete.push(c.id);
             else seen.add(p);
         });
 
@@ -407,14 +425,14 @@
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
         const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, regarding your property inquiry from True Invest...`, '_blank'); 
+        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, regarding your property inquiry...`, '_blank'); 
     }
 
     function downloadCSV() {
-        let csv = "Lead Date,Name,Phone,Status,Budget,Visit Done,Location,Type,Followup,Full Remarks\n";
+        let csv = "Lead Date,Name,Phone,Project,Status,Budget,Visit Done,Location,Type,Followup,Full Remarks\n";
         clients.forEach(c => { 
             const safeRemark = (c.remark || '').replace(/"/g, '""').replace(/\n/g, ' ');
-            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.status}","${c.budget}","${c.visitDone ? 'Yes':'No'}","${c.location}","${c.propertyType}","${c.followup}","${safeRemark}"\n`; 
+            csv += `"${c.leadDate}","${c.name}","${c.phone}","${c.projectCategory || ''}","${c.status}","${c.budget}","${c.visitDone ? 'Yes':'No'}","${c.location}","${c.propertyType}","${c.followup}","${safeRemark}"\n`; 
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
@@ -435,7 +453,7 @@
                 if(cols.length >= 3 && cols[1]) { 
                     const newRef = db.collection("leads").doc();
                     batch.set(newRef, { 
-                        ownerId: user.uid, leadDate: cols[0], name: cols[1], phone: cols[2], status: cols[3], budget: cols[4], visitDone: cols[5]==='Yes', location: cols[6], propertyType: cols[7], followup: cols[8], remark: cols[9]
+                        ownerId: user.uid, leadDate: cols[0] || getToday(), name: cols[1], phone: cols[2], projectCategory: cols[3] || '', status: cols[4] || 'New', budget: cols[5] || '', visitDone: cols[6]==='Yes', location: cols[7] || '', propertyType: cols[8] || '', followup: cols[9] || '', remark: cols[10] || ''
                     });
                     count++;
                 }
