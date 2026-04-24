@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Black Edition</title>
+    <title>TRUE INVEST CRM PRO</title>
     
     <style>
         :root {
@@ -11,7 +11,6 @@
             --accent-blue: #1877f2; --whatsapp-green: #25D366; --notify-red: #fa3e3e; --highlight-today: #fff9c4;
             --hot-bg: #ffebe9; --hot-text: #d93025; --closed-bg: #e6f4ea; --closed-text: #1e8e3e;
         }
-        /* PURE BLACK DARK MODE */
         body.dark-mode {
             --bg-color: #000000; --card-bg: #121212; --text-color: #ffffff; --border-color: #2c2c2c; --highlight-today: #2a2600;
             --hot-bg: #3d0000; --hot-text: #ff5252; --closed-bg: #002b00; --closed-text: #69f0ae;
@@ -48,8 +47,7 @@
         input, textarea, button, select { 
             padding: 14px; margin: 6px 0 14px 0; width: 100%; border: 1.5px solid var(--border-color); 
             border-radius: 12px; background: var(--card-bg); color: var(--text-color); font-size: 16px; 
-            box-sizing: border-box; transition: 0.2s;
-            appearance: none; -webkit-appearance: none;
+            box-sizing: border-box; transition: 0.2s; -webkit-appearance: none;
         }
         
         input[type="date"], select { height: 52px; }
@@ -67,40 +65,31 @@
         }
         .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; -webkit-appearance: checkbox;}
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 14px; font-size: 16px; transition: 0.2s; }
-        button:active { transform: scale(0.96); opacity: 0.9; }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 14px; font-size: 16px; }
+        button:active { transform: scale(0.98); }
         .btn-secondary { background: #333; color: #fff; height: 46px; font-size: 14px; border: 1px solid #444; }
-        .btn-danger { background: var(--notify-red) !important; color: white !important; }
         
-        .action-group { display: flex; gap: 8px; min-width: 250px; justify-content: center; }
-        .action-group button { height: 40px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 10px; }
+        .action-group { display: flex; gap: 8px; justify-content: center; }
+        .action-group button { height: 36px; font-size: 10px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; }
         .btn-wa { background: var(--whatsapp-green) !important; }
         .btn-call { background: #007bff !important; }
         .btn-edit { background: #ffc107 !important; color: #000 !important; }
 
-        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .search-box { grid-column: span 2; border: 2.5px solid var(--accent-blue); height: 56px; border-radius: 16px; padding-left: 20px; font-weight: 600; }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 480px) {
-            .form-row-3 { grid-template-columns: 1fr; gap: 0px; }
-            .form-row-2 { gap: 8px; }
-        }
-
         .table-container { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
-        th, td { padding: 16px 12px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        th { background: rgba(255,255,255,0.05); font-weight: 800; font-size: 10px; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
+        th, td { padding: 14px 10px; border-bottom: 1px solid var(--border-color); text-align: center; font-size: 13px; }
+        th { background: rgba(255,255,255,0.05); font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 6px solid var(--notify-red); }
-        .section-divider { background: #1a1a1a !important; color: #666; font-size: 12px; text-align: left; padding: 15px; font-weight: 800; }
+        .section-divider { background: #1a1a1a !important; color: #666; font-size: 12px; text-align: left; padding: 12px; font-weight: 800; }
 
         .fab { position: fixed; bottom: 30px; right: 25px; width: 68px; height: 68px; background: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 25px rgba(24, 119, 242, 0.5); z-index: 100; text-decoration: none; border: 3px solid #000; }
         
-        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.4; font-size: 11px; font-weight: 700; border-top: 1px solid var(--border-color); }
-        .watermark span { color: var(--accent-blue); font-size: 15px; display: block; }
+        .watermark { text-align: center; margin-top: 50px; padding: 30px; opacity: 0.5; font-size: 11px; border-top: 1px solid var(--border-color); }
+        .watermark b { color: var(--accent-blue); font-size: 14px; }
         
         .hidden { display: none !important; }
     </style>
@@ -116,10 +105,10 @@
     <div class="login-card">
         <form id="loginForm">
             <label>Secure CRM Login</label>
-            <input type="email" id="loginEmail" placeholder="Work Email" required>
+            <input type="email" id="loginEmail" placeholder="Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
             <button type="submit" id="loginBtn">Authorize Entry</button>
-            <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; font-weight: 600; display: none;"></div>
+            <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; display: none;"></div>
         </form>
     </div>
 </div>
@@ -127,7 +116,7 @@
 <div id="crmView" class="container hidden">
     <a href="#clientForm" class="fab">＋</a>
     <h1>TRUE INVEST CRM</h1>
-    <button class="btn-secondary" style="background:var(--notify-red); border:none; color:white; margin-bottom:20px; width:100%; font-weight:800;" onclick="logout()">Logout System</button>
+    <button class="btn-secondary" style="background:#444; border:none; margin-bottom:20px; width:100%;" onclick="logout()">Logout System</button>
 
     <div class="stats-grid">
         <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -139,64 +128,55 @@
 
     <form id="clientForm">
         <input type="hidden" id="editId" value="">
-        <div class="form-row-2">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div><label>Lead Date</label><input type="date" id="leadDate"></div>
             <div><label>Follow-up</label><input type="date" id="followup"></div>
         </div>
 
-        <label>Client Details</label>
-        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="text" id="name" placeholder="Client Name" required>
         <input type="tel" id="phone" placeholder="Phone Number" required>
         
-        <div class="form-row-3">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
                 <label>Project</label>
                 <select id="projectCategory">
-                    <option value="">Select Project</option>
-                    <option value="Sai Garden">Sai Garden</option>
-                    <option value="Lock n key Exclusive">Lock n key Exclusive</option>
-                    <option value="Greater Noida West">Greater Noida West</option>
+                    <option value="Builder Floor">Builder Floor</option>
+                    <option value="Lock n key Homes">Lock n key Homes</option>
                 </select>
             </div>
-            <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
-            <div><label>Property Type</label><input type="text" id="propertyType" placeholder="2BHK, 3BHK, Plot etc."></div>
-        </div>
-
-        <div class="form-row-2">
             <div>
                 <label>Status</label>
                 <select id="status">
                     <option>New</option>
                     <option>Follow-up</option>
                     <option>Hot</option>
-                    <option>Broker</option>
                     <option>Closed</option>
                     <option>Not Interested</option>
                 </select>
             </div>
-            <div>
-                <label>Visit</label>
-                <div class="check-item">
-                    <input type="checkbox" id="visitDone">
-                    <label for="visitDone" style="margin:0">Site Visit Done</label>
-                </div>
-            </div>
         </div>
 
-        <label>Budget & Remarks</label>
-        <input type="text" id="budget" placeholder="Budget (e.g. 1.50 Cr)">
-        <textarea id="remark" placeholder="Detailed Lead Notes..." rows="3"></textarea>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+            <input type="text" id="location" placeholder="Locality">
+            <input type="text" id="propertyType" placeholder="BHK Type">
+        </div>
+
+        <input type="text" id="budget" placeholder="Budget (e.g. 1.25 Cr)">
+        
+        <div class="check-item">
+            <input type="checkbox" id="visitDone">
+            <label for="visitDone" style="margin:0">Site Visit Done</label>
+        </div>
+
+        <textarea id="remark" placeholder="Remarks..." rows="3"></textarea>
         
         <button type="submit" id="saveBtn">Save to Cloud</button>
-        <button type="button" class="btn-secondary" style="width:100%; margin-top:10px" onclick="resetForm()">Clear Form</button>
+        <button type="button" class="btn-secondary" style="width:100%; margin-top:10px" onclick="resetForm()">Reset Form</button>
     </form>
 
     <div class="controls">
-        <button class="btn-secondary" onclick="toggleDarkMode()">Dark Mode</button>
-        <button class="btn-secondary" style="background:#1e8e3e; color:white; border:none;" onclick="downloadCSV()">Excel Export</button>
-        <button class="btn-secondary" style="background:#17a2b8; color:white; border:none;" onclick="document.getElementById('csvImport').click()">Import CSV</button>
-        <input type="file" id="csvImport" accept=".csv" class="hidden" onchange="importCSV(event)">
-        <button class="btn-secondary btn-danger" style="border:none" onclick="clearDuplicates()">Cleanup</button>
+        <button class="btn-secondary" onclick="toggleDarkMode()">UI Theme</button>
+        <button class="btn-secondary" style="background:#1e8e3e; border:none;" onclick="downloadCSV()">Export Excel</button>
         <input type="text" id="search" class="search-box" placeholder="🔍 Search leads...">
     </div>
 
@@ -208,14 +188,9 @@
                     <th>Date</th>
                     <th>Name</th>
                     <th>Phone</th>
-                    <th>Project</th>
                     <th>Status</th>
-                    <th>Budget</th>
-                    <th>Visit</th>
-                    <th>Loc</th>
-                    <th>Type</th>
+                    <th>Project</th>
                     <th>Follow-up</th>
-                    <th>Remarks</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -225,11 +200,12 @@
 
     <div class="watermark">
         SYSTEM DESIGNED BY<br>
-        <span>ADITYA PACHAURI</span>
+        <b>ADITYA PACHAURI</b>
     </div>
 </div>
 
 <script>
+    // CORE CONFIG
     const firebaseConfig = {
         apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", 
         authDomain: "truecrm-6cf8e.firebaseapp.com",
@@ -239,73 +215,54 @@
         appId: "1:791381407537:web:45e9946a939f8d23b56210"
     };
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
     let clients = [];
-    const getToday = () => new Date().toLocaleDateString('en-CA');
+    const getToday = () => new Date().toISOString().split('T')[0];
 
-    (function initDarkMode() {
-        const mode = localStorage.getItem('darkMode');
-        if (mode === 'disabled') { document.body.classList.remove('dark-mode'); } 
-        else { document.body.classList.add('dark-mode'); }
-    })();
+    // Auth & Persistent Login
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            showView('crmView');
+            document.getElementById('leadDate').value = getToday();
+            loadData();
+        } else {
+            showView('loginView');
+        }
+    });
 
-    function toggleDarkMode() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-    }
-
-    function showView(viewId) {
+    function showView(id) {
         document.getElementById('loginView').classList.add('hidden');
         document.getElementById('crmView').classList.add('hidden');
-        document.getElementById(viewId).classList.remove('hidden');
+        document.getElementById(id).classList.remove('hidden');
     }
-
-    auth.onAuthStateChanged(user => {
-        if (user) { showView('crmView'); loadData(); } 
-        else { showView('loginView'); }
-    });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
-        btn.disabled = true; btn.innerText = "Connecting...";
+        btn.disabled = true;
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
             .catch(err => {
-                btn.disabled = false; btn.innerText = "Authorize Entry";
-                document.getElementById('loginError').innerText = "Access Error: " + err.message;
-                document.getElementById('loginError').style.display = 'block';
+                btn.disabled = false;
+                const errDiv = document.getElementById('loginError');
+                errDiv.innerText = "Error: " + err.message;
+                errDiv.style.display = 'block';
             });
     });
 
-    function logout() { 
-        auth.signOut(); 
-        clients = []; 
-        document.getElementById('clientTable').innerHTML = ''; 
-    }
+    function logout() { auth.signOut(); }
 
+    // Optimized Data Loading
     function loadData() {
-        const user = auth.currentUser;
-        if(!user) return;
-        
-        db.collection("leads").where("ownerId", "==", user.uid)
+        db.collection("leads").where("ownerId", "==", auth.currentUser.uid)
           .onSnapshot(snap => {
               clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-              
-              // Secure local sorting with fallback for empty dates to prevent crashes
-              clients.sort((a, b) => {
-                  let dateA = a.leadDate ? new Date(a.leadDate) : new Date(0);
-                  let dateB = b.leadDate ? new Date(b.leadDate) : new Date(0);
-                  return dateB - dateA;
-              });
-              
+              // Local sort to avoid Indexing requirement
+              clients.sort((a, b) => new Date(b.leadDate) - new Date(a.leadDate));
               renderTable();
               updateDashboard();
-          }, error => {
-              console.error("Database connection issue:", error);
-              alert("Could not load leads. Please check your Firebase connection.");
           });
     }
 
@@ -320,38 +277,37 @@
         document.getElementById('statFollow').innerText = follow;
 
         const bar = document.getElementById('reminderAlert');
-        bar.style.display = follow ? 'block' : 'none';
-        bar.innerText = `🚨 ACTION: ${follow} follow-ups required today!`;
+        bar.style.display = follow > 0 ? 'block' : 'none';
+        bar.innerText = `🚨 Action Required: ${follow} follow-ups for today!`;
     }
 
+    // CRUD Ops
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const user = auth.currentUser;
         const id = document.getElementById('editId').value;
-        
-        const data = {
-            ownerId: user.uid,
-            leadDate: document.getElementById('leadDate').value || getToday(),
-            followup: document.getElementById('followup').value || "",
-            name: document.getElementById('name').value.trim(), 
-            phone: document.getElementById('phone').value.trim(),
-            projectCategory: document.getElementById('projectCategory').value || "",
-            location: document.getElementById('location').value || "", 
-            propertyType: document.getElementById('propertyType').value || "",
-            status: document.getElementById('status').value, 
-            visitDone: document.getElementById('visitDone').checked,
-            budget: document.getElementById('budget').value || "", 
-            remark: document.getElementById('remark').value || ""
-        };
-
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
 
+        const data = {
+            ownerId: auth.currentUser.uid,
+            leadDate: document.getElementById('leadDate').value || getToday(),
+            followup: document.getElementById('followup').value || "",
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            projectCategory: document.getElementById('projectCategory').value,
+            status: document.getElementById('status').value,
+            location: document.getElementById('location').value,
+            propertyType: document.getElementById('propertyType').value,
+            budget: document.getElementById('budget').value,
+            visitDone: document.getElementById('visitDone').checked,
+            remark: document.getElementById('remark').value
+        };
+
         try {
-            if (id) { await db.collection("leads").doc(id).update(data); } 
-            else { await db.collection("leads").add(data); }
+            if (id) await db.collection("leads").doc(id).update(data);
+            else await db.collection("leads").add(data);
             resetForm();
-        } catch (err) { alert("DB Error: " + err.message); } 
+        } catch (err) { alert("Error: " + err.message); }
         finally { saveBtn.disabled = false; }
     });
 
@@ -359,172 +315,88 @@
         const table = document.getElementById('clientTable');
         const today = getToday();
         table.innerHTML = '';
+        
         let serial = 1;
+        clients.forEach(c => {
+            const isUrgent = c.followup === today && c.status !== 'Closed';
+            const badgeClass = c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default');
 
-        const urgent = clients.filter(c => c.followup === today && c.status !== 'Closed');
-        const others = clients.filter(c => c.followup !== today || c.status === 'Closed');
-
-        const generateRow = (c) => {
-            let badge = 'status-default';
-            if(c.status === 'Hot') badge = 'status-hot';
-            if(c.status === 'Closed') badge = 'status-closed';
-
-            return `
-            <tr class="${c.followup === today ? 'row-highlight' : ''}">
-                <td style="opacity:0.3">${serial++}</td>
-                <td>${c.leadDate}</td>
-                <td style="font-weight:800">${c.name}</td>
-                <td style="font-weight:600">${c.phone}</td>
-                <td style="color:var(--accent-blue); font-weight:bold">${c.projectCategory || '-'}</td>
-                <td><span class="badge ${badge}">${c.status}</span></td>
-                <td style="color:#28a745; font-weight:bold">${c.budget || '-'}</td>
-                <td>${c.visitDone ? '✅' : '❌'}</td>
-                <td>${c.location || '-'}</td>
-                <td>${c.propertyType || '-'}</td>
-                <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
-                <td style="font-size:10px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.remark || '-'}</td>
-                <td><div class="action-group">
-                    <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
-                    <button class="btn-wa" onclick='sendWA("${c.phone}", "${c.name}")'>WA</button>
-                    <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
-                    <button class="btn-danger" onclick="deleteLead('${c.id}')">DEL</button>
-                </div></td>
-            </tr>`;
-        };
-
-        if(urgent.length) {
-            table.innerHTML += `<tr class="section-divider"><td colspan="13">🚨 PRIORITY: TODAY'S TASKS</td></tr>`;
-            urgent.forEach(c => table.innerHTML += generateRow(c));
-        }
-        table.innerHTML += `<tr class="section-divider"><td colspan="13">📁 DATABASE HISTORY</td></tr>`;
-        others.forEach(c => table.innerHTML += generateRow(c));
+            table.innerHTML += `
+                <tr class="${isUrgent ? 'row-highlight' : ''}">
+                    <td style="opacity:0.4">${serial++}</td>
+                    <td>${c.leadDate}</td>
+                    <td style="font-weight:bold">${c.name}</td>
+                    <td>${c.phone}</td>
+                    <td><span class="badge ${badgeClass}">${c.status}</span></td>
+                    <td>${c.projectCategory}</td>
+                    <td style="font-weight:bold; color:var(--accent-blue)">${c.followup || '-'}</td>
+                    <td>
+                        <div class="action-group">
+                            <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
+                            <button class="btn-wa" onclick="sendWA('${c.phone}', '${c.name}')">WA</button>
+                            <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
+                            <button style="background:var(--notify-red); color:white" onclick="deleteLead('${c.id}')">DEL</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
     }
 
     function editLead(id) {
         const c = clients.find(x => x.id === id);
         if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'projectCategory', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
-            if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
-        });
+        document.getElementById('name').value = c.name;
+        document.getElementById('phone').value = c.phone;
+        document.getElementById('status').value = c.status;
+        document.getElementById('followup').value = c.followup;
+        document.getElementById('leadDate').value = c.leadDate;
+        document.getElementById('location').value = c.location || "";
+        document.getElementById('propertyType').value = c.propertyType || "";
+        document.getElementById('budget').value = c.budget || "";
+        document.getElementById('remark').value = c.remark || "";
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('saveBtn').innerText = "Update Record";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    function deleteLead(id) { 
-        if(confirm("Confirm Deletion?")) { db.collection("leads").doc(id).delete(); }
+    function deleteLead(id) {
+        if(confirm("Delete this lead?")) db.collection("leads").doc(id).delete();
     }
 
-    async function clearDuplicates() {
-        const seen = new Set();
-        const toDelete = [];
-        clients.forEach(c => {
-            const p = (c.phone || '').trim();
-            if(seen.has(p) && p !== "") toDelete.push(c.id);
-            else seen.add(p);
-        });
+    function resetForm() {
+        document.getElementById('clientForm').reset();
+        document.getElementById('editId').value = "";
+        document.getElementById('saveBtn').innerText = "Save to Cloud";
+        document.getElementById('leadDate').value = getToday();
+    }
 
-        if(toDelete.length === 0) return alert("Clean! No duplicates.");
-        if(confirm(`Remove ${toDelete.length} duplicates?`)) {
-            const batch = db.batch();
-            toDelete.forEach(id => batch.delete(db.collection("leads").doc(id)));
-            await batch.commit();
-            alert("Database Optimized.");
-        }
-    }
-    
-    function resetForm() { 
-        document.getElementById('clientForm').reset(); 
-        document.getElementById('editId').value = ""; 
-        document.getElementById('saveBtn').innerText = "Save to Cloud"; 
-    }
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
     function sendWA(num, name) { 
         const clean = num.replace(/\D/g,'');
         const final = clean.length === 10 ? '91'+clean : clean;
-        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, regarding your property inquiry...`, '_blank'); 
+        window.open(`https://wa.me/${final}?text=Hi ${encodeURIComponent(name)}, regarding your inquiry...`, '_blank'); 
     }
 
     function downloadCSV() {
-        let csv = "Lead Date,Name,Phone,Project,Status,Budget,Visit Done,Location,Type,Followup,Full Remarks\n";
-        clients.forEach(c => { 
-            const safeRemark = (c.remark || '').replace(/"/g, '""').replace(/\n/g, ' ');
-            csv += `"${c.leadDate || ''}","${c.name || ''}","${c.phone || ''}","${c.projectCategory || ''}","${c.status || ''}","${c.budget || ''}","${c.visitDone ? 'Yes':'No'}","${c.location || ''}","${c.propertyType || ''}","${c.followup || ''}","${safeRemark}"\n`; 
+        let csv = "Date,Name,Phone,Status,Project,Followup,Remarks\n";
+        clients.forEach(c => {
+            csv += `${c.leadDate},${c.name},${c.phone},${c.status},${c.projectCategory},${c.followup},"${(c.remark || '').replace(/"/g, '""')}"\n`;
         });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute("download", `TRUE_INVEST_LEADS_${getToday()}.csv`);
-        link.click();
-    }
-
-    function importCSV(e) {
-        const user = auth.currentUser;
-        const reader = new FileReader();
-        
-        // Custom parser to handle commas inside quotes properly
-        const parseCSVRow = (row) => {
-            let cols = [];
-            let inQuotes = false;
-            let col = '';
-            for (let i = 0; i < row.length; i++) {
-                let char = row[i];
-                if (char === '"') inQuotes = !inQuotes;
-                else if (char === ',' && !inQuotes) { cols.push(col.trim()); col = ''; }
-                else col += char;
-            }
-            cols.push(col.trim());
-            return cols;
-        };
-
-        reader.onload = async (ev) => {
-            const batch = db.batch();
-            const rows = ev.target.result.split('\n').filter(r => r.trim() !== ''); // ignore empty lines
-            if(rows.length <= 1) return alert("No valid data found in CSV.");
-            
-            const dataRows = rows.slice(1); // skip headers
-            let count = 0;
-            
-            dataRows.forEach(row => {
-                const cols = parseCSVRow(row).map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"')); // Clean quotes
-                if(cols.length >= 3 && cols[1]) { 
-                    const newRef = db.collection("leads").doc();
-                    batch.set(newRef, { 
-                        ownerId: user.uid, 
-                        leadDate: cols[0] || getToday(), 
-                        name: cols[1], 
-                        phone: cols[2], 
-                        projectCategory: cols[3] || '', 
-                        status: cols[4] || 'New', 
-                        budget: cols[5] || '', 
-                        visitDone: cols[6] === 'Yes', 
-                        location: cols[7] || '', 
-                        propertyType: cols[8] || '', 
-                        followup: cols[9] || '', 
-                        remark: cols[10] || ''
-                    });
-                    count++;
-                }
-            });
-            if(count > 0) { 
-                try {
-                    await batch.commit(); 
-                    alert(`Imported ${count} leads successfully.`); 
-                } catch(err) {
-                    alert("Import Error: " + err.message);
-                }
-            }
-        };
-        reader.readAsText(e.target.files[0]);
-        // Reset file input so you can upload the same file again if needed
-        e.target.value = '';
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `TRUE_INVEST_EXPORT.csv`;
+        a.click();
     }
 
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr').forEach(tr => { 
-            if(!tr.classList.contains('section-divider')) tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; 
+        document.querySelectorAll('#clientTable tr').forEach(tr => {
+            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     });
 </script>
