@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRUE INVEST CRM</title>
+    <title>TRUE INVEST CRM - Apple Edition</title>
     
     <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -11,7 +11,8 @@
     <style>
         :root {
             --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #111111; --border-color: #d1d5db; 
-            --accent-blue: #1877f2; --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
+            --accent-blue: #0071e3; /* Upgraded to Apple Blue */
+            --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
             --highlight-today: #fff9c4; --hot-bg: #fde8e8; --hot-text: #9b1c1c; 
             --closed-bg: #def7ec; --closed-text: #03543f; --cold-bg: #e5e7eb; --cold-text: #4b5563;
         }
@@ -97,13 +98,99 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal-overlay.active .modal-content { transform: scale(1); }
         .modal-close { float: right; background: #f3f4f6; border: none; font-size: 18px; color: #555; cursor: pointer; height: 32px; width: 32px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center;}
         .modal-close:hover { background: #e5e7eb; color: #000; }
 
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.6; font-size: 10px; font-weight: 700; color: #666; }
+
+        /* =========================================
+           APPLE PREMIUM UI OVERRIDES
+        ========================================= */
+
+        /* 1. Apple Font & Premium Background */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%); 
+            letter-spacing: -0.2px; 
+        }
+
+        /* 2. Glassmorphism Header (Frosted Glass) */
+        header {
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        /* 3. Soft Floating Cards (Stat Cards, Forms, Tables) */
+        .stat-card, form, .table-container, .kanban-container, .login-card {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 1) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important;
+            border-radius: 16px !important;
+        }
+
+        /* 4. Apple Style Pill Buttons */
+        button {
+            border-radius: 980px !important; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
+        }
+
+        button:active {
+            transform: scale(0.97); 
+        }
+
+        /* 5. Sleek Inputs with Animated Focus */
+        input, textarea, select {
+            background: #fbfbfd !important;
+            border-radius: 12px !important;
+            border: 1px solid #e5e5ea !important;
+            transition: all 0.3s ease !important;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            background: #ffffff !important;
+            border-color: #0071e3 !important; 
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15) !important;
+            transform: scale(1.01);
+        }
+
+        /* 6. Refined Modals with Pop Animation */
+        .modal-content {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px !important;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.12) !important;
+        }
+
+        /* 7. Subtle Table Row Hover (Mac Finder Style) */
+        tbody tr {
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            border-radius: 8px;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f7 !important;
+            transform: scale(1.01);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+            border-radius: 8px;
+        }
+        td { border-bottom: 1px solid #f0f0f2 !important; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -116,7 +203,7 @@
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 12px;">
     <div class="login-card">
         <h1 style="margin-bottom:20px;"><span class="brand">TRUE</span> INVEST</h1>
-        <form id="loginForm" style="box-shadow:none; padding:0; border:none;">
+        <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important; backdrop-filter:none;">
             <label>Secure CRM Login</label>
             <input type="email" id="loginEmail" placeholder="Work Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
@@ -237,7 +324,7 @@
     </div>
 </div>
 
-<!-- EMI Calculator Modal (FIXED) -->
+<!-- EMI Calculator Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
@@ -258,7 +345,7 @@
     </div>
 </div>
 
-<!-- Customizable WA Template Modal (UPGRADED) -->
+<!-- Customizable WA Template Modal -->
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
@@ -465,7 +552,7 @@
     function addDragEvents() {
         document.querySelectorAll('.k-card').forEach(card => {
             card.addEventListener('dragstart', (e) => { 
-                if(e.target.tagName === 'BUTTON') { e.preventDefault(); return; } // Prevent drag on button click
+                if(e.target.tagName === 'BUTTON') { e.preventDefault(); return; } 
                 draggedCardId = e.currentTarget.dataset.id; 
                 setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
             });
@@ -487,7 +574,7 @@
         });
     }
 
-    // --- MODALS & CUSTOM WA TEMPLATES (UPGRADED) ---
+    // --- MODALS & CUSTOM WA TEMPLATES ---
     let currentWaName = '';
     let currentWaProj = '';
     
@@ -518,7 +605,7 @@
         if (type === '2') msg = `Hello ${currentWaName}, looking forward to our site visit! 📍\n\nHere is the Google Maps location for ${currentWaProj}.\n\nPlease reach out to me when you are nearby.`;
         if (type === '3') msg = `Hi ${currentWaName}, this is a gentle follow-up regarding your inquiry for ${currentWaProj}.\n\nAre you still looking for options in this segment? Let's connect! 🤝`;
         if (type === '4') msg = `Dear ${currentWaName},\n\nI have an exciting update regarding the pricing for ${currentWaProj}. We have a special limited-time offer that aligns well with your budget.\n\nLet me know a good time to call you and discuss this. 📞`;
-        if (type === '5') msg = `Hi ${currentWaName},\n\n`; // Blank custom
+        if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
 
         textBox.value = msg;
     }
@@ -532,7 +619,7 @@
         closeModal('waModal');
     }
 
-    // --- EMI CALCULATOR (FIXED) ---
+    // --- EMI CALCULATOR ---
     function calculateEMI() {
         const pStr = document.getElementById('emiAmount').value;
         const rStr = document.getElementById('emiRate').value;
@@ -570,7 +657,7 @@
 
     // --- CONFETTI ---
     function fireConfetti() {
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#1877f2', '#128c7e', '#ffeb3b'] });
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#128c7e', '#ffeb3b'] });
     }
 
     // --- SEARCH ---
@@ -578,6 +665,26 @@
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
     });
+    
+    // --- CSV EXPORT (ADDED FOR BUTTON FUNCTIONALITY) ---
+    function downloadCSV() {
+        if(clients.length === 0) { alert("No data to export!"); return; }
+        
+        const headers = ["Date", "Name", "Phone", "Status", "Project", "Budget", "Visit Done", "Follow-up", "Remarks"];
+        const rows = clients.map(c => [
+            c.leadDate, `"${c.name}"`, c.phone, c.status, `"${c.projectCategory || ''}"`, 
+            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', `"${c.remark || ''}"`
+        ]);
+        
+        let csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `CRM_Export_${getToday()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 </script>
 </body>
 </html>
