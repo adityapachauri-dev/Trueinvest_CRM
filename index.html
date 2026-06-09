@@ -66,7 +66,6 @@
         .action-group button { height: 28px; font-size: 10px; padding: 0 6px; flex: 1; margin: 0; border-radius: 4px; background: #fff; border: 1px solid var(--border-color); color: #333; }
         .btn-wa { color: var(--whatsapp-dark) !important; border-color: var(--whatsapp-dark) !important; }
         .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; }
-        .btn-edit { color: #b45309 !important; border-color: #b45309 !important; }
         .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; }
 
         .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; }
@@ -77,6 +76,7 @@
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); text-align: center; }
         th { background: #f8f9fa; font-weight: 700; font-size: 11px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
+        tbody tr { cursor: pointer; } /* Added cursor pointer to indicate it's clickable */
         tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 12px rgba(0,0,0,0.06); background-color: #fff; z-index: 2; position: relative; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
@@ -230,11 +230,11 @@
             </div>
 
             <div class="table-container" id="tableView">
-                <table>
+                <table title="Double-click any row to Edit">
                     <thead>
                         <tr>
                             <th style="width: 45px;">S.No</th><th>Date</th><th>Name</th><th>Phone</th><th>Status</th>
-                            <th>Project</th><th>Budget</th><th>Visit</th><th>Follow-up</th><th style="max-width: 150px;">Remarks</th><th style="width: 220px;">Actions</th>
+                            <th>Project</th><th>Budget</th><th>Visit</th><th>Follow-up</th><th style="max-width: 150px;">Remarks</th><th style="width: 160px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="clientTable"></tbody>
@@ -401,8 +401,9 @@
             const coldClass = cold ? 'row-cold' : '';
             const displayStatus = cold ? '❄️ Cold' : c.status;
 
+            // Added ondblclick right on the row tag `<tr>`
             table.innerHTML += `
-                <tr class="${highlight} ${coldClass}">
+                <tr class="${highlight} ${coldClass}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                     <td style="opacity:0.4">${serial++}</td><td>${c.leadDate}</td>
                     <td style="font-weight:600">${c.name}</td><td>${c.phone}</td>
                     <td><span class="badge ${badge}">${displayStatus}</span></td>
@@ -410,10 +411,9 @@
                     <td>${c.visitDone ? '✅' : '❌'}</td><td style="font-weight:700; color:var(--accent-blue)">${c.followup || '-'}</td>
                     <td style="font-size:11px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${c.remark || ''}">${c.remark || '-'}</td>
                     <td><div class="action-group">
-                        <button class="btn-call" onclick="window.location.href='tel:${c.phone}'">CALL</button>
-                        <button class="btn-wa" onclick="openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                        <button class="btn-edit" onclick="editLead('${c.id}')">EDIT</button>
-                        <button class="btn-delete" onclick="deleteLead('${c.id}')">DEL</button>
+                        <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">CALL</button>
+                        <button class="btn-wa" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
+                        <button class="btn-delete" onclick="event.stopPropagation(); deleteLead('${c.id}')">DEL</button>
                     </div></td>
                 </tr>
             `;
@@ -427,16 +427,17 @@
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
                 const cold = isColdLead(c.followup) ? '<span style="color:#2563eb;">❄️</span>' : '';
+                
+                // Added ondblclick right on the card tag `.k-card`
                 zone.innerHTML += `
-                    <div class="k-card" draggable="true" data-id="${c.id}">
+                    <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                         <div class="k-card-title">${c.name} ${cold}</div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
                         <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'}</div>
                         <div class="k-actions">
-                            <button style="background:#e0e7ff; color:#3730a3;" onclick="window.location.href='tel:${c.phone}'">Call</button>
-                            <button style="background:#dcfce7; color:#166534;" onclick="openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                            <button style="background:#fef9c3; color:#854d0e;" onclick="editLead('${c.id}')">Edit</button>
-                            <button style="background:#fef2f2; color:#dc2626;" onclick="deleteLead('${c.id}')">Del</button>
+                            <button style="background:#e0e7ff; color:#3730a3;" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
+                            <button style="background:#dcfce7; color:#166534;" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
+                            <button style="background:#fef2f2; color:#dc2626;" onclick="event.stopPropagation(); deleteLead('${c.id}')">Del</button>
                         </div>
                     </div>
                 `;
