@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRUE INVEST CRM - Apple Edition</title>
     
-    <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -98,6 +97,8 @@
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-overlay.active .modal-content { transform: scale(1); }
         .modal-close { float: right; background: #f3f4f6; border: none; font-size: 18px; color: #555; cursor: pointer; height: 32px; width: 32px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center;}
         .modal-close:hover { background: #e5e7eb; color: #000; }
 
@@ -199,7 +200,6 @@
 </head>
 <body>
 
-<!-- Login View -->
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 12px;">
     <div class="login-card">
         <h1 style="margin-bottom:20px;"><span class="brand">TRUE</span> INVEST</h1>
@@ -213,7 +213,6 @@
     </div>
 </div>
 
-<!-- Main CRM Workspace -->
 <div id="crmView" class="hidden">
     <div class="workspace-layout">
         
@@ -225,7 +224,6 @@
             </div>
         </header>
 
-        <!-- Left Panel -->
         <div class="left-panel">
             <div class="stats-grid">
                 <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -279,10 +277,7 @@
                 <label>Remarks & Budget</label>
                 <input type="text" id="budget" placeholder="Budget (e.g. 1.25 Cr)">
                 
-                <div style="position:relative;">
-                    <textarea id="remark" placeholder="Write lead evaluation notes..." rows="3" style="padding-right: 45px; resize:vertical;"></textarea>
-                    <button type="button" id="micBtn" style="position:absolute; right:10px; bottom:25px; width:32px; height:32px; padding:0; border-radius:50%; background:#f4f6f9; color:var(--accent-blue); border:1px solid var(--border-color); box-shadow:0 2px 5px rgba(0,0,0,0.1);" title="Voice Type">🎤</button>
-                </div>
+                <textarea id="remark" placeholder="Write lead evaluation notes..." rows="3" style="resize:vertical;"></textarea>
                 
                 <button type="submit" id="saveBtn">Save Record</button>
                 <button type="button" class="btn-secondary" style="width:100%; margin-top:8px; height:36px;" onclick="resetForm()">Clear Form</button>
@@ -291,7 +286,6 @@
             <div class="watermark">SYSTEM DESIGNED BY<br><span>ADITYA PACHAURI</span></div>
         </div>
 
-        <!-- Right Panel -->
         <div class="right-panel">
             <div class="controls-row">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
@@ -299,7 +293,6 @@
                 <button class="btn-secondary" style="background:#000; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
             </div>
 
-            <!-- Table View -->
             <div class="table-container" id="tableView">
                 <table>
                     <thead>
@@ -312,7 +305,6 @@
                 </table>
             </div>
 
-            <!-- Kanban Board View -->
             <div class="kanban-container hidden" id="kanbanView">
                 <div class="kanban-col"><h3 style="border-color:#3b82f6;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
                 <div class="kanban-col"><h3 style="border-color:#eab308;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
@@ -324,7 +316,6 @@
     </div>
 </div>
 
-<!-- EMI Calculator Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
@@ -345,7 +336,6 @@
     </div>
 </div>
 
-<!-- Customizable WA Template Modal -->
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
@@ -533,20 +523,6 @@
         document.getElementById('saveBtn').innerText = "Save Record"; document.getElementById('leadDate').value = getToday();
     }
 
-    // --- SMART VOICE TYPING ---
-    const micBtn = document.getElementById('micBtn');
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(SpeechRec) {
-        const rec = new SpeechRec(); rec.lang = 'en-IN'; rec.interimResults = false;
-        micBtn.onclick = () => { rec.start(); micBtn.style.background = '#e0e7ff'; micBtn.innerText = '🔴'; };
-        rec.onresult = (e) => { 
-            const txt = e.results[0][0].transcript;
-            const input = document.getElementById('remark');
-            input.value += (input.value ? ' ' : '') + txt;
-        };
-        rec.onend = () => { micBtn.style.background = '#f4f6f9'; micBtn.innerText = '🎤'; };
-    } else { micBtn.style.display = 'none'; }
-
     // --- KANBAN DRAG & DROP ---
     let draggedCardId = null;
     function addDragEvents() {
@@ -666,7 +642,7 @@
         document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
     });
     
-    // --- CSV EXPORT (ADDED FOR BUTTON FUNCTIONALITY) ---
+    // --- CSV EXPORT ---
     function downloadCSV() {
         if(clients.length === 0) { alert("No data to export!"); return; }
         
