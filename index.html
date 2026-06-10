@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRUE INVEST CRM - Apple Edition v2.1</title>
     
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TrueInvest">
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -333,6 +338,7 @@
 </div>
 
 <script>
+    // --- FIREBASE SETUP ---
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
@@ -352,7 +358,6 @@
             document.getElementById('crmView').classList.remove('hidden');
             document.getElementById('leadDate').value = getToday();
             
-            // Initialize custom projects from local storage or set defaults
             customProjects = JSON.parse(localStorage.getItem('crm_projects_' + user.uid)) || ['Builder Floor', 'Lock n key Homes'];
             renderProjectTabsAndDropdown();
             
@@ -377,7 +382,6 @@
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             clients.sort((a, b) => new Date(b.leadDate) - new Date(a.leadDate));
             
-            // Auto-detect any historical projects from DB and add to tabs
             let dbProjects = [...new Set(clients.map(c => c.projectCategory).filter(Boolean))];
             let added = false;
             dbProjects.forEach(p => {
@@ -393,7 +397,6 @@
         });
     }
 
-    // --- DYNAMIC PROJECT TAB & DROPDOWN LOGIC ---
     function renderProjectTabsAndDropdown() {
         const select = document.getElementById('projectCategory');
         const currentVal = select.value;
@@ -404,8 +407,6 @@
         
         customProjects.forEach(p => {
             select.innerHTML += `<option value="${p}">${p}</option>`;
-            
-            // New Wrapper setup for adding the delete button seamlessly
             tabsContainer.innerHTML += `
             <div class="tab-wrapper">
                 <button class="tab-btn ${currentProjectFilter === p ? 'active' : ''}" onclick="setProjectFilter('${p}', this)">${p}</button>
@@ -413,7 +414,6 @@
             </div>`;
         });
         
-        // Add Plus Button
         tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site">+</button>`;
         select.value = currentVal;
     }
@@ -433,17 +433,11 @@
     }
 
     function deleteProject(e, projectName) {
-        e.stopPropagation(); // Prevents clicking the tab itself
+        e.stopPropagation();
         if (confirm(`Are you sure you want to delete the "${projectName}" folder tab?\n\n(Don't worry, your existing leads won't be deleted. They will safely appear under "All Projects".)`)) {
-            // Remove project from array
             customProjects = customProjects.filter(p => p !== projectName);
             localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
-            
-            // If the deleted tab was currently open, switch back to 'All'
-            if (currentProjectFilter === projectName) {
-                currentProjectFilter = 'All';
-            }
-            
+            if (currentProjectFilter === projectName) { currentProjectFilter = 'All'; }
             renderProjectTabsAndDropdown();
             renderData();
         }
@@ -536,16 +530,12 @@
         else { k.classList.add('hidden'); t.classList.remove('hidden'); currentViewMode = 'table'; }
     }
 
-    function renderData() {
-        renderTable();
-        renderKanban();
-    }
+    function renderData() { renderTable(); renderKanban(); }
 
     function renderTable() {
         const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
         const today = getToday();
         
-        // Filter clients based on current Tab
         const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
         
         filteredClients.forEach(c => {
@@ -580,8 +570,6 @@
 
     function renderKanban() {
         document.querySelectorAll('.kanban-dropzone').forEach(zone => zone.innerHTML = '');
-        
-        // Filter clients based on current Tab
         const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
 
         filteredClients.forEach(c => {
@@ -624,10 +612,7 @@
         if(window.currentEditHistory.length > 0) {
             tLine.style.display = 'block';
             tLine.innerHTML = window.currentEditHistory.map(h => 
-                `<div class="history-item">
-                    <span class="history-meta">${h.date} | ${h.time || 'N/A'}</span>
-                    ${h.note}
-                </div>`
+                `<div class="history-item"><span class="history-meta">${h.date} | ${h.time || 'N/A'}</span>${h.note}</div>`
             ).join('');
         } else if (c.remark) {
             tLine.style.display = 'block';
@@ -655,7 +640,6 @@
         document.getElementById('historyTimeline').style.display = 'none';
     }
 
-    // --- CSV IMPORT LOGIC ---
     document.getElementById('csvFileInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if(!file) return;
@@ -673,7 +657,6 @@
                 alert('Error: CSV file must contain at least "Name" and "Phone" columns.'); 
                 e.target.value = ''; return; 
             }
-            
             if(!confirm(`Found ${rows.length - 1} leads. Do you want to import them directly to Firebase?`)) return;
 
             let importCount = 0;
@@ -681,7 +664,6 @@
                 const cols = rows[i].split(',');
                 const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : '';
                 let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim() : '';
-                
                 if(!name || !phone) continue;
                 
                 const srcIdx = headers.findIndex(h => h.includes('source'));
@@ -701,7 +683,6 @@
         reader.readAsText(file);
     });
 
-    // --- KANBAN DRAG & DROP ---
     let draggedCardId = null;
     function addDragEvents() {
         document.querySelectorAll('.k-card').forEach(card => {
@@ -727,7 +708,6 @@
         });
     }
 
-    // --- MODALS & EXPORTS ---
     let currentWaName = ''; let currentWaProj = '';
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -782,10 +762,7 @@
     function downloadCSV() {
         if(clients.length === 0) { alert("No data to export!"); return; }
         const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Latest Remark"];
-        
-        // Export only the currently filtered tab, or all if "All Projects" is selected
         const exportClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
-        
         const rows = exportClients.map(c => [
             c.leadDate, `"${c.name}"`, c.phone, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
             `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
@@ -794,6 +771,97 @@
         link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
         link.setAttribute("download", `CRM_Export_${currentProjectFilter.replace(/\s+/g, '_')}_${getToday()}.csv`);
         document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    // --- SINGLE FILE PWA INJECTION ---
+    (function initSingleFilePWA() {
+        try {
+            const manifestData = {
+                name: "True Invest CRM Pro",
+                short_name: "TrueInvest",
+                display: "standalone",
+                background_color: "#f5f7fa",
+                theme_color: "#0071e3",
+                start_url: ".",
+                icons: [{"src": "https://cdn-icons-png.flaticon.com/512/2950/2950715.png", "sizes": "512x512", "type": "image/png"}]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = manifestUrl;
+            document.head.appendChild(manifestLink);
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => self.clients.claim());
+                    self.addEventListener('fetch', e => {
+                        if (e.request.url.includes('firestore') || e.request.url.includes('identitytoolkit')) return;
+                        e.respondWith(fetch(e.request).catch(() => new Response('Offline - Please reconnect to use the CRM.')));
+                    });
+                `;
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                const swUrl = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swUrl).then(() => console.log("Single-File PWA Active")).catch(e => console.log("PWA Skip: ", e));
+            }
+        } catch(e) { console.log("PWA init handled: ", e); }
+    })();
+
+    // --- SMART EDGE SCROLLING (Cursor Follow) ---
+    let scrollAnimationFrame;
+    let edgeScrollX = 0;
+    let edgeScrollY = 0;
+    const edgeThreshold = 60; // Pixels from edge to trigger scroll
+    const maxScrollSpeed = 15;
+
+    document.addEventListener('mousemove', (e) => {
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+        
+        edgeScrollX = 0;
+        edgeScrollY = 0;
+
+        // Vertical Window Scroll
+        if (clientY < edgeThreshold) {
+            edgeScrollY = -((edgeThreshold - clientY) / edgeThreshold) * maxScrollSpeed;
+        } else if (clientY > innerHeight - edgeThreshold) {
+            edgeScrollY = ((clientY - (innerHeight - edgeThreshold)) / edgeThreshold) * maxScrollSpeed;
+        }
+
+        // Horizontal Kanban Scroll
+        const kanban = document.getElementById('kanbanView');
+        if (!kanban.classList.contains('hidden') && e.target.closest('.kanban-container')) {
+            const rect = kanban.getBoundingClientRect();
+            if (clientX < rect.left + edgeThreshold) {
+                edgeScrollX = -((edgeThreshold - (clientX - rect.left)) / edgeThreshold) * maxScrollSpeed;
+            } else if (clientX > rect.right - edgeThreshold) {
+                edgeScrollX = (((clientX - (rect.right - edgeThreshold))) / edgeThreshold) * maxScrollSpeed;
+            }
+        }
+
+        if ((edgeScrollY !== 0 || edgeScrollX !== 0) && !scrollAnimationFrame) {
+            scrollAnimationFrame = requestAnimationFrame(autoScroll);
+        } else if (edgeScrollY === 0 && edgeScrollX === 0 && scrollAnimationFrame) {
+            cancelAnimationFrame(scrollAnimationFrame);
+            scrollAnimationFrame = null;
+        }
+    });
+
+    function autoScroll() {
+        if (edgeScrollY !== 0) {
+            window.scrollBy(0, edgeScrollY);
+        }
+        if (edgeScrollX !== 0) {
+            const kanban = document.getElementById('kanbanView');
+            if(kanban) kanban.scrollBy(edgeScrollX, 0);
+        }
+        
+        if (edgeScrollY !== 0 || edgeScrollX !== 0) {
+            scrollAnimationFrame = requestAnimationFrame(autoScroll);
+        } else {
+            scrollAnimationFrame = null;
+        }
     }
 </script>
 </body>
