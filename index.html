@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRUE INVEST CRM - Apple Edition</title>
+    <title>TRUE INVEST CRM - Apple Edition v2.1</title>
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -23,14 +23,14 @@
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-        .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1650px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+        .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1750px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
 
         header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); animation: fadeInDown 0.5s ease-out forwards; }
         h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1 span.brand { color: var(--accent-blue); }
 
         .left-panel { display: flex; flex-direction: column; gap: 20px; }
-        .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .right-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .stat-card { background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
@@ -68,15 +68,29 @@
         .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; }
         .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; }
 
-        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; }
+        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; }
         .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 40px; border-radius: 8px; padding-left: 15px; font-weight: 600; }
         .controls-row button { height: 40px; margin: 0; padding: 0 15px; width: auto; }
+
+        /* PROJECT TABS & DELETE LOGIC */
+        .project-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255, 255, 255, 0.85); padding: 6px; border-radius: 12px; border: 1px solid var(--border-color); width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); }
+        .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
+        .tab-btn { background: transparent; color: #555; border: none; height: 32px; font-size: 13px; font-weight: 700; padding: 0 16px; margin: 0; border-radius: 8px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
+        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.08); border-color: #e5e5ea; }
+        .tab-btn:hover:not(.active) { background: #f3f4f6; }
+        
+        .tab-delete-btn { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 14px; line-height: 16px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
+        .tab-delete-btn:hover { transform: scale(1.1); background: #dc2626; }
+        .tab-wrapper:hover .tab-delete-btn { display: block; }
+        
+        .tab-add-btn { background: transparent; color: var(--accent-blue); border: 1px dashed var(--accent-blue); height: 32px; width: 32px; padding: 0; font-size: 18px; font-weight: 700; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0;}
+        .tab-add-btn:hover { background: #f0f7ff; border-style: solid; }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); text-align: center; }
         th { background: #f8f9fa; font-weight: 700; font-size: 11px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
-        tbody tr { cursor: pointer; } /* Added cursor pointer to indicate it's clickable */
+        tbody tr { cursor: pointer; } 
         tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 12px rgba(0,0,0,0.06); background-color: #fff; z-index: 2; position: relative; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
@@ -95,6 +109,12 @@
         .kanban-dropzone { min-height: 100px; flex-grow: 1; }
         .drag-over { background: #e5e7eb; border: 2px dashed #9ca3af; border-radius: 8px; }
 
+        /* HISTORY TIMELINE */
+        .history-timeline { max-height: 180px; overflow-y: auto; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px; display: none; }
+        .history-item { padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px dashed #cbd5e1; font-size: 12px; color: #334155; line-height: 1.4; }
+        .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .history-meta { font-size: 10px; color: var(--accent-blue); font-weight: 800; margin-bottom: 3px; display: block; text-transform: uppercase; }
+
         /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -106,25 +126,16 @@
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.6; font-size: 10px; font-weight: 700; color: #666; }
 
-        /* =========================================
-            APPLE PREMIUM UI OVERRIDES
-        ========================================= */
-
+        /* APPLE PREMIUM UI OVERRIDES */
         body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%); letter-spacing: -0.2px; }
-
         header { background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4) !important; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important; position: sticky; top: 10px; z-index: 100; }
-
         .stat-card, form, .table-container, .kanban-container, .login-card { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 1) !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important; border-radius: 16px !important; }
-
         button { border-radius: 980px !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; font-weight: 600 !important; letter-spacing: 0.3px; }
         button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25); }
         button:active { transform: scale(0.97); }
-
         input, textarea, select { background: #fbfbfd !important; border-radius: 12px !important; border: 1px solid #e5e5ea !important; transition: all 0.3s ease !important; }
         input:focus, textarea:focus, select:focus { background: #ffffff !important; border-color: #0071e3 !important; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15) !important; transform: scale(1.01); }
-
         .modal-content { background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 24px !important; box-shadow: 0 24px 48px rgba(0,0,0,0.12) !important; }
-
         tbody tr { transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 8px; }
         tbody tr:hover { background-color: #f5f5f7 !important; transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; border-radius: 8px; }
         td { border-bottom: 1px solid #f0f0f2 !important; }
@@ -174,7 +185,7 @@
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-                    <div><label>Follow-up</label><input type="date" id="followup"></div>
+                    <div><label>Follow-up / Visit Date</label><input type="date" id="followup"></div>
                 </div>
 
                 <label>Client Details</label>
@@ -183,15 +194,17 @@
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div>
-                        <label>Project</label>
-                        <select id="projectCategory">
-                            <option value="">Select Project</option>
-                            <option value="Builder Floor">Builder Floor</option>
-                            <option value="Lock n key Homes">Lock n key Homes</option>
+                        <label>Lead Source</label>
+                        <select id="leadSource">
+                            <option value="Direct/Organic">Direct / Organic</option>
+                            <option value="Facebook Ads">Facebook Ads</option>
+                            <option value="Google Ads">Google Ads</option>
+                            <option value="99acres">99acres</option>
+                            <option value="MagicBricks">MagicBricks</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
-                    <div><label>Property Type</label><input type="text" id="propertyType" placeholder="2BHK, 3BHK, etc."></div>
                     <div>
                         <label>Status</label>
                         <select id="status">
@@ -203,6 +216,21 @@
                             <option>Not Interested</option>
                         </select>
                     </div>
+                    <div>
+                        <label>Project / Site</label>
+                        <select id="projectCategory">
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label>Specific Unit (Inventory)</label>
+                        <input type="text" id="specificUnit" placeholder="e.g. Flat 101, 830 sq ft">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
+                    <div><label>Budget</label><input type="text" id="budget" placeholder="e.g. 1.25 Cr"></div>
                 </div>
 
                 <div class="check-item">
@@ -210,11 +238,17 @@
                     <label for="visitDone" style="margin:0; cursor:pointer;">Site Visit Done</label>
                 </div>
 
-                <label>Remarks & Budget</label>
-                <input type="text" id="budget" placeholder="Budget (e.g. 1.25 Cr)">
+                <!-- SMART HISTORY TIMELINE -->
+                <div id="historyTimeline" class="history-timeline"></div>
                 
-                <textarea id="remark" placeholder="Write lead evaluation notes..." rows="3" style="resize:vertical;"></textarea>
+                <label>Add Follow-up Remark</label>
+                <textarea id="newRemark" placeholder="Write new update (will be added to history timeline)..." rows="2" style="resize:vertical;"></textarea>
                 
+                <div class="check-item" style="border-color: var(--accent-blue); background: #f0f7ff;">
+                    <input type="checkbox" id="syncCalendar" checked>
+                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue);">📅 Sync Follow-up to Google Calendar</label>
+                </div>
+
                 <button type="submit" id="saveBtn">Save Record</button>
                 <button type="button" class="btn-secondary" style="width:100%; margin-top:8px; height:36px;" onclick="resetForm()">Clear Form</button>
             </form>
@@ -225,8 +259,15 @@
         <div class="right-panel">
             <div class="controls-row">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                <button class="btn-secondary" style="background:#eab308; color:#fff; border:none;" onclick="document.getElementById('csvFileInput').click()">📥 Import CSV</button>
                 <button class="btn-secondary" style="background:#1e8e3e; color:white; border:none;" onclick="downloadCSV()">Export CSV</button>
                 <button class="btn-secondary" style="background:#000; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
+            </div>
+
+            <!-- DYNAMIC PROJECT FOLDERS / TABS -->
+            <div class="project-tabs" id="projectTabs">
+                <!-- Populated dynamically via JS -->
             </div>
 
             <div class="table-container" id="tableView">
@@ -234,7 +275,7 @@
                     <thead>
                         <tr>
                             <th style="width: 45px;">S.No</th><th>Date</th><th>Name</th><th>Phone</th><th>Status</th>
-                            <th>Project</th><th>Budget</th><th>Visit</th><th>Follow-up</th><th style="max-width: 150px;">Remarks</th><th style="width: 160px;">Actions</th>
+                            <th>Source</th><th>Project & Unit</th><th>Budget</th><th>Follow-up</th><th style="max-width: 140px;">Latest Remark</th><th style="width: 150px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="clientTable"></tbody>
@@ -252,26 +293,20 @@
     </div>
 </div>
 
+<!-- EMI Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
         <h2 style="margin-top:0; color:var(--accent-blue); font-size:18px;">🧮 Property EMI Calculator</h2>
-        
-        <label>Property Amount (₹)</label>
-        <input type="number" id="emiAmount" placeholder="e.g. 5000000" min="0">
-        
-        <label>Interest Rate (% p.a)</label>
-        <input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
-        
-        <label>Tenure (Years)</label>
-        <input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
-        
+        <label>Property Amount (₹)</label><input type="number" id="emiAmount" placeholder="e.g. 5000000" min="0">
+        <label>Interest Rate (% p.a)</label><input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
+        <label>Tenure (Years)</label><input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
         <button onclick="calculateEMI()" style="margin-bottom:15px; width:100%;">Calculate Breakdown</button>
-        
         <div id="emiResult" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid var(--border-color); display:none;"></div>
     </div>
 </div>
 
+<!-- WA Modal -->
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
@@ -298,21 +333,29 @@
 </div>
 
 <script>
-    // Firebase Config
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); const db = firebase.firestore();
 
     let clients = [];
+    let customProjects = [];
     let currentViewMode = 'table';
+    let currentProjectFilter = 'All'; 
+    window.currentEditHistory = []; 
+    
     const getToday = () => new Date().toISOString().split('T')[0];
+    const getTime = () => new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-    // Auth
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
             document.getElementById('crmView').classList.remove('hidden');
             document.getElementById('leadDate').value = getToday();
+            
+            // Initialize custom projects from local storage or set defaults
+            customProjects = JSON.parse(localStorage.getItem('crm_projects_' + user.uid)) || ['Builder Floor', 'Lock n key Homes'];
+            renderProjectTabsAndDropdown();
+            
             loadData();
             initDragAndDrop();
         } else {
@@ -333,9 +376,84 @@
         db.collection("leads").where("ownerId", "==", auth.currentUser.uid).onSnapshot(snap => {
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             clients.sort((a, b) => new Date(b.leadDate) - new Date(a.leadDate));
+            
+            // Auto-detect any historical projects from DB and add to tabs
+            let dbProjects = [...new Set(clients.map(c => c.projectCategory).filter(Boolean))];
+            let added = false;
+            dbProjects.forEach(p => {
+                if(!customProjects.includes(p)) { customProjects.push(p); added = true; }
+            });
+            if(added) {
+                localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
+                renderProjectTabsAndDropdown();
+            }
+
             updateDashboard();
             renderData();
         });
+    }
+
+    // --- DYNAMIC PROJECT TAB & DROPDOWN LOGIC ---
+    function renderProjectTabsAndDropdown() {
+        const select = document.getElementById('projectCategory');
+        const currentVal = select.value;
+        select.innerHTML = '<option value="">Select Project</option>';
+        
+        const tabsContainer = document.getElementById('projectTabs');
+        tabsContainer.innerHTML = `<button class="tab-btn ${currentProjectFilter === 'All' ? 'active' : ''}" onclick="setProjectFilter('All', this)">All Projects</button>`;
+        
+        customProjects.forEach(p => {
+            select.innerHTML += `<option value="${p}">${p}</option>`;
+            
+            // New Wrapper setup for adding the delete button seamlessly
+            tabsContainer.innerHTML += `
+            <div class="tab-wrapper">
+                <button class="tab-btn ${currentProjectFilter === p ? 'active' : ''}" onclick="setProjectFilter('${p}', this)">${p}</button>
+                <button class="tab-delete-btn" onclick="deleteProject(event, '${p}')" title="Delete Project Tab">×</button>
+            </div>`;
+        });
+        
+        // Add Plus Button
+        tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site">+</button>`;
+        select.value = currentVal;
+    }
+
+    function addNewProject() {
+        const newProj = prompt("Enter new project or site name:");
+        if (newProj && newProj.trim() !== '') {
+            const cleanProj = newProj.trim();
+            if (!customProjects.includes(cleanProj)) {
+                customProjects.push(cleanProj);
+                localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
+                renderProjectTabsAndDropdown();
+            } else {
+                alert("This project site already exists!");
+            }
+        }
+    }
+
+    function deleteProject(e, projectName) {
+        e.stopPropagation(); // Prevents clicking the tab itself
+        if (confirm(`Are you sure you want to delete the "${projectName}" folder tab?\n\n(Don't worry, your existing leads won't be deleted. They will safely appear under "All Projects".)`)) {
+            // Remove project from array
+            customProjects = customProjects.filter(p => p !== projectName);
+            localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
+            
+            // If the deleted tab was currently open, switch back to 'All'
+            if (currentProjectFilter === projectName) {
+                currentProjectFilter = 'All';
+            }
+            
+            renderProjectTabsAndDropdown();
+            renderData();
+        }
+    }
+
+    function setProjectFilter(filterVal, btnElement) {
+        currentProjectFilter = filterVal;
+        document.querySelectorAll('#projectTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+        if(btnElement) btnElement.classList.add('active');
+        renderData();
     }
 
     function isColdLead(followDate) {
@@ -350,31 +468,64 @@
         document.getElementById('statTotal').innerText = clients.length;
         document.getElementById('statHot').innerText = clients.filter(c => c.status === 'Hot').length;
         document.getElementById('statFollow').innerText = follow;
-        
+
         const bar = document.getElementById('reminderAlert');
         bar.style.display = follow > 0 ? 'block' : 'none';
         bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
+    }
+
+    function syncToGoogleCalendar(name, dateStr, phone, project, remark) {
+        if(!dateStr) return;
+        const date = new Date(dateStr);
+        const yyyy = date.getFullYear(); const mm = String(date.getMonth() + 1).padStart(2, '0'); const dd = String(date.getDate()).padStart(2, '0');
+        const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
+        const ny = nextDay.getFullYear(); const nm = String(nextDay.getMonth() + 1).padStart(2, '0'); const nd = String(nextDay.getDate()).padStart(2, '0');
+        const startDate = `${yyyy}${mm}${dd}`; const endDate = `${ny}${nm}${nd}`;
+        const title = encodeURIComponent(`CRM Action: Follow-up / Visit for ${name}`);
+        const details = encodeURIComponent(`Client: ${name}\nPhone: ${phone}\nProject: ${project || 'Not specified'}\nRemarks: ${remark || 'None'}`);
+        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}`, '_blank', 'noopener,noreferrer');
     }
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
         const statusVal = document.getElementById('status').value;
+        const newRemarkText = document.getElementById('newRemark').value.trim();
         const btn = document.getElementById('saveBtn'); btn.disabled = true;
+
+        let historyArray = window.currentEditHistory || [];
+        
+        if(id && historyArray.length === 0) {
+            const existingClient = clients.find(x => x.id === id);
+            if(existingClient && existingClient.remark) {
+                historyArray.push({date: existingClient.leadDate || getToday(), time: '', note: existingClient.remark});
+            }
+        }
+        
+        if(newRemarkText) {
+            historyArray.unshift({ date: getToday(), time: getTime(), note: newRemarkText });
+        }
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "", name: document.getElementById('name').value.trim(),
-            phone: document.getElementById('phone').value.trim(), projectCategory: document.getElementById('projectCategory').value,
-            location: document.getElementById('location').value, propertyType: document.getElementById('propertyType').value,
-            status: statusVal, budget: document.getElementById('budget').value,
-            visitDone: document.getElementById('visitDone').checked, remark: document.getElementById('remark').value
+            phone: document.getElementById('phone').value.trim(), leadSource: document.getElementById('leadSource').value,
+            projectCategory: document.getElementById('projectCategory').value, specificUnit: document.getElementById('specificUnit').value.trim(),
+            location: document.getElementById('location').value, status: statusVal, budget: document.getElementById('budget').value,
+            visitDone: document.getElementById('visitDone').checked, history: historyArray, 
+            remark: historyArray.length > 0 ? historyArray[0].note : '' 
         };
 
         try {
             if (id) await db.collection("leads").doc(id).update(data);
             else await db.collection("leads").add(data);
+            
             if(statusVal === 'Closed') fireConfetti(); 
+            
+            const doSync = document.getElementById('syncCalendar').checked;
+            if (doSync && data.followup && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
+                syncToGoogleCalendar(data.name, data.followup, data.phone, data.projectCategory, data.remark);
+            }
             resetForm();
         } catch (err) { alert("Error: " + err.message); } finally { btn.disabled = false; }
     });
@@ -394,22 +545,29 @@
         const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
         const today = getToday();
         
-        clients.forEach(c => {
+        // Filter clients based on current Tab
+        const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
+        
+        filteredClients.forEach(c => {
             const cold = isColdLead(c.followup) && c.status !== 'Closed';
             const badge = cold ? 'status-cold' : (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
             const highlight = (c.followup === today && c.status !== 'Closed') ? 'row-highlight' : '';
             const coldClass = cold ? 'row-cold' : '';
             const displayStatus = cold ? '❄️ Cold' : c.status;
+            
+            const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; color:#555;">${c.specificUnit}</span>` : '';
+            const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
-            // Added ondblclick right on the row tag `<tr>`
             table.innerHTML += `
                 <tr class="${highlight} ${coldClass}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                     <td style="opacity:0.4">${serial++}</td><td>${c.leadDate}</td>
                     <td style="font-weight:600">${c.name}</td><td>${c.phone}</td>
                     <td><span class="badge ${badge}">${displayStatus}</span></td>
-                    <td>${c.projectCategory || '-'}</td><td style="color:#03543f; font-weight:700">${c.budget || '-'}</td>
-                    <td>${c.visitDone ? '✅' : '❌'}</td><td style="font-weight:700; color:var(--accent-blue)">${c.followup || '-'}</td>
-                    <td style="font-size:11px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${c.remark || ''}">${c.remark || '-'}</td>
+                    <td style="font-size:11px; color:#666;">${c.leadSource || '-'}</td>
+                    <td style="font-size:12px; font-weight:600;">${c.projectCategory || '-'}${unitDisp}</td>
+                    <td style="color:#03543f; font-weight:700">${c.budget || '-'}</td>
+                    <td style="font-weight:700; color:var(--accent-blue)">${c.followup || '-'}</td>
+                    <td style="font-size:11px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
                     <td><div class="action-group">
                         <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">CALL</button>
                         <button class="btn-wa" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
@@ -422,17 +580,20 @@
 
     function renderKanban() {
         document.querySelectorAll('.kanban-dropzone').forEach(zone => zone.innerHTML = '');
-        clients.forEach(c => {
+        
+        // Filter clients based on current Tab
+        const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
+
+        filteredClients.forEach(c => {
             if(c.status === 'Not Interested') return; 
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
                 const cold = isColdLead(c.followup) ? '<span style="color:#2563eb;">❄️</span>' : '';
-                
-                // Added ondblclick right on the card tag `.k-card`
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                         <div class="k-card-title">${c.name} ${cold}</div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
+                        <div class="k-card-detail" style="color:var(--accent-blue);">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
                         <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'}</div>
                         <div class="k-actions">
                             <button style="background:#e0e7ff; color:#3730a3;" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
@@ -449,29 +610,96 @@
     function editLead(id) {
         const c = clients.find(x => x.id === id); if(!c) return;
         document.getElementById('editId').value = c.id;
-        ['leadDate', 'followup', 'name', 'phone', 'projectCategory', 'location', 'propertyType', 'status', 'budget', 'remark'].forEach(f => {
+        
+        ['leadDate', 'followup', 'name', 'phone', 'leadSource', 'projectCategory', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
             if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('saveBtn').innerText = "Update Record";
+        
+        window.currentEditHistory = c.history || [];
+        const tLine = document.getElementById('historyTimeline');
+        document.getElementById('newRemark').value = '';
+        
+        if(window.currentEditHistory.length > 0) {
+            tLine.style.display = 'block';
+            tLine.innerHTML = window.currentEditHistory.map(h => 
+                `<div class="history-item">
+                    <span class="history-meta">${h.date} | ${h.time || 'N/A'}</span>
+                    ${h.note}
+                </div>`
+            ).join('');
+        } else if (c.remark) {
+            tLine.style.display = 'block';
+            tLine.innerHTML = `<div class="history-item"><span class="history-meta">Legacy Note</span>${c.remark}</div>`;
+        } else {
+            tLine.style.display = 'none'; tLine.innerHTML = '';
+        }
+
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     async function deleteLead(id) {
         if (confirm("⚠️ Are you sure you want to permanently delete this lead? This action cannot be undone.")) {
-            try {
-                await db.collection("leads").doc(id).delete();
-                // The onSnapshot listener in loadData() will automatically re-render the UI
-            } catch (err) {
-                alert("Error deleting lead: " + err.message);
-            }
+            try { await db.collection("leads").doc(id).delete(); } 
+            catch (err) { alert("Error deleting lead: " + err.message); }
         }
     }
 
     function resetForm() {
-        document.getElementById('clientForm').reset(); document.getElementById('editId').value = "";
-        document.getElementById('saveBtn').innerText = "Save Record"; document.getElementById('leadDate').value = getToday();
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editId').value = "";
+        document.getElementById('saveBtn').innerText = "Save Record"; 
+        document.getElementById('leadDate').value = getToday();
+        window.currentEditHistory = [];
+        document.getElementById('historyTimeline').style.display = 'none';
     }
+
+    // --- CSV IMPORT LOGIC ---
+    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+            const text = event.target.result;
+            const rows = text.split('\n').filter(row => row.trim() !== '');
+            if(rows.length < 2) { alert('CSV file is empty or invalid.'); return; }
+            
+            const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+            const nameIdx = headers.findIndex(h => h.includes('name'));
+            const phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile'));
+            
+            if(nameIdx === -1 || phoneIdx === -1) { 
+                alert('Error: CSV file must contain at least "Name" and "Phone" columns.'); 
+                e.target.value = ''; return; 
+            }
+            
+            if(!confirm(`Found ${rows.length - 1} leads. Do you want to import them directly to Firebase?`)) return;
+
+            let importCount = 0;
+            for(let i = 1; i < rows.length; i++) {
+                const cols = rows[i].split(',');
+                const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : '';
+                let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim() : '';
+                
+                if(!name || !phone) continue;
+                
+                const srcIdx = headers.findIndex(h => h.includes('source'));
+                const fileSource = (srcIdx !== -1 && cols[srcIdx]) ? cols[srcIdx].replace(/"/g,'').trim() : 'CSV Import';
+
+                await db.collection("leads").add({
+                    ownerId: auth.currentUser.uid, leadDate: getToday(),
+                    name: name, phone: phone, leadSource: fileSource, status: 'New', 
+                    history: [{date: getToday(), time: getTime(), note: 'Automatically imported via CSV file'}],
+                    remark: 'Automatically imported via CSV file'
+                });
+                importCount++;
+            }
+            alert(`🎉 Successfully imported ${importCount} leads!`);
+            e.target.value = ''; 
+        };
+        reader.readAsText(file);
+    });
 
     // --- KANBAN DRAG & DROP ---
     let draggedCardId = null;
@@ -479,8 +707,7 @@
         document.querySelectorAll('.k-card').forEach(card => {
             card.addEventListener('dragstart', (e) => { 
                 if(e.target.tagName === 'BUTTON') { e.preventDefault(); return; } 
-                draggedCardId = e.currentTarget.dataset.id; 
-                setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
+                draggedCardId = e.currentTarget.dataset.id; setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
             });
             card.addEventListener('dragend', (e) => { e.currentTarget.style.opacity = '1'; draggedCardId = null; });
         });
@@ -500,116 +727,73 @@
         });
     }
 
-    // --- MODALS & CUSTOM WA TEMPLATES ---
-    let currentWaName = '';
-    let currentWaProj = '';
-    
+    // --- MODALS & EXPORTS ---
+    let currentWaName = ''; let currentWaProj = '';
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     
     function openWaModal(phone, name, project) {
-        currentWaName = name;
-        currentWaProj = project || 'our premium properties';
+        currentWaName = name; currentWaProj = project || 'our premium properties';
         document.getElementById('waTargetName').innerText = `👤 ${name}  |  📞 ${phone}`;
-        document.getElementById('waTargetPhone').value = phone;
-        document.getElementById('waTemplateSelector').value = "";
-        document.getElementById('waEditArea').style.display = 'none';
-        openModal('waModal');
+        document.getElementById('waTargetPhone').value = phone; document.getElementById('waTemplateSelector').value = "";
+        document.getElementById('waEditArea').style.display = 'none'; openModal('waModal');
     }
-
     function loadWaTemplate() {
         const type = document.getElementById('waTemplateSelector').value;
-        const editArea = document.getElementById('waEditArea');
-        const textBox = document.getElementById('waMessageText');
-
+        const editArea = document.getElementById('waEditArea'); const textBox = document.getElementById('waMessageText');
         if (!type) { editArea.style.display = 'none'; return; }
-        
-        editArea.style.display = 'block';
-        let msg = '';
-
+        editArea.style.display = 'block'; let msg = '';
         if (type === '1') msg = `Hi ${currentWaName}, greetings from True Invest! 🌟\n\nAs discussed, please find the brochure and details for ${currentWaProj} attached below.\n\nLet me know if you need any more details or floor plans.`;
         if (type === '2') msg = `Hello ${currentWaName}, looking forward to our site visit! 📍\n\nHere is the Google Maps location for ${currentWaProj}.\n\nPlease reach out to me when you are nearby.`;
         if (type === '3') msg = `Hi ${currentWaName}, this is a gentle follow-up regarding your inquiry for ${currentWaProj}.\n\nAre you still looking for options in this segment? Let's connect! 🤝`;
-        if (type === '4') msg = `Dear ${currentWaName},\n\nI have an exciting update regarding the pricing for ${currentWaProj}. We have a special limited-time offer that aligns well with your budget.\n\nLet me know a good time to call you and discuss this. 📞`;
+        if (type === '4') msg = `Dear ${currentWaName},\n\nI have an exciting update regarding pricing. We have a special limited-time offer that aligns well with your budget.\n\nLet me know a good time to call you. 📞`;
         if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
-
         textBox.value = msg;
     }
-
     function executeWaSend() {
         let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, '');
         if (phone.length === 10) phone = '91' + phone;
-        const msg = document.getElementById('waMessageText').value;
-
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank');
         closeModal('waModal');
     }
 
-    // --- EMI CALCULATOR ---
     function calculateEMI() {
-        const pStr = document.getElementById('emiAmount').value;
-        const rStr = document.getElementById('emiRate').value;
-        const nStr = document.getElementById('emiYears').value;
-        
+        const pStr = document.getElementById('emiAmount').value; const rStr = document.getElementById('emiRate').value; const nStr = document.getElementById('emiYears').value;
         const resDiv = document.getElementById('emiResult');
-
-        if (!pStr || !rStr || !nStr) {
-            resDiv.style.display = 'block';
-            resDiv.innerHTML = `<span style="color:var(--notify-red); font-size:14px; font-weight:600;">⚠️ Please enter valid values in all fields.</span>`;
-            return;
-        }
-
-        const p = parseFloat(pStr);
-        const rate = parseFloat(rStr);
-        const years = parseFloat(nStr);
-
-        const r = rate / 12 / 100;
-        const n = years * 12;
+        if (!pStr || !rStr || !nStr) { resDiv.style.display = 'block'; resDiv.innerHTML = `<span style="color:var(--notify-red); font-size:14px; font-weight:600;">⚠️ Fill all fields.</span>`; return; }
+        const p = parseFloat(pStr); const r = (parseFloat(rStr) / 12) / 100; const n = parseFloat(nStr) * 12;
         const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-        
-        const totalPay = emi * n;
-        const totalInterest = totalPay - p;
-
         resDiv.style.display = 'block';
-        resDiv.innerHTML = `
-            <div style="font-size:24px; color:var(--accent-blue); margin-bottom:8px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:12px; color:#666;">/mo</span></div>
+        resDiv.innerHTML = `<div style="font-size:24px; color:var(--accent-blue); margin-bottom:8px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:12px; color:#666;">/mo</span></div>
             <div style="font-size:13px; color:#444; line-height:1.6; border-top:1px solid #d1d5db; padding-top:10px;">
                 <div style="display:flex; justify-content:space-between;"><span>Principal:</span> <b>₹ ${Math.round(p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between;"><span>Total Interest:</span> <b>₹ ${Math.round(totalInterest).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:15px; color:#000;"><span>Total Payable:</span> <b>₹ ${Math.round(totalPay).toLocaleString('en-IN')}</b></div>
-            </div>
-        `;
+                <div style="display:flex; justify-content:space-between;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:15px; color:#000;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
+            </div>`;
     }
 
-    // --- CONFETTI ---
-    function fireConfetti() {
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#128c7e', '#ffeb3b'] });
-    }
+    function fireConfetti() { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#128c7e', '#ffeb3b'] }); }
 
-    // --- SEARCH ---
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
     });
     
-    // --- CSV EXPORT ---
     function downloadCSV() {
         if(clients.length === 0) { alert("No data to export!"); return; }
+        const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Latest Remark"];
         
-        const headers = ["Date", "Name", "Phone", "Status", "Project", "Budget", "Visit Done", "Follow-up", "Remarks"];
-        const rows = clients.map(c => [
-            c.leadDate, `"${c.name}"`, c.phone, c.status, `"${c.projectCategory || ''}"`, 
-            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', `"${c.remark || ''}"`
+        // Export only the currently filtered tab, or all if "All Projects" is selected
+        const exportClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
+        
+        const rows = exportClients.map(c => [
+            c.leadDate, `"${c.name}"`, c.phone, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
+            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
         ]);
-        
-        let csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-        const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `CRM_Export_${getToday()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
+        link.setAttribute("download", `CRM_Export_${currentProjectFilter.replace(/\s+/g, '_')}_${getToday()}.csv`);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 </script>
 </body>
