@@ -53,6 +53,8 @@
         input[type="date"], select { height: 44px; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15); }
 
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } /* NEW RESPONSIVE CLASS */
+
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; display: inline-block; border: 1px solid transparent; }
         .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: #f8b4b4; }
         .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: #8ce99a; }
@@ -144,6 +146,38 @@
         tbody tr { transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 8px; }
         tbody tr:hover { background-color: #f5f5f7 !important; transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; border-radius: 8px; }
         td { border-bottom: 1px solid #f0f0f2 !important; }
+
+        /* ====================================================
+           100% RESPONSIVE MOBILE & TABLET STYLES ADDED HERE
+           ==================================================== */
+        @media (max-width: 992px) {
+            .workspace-layout { grid-template-columns: 1fr; padding: 12px; gap: 15px; }
+            .left-panel, .right-panel { width: 100%; min-width: 0; }
+            
+            header { flex-direction: column; gap: 12px; align-items: stretch; text-align: center; padding: 15px; position: relative; top: 0; }
+            header div { justify-content: center; }
+            
+            .form-grid { grid-template-columns: 1fr; gap: 0; } /* Stack form fields vertically on mobile */
+            
+            .stats-grid { gap: 8px; }
+            .stat-card span { font-size: 20px; }
+            
+            .controls-row { flex-wrap: wrap; }
+            .search-box { flex-basis: 100%; margin-bottom: 10px; width: 100%; }
+            .controls-row button { flex: 1; padding: 0 8px; font-size: 12px; }
+            
+            .project-tabs { width: 100%; justify-content: center; max-width: 100%; }
+            .tab-btn { flex-grow: 1; text-align: center; }
+            
+            .table-container { border-radius: 12px; }
+            table { font-size: 12px; }
+            th, td { padding: 8px 10px; white-space: nowrap; } /* Prevent table crushing on mobile */
+            
+            .action-group { flex-wrap: nowrap; }
+            .action-group button { height: 28px; font-size: 10px; padding: 0 6px; }
+            
+            .modal-content { width: 95%; padding: 20px; margin: 10px; }
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -188,7 +222,7 @@
             <form id="clientForm">
                 <input type="hidden" id="editId" value="">
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
                     <div><label>Follow-up / Visit Date</label><input type="date" id="followup"></div>
                 </div>
@@ -197,7 +231,7 @@
                 <input type="text" id="name" placeholder="Full Name" required>
                 <input type="tel" id="phone" placeholder="Phone Number" required>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-grid">
                     <div>
                         <label>Lead Source</label>
                         <select id="leadSource">
@@ -233,7 +267,7 @@
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-grid">
                     <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
                     <div><label>Budget</label><input type="text" id="budget" placeholder="e.g. 1.25 Cr"></div>
                 </div>
