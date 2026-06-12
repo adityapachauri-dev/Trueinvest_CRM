@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- STRICT MOBILE VIEWPORT + iPhone Safe Area Support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TRUE INVEST CRM - Apple Premium v2.6 (IST Locked)</title>
     
@@ -10,6 +9,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
+
+    <link rel="icon" type="image/png" href="http://googleusercontent.com/image_generation_content/239">
+    <link rel="apple-touch-icon" href="http://googleusercontent.com/image_generation_content/239">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -234,7 +236,6 @@
 </head>
 <body class="">
 
-<!-- TOAST NOTIFICATION CONTAINER -->
 <div id="toastContainer"></div>
 
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 12px;">
@@ -262,7 +263,6 @@
             </div>
         </header>
 
-        <!-- STATS GRID -->
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
             <div class="stats-grid">
                 <div class="stat-card active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -272,7 +272,6 @@
             <div id="reminderAlert" class="notification-bar" style="margin-top:15px;"></div>
         </div>
 
-        <!-- LEFT PANEL: Add Form -->
         <div class="left-panel mobile-tab-content" id="tabAddForm">
             <form id="clientForm">
                 <input type="hidden" id="editId" value="">
@@ -319,8 +318,7 @@
                     <div>
                         <label>Project / Site</label>
                         <select id="projectCategory">
-                            <!-- Populated dynamically via JS -->
-                        </select>
+                            </select>
                     </div>
                     <div>
                         <label>Specific Unit (Inventory)</label>
@@ -338,7 +336,6 @@
                     <label for="visitDone" style="margin:0; cursor:pointer; font-size:15px;">Site Visit Done</label>
                 </div>
 
-                <!-- SMART HISTORY TIMELINE -->
                 <div id="historyTimeline" class="history-timeline"></div>
                 
                 <label>Add Follow-up Remark</label>
@@ -356,7 +353,6 @@
             <div class="watermark">SYSTEM DESIGNED BY<br><span style="font-size:13px;">ADITYA PACHAURI</span></div>
         </div>
 
-        <!-- RIGHT PANEL: Data Views -->
         <div class="right-panel mobile-tab-content active" id="tabDataView">
             <div class="controls-row">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
@@ -365,10 +361,8 @@
                 <button class="btn-secondary" onclick="downloadCSV()">📤 Export</button>
             </div>
 
-            <!-- DYNAMIC PROJECT FOLDERS / TABS -->
             <div class="project-tabs" id="projectTabs">
-                <!-- Populated dynamically via JS -->
-            </div>
+                </div>
 
             <div class="table-container" id="tableView">
                 <table title="Double-click any row to Edit">
@@ -393,7 +387,6 @@
     </div>
 </div>
 
-<!-- iOS BOTTOM NAVIGATION BAR (Mobile Only) -->
 <nav class="ios-bottom-nav" id="bottomNav">
     <div class="tab-item" onclick="switchMobileTab('tabAddForm', this)">
         <div class="icon">➕</div>
@@ -409,7 +402,6 @@
     </div>
 </nav>
 
-<!-- EMI Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
@@ -422,7 +414,6 @@
     </div>
 </div>
 
-<!-- WA Modal -->
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
@@ -1088,7 +1079,8 @@
                 background_color: "#000000",
                 theme_color: "#0071e3",
                 start_url: ".",
-                icons: [{"src": "https://cdn-icons-png.flaticon.com/512/2950/2950715.png", "sizes": "512x512", "type": "image/png"}]
+                // NEW ICON URL UPDATED HERE
+                icons: [{"src": "http://googleusercontent.com/image_generation_content/239", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
             const manifestUrl = URL.createObjectURL(manifestBlob);
