@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- STRICT MOBILE VIEWPORT: Prevents iOS auto-zoom on inputs and ensures app-like scaling -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRUE INVEST CRM - Apple Edition v2.1</title>
+    <title>TRUE INVEST CRM - Apple Edition v2.2</title>
     
     <meta name="theme-color" content="#0071e3">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,7 +22,7 @@
             --closed-bg: #def7ec; --closed-text: #03543f; --cold-bg: #e5e7eb; --cold-text: #4b5563;
         }
         
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; }
         * { box-sizing: border-box; }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
@@ -31,7 +32,7 @@
 
         .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1750px; margin: 0 auto; padding: 20px; width: 100%; }
 
-        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); animation: fadeInDown 0.5s ease-out forwards; }
+        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); position: sticky; top: 10px; z-index: 100; animation: fadeInDown 0.5s ease-out forwards; }
         h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1 span.brand { color: var(--accent-blue); }
 
@@ -39,20 +40,22 @@
         .right-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; width: 100%; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .stat-card { background: var(--card-bg); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
+        .stat-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
         .stat-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
         .stat-card label { display: block; font-size: 10px; font-weight: 800; color: #666; margin-bottom: 3px; text-transform: uppercase; }
         .stat-card span { font-size: 24px; font-weight: 900; }
 
         .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; }
 
-        form, .table-container, .kanban-container, .login-card { background: var(--card-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; }
+        form, .table-container, .kanban-container, .login-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; }
         .login-card { max-width: 400px; margin: 150px auto; text-align: center; animation: popIn 0.6s both; }
 
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #444; text-transform: uppercase; }
-        input, textarea, button, select { padding: 12px 14px; margin: 0 0 16px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: #fff; color: var(--text-color); font-size: 16px; /* Set to 16px to prevent iOS auto-zoom */ box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s; }
-        input[type="date"], select { height: 44px; }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15); }
+        
+        /* 16px font-size is MANDATORY to stop iOS Safari from zooming in on input focus */
+        input, textarea, button, select { padding: 12px 14px; margin: 0 0 16px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 12px; background: #fbfbfd; color: var(--text-color); font-size: 16px; box-sizing: border-box; transition: all 0.3s ease; }
+        input[type="date"], select { height: 48px; }
+        input:focus, select:focus, textarea:focus { background: #ffffff; border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15); transform: scale(1.01); }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
@@ -62,139 +65,126 @@
         .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: #9ca3af; }
         .status-default { background: #e5e7eb; color: var(--text-color); border-color: var(--border-color); }
 
-        .check-item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px; height: 44px; }
-        .check-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+        .check-item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px; height: 48px; }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; }
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 700; height: 44px; border-radius: 8px; font-size: 14px; transition: transform 0.1s, opacity 0.2s; }
-        button:hover { opacity: 0.9; } button:active { transform: scale(0.96); }
-        .btn-secondary { background: transparent; color: var(--text-color); height: 40px; font-size: 13px; border: 1px solid var(--border-color); }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 600; height: 48px; border-radius: 980px; font-size: 15px; letter-spacing: 0.3px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25); }
+        button:active { transform: scale(0.97); }
+        .btn-secondary { background: transparent; color: var(--text-color); height: 40px; font-size: 14px; border: 1px solid var(--border-color); }
         .btn-secondary:hover { background: #f3f4f6; }
         
-        .action-group { display: flex; gap: 4px; justify-content: center; }
-        .action-group button { height: 32px; font-size: 10px; padding: 0 8px; flex: 1; margin: 0; border-radius: 6px; background: #fff; border: 1px solid var(--border-color); color: #333; display: flex; align-items: center; justify-content: center;}
+        .action-group { display: flex; gap: 6px; justify-content: center; }
+        .action-group button { height: 34px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; background: #fff; border: 1px solid var(--border-color); color: #333; display: flex; align-items: center; justify-content: center;}
         .btn-wa { color: var(--whatsapp-dark) !important; border-color: var(--whatsapp-dark) !important; }
         .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; }
         .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; }
 
-        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 40px; border-radius: 8px; padding-left: 15px; font-weight: 600; font-size: 14px;}
-        .controls-row button { height: 40px; margin: 0; padding: 0 15px; width: auto; }
+        .controls-row { display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.85); padding: 15px; border-radius: 16px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 44px; border-radius: 12px; padding-left: 15px; font-weight: 600; font-size: 15px;}
+        .controls-row button { height: 44px; margin: 0; padding: 0 15px; width: auto; }
 
-        .project-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255, 255, 255, 0.85); padding: 6px; border-radius: 12px; border: 1px solid var(--border-color); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); }
+        .project-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); }
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: transparent; color: #555; border: none; height: 32px; font-size: 13px; font-weight: 700; padding: 0 16px; margin: 0; border-radius: 8px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
-        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.08); border-color: #e5e5ea; }
+        .tab-btn { background: transparent; color: #555; border: none; height: 36px; font-size: 14px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 10px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
+        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-color: #e5e5ea; }
         .tab-btn:hover:not(.active) { background: #f3f4f6; }
         
-        .tab-delete-btn { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 14px; line-height: 16px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 14px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
         .tab-delete-btn:hover { transform: scale(1.1); background: #dc2626; }
         .tab-wrapper:hover .tab-delete-btn { display: block; }
         
-        .tab-add-btn { background: transparent; color: var(--accent-blue); border: 1px dashed var(--accent-blue); height: 32px; width: 32px; padding: 0; font-size: 18px; font-weight: 700; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0;}
+        .tab-add-btn { background: transparent; color: var(--accent-blue); border: 2px dashed var(--accent-blue); height: 36px; width: 36px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0;}
         .tab-add-btn:hover { background: #f0f7ff; border-style: solid; }
 
-        .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
-        th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        th { background: #f8f9fa; font-weight: 700; font-size: 11px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
+        .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 850px; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #f0f0f2; text-align: center; }
+        th { background: #f8f9fa; font-weight: 700; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
         tbody tr { cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 8px; } 
-        tbody tr:hover { transform: scale(1.005); box-shadow: 0 4px 12px rgba(0,0,0,0.06); background-color: #fff; z-index: 2; position: relative; }
+        tbody tr:hover { transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.04); background-color: #fff; z-index: 2; position: relative; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
 
-        .kanban-container { display: flex; gap: 15px; overflow-x: auto; padding: 20px; background: #f9fafb; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; }
-        .kanban-col { flex: 1; min-width: 250px; background: #f3f4f6; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
-        .kanban-col h3 { font-size: 12px; text-transform: uppercase; color: #444; margin: 0 0 10px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; }
-        .k-card { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: grab; transition: transform 0.2s; }
+        .kanban-container { display: flex; gap: 15px; overflow-x: auto; padding: 20px; background: #f9fafb; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 16px;}
+        .kanban-col { flex: 1; min-width: 280px; background: #f3f4f6; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .kanban-col h3 { font-size: 13px; text-transform: uppercase; color: #444; margin: 0 0 10px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; }
+        .k-card { background: #fff; padding: 14px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.04); cursor: grab; transition: transform 0.2s; }
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
-        .k-card-title { font-weight: bold; font-size: 13px; color: var(--accent-blue); margin-bottom: 5px; }
-        .k-card-detail { font-size: 11px; color: #555; margin-bottom: 3px; }
-        .k-actions { display: flex; gap: 5px; margin-top: 10px; }
-        .k-actions button { height: 26px; font-size: 10px; padding: 0 4px; flex: 1; border-radius: 4px; margin: 0; }
+        .k-card-title { font-weight: 800; font-size: 14px; color: var(--accent-blue); margin-bottom: 6px; }
+        .k-card-detail { font-size: 12px; color: #555; margin-bottom: 4px; }
+        .k-actions { display: flex; gap: 6px; margin-top: 12px; }
+        .k-actions button { height: 32px; font-size: 11px; padding: 0 6px; flex: 1; border-radius: 6px; margin: 0; }
         
         .kanban-dropzone { min-height: 100px; flex-grow: 1; }
-        .drag-over { background: #e5e7eb; border: 2px dashed #9ca3af; border-radius: 8px; }
+        .drag-over { background: #e5e7eb; border: 2px dashed #9ca3af; border-radius: 10px; }
 
-        .history-timeline { max-height: 180px; overflow-y: auto; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px; display: none; }
-        .history-item { padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px dashed #cbd5e1; font-size: 12px; color: #334155; line-height: 1.4; }
+        .history-timeline { max-height: 180px; overflow-y: auto; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px; display: none; }
+        .history-item { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #cbd5e1; font-size: 13px; color: #334155; line-height: 1.4; }
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .history-meta { font-size: 10px; color: var(--accent-blue); font-weight: 800; margin-bottom: 3px; display: block; text-transform: uppercase; }
+        .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 4px; display: block; text-transform: uppercase; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 24px; width: 90%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 24px 48px rgba(0,0,0,0.12); }
+        .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 25px; border-radius: 24px; width: 92%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 24px 48px rgba(0,0,0,0.15); border: 1px solid rgba(255, 255, 255, 0.5); }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-close { float: right; background: #f3f4f6; border: none; font-size: 18px; color: #555; cursor: pointer; height: 32px; width: 32px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center;}
+        .modal-close { float: right; background: #f3f4f6; border: none; font-size: 20px; color: #555; cursor: pointer; height: 36px; width: 36px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center;}
         .modal-close:hover { background: #e5e7eb; color: #000; }
 
         .hidden { display: none !important; }
-        .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.6; font-size: 10px; font-weight: 700; color: #666; }
+        .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.6; font-size: 11px; font-weight: 700; color: #666; letter-spacing: 0.5px;}
 
-        /* NOTIFICATION TOAST SYSTEM */
-        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-left: 5px solid var(--accent-blue); padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); color: #111; font-weight: 600; font-size: 14px; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 280px; }
+        /* PREMIUM TOAST NOTIFICATION SYSTEM */
+        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-left: 5px solid var(--accent-blue); padding: 16px 24px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); color: #111; font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 300px; border-top: 1px solid rgba(255,255,255,0.8); border-right: 1px solid rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.8); }
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: #22c55e; }
         .toast.error { border-left-color: #ef4444; }
         .toast.warning { border-left-color: #eab308; }
-        .toast-icon { margin-right: 12px; font-size: 18px; }
-
-        /* APPLE PREMIUM UI OVERRIDES */
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%); letter-spacing: -0.2px; }
-        header { background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.4) !important; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important; position: sticky; top: 10px; z-index: 100; }
-        .stat-card, form, .table-container, .kanban-container, .login-card { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 1) !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important; border-radius: 16px !important; }
-        button { border-radius: 980px !important; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; font-weight: 600 !important; letter-spacing: 0.3px; }
-        button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25); }
-        button:active { transform: scale(0.97); }
-        input, textarea, select { background: #fbfbfd !important; border-radius: 12px !important; border: 1px solid #e5e5ea !important; transition: all 0.3s ease !important; }
-        input:focus, textarea:focus, select:focus { background: #ffffff !important; border-color: #0071e3 !important; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15) !important; transform: scale(1.01); }
-        .modal-content { background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
-        tbody tr:hover { background-color: #f5f5f7 !important; transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; }
-        td { border-bottom: 1px solid #f0f0f2 !important; }
+        .toast-icon { margin-right: 14px; font-size: 20px; }
 
         /* ====================================================
-           100% RESPONSIVE MOBILE & TABLET FIXES
+           APPLE / MOBILE OPTIMIZED LAYOUT (100% RESPONSIVE)
            ==================================================== */
         @media (max-width: 992px) {
-            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 15px; }
+            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 16px; }
             
-            header { flex-direction: column; text-align: center; gap: 12px; padding: 15px; position: relative; top: 0;}
-            header h1 { font-size: 1.4rem; }
-            header div { width: 100%; display: flex; gap: 10px; justify-content: center; }
+            header { flex-direction: column; text-align: center; gap: 14px; padding: 18px; top: 0; border-radius: 16px;}
+            header h1 { font-size: 1.6rem; }
+            header div { width: 100%; display: flex; gap: 12px; justify-content: center; }
             header button { flex: 1; margin: 0; }
 
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .stat-card { padding: 10px 5px; }
-            .stat-card span { font-size: 18px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .stat-card { padding: 14px 6px; border-radius: 14px; }
+            .stat-card span { font-size: 20px; }
 
-            /* Fix Form Inputs Squishing */
+            /* Fix Form Inputs Squishing on small screens */
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
 
-            /* Fix Controls Row */
-            .controls-row { flex-wrap: wrap; justify-content: space-between; padding: 12px; gap: 8px;}
-            .search-box { flex: 1 1 100%; margin: 0 !important; width: 100%; height: 44px; }
-            .controls-row button { flex: 1 1 calc(33.33% - 8px); padding: 0 4px; margin: 0 !important; font-size: 11.5px; white-space: nowrap; height: 40px;}
+            /* Fix Controls Row for Mobile */
+            .controls-row { flex-wrap: wrap; justify-content: space-between; padding: 14px; gap: 10px;}
+            .search-box { flex: 1 1 100%; margin: 0 !important; width: 100%; height: 48px; font-size: 16px;}
+            .controls-row button { flex: 1 1 calc(33.33% - 10px); padding: 0 6px; margin: 0 !important; font-size: 12px; white-space: nowrap; height: 44px;}
 
-            /* Fix Project Tabs - Enable Horizontal Scrolling */
-            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+            /* Project Tabs - Smooth Horizontal Scroll */
+            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 10px 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
             .project-tabs::-webkit-scrollbar { display: none; }
             .tab-wrapper, .tab-btn, .tab-add-btn { flex-shrink: 0; }
 
-            /* Fix Table For Touch */
-            .table-container { border-radius: 12px; overflow-x: auto; max-width: 100vw; padding: 0 10px;}
+            /* Table Container for Touch */
+            .table-container { padding: 0 10px; }
             table { min-width: 800px; } 
-            th, td { padding: 10px 8px; }
+            th, td { padding: 12px 10px; }
 
-            /* Fix Kanban Layout on Mobile */
-            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px; gap: 15px; max-width: 100vw; }
-            .kanban-col { min-width: 85vw; scroll-snap-align: center; }
+            /* Kanban Layout for Mobile */
+            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 15px 10px; gap: 16px; max-width: 100vw; scrollbar-width: none;}
+            .kanban-container::-webkit-scrollbar { display: none; }
+            .kanban-col { min-width: 88vw; scroll-snap-align: center; }
 
-            .modal-content { width: 92%; padding: 20px; margin: auto; }
-
-            /* Mobile Notification Positioning */
-            #toastContainer { top: 10px; right: 10px; left: 10px; align-items: center; }
-            .toast { width: 100%; min-width: unset; justify-content: center; transform: translateY(-120%); font-size: 13px; }
+            /* Mobile Notification Positioning (Top Center) */
+            #toastContainer { top: 15px; right: 15px; left: 15px; align-items: center; }
+            .toast { width: 100%; min-width: unset; justify-content: center; transform: translateY(-120%); font-size: 14px; border-radius: 14px; }
             .toast.show { transform: translateY(0); }
         }
     </style>
@@ -205,6 +195,7 @@
 </head>
 <body>
 
+<!-- TOAST NOTIFICATION CONTAINER -->
 <div id="toastContainer"></div>
 
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 12px;">
@@ -279,7 +270,8 @@
                     <div>
                         <label>Project / Site</label>
                         <select id="projectCategory">
-                            </select>
+                            <!-- Populated dynamically via JS -->
+                        </select>
                     </div>
                     <div>
                         <label>Specific Unit (Inventory)</label>
@@ -297,6 +289,7 @@
                     <label for="visitDone" style="margin:0; cursor:pointer;">Site Visit Done</label>
                 </div>
 
+                <!-- SMART HISTORY TIMELINE -->
                 <div id="historyTimeline" class="history-timeline"></div>
                 
                 <label>Add Follow-up Remark</label>
@@ -304,11 +297,12 @@
                 
                 <div class="check-item" style="border-color: var(--accent-blue); background: #f0f7ff;">
                     <input type="checkbox" id="syncCalendar" checked>
-                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue);">📅 Sync Follow-up to Google Calendar</label>
+                    <!-- UPDATED LABEL FOR APPLE CALENDAR -->
+                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue);">📅 Sync to Apple / System Calendar</label>
                 </div>
 
                 <button type="submit" id="saveBtn">Save Record</button>
-                <button type="button" class="btn-secondary" style="width:100%; margin-top:8px; height:36px;" onclick="resetForm()">Clear Form</button>
+                <button type="button" class="btn-secondary" style="width:100%; margin-top:8px; height:44px; border-radius:980px;" onclick="resetForm()">Clear Form</button>
             </form>
 
             <div class="watermark">SYSTEM DESIGNED BY<br><span>ADITYA PACHAURI</span></div>
@@ -323,8 +317,10 @@
                 <button class="btn-secondary" style="background:#000; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
             </div>
 
+            <!-- DYNAMIC PROJECT FOLDERS / TABS -->
             <div class="project-tabs" id="projectTabs">
-                </div>
+                <!-- Populated dynamically via JS -->
+            </div>
 
             <div class="table-container" id="tableView">
                 <table title="Double-click any row to Edit">
@@ -349,23 +345,25 @@
     </div>
 </div>
 
+<!-- EMI Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
-        <h2 style="margin-top:0; color:var(--accent-blue); font-size:18px;">🧮 Property EMI Calculator</h2>
+        <h2 style="margin-top:0; color:var(--accent-blue); font-size:20px; font-weight:800;">🧮 Property EMI Calculator</h2>
         <label>Property Amount (₹)</label><input type="number" id="emiAmount" placeholder="e.g. 5000000" min="0">
         <label>Interest Rate (% p.a)</label><input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
         <label>Tenure (Years)</label><input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
         <button onclick="calculateEMI()" style="margin-bottom:15px; width:100%;">Calculate Breakdown</button>
-        <div id="emiResult" style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px solid var(--border-color); display:none;"></div>
+        <div id="emiResult" style="background:#f8f9fa; padding:15px; border-radius:12px; border:1px solid var(--border-color); display:none;"></div>
     </div>
 </div>
 
+<!-- WA Modal -->
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
-        <h2 style="margin-top:0; color:var(--whatsapp-dark); font-size:18px;">📱 Smart WA Messaging</h2>
-        <p style="font-size:13px; color:#555; margin-bottom:15px; font-weight:600; background:#f3f4f6; padding:8px; border-radius:6px;" id="waTargetName">Sending to: </p>
+        <h2 style="margin-top:0; color:var(--whatsapp-dark); font-size:20px; font-weight:800;">📱 Smart WA Messaging</h2>
+        <p style="font-size:14px; color:#555; margin-bottom:18px; font-weight:600; background:#f3f4f6; padding:10px; border-radius:8px;" id="waTargetName">Sending to: </p>
         <input type="hidden" id="waTargetPhone">
         
         <label>Select Template</label>
@@ -387,7 +385,7 @@
 </div>
 
 <script>
-    // --- NOTIFICATION SYSTEM ---
+    // --- NOTIFICATION SYSTEM (Premium Toasts) ---
     function showNotification(message, type = 'success') {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
@@ -401,10 +399,13 @@
         
         container.appendChild(toast);
         
+        // Trigger animation
         setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Auto remove
         setTimeout(() => {
             toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 400); // Wait for transition
+            setTimeout(() => toast.remove(), 400); 
         }, 3500);
     }
 
@@ -545,16 +546,35 @@
         bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    function syncToGoogleCalendar(name, dateStr, phone, project, remark) {
+    // --- NEW APPLE SYSTEM CALENDAR SYNC (.ics Generator) ---
+    function syncToSystemCalendar(name, dateStr, phone, project, remark) {
         if(!dateStr) return;
-        const date = new Date(dateStr);
-        const yyyy = date.getFullYear(); const mm = String(date.getMonth() + 1).padStart(2, '0'); const dd = String(date.getDate()).padStart(2, '0');
-        const nextDay = new Date(dateStr); nextDay.setDate(nextDay.getDate() + 1);
-        const ny = nextDay.getFullYear(); const nm = String(nextDay.getMonth() + 1).padStart(2, '0'); const nd = String(nextDay.getDate()).padStart(2, '0');
-        const startDate = `${yyyy}${mm}${dd}`; const endDate = `${ny}${nm}${nd}`;
-        const title = encodeURIComponent(`CRM Action: Follow-up / Visit for ${name}`);
-        const details = encodeURIComponent(`Client: ${name}\nPhone: ${phone}\nProject: ${project || 'Not specified'}\nRemarks: ${remark || 'None'}`);
-        window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}`, '_blank', 'noopener,noreferrer');
+        
+        // Setup dates for ICS format
+        const d = new Date(dateStr);
+        const start = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
+        d.setDate(d.getDate() + 1); // Full day event end date
+        const end = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
+
+        // Build ICS content
+        const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//True Invest CRM//EN\n" +
+                       "BEGIN:VEVENT\n" +
+                       "DTSTART;VALUE=DATE:" + start + "\n" +
+                       "DTEND;VALUE=DATE:" + end + "\n" +
+                       "SUMMARY:Follow-up: " + name + "\n" +
+                       "DESCRIPTION:Phone: " + phone + "\\nProject: " + (project || 'N/A') + "\\nRemark: " + (remark || 'None') + "\n" +
+                       "END:VEVENT\nEND:VCALENDAR";
+
+        // Create Blob and trigger download (iOS Safari intercepts this to "Add to Calendar")
+        const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Followup_${name.replace(/\s+/g, '_')}.ics`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
     }
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
@@ -600,7 +620,8 @@
             
             const doSync = document.getElementById('syncCalendar').checked;
             if (doSync && data.followup && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
-                syncToGoogleCalendar(data.name, data.followup, data.phone, data.projectCategory, data.remark);
+                // Call the new Apple System Calendar function
+                syncToSystemCalendar(data.name, data.followup, data.phone, data.projectCategory, data.remark);
             }
             resetForm();
         } catch (err) { 
@@ -834,11 +855,11 @@
         const p = parseFloat(pStr); const r = (parseFloat(rStr) / 12) / 100; const n = parseFloat(nStr) * 12;
         const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
         resDiv.style.display = 'block';
-        resDiv.innerHTML = `<div style="font-size:24px; color:var(--accent-blue); margin-bottom:8px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:12px; color:#666;">/mo</span></div>
-            <div style="font-size:13px; color:#444; line-height:1.6; border-top:1px solid #d1d5db; padding-top:10px;">
+        resDiv.innerHTML = `<div style="font-size:24px; font-weight:800; color:var(--accent-blue); margin-bottom:8px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:12px; color:#666;">/mo</span></div>
+            <div style="font-size:14px; color:#444; line-height:1.6; border-top:1px solid #d1d5db; padding-top:10px;">
                 <div style="display:flex; justify-content:space-between;"><span>Principal:</span> <b>₹ ${Math.round(p).toLocaleString('en-IN')}</b></div>
                 <div style="display:flex; justify-content:space-between;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:15px; color:#000;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:16px; color:#000;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
             </div>`;
     }
 
@@ -899,59 +920,6 @@
         } catch(e) { console.log("PWA init handled: ", e); }
     })();
 
-    // --- SMART EDGE SCROLLING (Cursor Follow) ---
-    let scrollAnimationFrame;
-    let edgeScrollX = 0;
-    let edgeScrollY = 0;
-    const edgeThreshold = 60; 
-    const maxScrollSpeed = 15;
-
-    document.addEventListener('mousemove', (e) => {
-        const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-        
-        edgeScrollX = 0;
-        edgeScrollY = 0;
-
-        if (clientY < edgeThreshold) {
-            edgeScrollY = -((edgeThreshold - clientY) / edgeThreshold) * maxScrollSpeed;
-        } else if (clientY > innerHeight - edgeThreshold) {
-            edgeScrollY = ((clientY - (innerHeight - edgeThreshold)) / edgeThreshold) * maxScrollSpeed;
-        }
-
-        const kanban = document.getElementById('kanbanView');
-        if (!kanban.classList.contains('hidden') && e.target.closest('.kanban-container')) {
-            const rect = kanban.getBoundingClientRect();
-            if (clientX < rect.left + edgeThreshold) {
-                edgeScrollX = -((edgeThreshold - (clientX - rect.left)) / edgeThreshold) * maxScrollSpeed;
-            } else if (clientX > rect.right - edgeThreshold) {
-                edgeScrollX = (((clientX - (rect.right - edgeThreshold))) / edgeThreshold) * maxScrollSpeed;
-            }
-        }
-
-        if ((edgeScrollY !== 0 || edgeScrollX !== 0) && !scrollAnimationFrame) {
-            scrollAnimationFrame = requestAnimationFrame(autoScroll);
-        } else if (edgeScrollY === 0 && edgeScrollX === 0 && scrollAnimationFrame) {
-            cancelAnimationFrame(scrollAnimationFrame);
-            scrollAnimationFrame = null;
-        }
-    });
-
-    function autoScroll() {
-        if (edgeScrollY !== 0) {
-            window.scrollBy(0, edgeScrollY);
-        }
-        if (edgeScrollX !== 0) {
-            const kanban = document.getElementById('kanbanView');
-            if(kanban) kanban.scrollBy(edgeScrollX, 0);
-        }
-        
-        if (edgeScrollY !== 0 || edgeScrollX !== 0) {
-            scrollAnimationFrame = requestAnimationFrame(autoScroll);
-        } else {
-            scrollAnimationFrame = null;
-        }
-    }
 </script>
 </body>
 </html>
