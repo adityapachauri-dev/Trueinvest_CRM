@@ -2,27 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- STRICT MOBILE VIEWPORT: Prevents iOS auto-zoom, forces exact layout -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRUE INVEST CRM - Apple Premium v2.3</title>
+    <!-- STRICT MOBILE VIEWPORT + iPhone Safe Area Support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TRUE INVEST CRM - Apple Premium v2.4</title>
     
-    <meta name="theme-color" content="#0071e3">
+    <meta name="theme-color" content="#f5f7fa" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* LIGHT & DARK THEME VARIABLES */
         :root {
-            --bg-color: #f4f6f9; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #111111; --border-color: #d1d5db; 
-            --accent-blue: #0071e3; --accent-glow: rgba(0, 113, 227, 0.3);
+            --bg-color: #f5f7fa; 
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%);
+            --card-bg: rgba(255, 255, 255, 0.85); 
+            --text-color: #111111; 
+            --border-color: rgba(0, 0, 0, 0.1); 
+            --input-bg: #fbfbfd;
+            --accent-blue: #0071e3; 
+            --accent-glow: rgba(0, 113, 227, 0.3);
             --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
             --highlight-today: #fff9c4; --hot-bg: #fde8e8; --hot-text: #9b1c1c; 
             --closed-bg: #def7ec; --closed-text: #03543f; --cold-bg: #e5e7eb; --cold-text: #4b5563;
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.05);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-theme {
+            --bg-color: #000000;
+            --bg-gradient: linear-gradient(135deg, #000000 0%, #1c1c1e 100%);
+            --card-bg: rgba(28, 28, 30, 0.85);
+            --text-color: #f5f5f7;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --input-bg: #2c2c2e;
+            --accent-blue: #0a84ff;
+            --accent-glow: rgba(10, 132, 255, 0.3);
+            --highlight-today: #3a3a1c; --hot-bg: #3b1c1c; --hot-text: #ff6b6b;
+            --closed-bg: #1c3b2b; --closed-text: #4ade80; --cold-bg: #2c2c2e; --cold-text: #9ca3af;
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+            --nav-bg: rgba(28, 28, 30, 0.9);
         }
         
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; background: var(--bg-gradient); background-attachment: fixed; color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; transition: background 0.4s ease, color 0.4s ease; padding-bottom: env(safe-area-inset-bottom); }
         * { box-sizing: border-box; }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
@@ -30,9 +56,9 @@
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 
-        .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1750px; margin: 0 auto; padding: 20px; width: 100%; }
+        .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1750px; margin: 0 auto; padding: 20px; padding-top: max(20px, env(safe-area-inset-top)); width: 100%; }
 
-        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); position: sticky; top: 10px; z-index: 100; animation: fadeInDown 0.5s ease-out forwards; }
+        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); position: sticky; top: max(10px, env(safe-area-inset-top)); z-index: 100; animation: fadeInDown 0.5s ease-out forwards; transition: all 0.4s ease;}
         h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1 span.brand { color: var(--accent-blue); }
 
@@ -40,154 +66,164 @@
         .right-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; width: 100%; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
-        .stat-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
-        .stat-card label { display: block; font-size: 10px; font-weight: 800; color: #666; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); transition: transform 0.2s, box-shadow 0.2s; animation: popIn 0.5s both; cursor: pointer; }
+        .stat-card:active { transform: scale(0.95); }
+        .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); }
+        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: #888; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-card span { font-size: 24px; font-weight: 900; }
 
         .notification-bar { background: linear-gradient(90deg, #d32f2f, #ef4444); color: white; padding: 12px; text-align: center; border-radius: 12px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); }
 
-        form, .table-container, .kanban-container, .login-card { background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; }
+        form, .table-container, .kanban-container, .login-card { background: var(--card-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; transition: background 0.4s ease, border 0.4s ease;}
         .login-card { max-width: 400px; margin: 150px auto; text-align: center; animation: popIn 0.6s both; }
 
-        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #444; text-transform: uppercase; }
+        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #666; text-transform: uppercase; letter-spacing: 0.3px;}
         
-        /* 16px font-size prevents iOS Safari zoom */
-        input, textarea, button, select { padding: 12px 14px; margin: 0 0 16px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 12px; background: #fbfbfd; color: var(--text-color); font-size: 16px; box-sizing: border-box; transition: all 0.3s ease; }
-        input[type="date"], input[type="time"], select { height: 48px; }
-        input:focus, select:focus, textarea:focus { background: #ffffff; border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: scale(1.01); }
+        input, textarea, button, select { padding: 14px 16px; margin: 0 0 16px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 14px; background: var(--input-bg); color: var(--text-color); font-size: 16px; box-sizing: border-box; transition: all 0.3s ease; }
+        input[type="date"], input[type="time"], select { height: 50px; }
+        input:focus, select:focus, textarea:focus { background: var(--card-bg); border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: scale(1.01); }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .flex-row { display: flex; gap: 8px; width: 100%; }
         .flex-row input { margin-bottom: 0; }
 
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; display: inline-block; border: 1px solid transparent; }
-        .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: #f8b4b4; }
-        .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: #8ce99a; }
-        .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: #9ca3af; }
-        .status-default { background: #e5e7eb; color: var(--text-color); border-color: var(--border-color); }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.2px;}
+        .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: rgba(255,107,107,0.3); }
+        .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: rgba(74,222,128,0.3); }
+        .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: var(--border-color); }
+        .status-default { background: var(--input-bg); color: var(--text-color); border-color: var(--border-color); }
 
-        .check-item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px; height: 48px; }
-        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; border-radius: 6px;}
+        .check-item { display: flex; align-items: center; gap: 12px; background: var(--input-bg); padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 16px; height: 50px; transition: all 0.3s; }
+        .check-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; cursor: pointer; border-radius: 6px; accent-color: var(--accent-blue);}
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 600; height: 48px; border-radius: 980px; font-size: 15px; letter-spacing: 0.3px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px var(--accent-glow); }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 600; height: 50px; border-radius: 980px; font-size: 16px; letter-spacing: 0.3px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px var(--accent-glow); }
         button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px var(--accent-glow); }
         button:active { transform: scale(0.97); }
-        .btn-secondary { background: transparent; color: var(--text-color); height: 40px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none;}
-        .btn-secondary:hover { background: #f3f4f6; }
+        .btn-secondary { background: var(--input-bg); color: var(--text-color); height: 44px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none;}
+        .btn-secondary:hover { background: var(--card-bg); border-color: var(--accent-blue); }
         
         .action-group { display: flex; gap: 6px; justify-content: center; }
-        .action-group button { height: 34px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; background: #fff; border: 1px solid var(--border-color); color: #333; display: flex; align-items: center; justify-content: center; box-shadow: none;}
-        .btn-wa { color: var(--whatsapp-dark) !important; border-color: var(--whatsapp-dark) !important; background: #f0fdf4 !important; }
-        .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; background: #eff6ff !important;}
-        .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; background: #fef2f2 !important;}
+        .action-group button { height: 36px; font-size: 12px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); display: flex; align-items: center; justify-content: center; box-shadow: none;}
+        .btn-wa { color: var(--whatsapp-green) !important; border-color: rgba(37,211,102,0.3) !important; background: rgba(37,211,102,0.05) !important; }
+        .btn-call { color: #0a84ff !important; border-color: rgba(10,132,255,0.3) !important; background: rgba(10,132,255,0.05) !important;}
+        .btn-delete { color: #ff453a !important; border-color: rgba(255,69,58,0.3) !important; background: rgba(255,69,58,0.05) !important;}
 
-        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 44px; border-radius: 12px; padding-left: 15px; font-weight: 600; font-size: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 44px; border-radius: 12px; padding-left: 15px; font-weight: 600; font-size: 15px; background: var(--input-bg);}
         .controls-row button { height: 44px; margin: 0; padding: 0 15px; width: auto; }
 
-        .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; background: var(--card-bg); padding: 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); align-items: center;}
+        .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; background: var(--card-bg); padding: 12px; border-radius: 16px; border: 1px solid var(--border-color); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: transparent; color: #555; border: none; height: 38px; font-size: 14px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 12px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
-        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #e5e5ea; font-weight: 700;}
-        .tab-btn:hover:not(.active) { background: #f3f4f6; }
+        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid transparent; height: 40px; font-size: 14px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 12px; transition: all 0.2s; box-shadow: none; }
+        .tab-btn.active { background: var(--card-bg); color: var(--accent-blue); box-shadow: var(--shadow-sm); border-color: var(--accent-blue); font-weight: 700;}
         
-        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
-        .tab-delete-btn:hover { transform: scale(1.1); background: #dc2626; }
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
+        .tab-delete-btn:hover { transform: scale(1.1); }
         .tab-wrapper:hover .tab-delete-btn { display: block; }
         
-        .tab-add-btn { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; height: 38px; width: 38px; padding: 0; font-size: 22px; font-weight: 700; border-radius: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: 0 4px 10px rgba(0,113,227,0.3);}
-        .tab-add-btn:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,113,227,0.4); }
+        .tab-add-btn { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; height: 40px; width: 40px; padding: 0; font-size: 24px; font-weight: 700; border-radius: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: 0 4px 10px var(--accent-glow);}
+        .tab-add-btn:hover { transform: scale(1.05); box-shadow: 0 6px 15px var(--accent-glow); }
 
-        .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 16px; }
+        .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #f0f0f2; text-align: center; vertical-align: middle;}
-        th { background: #f8f9fa; font-weight: 700; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
+        th, td { padding: 16px 16px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
+        th { background: var(--input-bg); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
         tbody tr { cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 8px; } 
-        tbody tr:hover { transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.04); background-color: #fff; z-index: 2; position: relative; }
+        tbody tr:hover { transform: scale(1.01); box-shadow: var(--shadow-sm); background-color: var(--card-bg); z-index: 2; position: relative; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
-        .row-cold { opacity: 0.6; filter: grayscale(50%); }
+        .row-cold { opacity: 0.5; filter: grayscale(80%); }
 
-        .kanban-container { display: flex; gap: 15px; overflow-x: auto; padding: 20px; background: rgba(249, 250, 251, 0.5); min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 16px; border: 1px solid rgba(255,255,255,0.6);}
-        .kanban-col { flex: 1; min-width: 280px; background: #f3f4f6; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
-        .kanban-col h3 { font-size: 13px; text-transform: uppercase; color: #444; margin: 0 0 10px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; }
-        .k-card { background: #fff; padding: 14px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.04); cursor: grab; transition: transform 0.2s; }
+        .kanban-container { display: flex; gap: 16px; overflow-x: auto; padding: 20px; background: var(--input-bg); min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 20px; border: 1px solid var(--border-color);}
+        .kanban-col { flex: 1; min-width: 280px; background: var(--card-bg); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 12px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; }
+        .k-card { background: var(--input-bg); padding: 16px; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: transform 0.2s; }
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
-        .k-card-title { font-weight: 800; font-size: 14px; color: var(--accent-blue); margin-bottom: 6px; }
-        .k-card-detail { font-size: 12px; color: #555; margin-bottom: 4px; display:flex; align-items:center; gap:4px;}
-        .k-actions { display: flex; gap: 6px; margin-top: 12px; }
-        .k-actions button { height: 32px; font-size: 11px; padding: 0 6px; flex: 1; border-radius: 8px; margin: 0; box-shadow:none;}
+        .k-card-title { font-weight: 800; font-size: 15px; color: var(--accent-blue); margin-bottom: 6px; }
+        .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.8; margin-bottom: 4px; display:flex; align-items:center; gap:4px;}
+        .k-actions { display: flex; gap: 8px; margin-top: 14px; }
+        .k-actions button { height: 36px; font-size: 12px; padding: 0 6px; flex: 1; border-radius: 8px; margin: 0; box-shadow:none;}
         
         .kanban-dropzone { min-height: 100px; flex-grow: 1; }
-        .drag-over { background: #e5e7eb; border: 2px dashed #9ca3af; border-radius: 10px; }
+        .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); border-radius: 12px; }
 
-        .history-timeline { max-height: 180px; overflow-y: auto; background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px; display: none; }
-        .history-item { padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #cbd5e1; font-size: 13px; color: #334155; line-height: 1.4; }
+        .history-timeline { max-height: 180px; overflow-y: auto; background: var(--input-bg); padding: 16px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 16px; display: none; }
+        .history-item { padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); font-size: 14px; color: var(--text-color); line-height: 1.5; }
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 4px; display: block; text-transform: uppercase; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);}
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 25px; border-radius: 24px; width: 92%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 24px 48px rgba(0,0,0,0.2); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .modal-content { background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); padding: 30px; border-radius: 28px; width: 92%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-close { float: right; background: #f3f4f6; border: none; font-size: 20px; color: #555; cursor: pointer; height: 36px; width: 36px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none;}
-        .modal-close:hover { background: #e5e7eb; color: #000; }
-
+        .modal-close { float: right; background: var(--input-bg); border: none; font-size: 22px; color: var(--text-color); cursor: pointer; height: 40px; width: 40px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none;}
+        
         .hidden { display: none !important; }
-        .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.6; font-size: 11px; font-weight: 700; color: #666; letter-spacing: 0.5px;}
+        .watermark { text-align: center; margin-top: auto; padding: 20px; opacity: 0.5; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1px;}
 
         /* PREMIUM TOAST NOTIFICATION SYSTEM */
-        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-left: 5px solid var(--accent-blue); padding: 16px 24px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); color: #111; font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 300px; border-top: 1px solid rgba(255,255,255,0.8); border-right: 1px solid rgba(255,255,255,0.8); border-bottom: 1px solid rgba(255,255,255,0.8); }
+        #toastContainer { position: fixed; top: max(20px, env(safe-area-inset-top)); right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 5px solid var(--accent-blue); padding: 16px 24px; border-radius: 16px; box-shadow: var(--shadow-lg); color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 300px; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .toast.show { transform: translateX(0); }
-        .toast.success { border-left-color: #22c55e; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #eab308; }
-        .toast-icon { margin-right: 14px; font-size: 20px; }
+        .toast.success { border-left-color: #34c759; }
+        .toast.error { border-left-color: #ff3b30; }
+        .toast.warning { border-left-color: #ffcc00; }
+        .toast-icon { margin-right: 14px; font-size: 22px; }
 
         /* ====================================================
-           APPLE / MOBILE OPTIMIZED LAYOUT (100% RESPONSIVE)
+           APPLE iPHONE 15 OPTIMIZED MOBILE LAYOUT (TAB BAR)
            ==================================================== */
+        .ios-bottom-nav { display: none; } /* Hidden on desktop */
+
         @media (max-width: 992px) {
-            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 16px; overflow-x: hidden; width: 100vw; }
+            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 16px; overflow-x: hidden; width: 100vw; padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
             
-            header { flex-direction: column; text-align: center; gap: 14px; padding: 18px; top: 0; border-radius: 16px;}
-            header h1 { font-size: 1.6rem; }
-            header div { width: 100%; display: flex; gap: 12px; justify-content: center; }
-            header button { flex: 1; margin: 0; }
+            header { flex-direction: row; flex-wrap: wrap; text-align: left; gap: 10px; padding: 16px; border-radius: 20px;}
+            header h1 { font-size: 1.4rem; width: 50%;}
+            .header-actions { display: flex; gap: 8px; justify-content: flex-end; width: 45%; }
+            .header-actions button { margin: 0; height: 38px; width: 38px; padding: 0; border-radius: 50%; font-size: 16px; display:flex; align-items:center; justify-content:center;}
 
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .stat-card { padding: 14px 6px; border-radius: 14px; background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); }
-            .stat-card span { font-size: 20px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 14px 4px; border-radius: 16px; }
+            .stat-card span { font-size: 22px; }
 
-            /* Fix Form Inputs Squishing on small screens */
+            /* Fix Form Inputs Squishing */
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
+
+            /* iOS Bottom Tab Navigation */
+            .ios-bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100vw; background: var(--nav-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 1px solid var(--border-color); z-index: 999; padding-bottom: max(10px, env(safe-area-inset-bottom)); padding-top: 10px; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);}
+            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: #8e8e93; font-size: 10px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: color 0.2s;}
+            .tab-item .icon { font-size: 24px; margin-bottom: 4px; transition: transform 0.2s; }
+            .tab-item.active { color: var(--accent-blue); }
+            .tab-item.active .icon { transform: scale(1.15); font-weight: bold;}
+
+            /* Mobile Tab Switching Logic via CSS */
+            .mobile-tab-content { display: none; width: 100%; animation: popIn 0.3s ease; }
+            .mobile-tab-content.active { display: flex; flex-direction: column;}
 
             /* Fix Controls Row for Mobile */
             .controls-row { flex-wrap: wrap; justify-content: space-between; padding: 14px; gap: 10px;}
             .search-box { flex: 1 1 100%; margin: 0 !important; width: 100%; height: 48px; font-size: 16px;}
-            .controls-row button { flex: 1 1 calc(33.33% - 10px); padding: 0 6px; margin: 0 !important; font-size: 12px; white-space: nowrap; height: 44px;}
+            .controls-row button { flex: 1 1 calc(50% - 5px); padding: 0 6px; margin: 0 !important; font-size: 13px; height: 44px;}
 
             /* Project Tabs - Smooth Horizontal Scroll AND Always Visible + Button */
-            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 12px 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.1);}
+            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 12px 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-radius: 16px;}
             .project-tabs::-webkit-scrollbar { display: none; }
             .tab-wrapper, .tab-btn { flex-shrink: 0; }
-            .tab-add-btn { flex-shrink: 0; margin-left: 5px; } /* Ensures + is never crushed */
+            .tab-add-btn { flex-shrink: 0; margin-left: 5px; }
 
-            /* Table Container for Touch */
-            .table-container { padding: 0; width: 100%; overflow-x: auto;}
+            /* Table Container */
+            .table-container { padding: 0; width: 100%; overflow-x: auto; border-radius: 16px;}
             table { min-width: 800px; } 
-            th, td { padding: 12px 10px; }
 
-            /* Kanban Layout for Mobile */
-            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 15px 10px; gap: 16px; max-width: 100vw; scrollbar-width: none;}
+            /* Kanban Layout */
+            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 15px 10px; gap: 16px; max-width: 100vw; scrollbar-width: none; border-radius: 16px;}
             .kanban-container::-webkit-scrollbar { display: none; }
-            .kanban-col { min-width: 88vw; scroll-snap-align: center; }
+            .kanban-col { min-width: 85vw; scroll-snap-align: center; }
 
-            /* Mobile Notification Positioning (Top Center) */
-            #toastContainer { top: 15px; right: 15px; left: 15px; align-items: center; }
-            .toast { width: 100%; min-width: unset; justify-content: center; transform: translateY(-120%); font-size: 14px; border-radius: 14px; }
+            /* Mobile Notification Positioning (Top Center below notch) */
+            #toastContainer { top: max(15px, env(safe-area-inset-top)); right: 15px; left: 15px; align-items: center; }
+            .toast { width: 100%; min-width: unset; justify-content: center; transform: translateY(-120%); font-size: 14px; border-radius: 16px; }
             .toast.show { transform: translateY(0); }
         }
     </style>
@@ -196,19 +232,19 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
-<body>
+<body class=""> <!-- Theme class applied here -->
 
 <!-- TOAST NOTIFICATION CONTAINER -->
 <div id="toastContainer"></div>
 
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 12px;">
-    <div class="login-card">
-        <h1 style="margin-bottom:20px;"><span class="brand">TRUE</span> INVEST</h1>
+    <div class="login-card" style="margin-top: calc(100px + env(safe-area-inset-top));">
+        <h1 style="margin-bottom:24px; font-size:32px;"><span class="brand">TRUE</span> INVEST</h1>
         <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important; backdrop-filter:none;">
             <label>Secure CRM Login</label>
             <input type="email" id="loginEmail" placeholder="Work Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" id="loginBtn">Authorize Entry</button>
+            <button type="submit" id="loginBtn" style="margin-top:10px;">Authorize Entry</button>
             <div id="loginError" style="color: var(--notify-red); margin-top: 15px; text-align: center; display: none;"></div>
         </form>
     </div>
@@ -218,29 +254,31 @@
     <div class="workspace-layout">
         
         <header>
-            <h1><span class="brand">TRUE</span> INVEST <span style="font-size:11px; font-weight:normal; opacity:0.5; padding-left:10px;">PRO</span></h1>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-secondary" style="background:rgba(255,255,255,0.8);" onclick="openModal('emiModal')">🧮 Calculator</button>
-                <button class="btn-secondary" style="background:#fde8e8; color:#d32f2f; border-color:#d32f2f" onclick="logout()">Logout</button>
+            <h1><span class="brand">TRUE</span> INVEST <span style="font-size:11px; font-weight:800; opacity:0.6; padding-left:5px; vertical-align:top;">PRO</span></h1>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn">🌙</button>
+                <button class="btn-secondary" onclick="openModal('emiModal')" title="Calculator">🧮</button>
+                <button class="btn-secondary" style="background:rgba(255,59,48,0.1); color:#ff3b30; border-color:transparent;" onclick="logout()" title="Logout">⏻</button>
             </div>
         </header>
 
-        <div class="left-panel">
+        <!-- STATS GRID (Always visible on mobile above tabs) -->
+        <div style="grid-column: span 2; width:100%;" id="statsWrapper">
             <div class="stats-grid">
-                <div class="stat-card"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-                <div class="stat-card"><label>🔥 Hot Leads</label><span id="statHot" style="color:var(--hot-text)">0</span></div>
-                <div class="stat-card"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
+                <div class="stat-card active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
+                <div class="stat-card" id="filterHot" onclick="applyQuickFilter('Hot')"><label>🔥 Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
+                <div class="stat-card" id="filterToday" onclick="applyQuickFilter('Today')"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
             </div>
+            <div id="reminderAlert" class="notification-bar" style="margin-top:15px;"></div>
+        </div>
 
-            <div id="reminderAlert" class="notification-bar"></div>
-
+        <!-- LEFT PANEL: Add Form (Tab 1 on Mobile) -->
+        <div class="left-panel mobile-tab-content" id="tabAddForm">
             <form id="clientForm">
                 <input type="hidden" id="editId" value="">
                 
                 <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-                    
-                    <!-- NEW FOLLOW UP DATE + TIME FLEX ROW -->
                     <div>
                         <label>Follow-up Date & Time</label>
                         <div class="flex-row">
@@ -252,7 +290,7 @@
 
                 <label>Client Details</label>
                 <input type="text" id="name" placeholder="Full Name" required>
-                <input type="tel" id="phone" placeholder="Phone Number" required>
+                <input type="tel" id="phone" placeholder="10-Digit Phone" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 
                 <div class="form-grid">
                     <div>
@@ -297,7 +335,7 @@
 
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
-                    <label for="visitDone" style="margin:0; cursor:pointer; font-size:14px;">Site Visit Done</label>
+                    <label for="visitDone" style="margin:0; cursor:pointer; font-size:15px;">Site Visit Done</label>
                 </div>
 
                 <!-- SMART HISTORY TIMELINE -->
@@ -306,29 +344,28 @@
                 <label>Add Follow-up Remark</label>
                 <textarea id="newRemark" placeholder="Write new update (will be added to history timeline)..." rows="2" style="resize:vertical;"></textarea>
                 
-                <div class="check-item" style="border-color: var(--accent-blue); background: linear-gradient(90deg, #f0f7ff, #ffffff);">
+                <div class="check-item" style="border-color: var(--accent-blue);">
                     <input type="checkbox" id="syncCalendar" checked>
-                    <!-- UPDATED LABEL FOR APPLE CALENDAR -->
-                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:700;">📅 Sync to Apple / System Calendar</label>
+                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:800;">📅 Sync to Apple / System Calendar</label>
                 </div>
 
                 <button type="submit" id="saveBtn">Save Record</button>
-                <button type="button" class="btn-secondary" style="width:100%; margin-top:8px; height:44px; border-radius:980px;" onclick="resetForm()">Clear Form</button>
+                <button type="button" class="btn-secondary" style="width:100%; margin-top:10px; height:50px; border-radius:980px;" onclick="resetForm()">Clear Form</button>
             </form>
 
-            <div class="watermark">SYSTEM DESIGNED BY<br><span>ADITYA PACHAURI</span></div>
+            <div class="watermark">SYSTEM DESIGNED BY<br><span style="font-size:13px;">ADITYA PACHAURI</span></div>
         </div>
 
-        <div class="right-panel">
+        <!-- RIGHT PANEL: Data Views (Tab 2 on Mobile) -->
+        <div class="right-panel mobile-tab-content active" id="tabDataView">
             <div class="controls-row">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-                <button class="btn-secondary" style="background:#eab308; color:#fff; border:none;" onclick="document.getElementById('csvFileInput').click()">📥 Import CSV</button>
-                <button class="btn-secondary" style="background:#1e8e3e; color:white; border:none;" onclick="downloadCSV()">Export CSV</button>
-                <button class="btn-secondary" style="background:#111; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
+                <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
+                <button class="btn-secondary" onclick="downloadCSV()">📤 Export</button>
             </div>
 
-            <!-- DYNAMIC PROJECT FOLDERS / TABS (Plus button is now fixed!) -->
+            <!-- DYNAMIC PROJECT FOLDERS / TABS -->
             <div class="project-tabs" id="projectTabs">
                 <!-- Populated dynamically via JS -->
             </div>
@@ -346,26 +383,42 @@
             </div>
 
             <div class="kanban-container hidden" id="kanbanView">
-                <div class="kanban-col"><h3 style="border-color:#3b82f6;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
-                <div class="kanban-col"><h3 style="border-color:#eab308;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
-                <div class="kanban-col"><h3 style="border-color:#ef4444;">Hot 🔥</h3><div class="kanban-dropzone" data-status="Hot"></div></div>
-                <div class="kanban-col"><h3 style="border-color:#8b5cf6;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
-                <div class="kanban-col"><h3 style="border-color:#22c55e;">Closed 🎉</h3><div class="kanban-dropzone" data-status="Closed"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#0a84ff;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#ff9f0a;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#ff453a;">Hot 🔥</h3><div class="kanban-dropzone" data-status="Hot"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#bf5af2;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#32d74b;">Closed 🎉</h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- iOS BOTTOM NAVIGATION BAR (Mobile Only) -->
+<nav class="ios-bottom-nav" id="bottomNav">
+    <div class="tab-item" onclick="switchMobileTab('tabAddForm', this)">
+        <div class="icon">➕</div>
+        <span>Add Lead</span>
+    </div>
+    <div class="tab-item active" onclick="switchMobileTab('tabDataView', this); setViewMode('table');">
+        <div class="icon">📋</div>
+        <span>List View</span>
+    </div>
+    <div class="tab-item" onclick="switchMobileTab('tabDataView', this); setViewMode('kanban');">
+        <div class="icon">📊</div>
+        <span>Board View</span>
+    </div>
+</nav>
+
 <!-- EMI Modal -->
 <div id="emiModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('emiModal')">×</button>
-        <h2 style="margin-top:0; color:var(--accent-blue); font-size:20px; font-weight:800;">🧮 Property EMI Calculator</h2>
+        <h2 style="margin-top:0; color:var(--accent-blue); font-size:22px; font-weight:800;">🧮 EMI Calculator</h2>
         <label>Property Amount (₹)</label><input type="number" id="emiAmount" placeholder="e.g. 5000000" min="0">
         <label>Interest Rate (% p.a)</label><input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
         <label>Tenure (Years)</label><input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
         <button onclick="calculateEMI()" style="margin-bottom:15px; width:100%;">Calculate Breakdown</button>
-        <div id="emiResult" style="background:#f8f9fa; padding:15px; border-radius:12px; border:1px solid var(--border-color); display:none;"></div>
+        <div id="emiResult" style="background:var(--input-bg); padding:16px; border-radius:14px; border:1px solid var(--border-color); display:none;"></div>
     </div>
 </div>
 
@@ -373,8 +426,8 @@
 <div id="waModal" class="modal-overlay">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal('waModal')">×</button>
-        <h2 style="margin-top:0; color:var(--whatsapp-dark); font-size:20px; font-weight:800;">📱 Smart WA Messaging</h2>
-        <p style="font-size:14px; color:#555; margin-bottom:18px; font-weight:600; background:#f3f4f6; padding:10px; border-radius:8px;" id="waTargetName">Sending to: </p>
+        <h2 style="margin-top:0; color:var(--whatsapp-green); font-size:22px; font-weight:800;">📱 Smart WA</h2>
+        <p style="font-size:14px; color:var(--text-color); margin-bottom:18px; font-weight:600; background:var(--input-bg); padding:12px; border-radius:12px;" id="waTargetName">Sending to: </p>
         <input type="hidden" id="waTargetPhone">
         
         <label>Select Template</label>
@@ -389,15 +442,58 @@
 
         <div id="waEditArea" style="display:none; animation: fadeIn 0.3s ease;">
             <label>Customize Your Message</label>
-            <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; background:#fafffa; font-family:inherit;"></textarea>
-            <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:10px;">Send via WhatsApp 🚀</button>
+            <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; font-family:inherit;"></textarea>
+            <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:10px; box-shadow: 0 4px 15px rgba(37,211,102,0.3);">Send via WhatsApp 🚀</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- NOTIFICATION SYSTEM (Premium Toasts) ---
+    // --- DARK MODE THEME LOGIC ---
+    function initTheme() {
+        const savedTheme = localStorage.getItem('crm_theme') || 'light';
+        if(savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.getElementById('themeToggleBtn').innerText = '☀️';
+            document.getElementById('themeColorMeta').setAttribute('content', '#000000');
+        }
+    }
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-theme');
+        const isDark = body.classList.contains('dark-theme');
+        localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeToggleBtn').innerText = isDark ? '☀️' : '🌙';
+        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#000000' : '#f5f7fa');
+        showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
+    }
+    initTheme();
+
+    // --- MOBILE TAB SWITCHING LOGIC ---
+    function switchMobileTab(tabId, element) {
+        if(window.innerWidth > 992) return; // Only active on mobile
+        
+        document.querySelectorAll('.mobile-tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        document.querySelectorAll('.tab-item').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function setViewMode(mode) {
+        const t = document.getElementById('tableView'); 
+        const k = document.getElementById('kanbanView');
+        if(mode === 'table') { k.classList.add('hidden'); t.classList.remove('hidden'); currentViewMode = 'table'; }
+        if(mode === 'kanban') { t.classList.add('hidden'); k.classList.remove('hidden'); currentViewMode = 'kanban'; }
+    }
+    function toggleView() { // Fallback for Desktop button
+        if(currentViewMode === 'table') setViewMode('kanban'); else setViewMode('table');
+    }
+
+    // --- PREMIUM TOAST NOTIFICATION ---
     function showNotification(message, type = 'success') {
+        if('vibrate' in navigator) navigator.vibrate(type==='error'?[50,50,50]:50); // Haptic feedback
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         
@@ -409,15 +505,11 @@
         toast.innerHTML = `<span class="toast-icon">${icon}</span> <span>${message}</span>`;
         
         container.appendChild(toast);
-        
-        // Trigger animation
         setTimeout(() => toast.classList.add('show'), 10);
-        
-        // Auto remove
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 400); 
-        }, 3500);
+        }, 3000);
     }
 
     // --- FIREBASE SETUP ---
@@ -429,6 +521,7 @@
     let customProjects = [];
     let currentViewMode = 'table';
     let currentProjectFilter = 'All'; 
+    let currentQuickFilter = 'All'; // New Quick Filter State
     window.currentEditHistory = []; 
     
     const getToday = () => new Date().toISOString().split('T')[0];
@@ -438,6 +531,7 @@
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
             document.getElementById('crmView').classList.remove('hidden');
+            document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
             document.getElementById('leadDate').value = getToday();
             
             customProjects = JSON.parse(localStorage.getItem('crm_projects_' + user.uid)) || ['Builder Floor', 'Lock n key Homes'];
@@ -445,21 +539,33 @@
             
             loadData();
             initDragAndDrop();
-            showNotification('Successfully Logged In!', 'success');
         } else {
             document.getElementById('loginView').classList.remove('hidden');
             document.getElementById('crmView').classList.add('hidden');
+            document.getElementById('bottomNav').style.display = 'none';
+        }
+    });
+
+    // Handle Resize for Bottom Nav
+    window.addEventListener('resize', () => {
+        if(auth.currentUser) {
+            document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
+            if(window.innerWidth > 992) {
+                document.getElementById('tabAddForm').classList.add('active');
+                document.getElementById('tabDataView').classList.add('active');
+            } else {
+                // Ensure only one is active on resize down
+                if(document.getElementById('tabAddForm').classList.contains('active') && document.getElementById('tabDataView').classList.contains('active')) {
+                    document.getElementById('tabAddForm').classList.remove('active');
+                }
+            }
         }
     });
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
-            .catch(err => { 
-                document.getElementById('loginError').innerText = "Error: " + err.message; 
-                document.getElementById('loginError').style.display = 'block'; 
-                showNotification(err.message, 'error');
-            });
+            .catch(err => { showNotification(err.message, 'error'); });
     });
     function logout() { auth.signOut(); showNotification('Logged out successfully', 'warning');}
 
@@ -490,7 +596,7 @@
         select.innerHTML = '<option value="">Select Project</option>';
         
         const tabsContainer = document.getElementById('projectTabs');
-        tabsContainer.innerHTML = `<button class="tab-btn ${currentProjectFilter === 'All' ? 'active' : ''}" onclick="setProjectFilter('All', this)">All Projects</button>`;
+        tabsContainer.innerHTML = `<button class="tab-btn ${currentProjectFilter === 'All' ? 'active' : ''}" onclick="setProjectFilter('All', this)">All</button>`;
         
         customProjects.forEach(p => {
             select.innerHTML += `<option value="${p}">${p}</option>`;
@@ -501,7 +607,7 @@
             </div>`;
         });
         
-        tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site">+</button>`;
+        tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site">➕</button>`;
         select.value = currentVal;
     }
 
@@ -522,7 +628,7 @@
 
     function deleteProject(e, projectName) {
         e.stopPropagation();
-        if (confirm(`Are you sure you want to delete the "${projectName}" folder tab?\n\n(Don't worry, your existing leads won't be deleted. They will safely appear under "All Projects".)`)) {
+        if (confirm(`Are you sure you want to delete the "${projectName}" folder tab?\n\n(Your existing leads won't be deleted. They will safely appear under "All".)`)) {
             customProjects = customProjects.filter(p => p !== projectName);
             localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
             if (currentProjectFilter === projectName) { currentProjectFilter = 'All'; }
@@ -536,6 +642,18 @@
         currentProjectFilter = filterVal;
         document.querySelectorAll('#projectTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         if(btnElement) btnElement.classList.add('active');
+        renderData();
+    }
+
+    // --- QUICK FILTERS ---
+    function applyQuickFilter(type) {
+        currentQuickFilter = type;
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+        document.getElementById(`filter${type}`).classList.add('active-filter');
+        
+        if(window.innerWidth <= 992 && currentQuickFilter !== 'All') {
+            document.querySelectorAll('.tab-item')[1].click(); // Auto switch to List view on mobile
+        }
         renderData();
     }
 
@@ -557,36 +675,28 @@
         bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    // --- UPDATED APPLE SYSTEM CALENDAR SYNC (.ics Generator with Exact TIME) ---
+    // APPLE SYSTEM CALENDAR SYNC (.ics Generator with Exact TIME)
     function syncToSystemCalendar(name, dateStr, timeStr, phone, project, remark) {
         if(!dateStr) return;
         
         let startFormat, endFormat;
 
         if (timeStr) {
-            // Include Time
             const d = new Date(`${dateStr}T${timeStr}`);
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth()+1).padStart(2,'0');
-            const dd = String(d.getDate()).padStart(2,'0');
-            const hh = String(d.getHours()).padStart(2,'0');
+            const yyyy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0');
+            const dd = String(d.getDate()).padStart(2,'0'); const hh = String(d.getHours()).padStart(2,'0');
             const min = String(d.getMinutes()).padStart(2,'0');
             startFormat = `${yyyy}${mm}${dd}T${hh}${min}00`;
-            
-            // Default +1 Hour duration
             d.setHours(d.getHours() + 1);
-            const ehh = String(d.getHours()).padStart(2,'0');
-            const emin = String(d.getMinutes()).padStart(2,'0');
+            const ehh = String(d.getHours()).padStart(2,'0'); const emin = String(d.getMinutes()).padStart(2,'0');
             endFormat = `${yyyy}${mm}${dd}T${ehh}${emin}00`;
         } else {
-            // Full Day Event
             const d = new Date(dateStr);
             startFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
             d.setDate(d.getDate() + 1);
             endFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
         }
 
-        // Build ICS content
         const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//True Invest CRM//EN\n" +
                        "BEGIN:VEVENT\n" +
                        (timeStr ? `DTSTART:${startFormat}\nDTEND:${endFormat}\n` : `DTSTART;VALUE=DATE:${startFormat}\nDTEND;VALUE=DATE:${endFormat}\n`) +
@@ -594,7 +704,6 @@
                        "DESCRIPTION:Phone: " + phone + "\\nProject: " + (project || 'N/A') + "\\nRemark: " + (remark || 'None') + "\n" +
                        "END:VEVENT\nEND:VCALENDAR";
 
-        // Create Blob and trigger download (iOS Safari opens "Add to Calendar")
         const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -612,6 +721,8 @@
         const statusVal = document.getElementById('status').value;
         const newRemarkText = document.getElementById('newRemark').value.trim();
         const btn = document.getElementById('saveBtn'); btn.disabled = true;
+        const oldText = btn.innerText;
+        btn.innerText = "Saving...";
 
         let historyArray = window.currentEditHistory || [];
         
@@ -629,7 +740,7 @@
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "", 
-            followupTime: document.getElementById('followupTime').value || "", // New Time field
+            followupTime: document.getElementById('followupTime').value || "",
             name: document.getElementById('name').value.trim(),
             phone: document.getElementById('phone').value.trim(), leadSource: document.getElementById('leadSource').value,
             projectCategory: document.getElementById('projectCategory').value, specificUnit: document.getElementById('specificUnit').value.trim(),
@@ -651,19 +762,34 @@
             
             const doSync = document.getElementById('syncCalendar').checked;
             if (doSync && data.followup && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
-                // Execute Apple Calendar Sync with exact Time
                 syncToSystemCalendar(data.name, data.followup, data.followupTime, data.phone, data.projectCategory, data.remark);
             }
+            
             resetForm();
+            
+            // Auto switch back to list view on mobile after save
+            if(window.innerWidth <= 992) {
+                document.querySelectorAll('.tab-item')[1].click();
+            }
         } catch (err) { 
             showNotification("Error saving lead: " + err.message, 'error');
-        } finally { btn.disabled = false; }
+        } finally { 
+            btn.disabled = false; 
+            btn.innerText = oldText;
+        }
     });
 
-    function toggleView() {
-        const t = document.getElementById('tableView'); const k = document.getElementById('kanbanView');
-        if(currentViewMode === 'table') { t.classList.add('hidden'); k.classList.remove('hidden'); currentViewMode = 'kanban'; }
-        else { k.classList.add('hidden'); t.classList.remove('hidden'); currentViewMode = 'table'; }
+    function getFilteredData() {
+        let data = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
+        
+        // Apply Quick Filter
+        if(currentQuickFilter === 'Hot') {
+            data = data.filter(c => c.status === 'Hot');
+        } else if (currentQuickFilter === 'Today') {
+            const today = getToday();
+            data = data.filter(c => c.followup === today && c.status !== 'Closed');
+        }
+        return data;
     }
 
     function renderData() { renderTable(); renderKanban(); }
@@ -671,30 +797,29 @@
     function renderTable() {
         const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
         const today = getToday();
+        const exportData = getFilteredData();
         
-        const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
-        
-        filteredClients.forEach(c => {
+        exportData.forEach(c => {
             const cold = isColdLead(c.followup) && c.status !== 'Closed';
             const badge = cold ? 'status-cold' : (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
             const highlight = (c.followup === today && c.status !== 'Closed') ? 'row-highlight' : '';
             const coldClass = cold ? 'row-cold' : '';
             const displayStatus = cold ? '❄️ Cold' : c.status;
             
-            const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; color:#555;">${c.specificUnit}</span>` : '';
+            const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${c.specificUnit}</span>` : '';
             const timeDisp = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${c.followupTime}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
             table.innerHTML += `
                 <tr class="${highlight} ${coldClass}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
-                    <td style="opacity:0.4">${serial++}</td><td>${c.leadDate}</td>
+                    <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
                     <td style="font-weight:700">${c.name}</td><td>${c.phone}</td>
                     <td><span class="badge ${badge}">${displayStatus}</span></td>
-                    <td style="font-size:11px; color:#666;">${c.leadSource || '-'}</td>
-                    <td style="font-size:12px; font-weight:600;">${c.projectCategory || '-'}${unitDisp}</td>
-                    <td style="color:#03543f; font-weight:700">${c.budget || '-'}</td>
-                    <td style="font-weight:700; color:#333;">${c.followup || '-'}${timeDisp}</td>
-                    <td style="font-size:11px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
+                    <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
+                    <td style="font-size:12px; font-weight:700;">${c.projectCategory || '-'}${unitDisp}</td>
+                    <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
+                    <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisp}</td>
+                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
                     <td><div class="action-group">
                         <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">CALL</button>
                         <button class="btn-wa" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
@@ -707,25 +832,25 @@
 
     function renderKanban() {
         document.querySelectorAll('.kanban-dropzone').forEach(zone => zone.innerHTML = '');
-        const filteredClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
+        const exportData = getFilteredData();
 
-        filteredClients.forEach(c => {
+        exportData.forEach(c => {
             if(c.status === 'Not Interested') return; 
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
-                const cold = isColdLead(c.followup) ? '<span style="color:#2563eb;">❄️</span>' : '';
-                const timeDisp = c.followupTime ? `<span style="font-weight:700; color:var(--accent-blue);">| ⏱ ${c.followupTime}</span>` : '';
+                const cold = isColdLead(c.followup) ? '<span style="color:#0a84ff;">❄️</span>' : '';
+                const timeDisp = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${c.followupTime}</span>` : '';
 
                 zone.innerHTML += `
-                    <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
+                    <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">${c.name} ${cold}</div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:600;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
+                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
                         <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisp}</div>
                         <div class="k-actions">
-                            <button style="background:#eff6ff; color:#1877f2; border:1px solid #1877f2;" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
-                            <button style="background:#f0fdf4; color:#128c7e; border:1px solid #128c7e;" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                            <button style="background:#fef2f2; color:#dc2626; border:1px solid #dc2626;" onclick="event.stopPropagation(); deleteLead('${c.id}')">Del</button>
+                            <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
+                            <button class="btn-wa" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
+                            <button class="btn-delete" onclick="event.stopPropagation(); deleteLead('${c.id}')">Del</button>
                         </div>
                     </div>
                 `;
@@ -760,7 +885,12 @@
             tLine.style.display = 'none'; tLine.innerHTML = '';
         }
 
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        // Switch to Add Tab on mobile automatically
+        if(window.innerWidth <= 992) {
+            document.querySelectorAll('.tab-item')[0].click();
+        } else {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
     }
 
     async function deleteLead(id) {
@@ -796,10 +926,10 @@
             const phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile'));
             
             if(nameIdx === -1 || phoneIdx === -1) { 
-                showNotification('Error: CSV file must contain at least "Name" and "Phone" columns.', 'error'); 
+                showNotification('Error: CSV file must contain "Name" and "Phone".', 'error'); 
                 e.target.value = ''; return; 
             }
-            if(!confirm(`Found ${rows.length - 1} leads. Do you want to import them directly to Firebase?`)) return;
+            if(!confirm(`Found ${rows.length - 1} leads. Import directly to Firebase?`)) return;
 
             showNotification('Importing leads, please wait...', 'warning');
 
@@ -807,7 +937,7 @@
             for(let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(',');
                 const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : '';
-                let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim() : '';
+                let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim().replace(/[^0-9]/g, '') : '';
                 if(!name || !phone) continue;
                 
                 const srcIdx = headers.findIndex(h => h.includes('source'));
@@ -816,8 +946,8 @@
                 await db.collection("leads").add({
                     ownerId: auth.currentUser.uid, leadDate: getToday(),
                     name: name, phone: phone, leadSource: fileSource, status: 'New', 
-                    history: [{date: getToday(), time: getTime(), note: 'Automatically imported via CSV file'}],
-                    remark: 'Automatically imported via CSV file'
+                    history: [{date: getToday(), time: getTime(), note: 'Imported via CSV'}],
+                    remark: 'Imported via CSV'
                 });
                 importCount++;
             }
@@ -846,7 +976,7 @@
                 const newStatus = zone.dataset.status;
                 if(draggedCardId) {
                     db.collection("leads").doc(draggedCardId).update({ status: newStatus });
-                    showNotification(`Lead status changed to ${newStatus}`, 'success');
+                    showNotification(`Lead moved to ${newStatus}`, 'success');
                     if(newStatus === 'Closed') fireConfetti();
                 }
             });
@@ -885,19 +1015,19 @@
     function calculateEMI() {
         const pStr = document.getElementById('emiAmount').value; const rStr = document.getElementById('emiRate').value; const nStr = document.getElementById('emiYears').value;
         const resDiv = document.getElementById('emiResult');
-        if (!pStr || !rStr || !nStr) { resDiv.style.display = 'block'; resDiv.innerHTML = `<span style="color:var(--notify-red); font-size:14px; font-weight:600;">⚠️ Fill all fields.</span>`; return; }
+        if (!pStr || !rStr || !nStr) { resDiv.style.display = 'block'; resDiv.innerHTML = `<span style="color:var(--notify-red); font-size:14px; font-weight:700;">⚠️ Fill all fields.</span>`; return; }
         const p = parseFloat(pStr); const r = (parseFloat(rStr) / 12) / 100; const n = parseFloat(nStr) * 12;
         const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
         resDiv.style.display = 'block';
-        resDiv.innerHTML = `<div style="font-size:24px; font-weight:800; color:var(--accent-blue); margin-bottom:8px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:12px; color:#666;">/mo</span></div>
-            <div style="font-size:14px; color:#444; line-height:1.6; border-top:1px solid #d1d5db; padding-top:10px;">
-                <div style="display:flex; justify-content:space-between;"><span>Principal:</span> <b>₹ ${Math.round(p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:16px; color:#000;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
+        resDiv.innerHTML = `<div style="font-size:26px; font-weight:800; color:var(--accent-blue); margin-bottom:8px; letter-spacing:-0.5px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:13px; color:#888;">/mo</span></div>
+            <div style="font-size:14px; color:var(--text-color); line-height:1.8; border-top:1px solid var(--border-color); padding-top:12px;">
+                <div style="display:flex; justify-content:space-between; opacity:0.8;"><span>Principal:</span> <b>₹ ${Math.round(p).toLocaleString('en-IN')}</b></div>
+                <div style="display:flex; justify-content:space-between; opacity:0.8;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:16px; font-weight:700;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
             </div>`;
     }
 
-    function fireConfetti() { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#128c7e', '#ffeb3b'] }); }
+    function fireConfetti() { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#34c759', '#ffcc00'] }); }
 
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
@@ -907,8 +1037,8 @@
     function downloadCSV() {
         if(clients.length === 0) { showNotification("No data to export!", 'error'); return; }
         const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
-        const exportClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
-        const rows = exportClients.map(c => [
+        const exportData = getFilteredData();
+        const rows = exportData.map(c => [
             c.leadDate, `"${c.name}"`, c.phone, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
             `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', c.followupTime || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
         ]);
@@ -926,7 +1056,7 @@
                 name: "True Invest CRM Pro",
                 short_name: "TrueInvest",
                 display: "standalone",
-                background_color: "#f5f7fa",
+                background_color: "#000000",
                 theme_color: "#0071e3",
                 start_url: ".",
                 icons: [{"src": "https://cdn-icons-png.flaticon.com/512/2950/2950715.png", "sizes": "512x512", "type": "image/png"}]
@@ -937,20 +1067,6 @@
             manifestLink.rel = 'manifest';
             manifestLink.href = manifestUrl;
             document.head.appendChild(manifestLink);
-
-            if ('serviceWorker' in navigator) {
-                const swCode = `
-                    self.addEventListener('install', e => self.skipWaiting());
-                    self.addEventListener('activate', e => self.clients.claim());
-                    self.addEventListener('fetch', e => {
-                        if (e.request.url.includes('firestore') || e.request.url.includes('identitytoolkit')) return;
-                        e.respondWith(fetch(e.request).catch(() => new Response('Offline - Please reconnect to use the CRM.')));
-                    });
-                `;
-                const swBlob = new Blob([swCode], {type: 'application/javascript'});
-                const swUrl = URL.createObjectURL(swBlob);
-                navigator.serviceWorker.register(swUrl).then(() => console.log("Single-File PWA Active")).catch(e => console.log("PWA Skip: ", e));
-            }
         } catch(e) { console.log("PWA init handled: ", e); }
     })();
 
