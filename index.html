@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- STRICT MOBILE VIEWPORT + iPhone Safe Area Support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v2.5</title>
+    <title>TRUE INVEST CRM - Apple Premium v2.6 (IST Locked)</title>
     
     <meta name="theme-color" content="#f5f7fa" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -262,7 +262,7 @@
             </div>
         </header>
 
-        <!-- STATS GRID (Always visible on mobile above tabs) -->
+        <!-- STATS GRID -->
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
             <div class="stats-grid">
                 <div class="stat-card active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -272,7 +272,7 @@
             <div id="reminderAlert" class="notification-bar" style="margin-top:15px;"></div>
         </div>
 
-        <!-- LEFT PANEL: Add Form (Tab 1 on Mobile) -->
+        <!-- LEFT PANEL: Add Form -->
         <div class="left-panel mobile-tab-content" id="tabAddForm">
             <form id="clientForm">
                 <input type="hidden" id="editId" value="">
@@ -356,7 +356,7 @@
             <div class="watermark">SYSTEM DESIGNED BY<br><span style="font-size:13px;">ADITYA PACHAURI</span></div>
         </div>
 
-        <!-- RIGHT PANEL: Data Views (Tab 2 on Mobile) -->
+        <!-- RIGHT PANEL: Data Views -->
         <div class="right-panel mobile-tab-content active" id="tabDataView">
             <div class="controls-row">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
@@ -521,8 +521,18 @@
     let currentQuickFilter = 'All'; 
     window.currentEditHistory = []; 
     
-    const getToday = () => new Date().toISOString().split('T')[0];
-    const getTime = () => new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    // --- FORCED INDIAN STANDARD TIME (IST) ENGINE ---
+    const getToday = () => {
+        const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const getTime = () => {
+        return new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute:'2-digit', hour12: true });
+    };
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -615,7 +625,7 @@
                 customProjects.push(cleanProj);
                 localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
                 renderProjectTabsAndDropdown();
-                document.getElementById('projectCategory').value = cleanProj; // Auto-Select new project in dropdown
+                document.getElementById('projectCategory').value = cleanProj; 
                 showNotification(`Project '${cleanProj}' Added!`, 'success');
             } else {
                 showNotification("This project site already exists!", 'warning');
@@ -635,20 +645,13 @@
         }
     }
 
-    // ==========================================
-    // BUG FIX: PERFECT TAB FILTERING LOGIC
-    // ==========================================
     function setProjectFilter(filterVal, btnElement) {
         currentProjectFilter = filterVal;
         
-        // Visual Active State for Project Tabs
         document.querySelectorAll('#projectTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         if(btnElement) btnElement.classList.add('active');
         
-        // Fix 1: Clear the search box to prevent hidden filtered results
         document.getElementById('search').value = '';
-        
-        // Fix 2: Reset the Quick Filters to "Total Leads" so all leads for this property show up
         currentQuickFilter = 'All';
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
         document.getElementById('filterAll').classList.add('active-filter');
@@ -656,7 +659,6 @@
         renderData();
     }
 
-    // --- QUICK FILTERS ---
     function applyQuickFilter(type) {
         currentQuickFilter = type;
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
@@ -666,14 +668,13 @@
             document.querySelectorAll('.tab-item')[1].click(); 
         }
         
-        // Fix 3: Also clear search box when clicking quick filter
         document.getElementById('search').value = '';
         renderData();
     }
 
     function isColdLead(followDate) {
         if(!followDate) return false;
-        const diff = Math.ceil((new Date() - new Date(followDate)) / (1000 * 60 * 60 * 24));
+        const diff = Math.ceil((new Date(getToday()) - new Date(followDate)) / (1000 * 60 * 60 * 24));
         return diff > 15;
     }
 
@@ -689,21 +690,29 @@
         bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    // APPLE SYSTEM CALENDAR SYNC (.ics Generator with Exact TIME)
+    // STRICT APPLE CALENDAR SYNC (Asia/Kolkata LOCKED)
     function syncToSystemCalendar(name, dateStr, timeStr, phone, project, remark) {
         if(!dateStr) return;
         
         let startFormat, endFormat;
 
         if (timeStr) {
-            const d = new Date(`${dateStr}T${timeStr}`);
-            const yyyy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0');
-            const dd = String(d.getDate()).padStart(2,'0'); const hh = String(d.getHours()).padStart(2,'0');
-            const min = String(d.getMinutes()).padStart(2,'0');
-            startFormat = `${yyyy}${mm}${dd}T${hh}${min}00`;
+            // Manual parsing to guarantee no browser timezone interference
+            const [hours, minutes] = timeStr.split(':');
+            const [year, month, day] = dateStr.split('-');
+            
+            startFormat = `${year}${month}${day}T${hours}${minutes}00`;
+            
+            // +1 Hour duration math
+            let d = new Date(year, month - 1, day, hours, minutes);
             d.setHours(d.getHours() + 1);
-            const ehh = String(d.getHours()).padStart(2,'0'); const emin = String(d.getMinutes()).padStart(2,'0');
-            endFormat = `${yyyy}${mm}${dd}T${ehh}${emin}00`;
+            
+            const eyyyy = d.getFullYear();
+            const emm = String(d.getMonth() + 1).padStart(2, '0');
+            const edd = String(d.getDate()).padStart(2, '0');
+            const ehh = String(d.getHours()).padStart(2, '0');
+            const emin = String(d.getMinutes()).padStart(2, '0');
+            endFormat = `${eyyyy}${emm}${edd}T${ehh}${emin}00`;
         } else {
             const d = new Date(dateStr);
             startFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
@@ -711,9 +720,10 @@
             endFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
         }
 
+        // Apple handles TZID natively perfectly
         const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//True Invest CRM//EN\n" +
                        "BEGIN:VEVENT\n" +
-                       (timeStr ? `DTSTART:${startFormat}\nDTEND:${endFormat}\n` : `DTSTART;VALUE=DATE:${startFormat}\nDTEND;VALUE=DATE:${endFormat}\n`) +
+                       (timeStr ? `DTSTART;TZID=Asia/Kolkata:${startFormat}\nDTEND;TZID=Asia/Kolkata:${endFormat}\n` : `DTSTART;VALUE=DATE:${startFormat}\nDTEND;VALUE=DATE:${endFormat}\n`) +
                        "SUMMARY:Follow-up: " + name + "\n" +
                        "DESCRIPTION:Phone: " + phone + "\\nProject: " + (project || 'N/A') + "\\nRemark: " + (remark || 'None') + "\n" +
                        "END:VEVENT\nEND:VCALENDAR";
@@ -793,10 +803,8 @@
     });
 
     function getFilteredData() {
-        // Core Project Filtering
         let data = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
         
-        // Overlay Quick Filters
         if(currentQuickFilter === 'Hot') {
             data = data.filter(c => c.status === 'Hot');
         } else if (currentQuickFilter === 'Today') {
@@ -821,7 +829,9 @@
             const displayStatus = cold ? '❄️ Cold' : c.status;
             
             const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${c.specificUnit}</span>` : '';
-            const timeDisp = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${c.followupTime}</span>` : '';
+            // Use IST formatted time for display directly
+            let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+            
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
             table.innerHTML += `
@@ -832,7 +842,7 @@
                     <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
                     <td style="font-size:12px; font-weight:700;">${c.projectCategory || '-'}${unitDisp}</td>
                     <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
-                    <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisp}</td>
+                    <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisplayFormatted}</td>
                     <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
                     <td><div class="action-group">
                         <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">CALL</button>
@@ -843,7 +853,6 @@
             `;
         });
 
-        // Search Filter logic inside Table Rendering
         const searchInput = document.getElementById('search');
         if(searchInput.value) {
             const val = searchInput.value.toLowerCase();
@@ -860,14 +869,14 @@
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
                 const cold = isColdLead(c.followup) ? '<span style="color:#0a84ff;">❄️</span>' : '';
-                const timeDisp = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${c.followupTime}</span>` : '';
+                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
 
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">${c.name} ${cold}</div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
-                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisp}</div>
+                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisplayFormatted}</div>
                         <div class="k-actions">
                             <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
                             <button class="btn-wa" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
@@ -1049,7 +1058,6 @@
 
     function fireConfetti() { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#34c759', '#ffcc00'] }); }
 
-    // Fix 4: Live search clearing on visual tab change
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
