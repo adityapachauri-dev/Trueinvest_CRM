@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- STRICT MOBILE VIEWPORT: Prevents iOS auto-zoom on inputs and ensures app-like scaling -->
+    <!-- STRICT MOBILE VIEWPORT: Prevents iOS auto-zoom, forces exact layout -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRUE INVEST CRM - Apple Edition v2.2</title>
+    <title>TRUE INVEST CRM - Apple Premium v2.3</title>
     
     <meta name="theme-color" content="#0071e3">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,14 +15,14 @@
 
     <style>
         :root {
-            --bg-color: #f4f6f9; --card-bg: #ffffff; --text-color: #111111; --border-color: #d1d5db; 
-            --accent-blue: #0071e3; 
+            --bg-color: #f4f6f9; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #111111; --border-color: #d1d5db; 
+            --accent-blue: #0071e3; --accent-glow: rgba(0, 113, 227, 0.3);
             --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
             --highlight-today: #fff9c4; --hot-bg: #fde8e8; --hot-text: #9b1c1c; 
             --closed-bg: #def7ec; --closed-text: #03543f; --cold-bg: #e5e7eb; --cold-text: #4b5563;
         }
         
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; }
         * { box-sizing: border-box; }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
@@ -32,89 +32,91 @@
 
         .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; max-width: 1750px; margin: 0 auto; padding: 20px; width: 100%; }
 
-        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); position: sticky; top: 10px; z-index: 100; animation: fadeInDown 0.5s ease-out forwards; }
+        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); position: sticky; top: 10px; z-index: 100; animation: fadeInDown 0.5s ease-out forwards; }
         h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1 span.brand { color: var(--accent-blue); }
 
-        .left-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .left-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 15px; min-width: 0; width: 100%; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .stat-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); transition: transform 0.3s, box-shadow 0.3s; animation: popIn 0.5s both; }
         .stat-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
-        .stat-card label { display: block; font-size: 10px; font-weight: 800; color: #666; margin-bottom: 3px; text-transform: uppercase; }
+        .stat-card label { display: block; font-size: 10px; font-weight: 800; color: #666; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-card span { font-size: 24px; font-weight: 900; }
 
-        .notification-bar { background: var(--notify-red); color: white; padding: 12px; text-align: center; border-radius: 8px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; }
+        .notification-bar { background: linear-gradient(90deg, #d32f2f, #ef4444); color: white; padding: 12px; text-align: center; border-radius: 12px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); }
 
-        form, .table-container, .kanban-container, .login-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; }
+        form, .table-container, .kanban-container, .login-card { background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; }
         .login-card { max-width: 400px; margin: 150px auto; text-align: center; animation: popIn 0.6s both; }
 
         label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 6px; color: #444; text-transform: uppercase; }
         
-        /* 16px font-size is MANDATORY to stop iOS Safari from zooming in on input focus */
+        /* 16px font-size prevents iOS Safari zoom */
         input, textarea, button, select { padding: 12px 14px; margin: 0 0 16px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 12px; background: #fbfbfd; color: var(--text-color); font-size: 16px; box-sizing: border-box; transition: all 0.3s ease; }
-        input[type="date"], select { height: 48px; }
-        input:focus, select:focus, textarea:focus { background: #ffffff; border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15); transform: scale(1.01); }
+        input[type="date"], input[type="time"], select { height: 48px; }
+        input:focus, select:focus, textarea:focus { background: #ffffff; border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: scale(1.01); }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .flex-row { display: flex; gap: 8px; width: 100%; }
+        .flex-row input { margin-bottom: 0; }
 
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; display: inline-block; border: 1px solid transparent; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; display: inline-block; border: 1px solid transparent; }
         .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: #f8b4b4; }
         .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: #8ce99a; }
         .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: #9ca3af; }
         .status-default { background: #e5e7eb; color: var(--text-color); border-color: var(--border-color); }
 
         .check-item { display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px; height: 48px; }
-        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0; cursor: pointer; border-radius: 6px;}
 
-        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 600; height: 48px; border-radius: 980px; font-size: 15px; letter-spacing: 0.3px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25); }
+        button { cursor: pointer; background: var(--accent-blue); color: #fff; border: none; font-weight: 600; height: 48px; border-radius: 980px; font-size: 15px; letter-spacing: 0.3px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px var(--accent-glow); }
+        button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px var(--accent-glow); }
         button:active { transform: scale(0.97); }
-        .btn-secondary { background: transparent; color: var(--text-color); height: 40px; font-size: 14px; border: 1px solid var(--border-color); }
+        .btn-secondary { background: transparent; color: var(--text-color); height: 40px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none;}
         .btn-secondary:hover { background: #f3f4f6; }
         
         .action-group { display: flex; gap: 6px; justify-content: center; }
-        .action-group button { height: 34px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; background: #fff; border: 1px solid var(--border-color); color: #333; display: flex; align-items: center; justify-content: center;}
-        .btn-wa { color: var(--whatsapp-dark) !important; border-color: var(--whatsapp-dark) !important; }
-        .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; }
-        .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; }
+        .action-group button { height: 34px; font-size: 11px; padding: 0 10px; flex: 1; margin: 0; border-radius: 8px; background: #fff; border: 1px solid var(--border-color); color: #333; display: flex; align-items: center; justify-content: center; box-shadow: none;}
+        .btn-wa { color: var(--whatsapp-dark) !important; border-color: var(--whatsapp-dark) !important; background: #f0fdf4 !important; }
+        .btn-call { color: #1877f2 !important; border-color: #1877f2 !important; background: #eff6ff !important;}
+        .btn-delete { color: #dc2626 !important; border-color: #dc2626 !important; background: #fef2f2 !important;}
 
-        .controls-row { display: flex; gap: 10px; align-items: center; background: rgba(255, 255, 255, 0.85); padding: 15px; border-radius: 16px; border: 1px solid var(--border-color); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 44px; border-radius: 12px; padding-left: 15px; font-weight: 600; font-size: 15px;}
+        .controls-row { display: flex; gap: 10px; align-items: center; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 44px; border-radius: 12px; padding-left: 15px; font-weight: 600; font-size: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
         .controls-row button { height: 44px; margin: 0; padding: 0 15px; width: auto; }
 
-        .project-tabs { display: flex; flex-wrap: wrap; gap: 8px; background: rgba(255, 255, 255, 0.85); padding: 8px; border-radius: 16px; border: 1px solid var(--border-color); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); }
+        .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; background: var(--card-bg); padding: 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; backdrop-filter: blur(10px); align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: transparent; color: #555; border: none; height: 36px; font-size: 14px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 10px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
-        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-color: #e5e5ea; }
+        .tab-btn { background: transparent; color: #555; border: none; height: 38px; font-size: 14px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 12px; transition: all 0.2s; box-shadow: none; border: 1px solid transparent; }
+        .tab-btn.active { background: #fff; color: var(--accent-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #e5e5ea; font-weight: 700;}
         .tab-btn:hover:not(.active) { background: #f3f4f6; }
         
-        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 14px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); font-weight: bold; transition: transform 0.1s;}
         .tab-delete-btn:hover { transform: scale(1.1); background: #dc2626; }
         .tab-wrapper:hover .tab-delete-btn { display: block; }
         
-        .tab-add-btn { background: transparent; color: var(--accent-blue); border: 2px dashed var(--accent-blue); height: 36px; width: 36px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0;}
-        .tab-add-btn:hover { background: #f0f7ff; border-style: solid; }
+        .tab-add-btn { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; height: 38px; width: 38px; padding: 0; font-size: 22px; font-weight: 700; border-radius: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: 0 4px 10px rgba(0,113,227,0.3);}
+        .tab-add-btn:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,113,227,0.4); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 16px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 850px; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #f0f0f2; text-align: center; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #f0f0f2; text-align: center; vertical-align: middle;}
         th { background: #f8f9fa; font-weight: 700; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5;}
         tbody tr { cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; border-radius: 8px; } 
         tbody tr:hover { transform: scale(1.01); box-shadow: 0 4px 15px rgba(0,0,0,0.04); background-color: #fff; z-index: 2; position: relative; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
 
-        .kanban-container { display: flex; gap: 15px; overflow-x: auto; padding: 20px; background: #f9fafb; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 16px;}
-        .kanban-col { flex: 1; min-width: 280px; background: #f3f4f6; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .kanban-container { display: flex; gap: 15px; overflow-x: auto; padding: 20px; background: rgba(249, 250, 251, 0.5); min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 16px; border: 1px solid rgba(255,255,255,0.6);}
+        .kanban-col { flex: 1; min-width: 280px; background: #f3f4f6; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
         .kanban-col h3 { font-size: 13px; text-transform: uppercase; color: #444; margin: 0 0 10px 0; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; }
-        .k-card { background: #fff; padding: 14px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.04); cursor: grab; transition: transform 0.2s; }
+        .k-card { background: #fff; padding: 14px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.04); cursor: grab; transition: transform 0.2s; }
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
         .k-card-title { font-weight: 800; font-size: 14px; color: var(--accent-blue); margin-bottom: 6px; }
-        .k-card-detail { font-size: 12px; color: #555; margin-bottom: 4px; }
+        .k-card-detail { font-size: 12px; color: #555; margin-bottom: 4px; display:flex; align-items:center; gap:4px;}
         .k-actions { display: flex; gap: 6px; margin-top: 12px; }
-        .k-actions button { height: 32px; font-size: 11px; padding: 0 6px; flex: 1; border-radius: 6px; margin: 0; }
+        .k-actions button { height: 32px; font-size: 11px; padding: 0 6px; flex: 1; border-radius: 8px; margin: 0; box-shadow:none;}
         
         .kanban-dropzone { min-height: 100px; flex-grow: 1; }
         .drag-over { background: #e5e7eb; border: 2px dashed #9ca3af; border-radius: 10px; }
@@ -126,9 +128,9 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 25px; border-radius: 24px; width: 92%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 24px 48px rgba(0,0,0,0.15); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 25px; border-radius: 24px; width: 92%; max-width: 450px; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 24px 48px rgba(0,0,0,0.2); border: 1px solid rgba(255, 255, 255, 0.5); }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-close { float: right; background: #f3f4f6; border: none; font-size: 20px; color: #555; cursor: pointer; height: 36px; width: 36px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center;}
+        .modal-close { float: right; background: #f3f4f6; border: none; font-size: 20px; color: #555; cursor: pointer; height: 36px; width: 36px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none;}
         .modal-close:hover { background: #e5e7eb; color: #000; }
 
         .hidden { display: none !important; }
@@ -147,7 +149,7 @@
            APPLE / MOBILE OPTIMIZED LAYOUT (100% RESPONSIVE)
            ==================================================== */
         @media (max-width: 992px) {
-            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 16px; }
+            .workspace-layout { display: flex; flex-direction: column; padding: 12px; gap: 16px; overflow-x: hidden; width: 100vw; }
             
             header { flex-direction: column; text-align: center; gap: 14px; padding: 18px; top: 0; border-radius: 16px;}
             header h1 { font-size: 1.6rem; }
@@ -155,7 +157,7 @@
             header button { flex: 1; margin: 0; }
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .stat-card { padding: 14px 6px; border-radius: 14px; }
+            .stat-card { padding: 14px 6px; border-radius: 14px; background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); }
             .stat-card span { font-size: 20px; }
 
             /* Fix Form Inputs Squishing on small screens */
@@ -167,13 +169,14 @@
             .search-box { flex: 1 1 100%; margin: 0 !important; width: 100%; height: 48px; font-size: 16px;}
             .controls-row button { flex: 1 1 calc(33.33% - 10px); padding: 0 6px; margin: 0 !important; font-size: 12px; white-space: nowrap; height: 44px;}
 
-            /* Project Tabs - Smooth Horizontal Scroll */
-            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 10px 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            /* Project Tabs - Smooth Horizontal Scroll AND Always Visible + Button */
+            .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 12px 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); box-shadow: inset -10px 0 10px -10px rgba(0,0,0,0.1);}
             .project-tabs::-webkit-scrollbar { display: none; }
-            .tab-wrapper, .tab-btn, .tab-add-btn { flex-shrink: 0; }
+            .tab-wrapper, .tab-btn { flex-shrink: 0; }
+            .tab-add-btn { flex-shrink: 0; margin-left: 5px; } /* Ensures + is never crushed */
 
             /* Table Container for Touch */
-            .table-container { padding: 0 10px; }
+            .table-container { padding: 0; width: 100%; overflow-x: auto;}
             table { min-width: 800px; } 
             th, td { padding: 12px 10px; }
 
@@ -215,18 +218,18 @@
     <div class="workspace-layout">
         
         <header>
-            <h1><span class="brand">TRUE</span> INVEST <span style="font-size:11px; font-weight:normal; opacity:0.5; padding-left:10px;"></span></h1>
+            <h1><span class="brand">TRUE</span> INVEST <span style="font-size:11px; font-weight:normal; opacity:0.5; padding-left:10px;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
-                <button class="btn-secondary" style="background:#f3f4f6;" onclick="openModal('emiModal')">🧮 Calculator</button>
+                <button class="btn-secondary" style="background:rgba(255,255,255,0.8);" onclick="openModal('emiModal')">🧮 Calculator</button>
                 <button class="btn-secondary" style="background:#fde8e8; color:#d32f2f; border-color:#d32f2f" onclick="logout()">Logout</button>
             </div>
         </header>
 
         <div class="left-panel">
             <div class="stats-grid">
-                <div class="stat-card"><label>Total</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-                <div class="stat-card"><label>🔥 Hot</label><span id="statHot" style="color:var(--hot-text)">0</span></div>
-                <div class="stat-card"><label>⏰ Today</label><span id="statFollow">0</span></div>
+                <div class="stat-card"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
+                <div class="stat-card"><label>🔥 Hot Leads</label><span id="statHot" style="color:var(--hot-text)">0</span></div>
+                <div class="stat-card"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
             </div>
 
             <div id="reminderAlert" class="notification-bar"></div>
@@ -236,7 +239,15 @@
                 
                 <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
-                    <div><label>Follow-up / Visit Date</label><input type="date" id="followup"></div>
+                    
+                    <!-- NEW FOLLOW UP DATE + TIME FLEX ROW -->
+                    <div>
+                        <label>Follow-up Date & Time</label>
+                        <div class="flex-row">
+                            <input type="date" id="followup" style="flex:1;">
+                            <input type="time" id="followupTime" style="width:120px;" title="Follow-up Time">
+                        </div>
+                    </div>
                 </div>
 
                 <label>Client Details</label>
@@ -286,7 +297,7 @@
 
                 <div class="check-item">
                     <input type="checkbox" id="visitDone">
-                    <label for="visitDone" style="margin:0; cursor:pointer;">Site Visit Done</label>
+                    <label for="visitDone" style="margin:0; cursor:pointer; font-size:14px;">Site Visit Done</label>
                 </div>
 
                 <!-- SMART HISTORY TIMELINE -->
@@ -295,10 +306,10 @@
                 <label>Add Follow-up Remark</label>
                 <textarea id="newRemark" placeholder="Write new update (will be added to history timeline)..." rows="2" style="resize:vertical;"></textarea>
                 
-                <div class="check-item" style="border-color: var(--accent-blue); background: #f0f7ff;">
+                <div class="check-item" style="border-color: var(--accent-blue); background: linear-gradient(90deg, #f0f7ff, #ffffff);">
                     <input type="checkbox" id="syncCalendar" checked>
                     <!-- UPDATED LABEL FOR APPLE CALENDAR -->
-                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue);">📅 Sync to Apple / System Calendar</label>
+                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:700;">📅 Sync to Apple / System Calendar</label>
                 </div>
 
                 <button type="submit" id="saveBtn">Save Record</button>
@@ -314,10 +325,10 @@
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 <button class="btn-secondary" style="background:#eab308; color:#fff; border:none;" onclick="document.getElementById('csvFileInput').click()">📥 Import CSV</button>
                 <button class="btn-secondary" style="background:#1e8e3e; color:white; border:none;" onclick="downloadCSV()">Export CSV</button>
-                <button class="btn-secondary" style="background:#000; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
+                <button class="btn-secondary" style="background:#111; color:white; border:none;" onclick="toggleView()">Board View 📊</button>
             </div>
 
-            <!-- DYNAMIC PROJECT FOLDERS / TABS -->
+            <!-- DYNAMIC PROJECT FOLDERS / TABS (Plus button is now fixed!) -->
             <div class="project-tabs" id="projectTabs">
                 <!-- Populated dynamically via JS -->
             </div>
@@ -379,7 +390,7 @@
         <div id="waEditArea" style="display:none; animation: fadeIn 0.3s ease;">
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; background:#fafffa; font-family:inherit;"></textarea>
-            <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%;">Send via WhatsApp 🚀</button>
+            <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:10px;">Send via WhatsApp 🚀</button>
         </div>
     </div>
 </div>
@@ -546,26 +557,44 @@
         bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    // --- NEW APPLE SYSTEM CALENDAR SYNC (.ics Generator) ---
-    function syncToSystemCalendar(name, dateStr, phone, project, remark) {
+    // --- UPDATED APPLE SYSTEM CALENDAR SYNC (.ics Generator with Exact TIME) ---
+    function syncToSystemCalendar(name, dateStr, timeStr, phone, project, remark) {
         if(!dateStr) return;
         
-        // Setup dates for ICS format
-        const d = new Date(dateStr);
-        const start = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
-        d.setDate(d.getDate() + 1); // Full day event end date
-        const end = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
+        let startFormat, endFormat;
+
+        if (timeStr) {
+            // Include Time
+            const d = new Date(`${dateStr}T${timeStr}`);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth()+1).padStart(2,'0');
+            const dd = String(d.getDate()).padStart(2,'0');
+            const hh = String(d.getHours()).padStart(2,'0');
+            const min = String(d.getMinutes()).padStart(2,'0');
+            startFormat = `${yyyy}${mm}${dd}T${hh}${min}00`;
+            
+            // Default +1 Hour duration
+            d.setHours(d.getHours() + 1);
+            const ehh = String(d.getHours()).padStart(2,'0');
+            const emin = String(d.getMinutes()).padStart(2,'0');
+            endFormat = `${yyyy}${mm}${dd}T${ehh}${emin}00`;
+        } else {
+            // Full Day Event
+            const d = new Date(dateStr);
+            startFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
+            d.setDate(d.getDate() + 1);
+            endFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
+        }
 
         // Build ICS content
         const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//True Invest CRM//EN\n" +
                        "BEGIN:VEVENT\n" +
-                       "DTSTART;VALUE=DATE:" + start + "\n" +
-                       "DTEND;VALUE=DATE:" + end + "\n" +
+                       (timeStr ? `DTSTART:${startFormat}\nDTEND:${endFormat}\n` : `DTSTART;VALUE=DATE:${startFormat}\nDTEND;VALUE=DATE:${endFormat}\n`) +
                        "SUMMARY:Follow-up: " + name + "\n" +
                        "DESCRIPTION:Phone: " + phone + "\\nProject: " + (project || 'N/A') + "\\nRemark: " + (remark || 'None') + "\n" +
                        "END:VEVENT\nEND:VCALENDAR";
 
-        // Create Blob and trigger download (iOS Safari intercepts this to "Add to Calendar")
+        // Create Blob and trigger download (iOS Safari opens "Add to Calendar")
         const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -599,7 +628,9 @@
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
-            followup: document.getElementById('followup').value || "", name: document.getElementById('name').value.trim(),
+            followup: document.getElementById('followup').value || "", 
+            followupTime: document.getElementById('followupTime').value || "", // New Time field
+            name: document.getElementById('name').value.trim(),
             phone: document.getElementById('phone').value.trim(), leadSource: document.getElementById('leadSource').value,
             projectCategory: document.getElementById('projectCategory').value, specificUnit: document.getElementById('specificUnit').value.trim(),
             location: document.getElementById('location').value, status: statusVal, budget: document.getElementById('budget').value,
@@ -620,8 +651,8 @@
             
             const doSync = document.getElementById('syncCalendar').checked;
             if (doSync && data.followup && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
-                // Call the new Apple System Calendar function
-                syncToSystemCalendar(data.name, data.followup, data.phone, data.projectCategory, data.remark);
+                // Execute Apple Calendar Sync with exact Time
+                syncToSystemCalendar(data.name, data.followup, data.followupTime, data.phone, data.projectCategory, data.remark);
             }
             resetForm();
         } catch (err) { 
@@ -651,17 +682,18 @@
             const displayStatus = cold ? '❄️ Cold' : c.status;
             
             const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; color:#555;">${c.specificUnit}</span>` : '';
+            const timeDisp = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${c.followupTime}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
             table.innerHTML += `
                 <tr class="${highlight} ${coldClass}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                     <td style="opacity:0.4">${serial++}</td><td>${c.leadDate}</td>
-                    <td style="font-weight:600">${c.name}</td><td>${c.phone}</td>
+                    <td style="font-weight:700">${c.name}</td><td>${c.phone}</td>
                     <td><span class="badge ${badge}">${displayStatus}</span></td>
                     <td style="font-size:11px; color:#666;">${c.leadSource || '-'}</td>
                     <td style="font-size:12px; font-weight:600;">${c.projectCategory || '-'}${unitDisp}</td>
                     <td style="color:#03543f; font-weight:700">${c.budget || '-'}</td>
-                    <td style="font-weight:700; color:var(--accent-blue)">${c.followup || '-'}</td>
+                    <td style="font-weight:700; color:#333;">${c.followup || '-'}${timeDisp}</td>
                     <td style="font-size:11px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
                     <td><div class="action-group">
                         <button class="btn-call" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">CALL</button>
@@ -682,16 +714,18 @@
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
                 const cold = isColdLead(c.followup) ? '<span style="color:#2563eb;">❄️</span>' : '';
+                const timeDisp = c.followupTime ? `<span style="font-weight:700; color:var(--accent-blue);">| ⏱ ${c.followupTime}</span>` : '';
+
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" title="Double-click to Edit">
                         <div class="k-card-title">${c.name} ${cold}</div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-blue);">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
-                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'}</div>
+                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:600;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
+                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisp}</div>
                         <div class="k-actions">
-                            <button style="background:#e0e7ff; color:#3730a3;" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
-                            <button style="background:#dcfce7; color:#166534;" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                            <button style="background:#fef2f2; color:#dc2626;" onclick="event.stopPropagation(); deleteLead('${c.id}')">Del</button>
+                            <button style="background:#eff6ff; color:#1877f2; border:1px solid #1877f2;" onclick="event.stopPropagation(); window.location.href='tel:${c.phone}'">Call</button>
+                            <button style="background:#f0fdf4; color:#128c7e; border:1px solid #128c7e;" onclick="event.stopPropagation(); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
+                            <button style="background:#fef2f2; color:#dc2626; border:1px solid #dc2626;" onclick="event.stopPropagation(); deleteLead('${c.id}')">Del</button>
                         </div>
                     </div>
                 `;
@@ -704,7 +738,7 @@
         const c = clients.find(x => x.id === id); if(!c) return;
         document.getElementById('editId').value = c.id;
         
-        ['leadDate', 'followup', 'name', 'phone', 'leadSource', 'projectCategory', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
+        ['leadDate', 'followup', 'followupTime', 'name', 'phone', 'leadSource', 'projectCategory', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
             if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
@@ -872,11 +906,11 @@
     
     function downloadCSV() {
         if(clients.length === 0) { showNotification("No data to export!", 'error'); return; }
-        const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Latest Remark"];
+        const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
         const exportClients = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
         const rows = exportClients.map(c => [
             c.leadDate, `"${c.name}"`, c.phone, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
-            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
+            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', c.followupTime || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
         ]);
         const link = document.createElement("a");
         link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
