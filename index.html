@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- STRICT MOBILE VIEWPORT + iPhone Safe Area Support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v2.4</title>
+    <title>TRUE INVEST CRM - Apple Premium v2.5</title>
     
     <meta name="theme-color" content="#f5f7fa" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -232,7 +232,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
-<body class=""> <!-- Theme class applied here -->
+<body class="">
 
 <!-- TOAST NOTIFICATION CONTAINER -->
 <div id="toastContainer"></div>
@@ -471,7 +471,7 @@
 
     // --- MOBILE TAB SWITCHING LOGIC ---
     function switchMobileTab(tabId, element) {
-        if(window.innerWidth > 992) return; // Only active on mobile
+        if(window.innerWidth > 992) return; 
         
         document.querySelectorAll('.mobile-tab-content').forEach(tab => tab.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
@@ -487,13 +487,10 @@
         if(mode === 'table') { k.classList.add('hidden'); t.classList.remove('hidden'); currentViewMode = 'table'; }
         if(mode === 'kanban') { t.classList.add('hidden'); k.classList.remove('hidden'); currentViewMode = 'kanban'; }
     }
-    function toggleView() { // Fallback for Desktop button
-        if(currentViewMode === 'table') setViewMode('kanban'); else setViewMode('table');
-    }
 
     // --- PREMIUM TOAST NOTIFICATION ---
     function showNotification(message, type = 'success') {
-        if('vibrate' in navigator) navigator.vibrate(type==='error'?[50,50,50]:50); // Haptic feedback
+        if('vibrate' in navigator) navigator.vibrate(type==='error'?[50,50,50]:50); 
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         
@@ -521,7 +518,7 @@
     let customProjects = [];
     let currentViewMode = 'table';
     let currentProjectFilter = 'All'; 
-    let currentQuickFilter = 'All'; // New Quick Filter State
+    let currentQuickFilter = 'All'; 
     window.currentEditHistory = []; 
     
     const getToday = () => new Date().toISOString().split('T')[0];
@@ -546,7 +543,6 @@
         }
     });
 
-    // Handle Resize for Bottom Nav
     window.addEventListener('resize', () => {
         if(auth.currentUser) {
             document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
@@ -554,7 +550,6 @@
                 document.getElementById('tabAddForm').classList.add('active');
                 document.getElementById('tabDataView').classList.add('active');
             } else {
-                // Ensure only one is active on resize down
                 if(document.getElementById('tabAddForm').classList.contains('active') && document.getElementById('tabDataView').classList.contains('active')) {
                     document.getElementById('tabAddForm').classList.remove('active');
                 }
@@ -599,11 +594,12 @@
         tabsContainer.innerHTML = `<button class="tab-btn ${currentProjectFilter === 'All' ? 'active' : ''}" onclick="setProjectFilter('All', this)">All</button>`;
         
         customProjects.forEach(p => {
+            const safeP = p.replace(/'/g, "\\'");
             select.innerHTML += `<option value="${p}">${p}</option>`;
             tabsContainer.innerHTML += `
             <div class="tab-wrapper">
-                <button class="tab-btn ${currentProjectFilter === p ? 'active' : ''}" onclick="setProjectFilter('${p}', this)">${p}</button>
-                <button class="tab-delete-btn" onclick="deleteProject(event, '${p}')" title="Delete Project Tab">×</button>
+                <button class="tab-btn ${currentProjectFilter === p ? 'active' : ''}" onclick="setProjectFilter('${safeP}', this)">${p}</button>
+                <button class="tab-delete-btn" onclick="deleteProject(event, '${safeP}')" title="Delete Project Tab">×</button>
             </div>`;
         });
         
@@ -619,6 +615,7 @@
                 customProjects.push(cleanProj);
                 localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
                 renderProjectTabsAndDropdown();
+                document.getElementById('projectCategory').value = cleanProj; // Auto-Select new project in dropdown
                 showNotification(`Project '${cleanProj}' Added!`, 'success');
             } else {
                 showNotification("This project site already exists!", 'warning');
@@ -638,10 +635,24 @@
         }
     }
 
+    // ==========================================
+    // BUG FIX: PERFECT TAB FILTERING LOGIC
+    // ==========================================
     function setProjectFilter(filterVal, btnElement) {
         currentProjectFilter = filterVal;
+        
+        // Visual Active State for Project Tabs
         document.querySelectorAll('#projectTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         if(btnElement) btnElement.classList.add('active');
+        
+        // Fix 1: Clear the search box to prevent hidden filtered results
+        document.getElementById('search').value = '';
+        
+        // Fix 2: Reset the Quick Filters to "Total Leads" so all leads for this property show up
+        currentQuickFilter = 'All';
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+        document.getElementById('filterAll').classList.add('active-filter');
+        
         renderData();
     }
 
@@ -652,8 +663,11 @@
         document.getElementById(`filter${type}`).classList.add('active-filter');
         
         if(window.innerWidth <= 992 && currentQuickFilter !== 'All') {
-            document.querySelectorAll('.tab-item')[1].click(); // Auto switch to List view on mobile
+            document.querySelectorAll('.tab-item')[1].click(); 
         }
+        
+        // Fix 3: Also clear search box when clicking quick filter
+        document.getElementById('search').value = '';
         renderData();
     }
 
@@ -767,7 +781,6 @@
             
             resetForm();
             
-            // Auto switch back to list view on mobile after save
             if(window.innerWidth <= 992) {
                 document.querySelectorAll('.tab-item')[1].click();
             }
@@ -780,9 +793,10 @@
     });
 
     function getFilteredData() {
+        // Core Project Filtering
         let data = currentProjectFilter === 'All' ? clients : clients.filter(c => c.projectCategory === currentProjectFilter);
         
-        // Apply Quick Filter
+        // Overlay Quick Filters
         if(currentQuickFilter === 'Hot') {
             data = data.filter(c => c.status === 'Hot');
         } else if (currentQuickFilter === 'Today') {
@@ -828,6 +842,13 @@
                 </tr>
             `;
         });
+
+        // Search Filter logic inside Table Rendering
+        const searchInput = document.getElementById('search');
+        if(searchInput.value) {
+            const val = searchInput.value.toLowerCase();
+            document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
+        }
     }
 
     function renderKanban() {
@@ -885,7 +906,6 @@
             tLine.style.display = 'none'; tLine.innerHTML = '';
         }
 
-        // Switch to Add Tab on mobile automatically
         if(window.innerWidth <= 992) {
             document.querySelectorAll('.tab-item')[0].click();
         } else {
@@ -1029,6 +1049,7 @@
 
     function fireConfetti() { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#34c759', '#ffcc00'] }); }
 
+    // Fix 4: Live search clearing on visual tab change
     document.getElementById('search').addEventListener('input', e => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
