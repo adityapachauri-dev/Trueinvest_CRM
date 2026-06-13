@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v2.8 (Action Menu)</title>
+    <title>TRUE INVEST CRM - Apple Premium v2.9 (Action Swipe)</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,6 +14,7 @@
     <link rel="apple-touch-icon" href="http://googleusercontent.com/image_generation_content/239">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* ====================================================
@@ -92,12 +93,15 @@
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; }
+        .stats-master-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; width: 100%; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .stat-card { padding: 16px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
         .stat-card:active { transform: scale(0.95); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 20px var(--accent-glow); }
         .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-card span { font-size: 28px; font-weight: 900; }
+
+        .chart-container { display: flex; justify-content: center; align-items: center; padding: 12px; height: 100%; min-height: 110px;}
 
         .notification-bar { background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; box-shadow: 0 8px 32px rgba(211, 47, 47, 0.3); border: 1px solid rgba(255,255,255,0.2); }
 
@@ -129,12 +133,6 @@
         
         .btn-secondary { background: var(--input-bg); color: var(--text-color); height: 48px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none;}
         .btn-secondary:hover { background: var(--card-bg); border-color: var(--accent-blue); transform: translateY(-2px); }
-        
-        .action-group { display: flex; gap: 8px; justify-content: center; }
-        .action-group button { height: 40px; font-size: 12px; padding: 0 12px; flex: 1; margin: 0; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; box-shadow: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
-        .btn-wa { color: var(--whatsapp-green) !important; border-color: rgba(37,211,102,0.4) !important; background: rgba(37,211,102,0.1) !important; }
-        .btn-call { color: #0a84ff !important; border-color: rgba(10,132,255,0.4) !important; background: rgba(10,132,255,0.1) !important;}
-        .btn-delete { color: #ff453a !important; border-color: rgba(255,69,58,0.4) !important; background: rgba(255,69,58,0.1) !important;}
 
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
         .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 20px; font-weight: 600; font-size: 15px; background: var(--input-bg); box-shadow: 0 0 15px var(--accent-glow);}
@@ -153,7 +151,7 @@
         .tab-add-btn:hover { transform: scale(1.05); background: var(--card-bg); border-color: var(--accent-blue); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px;}
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 900px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
         th { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s;}
         th:hover { background: rgba(0, 113, 227, 0.1); }
@@ -173,13 +171,11 @@
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none;}
         .kanban-col { flex: 1; min-width: 300px; padding: 16px; display: flex; flex-direction: column; }
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
-        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative;}
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
         .k-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--border-highlight);}
-        .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px;}
+        .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between;}
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px;}
-        .k-actions { display: flex; gap: 10px; margin-top: 16px; }
-        .k-actions button { height: 38px; font-size: 12px; padding: 0 8px; flex: 1; border-radius: 10px; margin: 0; box-shadow:none;}
         
         .kanban-dropzone { min-height: 100px; flex-grow: 1; border-radius: 16px; transition: background 0.3s;}
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); }
@@ -199,7 +195,8 @@
         /* PREMIUM iOS BOTTOM SHEET MENU */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
         .bottom-sheet-overlay.active { opacity: 1; pointer-events: auto; }
-        .bottom-sheet { position: absolute; bottom: -100%; left: 0; width: 100%; background: var(--card-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px 32px 0 0; padding: 30px 24px max(30px, env(safe-area-inset-bottom)) 24px; transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-top: 1px solid var(--border-highlight); box-shadow: 0 -15px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; }
+        .bottom-sheet { position: absolute; bottom: -100%; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 500px; background: var(--card-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px 32px 0 0; padding: 30px 24px max(30px, env(safe-area-inset-bottom)) 24px; transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-top: 1px solid var(--border-highlight); border-left: 1px solid var(--border-highlight); border-right: 1px solid var(--border-highlight); box-shadow: 0 -15px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; }
+        @media (min-width: 992px) { .bottom-sheet { border-radius: 32px; bottom: auto; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; transition: all 0.3s ease; } .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(-50%) scale(1); opacity: 1; } }
         .bottom-sheet-overlay.active .bottom-sheet { bottom: 0; }
         .bs-header { text-align: center; font-size: 18px; font-weight: 800; color: var(--text-color); margin-bottom: 10px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
         .bs-btn { height: 56px; border-radius: 20px; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; border: none; width: 100%; transition: transform 0.2s, background 0.3s; cursor: pointer;}
@@ -226,7 +223,7 @@
            APPLE iPHONE 15 / LIQUID MOBILE LAYOUT
            ==================================================== */
         .ios-bottom-nav { display: none; } 
-        .mobile-hint { display: none; font-size: 11px; text-align: center; opacity: 0.6; padding-bottom: 10px; font-weight: 700; color: var(--accent-blue);}
+        .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
 
         @media (max-width: 992px) {
             .workspace-layout { display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
@@ -236,9 +233,11 @@
             .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
             .header-actions button { margin: 0; height: 42px; width: 42px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
 
+            .stats-master-grid { grid-template-columns: 1fr; gap: 16px; }
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
             .stat-card span { font-size: 24px; }
+            .chart-container { min-height: 150px; }
 
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
@@ -318,10 +317,15 @@
         </header>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="stats-grid">
-                <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-                <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label>🔥 Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
-                <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
+            <div class="stats-master-grid">
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
+                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label>🔥 Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
+                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
+                </div>
+                <div class="glass-panel chart-container">
+                    <canvas id="sourceChart"></canvas>
+                </div>
             </div>
             <div id="reminderAlert" class="notification-bar glass-panel" style="margin-top:20px;"></div>
         </div>
@@ -417,7 +421,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👈 Swipe Row Left/Right to open Action Menu 👉</div>
+            <div class="mobile-hint">👉 Swipe Row Right to open Options</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -434,7 +438,7 @@
                             <th onclick="handleSort('budget')">Budget ⇕</th>
                             <th onclick="handleSort('followup')">Follow-up ⇕</th>
                             <th style="max-width: 140px;">Latest Remark</th>
-                            <th style="width: 150px;">Actions</th>
+                            <th style="width: 40px; text-align: center;"></th>
                         </tr>
                     </thead>
                     <tbody id="clientTable"></tbody>
@@ -543,6 +547,7 @@
         document.getElementById('themeToggleBtn').innerText = isDark ? '☀️' : '🌙';
         document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#050505' : '#f0f4f8');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
+        updateChart();
     }
     initTheme();
 
@@ -618,6 +623,7 @@
     let currentProjectFilter = 'All'; 
     let currentQuickFilter = 'All'; 
     let initialLoad = true;
+    let sourceChartInstance = null;
     
     // Sorting State
     let sortColumn = 'leadDate';
@@ -697,6 +703,50 @@
             updateDashboard();
             renderData();
         });
+    }
+
+    function updateChart() {
+        const ctx = document.getElementById('sourceChart').getContext('2d');
+        const data = getFilteredData();
+        
+        const sources = {};
+        data.forEach(c => {
+            const s = c.leadSource || 'Other';
+            sources[s] = (sources[s] || 0) + 1;
+        });
+
+        const labels = Object.keys(sources);
+        const counts = Object.values(sources);
+        const isDark = document.body.classList.contains('dark-theme');
+        const textColor = isDark ? '#f5f5f7' : '#111111';
+
+        if(sourceChartInstance) {
+            sourceChartInstance.data.labels = labels;
+            sourceChartInstance.data.datasets[0].data = counts;
+            sourceChartInstance.options.plugins.legend.labels.color = textColor;
+            sourceChartInstance.update();
+        } else {
+            sourceChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ['#0071e3', '#34c759', '#ff9f0a', '#bf5af2', '#ff453a', '#30d158', '#5e5ce6'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: textColor, font: {family: '-apple-system', size: 11, weight: '600'} } }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
     }
 
     function renderProjectTabsAndDropdown() {
@@ -880,10 +930,7 @@
     }
 
     // --- ANTI-MISTOUCH SWIPE ENGINE & ACTION MENU ---
-    let touchstartX = 0; let touchstartY = 0;
-    let touchendX = 0; let touchendY = 0;
-    
-    // Global vars for Bottom Sheet Action Menu
+    let touchstartX = 0; let touchstartY = 0; let touchendX = 0; let touchendY = 0;
     let bsActionId = ''; let bsActionPhone = ''; let bsActionName = ''; let bsActionProj = '';
 
     function handleTouchStart(e) {
@@ -892,19 +939,17 @@
     }
 
     function handleTouchEnd(e, id, phone, name, proj) {
-        if(window.innerWidth > 992) return; 
-        
         touchendX = e.changedTouches[0].screenX;
         touchendY = e.changedTouches[0].screenY;
         
         let deltaX = touchendX - touchstartX;
         let deltaY = Math.abs(touchendY - touchstartY);
         
-        // STRICT CHECK: If user scrolled vertically more than 40px, it's NOT a swipe. It's a scroll.
+        // Anti-Mistouch: Ignore if user scrolled vertically more than 40px
         if (deltaY > 40) return; 
 
-        // If true horizontal swipe > 60px -> Open Menu
-        if (deltaX < -60 || deltaX > 60) { 
+        // Strictly RIGHT SWIPE ONLY (> 60px)
+        if (deltaX > 60) { 
             haptic('heavy'); 
             openActionSheet(id, phone, name, proj);
         }
@@ -922,18 +967,23 @@
         document.getElementById('mobileActionSheetOverlay').classList.remove('active');
     }
 
-    // Bottom Sheet Execution Functions
     function executeBsCall() { closeActionSheet(); window.location.href = 'tel:' + bsActionPhone; }
     function executeBsWa() { closeActionSheet(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
     function executeBsEdit() { closeActionSheet(); editLead(bsActionId); }
-    function executeBsDel() { closeActionSheet(); deleteLead(bsActionId); }
+    
+    async function executeBsDel() { 
+        closeActionSheet(); 
+        if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
+            try { await db.collection("leads").doc(bsActionId).delete(); showNotification("Lead Permanently Deleted", "error"); } 
+            catch (err) { showNotification("Error deleting lead: " + err.message, "error"); }
+        }
+    }
 
     function handleModalClick(e, modalId) {
-        // Close modal if clicked outside the content area
         if(e.target.id === modalId) closeModal(modalId);
     }
 
-    function renderData() { renderTable(); renderKanban(); }
+    function renderData() { renderTable(); renderKanban(); updateChart(); }
 
     function renderTable() {
         const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
@@ -956,7 +1006,7 @@
             tr.title = "Double-click to Edit";
             tr.ondblclick = () => editLead(c.id);
             
-            // Safe Mobile Swipe Binding
+            // Safe Mobile Swipe Binding (Right Swipe Only)
             tr.addEventListener('touchstart', handleTouchStart, {passive: true});
             tr.addEventListener('touchend', e => handleTouchEnd(e, c.id, c.phone, c.name.replace(/'/g, "\\'"), (c.projectCategory||'').replace(/'/g, "\\'")));
 
@@ -969,11 +1019,7 @@
                 <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
                 <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisplayFormatted}</td>
                 <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
-                <td><div class="action-group">
-                    <button class="btn-call" onclick="event.stopPropagation(); haptic('light'); window.location.href='tel:${c.phone}'">CALL</button>
-                    <button class="btn-wa" onclick="event.stopPropagation(); haptic('light'); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                    <button class="btn-delete" onclick="event.stopPropagation(); haptic('light'); deleteLead('${c.id}')">DEL</button>
-                </div></td>
+                <td style="font-size:22px; color:var(--accent-blue); text-align:center; font-weight:900; opacity:0.7;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">⋮</td>
             `;
             table.appendChild(tr);
         });
@@ -998,15 +1044,13 @@
                 
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, '${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">
-                        <div class="k-card-title">${c.name} ${cold}</div>
+                        <div class="k-card-title">
+                            <span>${c.name} ${cold}</span>
+                            <span style="font-size:20px; color:var(--accent-blue); font-weight:900; padding:0 5px;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">⋮</span>
+                        </div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
                         <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisplayFormatted}</div>
-                        <div class="k-actions">
-                            <button class="btn-call" onclick="event.stopPropagation(); haptic('light'); window.location.href='tel:${c.phone}'">Call</button>
-                            <button class="btn-wa" onclick="event.stopPropagation(); haptic('light'); openWaModal('${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">WA</button>
-                            <button class="btn-delete" onclick="event.stopPropagation(); haptic('light'); deleteLead('${c.id}')">Del</button>
-                        </div>
                     </div>
                 `;
             }
@@ -1037,13 +1081,6 @@
 
         if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[0].click(); } 
         else { window.scrollTo({top: 0, behavior: 'smooth'}); }
-    }
-
-    async function deleteLead(id) {
-        if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
-            try { await db.collection("leads").doc(id).delete(); showNotification("Lead Permanently Deleted", "error"); } 
-            catch (err) { showNotification("Error deleting lead: " + err.message, "error"); }
-        }
     }
 
     function resetForm() {
@@ -1086,7 +1123,7 @@
     function addDragEvents() {
         document.querySelectorAll('.k-card').forEach(card => {
             card.addEventListener('dragstart', (e) => { 
-                if(e.target.tagName === 'BUTTON') { e.preventDefault(); return; } 
+                if(e.target.tagName === 'SPAN') { e.preventDefault(); return; } 
                 haptic('light');
                 draggedCardId = e.currentTarget.dataset.id; setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
             });
@@ -1110,10 +1147,10 @@
         });
     }
 
-    let currentWaName = ''; let currentWaProj = '';
     function openModal(id) { haptic('light'); document.getElementById(id).classList.add('active'); }
     function closeModal(id) { haptic('light'); document.getElementById(id).classList.remove('active'); }
     
+    let currentWaName = ''; let currentWaProj = '';
     function openWaModal(phone, name, project) {
         currentWaName = name; currentWaProj = project || 'our premium properties';
         document.getElementById('waTargetName').innerText = `👤 ${name}  |  📞 ${phone}`;
@@ -1150,11 +1187,6 @@
                 <div style="display:flex; justify-content:space-between; opacity:0.8;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
                 <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:16px; font-weight:700;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
             </div>`;
-    }
-
-    function fireConfetti() { 
-        playSuccessSound(); // Trigger Audio & Haptic
-        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#0071e3', '#34c759', '#ffcc00'] }); 
     }
 
     document.getElementById('search').addEventListener('input', e => {
