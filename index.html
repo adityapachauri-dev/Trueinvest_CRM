@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v2.9 (Action Swipe)</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0 (iOS Swipe)</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +14,6 @@
     <link rel="apple-touch-icon" href="http://googleusercontent.com/image_generation_content/239">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* ====================================================
@@ -93,15 +92,13 @@
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
 
-        .stats-master-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; width: 100%; }
+        .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 16px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
+        .stat-card { padding: 20px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
         .stat-card:active { transform: scale(0.95); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 20px var(--accent-glow); }
-        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .stat-card span { font-size: 28px; font-weight: 900; }
-
-        .chart-container { display: flex; justify-content: center; align-items: center; padding: 12px; height: 100%; min-height: 110px;}
+        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .stat-card span { font-size: 32px; font-weight: 900; }
 
         .notification-bar { background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; box-shadow: 0 8px 32px rgba(211, 47, 47, 0.3); border: 1px solid rgba(255,255,255,0.2); }
 
@@ -151,16 +148,15 @@
         .tab-add-btn:hover { transform: scale(1.05); background: var(--card-bg); border-color: var(--accent-blue); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px;}
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
         th { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s;}
         th:hover { background: rgba(0, 113, 227, 0.1); }
         .dark-theme th { background: rgba(0,0,0,0.2); }
         .dark-theme th:hover { background: rgba(10, 132, 255, 0.2); }
         
-        tbody tr { cursor: pointer; transition: all 0.3s ease; } 
+        tbody tr { cursor: pointer; background-color: transparent; } 
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { transform: scale(1.01); background-color: var(--input-bg); z-index: 2; position: relative; box-shadow: var(--shadow-sm); border-radius: 12px;}
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
 
@@ -173,7 +169,6 @@
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
         .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative;}
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
-        .k-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--border-highlight);}
         .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between;}
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px;}
         
@@ -191,21 +186,45 @@
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
+
+        /* ====================================================
+           NATIVE iOS CALL APP SWIPE MENU (LEFT SWIPE)
+           ==================================================== */
+        .ios-swipe-menu {
+            position: fixed;
+            right: -220px; /* Hidden offscreen */
+            display: flex;
+            z-index: 9999;
+            transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 12px 0 0 12px;
+            overflow: hidden;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+        }
+        .ios-swipe-menu.active { right: 0; }
         
-        /* PREMIUM iOS BOTTOM SHEET MENU */
-        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
-        .bottom-sheet-overlay.active { opacity: 1; pointer-events: auto; }
-        .bottom-sheet { position: absolute; bottom: -100%; left: 0; right: 0; margin: 0 auto; width: 100%; max-width: 500px; background: var(--card-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 32px 32px 0 0; padding: 30px 24px max(30px, env(safe-area-inset-bottom)) 24px; transition: bottom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-top: 1px solid var(--border-highlight); border-left: 1px solid var(--border-highlight); border-right: 1px solid var(--border-highlight); box-shadow: 0 -15px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 12px; }
-        @media (min-width: 992px) { .bottom-sheet { border-radius: 32px; bottom: auto; top: 50%; transform: translateY(-50%) scale(0.9); opacity: 0; transition: all 0.3s ease; } .bottom-sheet-overlay.active .bottom-sheet { transform: translateY(-50%) scale(1); opacity: 1; } }
-        .bottom-sheet-overlay.active .bottom-sheet { bottom: 0; }
-        .bs-header { text-align: center; font-size: 18px; font-weight: 800; color: var(--text-color); margin-bottom: 10px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .bs-btn { height: 56px; border-radius: 20px; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; border: none; width: 100%; transition: transform 0.2s, background 0.3s; cursor: pointer;}
-        .bs-btn:active { transform: scale(0.96); }
-        .bs-call { background: rgba(10,132,255,0.15); color: #0a84ff; border: 1px solid rgba(10,132,255,0.3); }
-        .bs-wa { background: rgba(37,211,102,0.15); color: var(--whatsapp-green); border: 1px solid rgba(37,211,102,0.3); }
-        .bs-edit { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); }
-        .bs-del { background: rgba(255,69,58,0.15); color: #ff453a; border: 1px solid rgba(255,69,58,0.3); margin-top: 10px;}
-        .bs-cancel { background: transparent; color: var(--text-color); margin-top: 5px; opacity: 0.7;}
+        .ios-action-btn {
+            height: 100%;
+            width: 55px;
+            border: none;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0;
+            border-radius: 0;
+            transition: opacity 0.2s;
+        }
+        .ios-action-btn:active { opacity: 0.7; }
+        .btn-call { background: #34c759; }
+        .btn-wa { background: #0071e3; }
+        .btn-edit { background: #ff9f0a; }
+        .btn-del { background: #ff3b30; }
+
+        .action-dots {
+            font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer;
+        }
 
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.4; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px;}
@@ -233,11 +252,9 @@
             .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
             .header-actions button { margin: 0; height: 42px; width: 42px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
 
-            .stats-master-grid { grid-template-columns: 1fr; gap: 16px; }
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
             .stat-card span { font-size: 24px; }
-            .chart-container { min-height: 150px; }
 
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
@@ -323,11 +340,8 @@
                     <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label>🔥 Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
                     <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
                 </div>
-                <div class="glass-panel chart-container">
-                    <canvas id="sourceChart"></canvas>
-                </div>
             </div>
-            <div id="reminderAlert" class="notification-bar glass-panel" style="margin-top:20px;"></div>
+            <div id="reminderAlert" class="notification-bar glass-panel"></div>
         </div>
 
         <div class="left-panel mobile-tab-content" id="tabAddForm">
@@ -421,7 +435,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👉 Swipe Row Right to open Options</div>
+            <div class="mobile-hint">👉 Swipe Row LEFT to open Actions (iOS Style)</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -508,15 +522,11 @@
     </div>
 </div>
 
-<div id="mobileActionSheetOverlay" class="bottom-sheet-overlay" onclick="closeActionSheet()">
-    <div class="bottom-sheet" onclick="event.stopPropagation()">
-        <div class="bs-header" id="bsHeader">👤 Lead Actions</div>
-        <button class="bs-btn bs-call" onclick="executeBsCall()">📞 Call Lead</button>
-        <button class="bs-btn bs-wa" onclick="executeBsWa()">💬 Send WhatsApp</button>
-        <button class="bs-btn bs-edit" onclick="executeBsEdit()">📝 Edit Details</button>
-        <button class="bs-btn bs-del" onclick="executeBsDel()">🗑️ Delete Lead</button>
-        <button class="bs-btn bs-cancel" onclick="closeActionSheet()">Cancel</button>
-    </div>
+<div id="iosSwipeMenu" class="ios-swipe-menu">
+    <button class="ios-action-btn btn-call" onclick="executeSwipeCall()" title="Call">📞</button>
+    <button class="ios-action-btn btn-wa" onclick="executeSwipeWa()" title="WhatsApp">💬</button>
+    <button class="ios-action-btn btn-edit" onclick="executeSwipeEdit()" title="Edit">📝</button>
+    <button class="ios-action-btn btn-del" onclick="executeSwipeDel()" title="Delete">🗑️</button>
 </div>
 
 <script>
@@ -547,7 +557,6 @@
         document.getElementById('themeToggleBtn').innerText = isDark ? '☀️' : '🌙';
         document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#050505' : '#f0f4f8');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
-        updateChart();
     }
     initTheme();
 
@@ -590,7 +599,6 @@
         }, 3000);
     }
 
-    // APPLE PAY STYLE SUCCESS DING
     function playSuccessSound() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -623,7 +631,6 @@
     let currentProjectFilter = 'All'; 
     let currentQuickFilter = 'All'; 
     let initialLoad = true;
-    let sourceChartInstance = null;
     
     // Sorting State
     let sortColumn = 'leadDate';
@@ -703,50 +710,6 @@
             updateDashboard();
             renderData();
         });
-    }
-
-    function updateChart() {
-        const ctx = document.getElementById('sourceChart').getContext('2d');
-        const data = getFilteredData();
-        
-        const sources = {};
-        data.forEach(c => {
-            const s = c.leadSource || 'Other';
-            sources[s] = (sources[s] || 0) + 1;
-        });
-
-        const labels = Object.keys(sources);
-        const counts = Object.values(sources);
-        const isDark = document.body.classList.contains('dark-theme');
-        const textColor = isDark ? '#f5f5f7' : '#111111';
-
-        if(sourceChartInstance) {
-            sourceChartInstance.data.labels = labels;
-            sourceChartInstance.data.datasets[0].data = counts;
-            sourceChartInstance.options.plugins.legend.labels.color = textColor;
-            sourceChartInstance.update();
-        } else {
-            sourceChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: counts,
-                        backgroundColor: ['#0071e3', '#34c759', '#ff9f0a', '#bf5af2', '#ff453a', '#30d158', '#5e5ce6'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { color: textColor, font: {family: '-apple-system', size: 11, weight: '600'} } }
-                    },
-                    cutout: '70%'
-                }
-            });
-        }
     }
 
     function renderProjectTabsAndDropdown() {
@@ -929,50 +892,140 @@
         return data;
     }
 
-    // --- ANTI-MISTOUCH SWIPE ENGINE & ACTION MENU ---
-    let touchstartX = 0; let touchstartY = 0; let touchendX = 0; let touchendY = 0;
-    let bsActionId = ''; let bsActionPhone = ''; let bsActionName = ''; let bsActionProj = '';
+    // ====================================================
+    // iOS CALL APP STYLE SWIPE LOGIC
+    // ====================================================
+    let touchstartX = 0, touchstartY = 0, currentX = 0, currentY = 0;
+    let activeSwipeRow = null;
+    let isSwiping = false;
+    let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
 
-    function handleTouchStart(e) {
-        touchstartX = e.changedTouches[0].screenX;
-        touchstartY = e.changedTouches[0].screenY;
-    }
-
-    function handleTouchEnd(e, id, phone, name, proj) {
-        touchendX = e.changedTouches[0].screenX;
-        touchendY = e.changedTouches[0].screenY;
-        
-        let deltaX = touchendX - touchstartX;
-        let deltaY = Math.abs(touchendY - touchstartY);
-        
-        // Anti-Mistouch: Ignore if user scrolled vertically more than 40px
-        if (deltaY > 40) return; 
-
-        // Strictly RIGHT SWIPE ONLY (> 60px)
-        if (deltaX > 60) { 
-            haptic('heavy'); 
-            openActionSheet(id, phone, name, proj);
+    function closeSwipeMenu() {
+        if (activeSwipeRow) {
+            activeSwipeRow.style.transform = 'translateX(0)';
+            activeSwipeRow.classList.remove('swiped');
+            document.getElementById('iosSwipeMenu').classList.remove('active');
+            activeSwipeRow = null;
         }
     }
 
-    function openActionSheet(id, phone, name, proj) {
+    function openActionSheet(id, phone, name, proj, btnElement) {
         haptic('medium');
         bsActionId = id; bsActionPhone = phone; bsActionName = name; bsActionProj = proj;
-        document.getElementById('bsHeader').innerText = `👤 ${name}`;
-        document.getElementById('mobileActionSheetOverlay').classList.add('active');
+        
+        const target = btnElement.closest('tr') || btnElement.closest('.k-card');
+        if (!target) return;
+        
+        if (activeSwipeRow && activeSwipeRow !== target) closeSwipeMenu();
+
+        const menu = document.getElementById('iosSwipeMenu');
+        const rect = target.getBoundingClientRect();
+        
+        menu.style.top = rect.top + 'px';
+        menu.style.height = rect.height + 'px';
+        menu.style.right = '0px';
+        menu.classList.add('active');
+        
+        target.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        target.style.transform = `translateX(-220px)`;
+        target.classList.add('swiped');
+        activeSwipeRow = target;
     }
 
-    function closeActionSheet() {
-        haptic('light');
-        document.getElementById('mobileActionSheetOverlay').classList.remove('active');
+    function handleTouchStart(e) {
+        if (e.touches.length > 1) return;
+        const row = e.currentTarget;
+
+        if (activeSwipeRow && activeSwipeRow !== row) {
+            closeSwipeMenu();
+        }
+
+        touchstartX = e.touches[0].clientX;
+        touchstartY = e.touches[0].clientY;
+        isSwiping = false;
+
+        bsActionId = row.dataset.id;
+        bsActionPhone = row.dataset.phone;
+        bsActionName = row.dataset.name;
+        bsActionProj = row.dataset.proj;
+        
+        row.style.transition = 'none'; // precise 1:1 finger tracking
     }
 
-    function executeBsCall() { closeActionSheet(); window.location.href = 'tel:' + bsActionPhone; }
-    function executeBsWa() { closeActionSheet(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
-    function executeBsEdit() { closeActionSheet(); editLead(bsActionId); }
-    
-    async function executeBsDel() { 
-        closeActionSheet(); 
+    function handleTouchMove(e) {
+        if (!touchstartX) return;
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+
+        let diffX = currentX - touchstartX;
+        let diffY = Math.abs(currentY - touchstartY);
+
+        // If scrolling vertically more than horizontally, abort swipe
+        if (diffY > Math.abs(diffX) || diffY > 20) return;
+
+        // Left swipe mapping
+        if (diffX < -10 && diffX > -220) {
+            isSwiping = true;
+            e.preventDefault(); // Stop horizontal scroll
+            
+            const row = e.currentTarget;
+            row.style.transform = `translateX(${diffX}px)`;
+
+            const menu = document.getElementById('iosSwipeMenu');
+            const rect = row.getBoundingClientRect();
+            menu.style.top = rect.top + 'px';
+            menu.style.height = rect.height + 'px';
+            // Slide in visually
+            menu.style.right = Math.min(0, -220 - diffX) + 'px'; 
+            menu.classList.add('active'); // ensure display is triggerable
+        }
+    }
+
+    function handleTouchEnd(e) {
+        const row = e.currentTarget;
+        row.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        
+        if (!isSwiping) {
+            row.style.transform = 'translateX(0)';
+            return;
+        }
+        
+        let diffX = currentX - touchstartX;
+        const menu = document.getElementById('iosSwipeMenu');
+
+        if (diffX < -60) {
+            // Threshold crossed, lock open
+            row.style.transform = `translateX(-220px)`;
+            row.classList.add('swiped');
+            menu.style.right = '0px';
+            menu.classList.add('active');
+            activeSwipeRow = row;
+            haptic('medium');
+        } else {
+            // Snap back closed
+            row.style.transform = 'translateX(0)';
+            menu.style.right = '-220px';
+            menu.classList.remove('active');
+            activeSwipeRow = null;
+        }
+        isSwiping = false;
+        touchstartX = 0; currentX = 0;
+    }
+
+    // Auto-close menu on vertical scroll or tap away
+    window.addEventListener('scroll', closeSwipeMenu, true);
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#iosSwipeMenu') && !e.target.closest('.action-dots') && !e.target.closest('.k-card')) {
+            closeSwipeMenu();
+        }
+    });
+
+    // Execute Actions from Swipe Menu
+    function executeSwipeCall() { closeSwipeMenu(); window.location.href = 'tel:' + bsActionPhone; }
+    function executeSwipeWa() { closeSwipeMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
+    function executeSwipeEdit() { closeSwipeMenu(); editLead(bsActionId); }
+    async function executeSwipeDel() { 
+        closeSwipeMenu(); 
         if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
             try { await db.collection("leads").doc(bsActionId).delete(); showNotification("Lead Permanently Deleted", "error"); } 
             catch (err) { showNotification("Error deleting lead: " + err.message, "error"); }
@@ -983,7 +1036,7 @@
         if(e.target.id === modalId) closeModal(modalId);
     }
 
-    function renderData() { renderTable(); renderKanban(); updateChart(); }
+    function renderData() { renderTable(); renderKanban(); }
 
     function renderTable() {
         const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
@@ -1003,12 +1056,19 @@
 
             const tr = document.createElement('tr');
             tr.className = `${highlight} ${coldClass}`;
-            tr.title = "Double-click to Edit";
+            tr.title = "Double-click to Edit, Swipe Left for Actions";
             tr.ondblclick = () => editLead(c.id);
             
-            // Safe Mobile Swipe Binding (Right Swipe Only)
+            // Attach dataset for swipe action
+            tr.dataset.id = c.id;
+            tr.dataset.phone = c.phone;
+            tr.dataset.name = c.name.replace(/'/g, "\\'");
+            tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
+
+            // iOS Swipe Bindings
             tr.addEventListener('touchstart', handleTouchStart, {passive: true});
-            tr.addEventListener('touchend', e => handleTouchEnd(e, c.id, c.phone, c.name.replace(/'/g, "\\'"), (c.projectCategory||'').replace(/'/g, "\\'")));
+            tr.addEventListener('touchmove', handleTouchMove, {passive: false}); // false is required to stop table scroll
+            tr.addEventListener('touchend', handleTouchEnd);
 
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
@@ -1019,7 +1079,7 @@
                 <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
                 <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisplayFormatted}</td>
                 <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
-                <td style="font-size:22px; color:var(--accent-blue); text-align:center; font-weight:900; opacity:0.7;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">⋮</td>
+                <td class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</td>
             `;
             table.appendChild(tr);
         });
@@ -1043,10 +1103,10 @@
                 let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
                 zone.innerHTML += `
-                    <div class="k-card" draggable="true" data-id="${c.id}" ondblclick="editLead('${c.id}')" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event, '${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">
+                    <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${c.name.replace(/'/g, "\\'")}" data-proj="${(c.projectCategory||'').replace(/'/g, "\\'")}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
                             <span>${c.name} ${cold}</span>
-                            <span style="font-size:20px; color:var(--accent-blue); font-weight:900; padding:0 5px;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}')">⋮</span>
+                            <span class="action-dots" style="padding:0 5px;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
                         </div>
                         <div class="k-card-detail">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
