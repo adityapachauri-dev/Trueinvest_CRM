@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0 (Mobile Edition)</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -67,7 +67,6 @@
         
         * { box-sizing: border-box; }
 
-        /* LIQUID BACKGROUND BLOBS */
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
         .blob { position: absolute; filter: blur(90px); border-radius: 50%; animation: float 12s infinite alternate ease-in-out; opacity: 0.5; mix-blend-mode: multiply; }
         .dark-theme .blob { mix-blend-mode: screen; opacity: 0.3; }
@@ -82,7 +81,6 @@
         @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
 
-        /* GLASSMORPHISM UTILITY */
         .glass-panel {
             background: var(--card-bg);
             backdrop-filter: var(--glass-blur);
@@ -106,13 +104,13 @@
             width: 100%; 
         }
 
-        header { 
+        .top-bar {
             grid-column: span 2; display: flex; justify-content: space-between; align-items: center; 
-            padding: 16px 24px; position: sticky; top: max(12px, env(safe-area-inset-top)); 
-            z-index: 100; animation: fadeInDown 0.5s ease-out forwards; transition: all 0.4s ease;
+            padding: 16px 24px; animation: fadeInDown 0.5s ease-out forwards;
+            background: var(--nav-bg); border-radius: 24px; margin-bottom: 8px; width: 100%;
         }
-        h1 { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
-        h1 span.brand { background: linear-gradient(135deg, #0071e3, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1.main-title { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
+        h1.main-title span.brand { background: linear-gradient(135deg, #0071e3, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
@@ -195,7 +193,6 @@
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
 
-        /* SKELETON LOADER */
         .skeleton-loader { position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%); background-size: 1000px 100%; animation: shimmer 2s infinite linear; z-index: 10; border-radius: 0 0 24px 24px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px; backdrop-filter: blur(5px);}
         .dark-theme .skeleton-loader { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0) 100%); background-size: 1000px 100%;}
 
@@ -222,9 +219,6 @@
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
 
-        /* ====================================================
-           MOBILE FEATURES: PULL-TO-REFRESH, MIC, TAP-TO-COPY
-           ==================================================== */
         .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
         .ptr-spinner.refreshing { top: max(30px, env(safe-area-inset-top)); }
 
@@ -239,9 +233,6 @@
         .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
-        /* ====================================================
-           ACTION MODAL (BOTTOM SHEET)
-           ==================================================== */
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
@@ -285,7 +276,6 @@
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.4; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px;}
 
-        /* PREMIUM TOAST NOTIFICATION SYSTEM */
         #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10008; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
         .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
         .toast.show { transform: translateX(0); }
@@ -294,59 +284,19 @@
         .toast.warning { border-left-color: #ffcc00; }
         .toast-icon { margin-right: 16px; font-size: 24px; }
 
-        /* ====================================================
-           APPLE iPHONE / MOBILE LAYOUT - WITH SWIPE HEADER
-           ==================================================== */
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
-        .top-swipe-notch { display: none; }
-        .header-swipe-up { display: none; }
 
         @media (max-width: 992px) {
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
-                padding-top: max(32px, env(safe-area-inset-top)); 
+                padding-top: max(16px, env(safe-area-inset-top)); 
                 padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
             }
             
-            /* SWIPE DOWN HEADER FIX */
-            header#mainHeader { 
-                position: fixed; 
-                top: 0; left: 0; right: 0; width: 100vw;
-                flex-direction: row; flex-wrap: wrap; text-align: left; gap: 12px; 
-                padding: max(20px, env(safe-area-inset-top)) 24px 16px 24px; 
-                border-radius: 0 0 32px 32px; 
-                transform: translateY(-120%);
-                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-                z-index: 10005; 
-                box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-                background: var(--nav-bg); 
-                border-bottom: 1px solid var(--border-highlight);
-                border-top: none; border-left: none; border-right: none;
-            }
-            header#mainHeader.visible { transform: translateY(0); }
-            header h1 { font-size: 1.5rem; width: 50%;}
-            .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
-            .header-actions button { margin: 0; height: 44px; width: 44px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
-
-            /* SWIPE NOTCHES (Larger Hitbox for better touch) */
-            .top-swipe-notch {
-                display: flex; position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-                width: 120px; height: 40px; align-items: center; justify-content: center;
-                z-index: 10000; cursor: pointer; padding-top: max(8px, env(safe-area-inset-top));
-            }
-            .top-swipe-notch::after {
-                content: ''; width: 40px; height: 5px; background: var(--text-color); opacity: 0.2; border-radius: 10px;
-            }
-            .dark-theme .top-swipe-notch::after { opacity: 0.4; }
-            
-            .header-swipe-up {
-                width: 100%; display: flex; justify-content: center; margin-top: 8px; cursor: pointer; padding: 10px 0;
-            }
-            .header-swipe-up::after {
-                content: ''; width: 40px; height: 5px; background: var(--text-color); opacity: 0.2; border-radius: 10px;
-            }
-            .dark-theme .header-swipe-up::after { opacity: 0.4; }
+            .top-bar { padding: 20px; }
+            h1.main-title { font-size: 1.4rem; }
+            .top-bar .btn-secondary { height: 40px; width: 40px; font-size: 16px; }
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
@@ -355,7 +305,6 @@
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
 
-            /* FLOATING LIQUID PILL NAVIGATION */
             .ios-bottom-nav { 
                 display: flex; position: fixed; 
                 bottom: max(20px, env(safe-area-inset-bottom)); 
@@ -383,7 +332,7 @@
             .tab-wrapper, .tab-btn { flex-shrink: 0; }
             .tab-add-btn { flex-shrink: 0; margin-left: 8px; }
 
-            .mobile-hint { display: block; margin-top:10px; }
+            .mobile-hint { display: block; margin-top:0; }
             .table-container { padding: 0; width: 100%; overflow-x: auto; border-radius: 20px; -webkit-overflow-scrolling: touch;}
             table { min-width: 800px; } 
 
@@ -427,22 +376,20 @@
 </div>
 
 <div id="crmView" class="hidden">
-    <div id="topNotch" class="top-swipe-notch" onclick="toggleMobileHeader()"></div>
-
     <div class="workspace-layout">
         
-        <header class="glass-panel" id="mainHeader">
-            <h1><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:6px; vertical-align:top;">PRO</span></h1>
-            <div class="header-actions">
-                <button class="btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn">🌙</button>
-                <button class="btn-secondary" onclick="openModal('emiModal')" title="Calculator">🧮</button>
-                <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent;" onclick="logout()" title="Logout">⏻</button>
+        <!-- Clean Static Top Bar (Replaces Problematic Header) -->
+        <div class="top-bar glass-panel">
+            <h1 class="main-title"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn">🌙</button>
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="openModal('emiModal')" title="Calculator">🧮</button>
+                <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="logout()" title="Logout">⏻</button>
             </div>
-            <div class="header-swipe-up" onclick="toggleMobileHeader()"></div>
-        </header>
+        </div>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="mobile-hint" style="margin-top:0; padding-bottom:8px;">👉 Tap or Swipe DOWN top edge for Menu</div>
+            <div class="mobile-hint" style="padding-bottom:12px;">👉 Pull down page to Sync Data</div>
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -547,7 +494,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👉 Pull down page to Sync • Tap phone numbers to copy • Tap ⋮ for Actions</div>
+            <div class="mobile-hint">👉 Tap phone numbers to copy • Tap ⋮ for Actions</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -634,6 +581,9 @@
     </div>
 </div>
 
+<!-- ====================================================
+   ACTION MODAL (BOTTOM SHEET)
+   ==================================================== -->
 <div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
     <div class="action-modal-content" onclick="event.stopPropagation()">
         <div class="action-btn-wrapper">
@@ -670,17 +620,20 @@
         const savedTheme = localStorage.getItem('crm_theme') || 'light';
         if(savedTheme === 'dark') {
             document.body.classList.add('dark-theme');
-            document.getElementById('themeToggleBtn').innerText = '☀️';
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            if(toggleBtn) toggleBtn.innerText = '☀️';
             document.getElementById('themeColorMeta').setAttribute('content', '#050505');
         }
     }
+    
     function toggleTheme() {
         haptic('medium');
         const body = document.body;
         body.classList.toggle('dark-theme');
         const isDark = body.classList.contains('dark-theme');
         localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
-        document.getElementById('themeToggleBtn').innerText = isDark ? '☀️' : '🌙';
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        if(toggleBtn) toggleBtn.innerText = isDark ? '☀️' : '🌙';
         document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#050505' : '#f0f4f8');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
     }
@@ -773,115 +726,40 @@
     }
 
     // ====================================================
-    // ADVANCED MOBILE GESTURES: HEADER AUTO-HIDE & PULL-TO-REFRESH
+    // CLEAN PULL-TO-REFRESH LOGIC
     // ====================================================
     let pStartY = 0;
     let pCurrentY = 0;
-    let headerTimeout = null;
     const ptrSpinner = document.getElementById('ptrSpinner');
-    const mobileHeader = document.getElementById('mainHeader');
-
-    // Logic to open header and set a 2-second auto-close timer
-    function openHeaderTemporarily() {
-        if (window.innerWidth <= 992 && mobileHeader) {
-            if(!mobileHeader.classList.contains('visible')) {
-                mobileHeader.classList.add('visible');
-                haptic('medium');
-            }
-            
-            // Clear existing timeout and set a new one for 2 seconds
-            if(headerTimeout) clearTimeout(headerTimeout);
-            headerTimeout = setTimeout(() => {
-                mobileHeader.classList.remove('visible');
-            }, 2000);
-        }
-    }
-
-    // Manual click toggle
-    function toggleMobileHeader() {
-        if (window.innerWidth <= 992 && mobileHeader) {
-            if (mobileHeader.classList.contains('visible')) {
-                mobileHeader.classList.remove('visible');
-                if(headerTimeout) clearTimeout(headerTimeout);
-            } else {
-                openHeaderTemporarily();
-            }
-        }
-    }
-
-    // Prevent auto-hide while user is actively touching the header
-    if (mobileHeader) {
-        mobileHeader.addEventListener('touchstart', () => {
-            if(headerTimeout) clearTimeout(headerTimeout);
-        }, {passive: true});
-
-        mobileHeader.addEventListener('touchend', () => {
-            if(headerTimeout) clearTimeout(headerTimeout);
-            headerTimeout = setTimeout(() => {
-                mobileHeader.classList.remove('visible');
-            }, 2000);
-        }, {passive: true});
-    }
     
     document.addEventListener('touchstart', e => { 
-        if(e.touches.length === 1) pStartY = e.touches[0].clientY; 
+        if(window.scrollY === 0 && e.touches.length === 1) pStartY = e.touches[0].clientY; 
         else pStartY = 0; 
     }, {passive: true});
     
     document.addEventListener('touchmove', e => { 
-        if(pStartY) {
+        if(pStartY && window.scrollY === 0) {
             pCurrentY = e.touches[0].clientY;
             let diff = pCurrentY - pStartY;
-            // Trigger Pull-To-Refresh visually if swiped down > 80px, starting from BELOW top edge
-            if(window.scrollY === 0 && diff > 80 && pStartY > 70 && !mobileHeader.classList.contains('visible')) { 
-                ptrSpinner.classList.add('refreshing'); 
-            }
+            if(diff > 80) { ptrSpinner.classList.add('refreshing'); }
         }
     }, {passive: true});
     
     document.addEventListener('touchend', e => {
-        if(!pStartY) return;
-        let pEndY = e.changedTouches[0].clientY;
-        let diff = pEndY - pStartY;
-
-        // 1. Swipe Up to close header manually
-        if (window.innerWidth <= 992 && mobileHeader.classList.contains('visible') && diff < -30) {
-            mobileHeader.classList.remove('visible');
-            if(headerTimeout) clearTimeout(headerTimeout);
-            haptic('light');
-        }
-        // 2. Swipe Down logic
-        else if(window.scrollY === 0 && diff > 50) {
-            if(pStartY <= 70 && window.innerWidth <= 992) {
-                // Swipe started from top edge -> Open Header Temporarily
-                openHeaderTemporarily();
-            } else if(pStartY > 70 && !mobileHeader.classList.contains('visible')) {
-                // Swipe started lower -> Pull To Refresh Sync
-                haptic('medium');
-                ptrSpinner.innerText = "↻ Syncing...";
-                if(auth.currentUser) loadData(); 
-                
-                setTimeout(() => { 
-                    ptrSpinner.classList.remove('refreshing'); 
-                    ptrSpinner.innerText = "↻ Refreshing...";
-                    showNotification('Data Synced Successfully', 'success'); 
-                }, 1000);
-            }
+        if(pStartY && pCurrentY && (pCurrentY - pStartY > 80) && window.scrollY === 0) {
+            haptic('medium');
+            ptrSpinner.innerText = "↻ Syncing...";
+            if(auth.currentUser) loadData(); 
+            
+            setTimeout(() => { 
+                ptrSpinner.classList.remove('refreshing'); 
+                ptrSpinner.innerText = "↻ Refreshing...";
+                showNotification('Data Synced Successfully', 'success'); 
+            }, 1000);
         } else {
             ptrSpinner.classList.remove('refreshing');
         }
-        
         pStartY = 0; pCurrentY = 0;
-    });
-
-    // Close header when tapping outside of it
-    document.addEventListener('click', e => {
-        if(window.innerWidth <= 992 && mobileHeader && mobileHeader.classList.contains('visible')) {
-            if(!mobileHeader.contains(e.target) && e.target.id !== 'topNotch') {
-                mobileHeader.classList.remove('visible');
-                if(headerTimeout) clearTimeout(headerTimeout);
-            }
-        }
     });
 
     // ====================================================
@@ -897,7 +775,6 @@
     let currentQuickFilter = 'All'; 
     let initialLoad = true;
     
-    // Sorting State
     let sortColumn = 'leadDate';
     let sortAscending = false;
     window.currentEditHistory = []; 
@@ -937,7 +814,6 @@
             if(window.innerWidth > 992) {
                 document.getElementById('tabAddForm').classList.add('active');
                 document.getElementById('tabDataView').classList.add('active');
-                if(mobileHeader) mobileHeader.classList.remove('visible'); // Reset state
             } else {
                 if(document.getElementById('tabAddForm').classList.contains('active') && document.getElementById('tabDataView').classList.contains('active')) {
                     document.getElementById('tabAddForm').classList.remove('active');
@@ -1146,7 +1022,6 @@
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
         
-        // Sorting Engine
         data.sort((a, b) => {
             let valA = (a[sortColumn] || '').toString().toLowerCase();
             let valB = (b[sortColumn] || '').toString().toLowerCase();
