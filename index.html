@@ -517,6 +517,7 @@
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
                 <button class="btn-secondary" onclick="downloadCSV()">📤 Export</button>
+                <button class="btn-secondary" onclick="removeDuplicates()" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Remove duplicate phone numbers">🧹 Clean</button>
             </div>
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
@@ -610,9 +611,6 @@
     </div>
 </div>
 
-<!-- ====================================================
-   ACTION MODAL (BOTTOM SHEET)
-   ==================================================== -->
 <div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
     <div class="action-modal-content swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -635,9 +633,6 @@
     </div>
 </div>
 
-<!-- ====================================================
-   SMART CALL LOGGING MODAL
-   ==================================================== -->
 <div id="callLogModal" class="action-modal-overlay" onclick="closeCallLogModal()">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -1404,39 +1399,95 @@
         window.currentEditHistory = []; document.getElementById('historyTimeline').style.display = 'none';
     }
 
+    // ====================================================
+    // SMART CSV AUTO-MAPPER & IMPORTER
+    // ====================================================
     document.getElementById('csvFileInput').addEventListener('change', async function(e) {
         const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = async function(event) {
-            const text = event.target.result; const rows = text.split('\n').filter(row => row.trim() !== '');
+            const text = event.target.result; 
+            const rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
             if(rows.length < 2) { showNotification('CSV file is empty or invalid.', 'error'); return; }
-            const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
-            const nameIdx = headers.findIndex(h => h.includes('name')); const phoneIdx = headers.findIndex(h => h.includes('phone') || h.includes('mobile'));
-            
-            if(nameIdx === -1 || phoneIdx === -1) { showNotification('Error: CSV file must contain "Name" and "Phone".', 'error'); e.target.value = ''; return; }
-            if(!confirm(`Found ${rows.length - 1} leads. Import directly to Firebase?`)) return;
 
-            showNotification('Importing leads, please wait...', 'warning');
+            // Safe CSV Row Parser (Handles Commas inside Quotes)
+            const parseCSVRow = (row) => {
+                const cols = []; let cur = '', inQuotes = false;
+                for(let char of row) {
+                    if(char === '"') inQuotes = !inQuotes;
+                    else if(char === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
+                    else cur += char;
+                }
+                cols.push(cur.trim()); return cols;
+            };
+
+            const headers = parseCSVRow(rows[0]).map(h => h.toLowerCase());
+            
+            // Smart Keyword Matching
+            const getIdx = (keywords) => headers.findIndex(h => keywords.some(kw => h.includes(kw)));
+
+            const colMap = {
+                name: getIdx(['name', 'client', 'customer']),
+                phone: getIdx(['phone', 'mobile', 'contact', 'number']),
+                leadDate: getIdx(['date', 'created', 'time']),
+                source: getIdx(['source', 'origin', 'platform', 'medium']),
+                project: getIdx(['project', 'site', 'property', 'building']),
+                unit: getIdx(['unit', 'inventory', 'flat', 'size']),
+                location: getIdx(['location', 'locality', 'area', 'city']),
+                budget: getIdx(['budget', 'price', 'amount', 'cost']),
+                status: getIdx(['status', 'stage', 'state']),
+                remark: getIdx(['remark', 'note', 'message', 'comment'])
+            };
+
+            if(colMap.name === -1 || colMap.phone === -1) {
+                showNotification('Error: CSV file must contain at least "Name" and "Phone" columns.', 'error');
+                e.target.value = ''; return;
+            }
+
+            if(!confirm(`Found ${rows.length - 1} leads.\n\nSystem will auto-adapt columns to match CRM fields. Proceed?`)) {
+                e.target.value = ''; return;
+            }
+
+            showNotification('Auto-mapping & importing leads...', 'warning');
             let importCount = 0;
+
             for(let i = 1; i < rows.length; i++) {
                 try {
-                    const cols = rows[i].split(',');
-                    const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : ''; let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim().replace(/[^0-9]/g, '') : '';
-                    if(!name || !phone) continue;
-                    
-                    const srcIdx = headers.findIndex(h => h.includes('source')); const fileSource = (srcIdx !== -1 && cols[srcIdx]) ? cols[srcIdx].replace(/"/g,'').trim() : 'CSV Import';
+                    const cols = parseCSVRow(rows[i]);
+                    const cleanVal = (idx) => (idx !== -1 && cols[idx]) ? cols[idx].replace(/^"|"$/g, '').trim() : '';
+
+                    const name = cleanVal(colMap.name);
+                    let phone = cleanVal(colMap.phone).replace(/[^0-9]/g, '');
+
+                    if(!name || phone.length < 7) continue;
+
+                    const leadDate = cleanVal(colMap.leadDate) || getToday();
+                    const source = cleanVal(colMap.source) || 'CSV Import';
+                    const project = cleanVal(colMap.project);
+                    const unit = cleanVal(colMap.unit);
+                    const location = cleanVal(colMap.location);
+                    const budget = cleanVal(colMap.budget);
+                    let status = cleanVal(colMap.status) || 'New';
+                    const remark = cleanVal(colMap.remark) || 'Imported via CSV';
+
+                    // Strict Status Normalization
+                    const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed', 'Not Interested'];
+                    const matchedStatus = validStatuses.find(s => s.toLowerCase() === status.toLowerCase());
+                    if (matchedStatus) status = matchedStatus; else status = 'New';
 
                     await db.collection("leads").add({
-                        ownerId: auth.currentUser.uid, leadDate: getToday(), name: name, phone: phone, leadSource: fileSource, status: 'New', 
-                        history: [{date: getToday(), time: getTime(), note: 'Imported via CSV'}], remark: 'Imported via CSV'
+                        ownerId: auth.currentUser.uid, leadDate: leadDate, name: name, phone: phone, 
+                        leadSource: source, projectCategory: project, specificUnit: unit, location: location, 
+                        status: status, budget: budget, visitDone: false, followup: "", followupTime: "", 
+                        remark: remark, history: [{date: getToday(), time: getTime(), note: remark}]
                     }); 
                     importCount++;
-                } catch(error) {
-                    console.log("Error importing row " + i, error);
-                }
+                } catch(error) { console.log("Error importing row " + i, error); }
             }
-            showNotification(`🎉 Successfully imported ${importCount} leads!`, 'success'); e.target.value = ''; 
-        }; reader.readAsText(file);
+            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads!`, 'success'); 
+            e.target.value = ''; 
+        }; 
+        reader.readAsText(file);
     });
 
     let draggedCardId = null;
@@ -1531,6 +1582,64 @@
         const link = document.createElement("a"); link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
         link.setAttribute("download", `CRM_Export_${currentProjectFilter.replace(/\s+/g, '_')}_${getToday()}.csv`);
         document.body.appendChild(link); link.click(); document.body.removeChild(link); showNotification("CSV Exported Successfully!", "success");
+    }
+
+    // ====================================================
+    // REMOVE DUPLICATE LEADS (SMART CLEANER)
+    // ====================================================
+    async function removeDuplicates() {
+        if(!auth.currentUser) return;
+        if(clients.length === 0) { showNotification("No leads to check.", "warning"); return; }
+
+        if(!confirm("⚠️ This will scan and permanently delete duplicate leads based on their Phone Number.\n\nIt will safely keep the most recently updated record. Proceed?")) return;
+
+        const btn = document.querySelector('button[onclick="removeDuplicates()"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "⏳ Cleaning..."; btn.disabled = true;
+
+        try {
+            const phoneMap = new Map();
+            let duplicateIds = [];
+
+            // Sort clients to prioritize keeping the ones with the most recent follow-up or leadDate
+            const sortedClients = [...clients].sort((a, b) => {
+                const dateA = new Date(a.followup || a.leadDate || '1970-01-01').getTime();
+                const dateB = new Date(b.followup || b.leadDate || '1970-01-01').getTime();
+                return dateB - dateA; // Descending order
+            });
+
+            sortedClients.forEach(client => {
+                const phone = (client.phone || '').trim();
+                if(phone.length >= 10) {
+                    if(phoneMap.has(phone)) {
+                        duplicateIds.push(client.id);
+                    } else {
+                        phoneMap.set(phone, client.id);
+                    }
+                }
+            });
+
+            if(duplicateIds.length === 0) {
+                showNotification("Clean! No duplicate leads found. 🎉", "success");
+                btn.innerHTML = originalText; btn.disabled = false;
+                return;
+            }
+
+            showNotification(`Found ${duplicateIds.length} duplicates. Deleting safely...`, "warning");
+
+            let deletedCount = 0;
+            for (const id of duplicateIds) {
+                await db.collection("leads").doc(id).delete();
+                deletedCount++;
+            }
+
+            showNotification(`🧹 Successfully cleaned ${deletedCount} duplicate leads!`, "success");
+            haptic('heavy');
+        } catch (err) {
+            showNotification("Error cleaning duplicates: " + err.message, "error");
+        } finally {
+            btn.innerHTML = originalText; btn.disabled = false;
+        }
     }
 
     (function initSingleFilePWA() {
