@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0 (iOS Swipe)</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0 (Simple Touch)</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -188,57 +188,45 @@
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
 
         /* ====================================================
-           MINIMALISTIC "REVEAL" SWIPE MENU (BUG-FREE)
+           ACTION MODAL (SIMPLE TOUCH - NO SWIPE)
            ==================================================== */
-        .ios-swipe-menu {
-            position: fixed;
-            right: 0;
-            transform: translateX(100%); /* Hidden completely off-screen */
-            display: flex;
-            z-index: 9999;
-            border-radius: 24px 0 0 24px;
-            overflow: hidden;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-            background: var(--nav-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--border-highlight);
-            border-right: none;
-            align-items: center;
-            justify-content: space-evenly;
-            padding: 0 8px;
-            width: 200px; /* Fixed width for proper reveal tracking */
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .action-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
+            z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
-        .dark-theme .ios-swipe-menu { box-shadow: -5px 0 25px rgba(0,0,0,0.6); }
-        .ios-swipe-menu.active { transform: translateX(0); }
-        
-        .ios-action-btn {
-            height: 42px;
-            width: 42px;
-            border: none;
-            background: transparent;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 0;
-            border-radius: 50%;
-            transition: transform 0.2s, background 0.2s;
+        .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .action-modal-content {
+            background: var(--nav-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            width: 100%; max-width: 400px; padding: 24px 24px 40px 24px; border-radius: 32px 32px 0 0;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-top: 1px solid var(--border-highlight);
+            display: flex; justify-content: space-around;
         }
-        .ios-action-btn:active { transform: scale(0.85); background: rgba(0,0,0,0.1); }
-        .dark-theme .ios-action-btn:active { background: rgba(255,255,255,0.1); }
-        
-        /* Modern colored icons instead of bulky backgrounds */
-        .btn-call { color: #34c759; }
-        .btn-wa { color: #0071e3; }
-        .btn-edit { color: #ff9f0a; }
-        .btn-del { color: #ff3b30; }
+        .action-modal-overlay.active .action-modal-content { transform: translateY(0); }
+        @media (min-width: 992px) {
+            .action-modal-overlay { align-items: center; }
+            .action-modal-content { border-radius: 32px; padding: 32px; border: 1px solid var(--border-highlight); transform: scale(0.9); }
+            .action-modal-overlay.active .action-modal-content { transform: scale(1); }
+        }
+        .action-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .action-btn-wrapper span { font-size: 13px; font-weight: 700; color: var(--text-color); }
+        .simple-action-btn {
+            height: 64px; width: 64px; border: none; border-radius: 50%; font-size: 28px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.2s;
+        }
+        .simple-action-btn:active { transform: scale(0.9); }
+        .btn-call { background: #34c759; color: white; }
+        .btn-wa { background: #0071e3; color: white; }
+        .btn-edit { background: #ff9f0a; color: white; }
+        .btn-del { background: #ff3b30; color: white; }
 
         .action-dots {
-            font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer;
+            font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
         }
+        .action-dots:active { transform: scale(0.8); }
 
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.4; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px;}
@@ -449,7 +437,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👉 Swipe Row LEFT to open Actions (iOS Style)</div>
+            <div class="mobile-hint">👉 Tap the ⋮ dots to open Quick Actions</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -536,11 +524,25 @@
     </div>
 </div>
 
-<div id="iosSwipeMenu" class="ios-swipe-menu">
-    <button class="ios-action-btn btn-call" onclick="executeSwipeCall()" title="Call">📞</button>
-    <button class="ios-action-btn btn-wa" onclick="executeSwipeWa()" title="WhatsApp">💬</button>
-    <button class="ios-action-btn btn-edit" onclick="executeSwipeEdit()" title="Edit">📝</button>
-    <button class="ios-action-btn btn-del" onclick="executeSwipeDel()" title="Delete">🗑️</button>
+<div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
+    <div class="action-modal-content" onclick="event.stopPropagation()">
+        <div class="action-btn-wrapper">
+            <button class="simple-action-btn btn-call" onclick="executeSwipeCall()">📞</button>
+            <span>Call</span>
+        </div>
+        <div class="action-btn-wrapper">
+            <button class="simple-action-btn btn-wa" onclick="executeSwipeWa()">💬</button>
+            <span>WhatsApp</span>
+        </div>
+        <div class="action-btn-wrapper">
+            <button class="simple-action-btn btn-edit" onclick="executeSwipeEdit()">📝</button>
+            <span>Edit</span>
+        </div>
+        <div class="action-btn-wrapper">
+            <button class="simple-action-btn btn-del" onclick="executeSwipeDel()">🗑️</button>
+            <span>Delete</span>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -907,160 +909,26 @@
     }
 
     // ====================================================
-    // BUG-FREE MINIMALISTIC REVEAL SWIPE LOGIC
+    // SIMPLE TOUCH ACTION MENU (NO SWIPE)
     // ====================================================
-    let touchstartX = 0, touchstartY = 0, currentX = 0, currentY = 0;
-    let activeSwipeRow = null;
-    let isSwiping = false;
-    let axisLocked = null; // STRICT FIX: Prevents swipe trigger during vertical scroll
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
-
-    function closeSwipeMenu() {
-        if (activeSwipeRow) {
-            activeSwipeRow.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            activeSwipeRow.style.transform = 'translateX(0)';
-            activeSwipeRow.classList.remove('swiped');
-            
-            const menu = document.getElementById('iosSwipeMenu');
-            menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            menu.style.transform = 'translateX(100%)';
-            menu.classList.remove('active');
-            
-            activeSwipeRow = null;
-        }
-    }
 
     function openActionSheet(id, phone, name, proj, btnElement) {
         haptic('medium');
         bsActionId = id; bsActionPhone = phone; bsActionName = name; bsActionProj = proj;
-        
-        const target = btnElement.closest('tr') || btnElement.closest('.k-card');
-        if (!target) return;
-        
-        if (activeSwipeRow && activeSwipeRow !== target) closeSwipeMenu();
-
-        const menu = document.getElementById('iosSwipeMenu');
-        const rect = target.getBoundingClientRect();
-        
-        menu.style.transition = 'none'; // Snap instantly to correct Y position
-        menu.style.top = rect.top + 'px';
-        menu.style.height = rect.height + 'px';
-        
-        void menu.offsetWidth; // Force DOM reflow
-        
-        menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-        menu.style.transform = 'translateX(0)';
-        menu.classList.add('active');
-        
-        target.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-        target.style.transform = `translateX(-200px)`;
-        target.classList.add('swiped');
-        activeSwipeRow = target;
+        document.getElementById('actionModal').classList.add('active');
     }
 
-    function handleTouchStart(e) {
-        if (e.touches.length > 1) return;
-        const row = e.currentTarget;
-
-        if (activeSwipeRow && activeSwipeRow !== row) closeSwipeMenu();
-
-        touchstartX = e.touches[0].clientX;
-        touchstartY = e.touches[0].clientY;
-        isSwiping = false;
-        axisLocked = null; // Reset axis lock on new touch
-
-        bsActionId = row.dataset.id;
-        bsActionPhone = row.dataset.phone;
-        bsActionName = row.dataset.name;
-        bsActionProj = row.dataset.proj;
-        
-        row.style.transition = 'none'; // Precise 1:1 finger tracking
+    function closeActionMenu() {
+        document.getElementById('actionModal').classList.remove('active');
     }
 
-    function handleTouchMove(e) {
-        if (!touchstartX) return;
-        currentX = e.touches[0].clientX;
-        currentY = e.touches[0].clientY;
-
-        let diffX = currentX - touchstartX;
-        let diffY = currentY - touchstartY;
-
-        // Lock the scrolling axis completely on first movement
-        if (!axisLocked) {
-            if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
-                axisLocked = Math.abs(diffX) > Math.abs(diffY) ? 'horizontal' : 'vertical';
-            }
-        }
-
-        // If user is scrolling down/up, kill the swipe logic entirely
-        if (axisLocked === 'vertical') return; 
-
-        // Execute horizontal Reveal Swipe
-        if (axisLocked === 'horizontal' && diffX < 0 && diffX > -200) {
-            isSwiping = true;
-            e.preventDefault(); // Stop horizontal screen bouncing
-            
-            const row = e.currentTarget;
-            row.style.transform = `translateX(${diffX}px)`;
-
-            const menu = document.getElementById('iosSwipeMenu');
-            const rect = row.getBoundingClientRect();
-            menu.style.top = rect.top + 'px';
-            menu.style.height = rect.height + 'px';
-            
-            // Smooth Parallax Reveal tracking
-            menu.style.transition = 'none';
-            menu.style.transform = `translateX(${Math.max(0, 200 + diffX)}px)`; 
-            menu.classList.add('active');
-        }
-    }
-
-    function handleTouchEnd(e) {
-        if (!touchstartX) return;
-        const row = e.currentTarget;
-        row.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-        
-        if (!isSwiping) {
-            row.style.transform = 'translateX(0)';
-            return;
-        }
-        
-        let diffX = currentX - touchstartX;
-        const menu = document.getElementById('iosSwipeMenu');
-        menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-
-        if (diffX < -70) {
-            // Threshold crossed, lock open
-            row.style.transform = `translateX(-200px)`;
-            row.classList.add('swiped');
-            menu.style.transform = 'translateX(0)';
-            menu.classList.add('active');
-            activeSwipeRow = row;
-            haptic('medium');
-        } else {
-            // Snap back closed
-            closeSwipeMenu();
-        }
-        
-        isSwiping = false;
-        axisLocked = null;
-        touchstartX = 0; currentX = 0;
-    }
-
-    // Auto-close menu on vertical scroll or tap away
-    window.addEventListener('scroll', closeSwipeMenu, true);
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#iosSwipeMenu') && !e.target.closest('.action-dots') && !e.target.closest('.k-card')) {
-            closeSwipeMenu();
-        }
-    });
-
-    // Execute Actions from Swipe Menu
-    function executeSwipeCall() { closeSwipeMenu(); window.location.href = 'tel:' + bsActionPhone; }
-    function executeSwipeWa() { closeSwipeMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
-    function executeSwipeEdit() { closeSwipeMenu(); editLead(bsActionId); }
+    // Execute Actions from Swipe Menu (now Action Menu)
+    function executeSwipeCall() { closeActionMenu(); window.location.href = 'tel:' + bsActionPhone; }
+    function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
+    function executeSwipeEdit() { closeActionMenu(); editLead(bsActionId); }
     async function executeSwipeDel() { 
-        closeSwipeMenu(); 
+        closeActionMenu(); 
         if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
             try { await db.collection("leads").doc(bsActionId).delete(); showNotification("Lead Permanently Deleted", "error"); } 
             catch (err) { showNotification("Error deleting lead: " + err.message, "error"); }
@@ -1091,19 +959,14 @@
 
             const tr = document.createElement('tr');
             tr.className = `${highlight} ${coldClass}`;
-            tr.title = "Double-click to Edit, Swipe Left for Actions";
+            tr.title = "Double-click to Edit, Tap ⋮ for Actions";
             tr.ondblclick = () => editLead(c.id);
             
-            // Attach dataset for swipe action
+            // Attach dataset for data tracking
             tr.dataset.id = c.id;
             tr.dataset.phone = c.phone;
             tr.dataset.name = c.name.replace(/'/g, "\\'");
             tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
-
-            // iOS Swipe Bindings
-            tr.addEventListener('touchstart', handleTouchStart, {passive: true});
-            tr.addEventListener('touchmove', handleTouchMove, {passive: false}); // false is required to stop table scroll
-            tr.addEventListener('touchend', handleTouchEnd);
 
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
