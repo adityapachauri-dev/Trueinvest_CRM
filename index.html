@@ -226,10 +226,9 @@
            MOBILE FEATURES: PULL-TO-REFRESH, MIC, TAP-TO-COPY
            ==================================================== */
         .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
-        .ptr-spinner.refreshing { top: max(20px, env(safe-area-inset-top)); }
+        .ptr-spinner.refreshing { top: max(30px, env(safe-area-inset-top)); }
 
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        /* Fix overlapping mic icon by adding adequate bottom/right padding */
         .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; padding-bottom: 20px; }
         
         .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
@@ -246,7 +245,7 @@
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
-            z-index: 10002; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s;
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -279,7 +278,6 @@
 
         .action-dots {
             font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
-            /* Ensure large enough touch target */
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
         }
         .action-dots:active { transform: scale(0.8); }
@@ -288,7 +286,7 @@
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.4; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px;}
 
         /* PREMIUM TOAST NOTIFICATION SYSTEM */
-        #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10005; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
+        #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10008; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
         .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: #34c759; }
@@ -297,21 +295,58 @@
         .toast-icon { margin-right: 16px; font-size: 24px; }
 
         /* ====================================================
-           APPLE iPHONE 15 / LIQUID MOBILE LAYOUT
+           APPLE iPHONE / MOBILE LAYOUT - WITH SWIPE HEADER
            ==================================================== */
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
+        .top-swipe-notch { display: none; }
+        .header-swipe-up { display: none; }
 
         @media (max-width: 992px) {
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
-                padding-bottom: calc(110px + env(safe-area-inset-bottom)); /* Prevents overlap with nav bar */
+                /* Space added for top notch so stats grid doesn't overlap phone notch */
+                padding-top: max(32px, env(safe-area-inset-top)); 
+                padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
             }
             
-            header { flex-direction: row; flex-wrap: wrap; text-align: left; gap: 12px; padding: 20px; border-radius: 24px;}
+            /* SWIPE DOWN HEADER FIX */
+            header#mainHeader { 
+                position: fixed; 
+                top: 0; left: 0; right: 0; width: 100vw;
+                flex-direction: row; flex-wrap: wrap; text-align: left; gap: 12px; 
+                padding: max(20px, env(safe-area-inset-top)) 24px 16px 24px; 
+                border-radius: 0 0 32px 32px; 
+                transform: translateY(-120%);
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+                z-index: 10005; 
+                box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+                background: var(--nav-bg); 
+                border-bottom: 1px solid var(--border-highlight);
+                border-top: none; border-left: none; border-right: none;
+            }
+            header#mainHeader.visible { transform: translateY(0); }
             header h1 { font-size: 1.5rem; width: 50%;}
             .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
             .header-actions button { margin: 0; height: 44px; width: 44px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
+
+            /* SWIPE NOTCHES */
+            .top-swipe-notch {
+                display: block; position: fixed; top: max(8px, env(safe-area-inset-top));
+                left: 50%; transform: translateX(-50%); width: 40px; height: 5px;
+                background: var(--text-color); opacity: 0.15; border-radius: 10px;
+                z-index: 10000; cursor: pointer;
+            }
+            .dark-theme .top-swipe-notch { opacity: 0.3; }
+            
+            .header-swipe-up {
+                width: 100%; display: flex; justify-content: center; margin-top: 8px; cursor: pointer;
+            }
+            .header-swipe-up::after {
+                content: ''; width: 40px; height: 5px; background: var(--text-color);
+                opacity: 0.15; border-radius: 10px;
+            }
+            .dark-theme .header-swipe-up::after { opacity: 0.3; }
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
@@ -323,7 +358,7 @@
             /* FLOATING LIQUID PILL NAVIGATION */
             .ios-bottom-nav { 
                 display: flex; position: fixed; 
-                bottom: max(20px, env(safe-area-inset-bottom)); /* Proper positioning above home indicator */
+                bottom: max(20px, env(safe-area-inset-bottom)); 
                 left: 5%; width: 90%; 
                 background: var(--nav-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
                 border: 1px solid var(--border-highlight); z-index: 9999; padding: 12px 0; justify-content: space-evenly; 
@@ -348,7 +383,7 @@
             .tab-wrapper, .tab-btn { flex-shrink: 0; }
             .tab-add-btn { flex-shrink: 0; margin-left: 8px; }
 
-            .mobile-hint { display: block; }
+            .mobile-hint { display: block; margin-top:10px; }
             .table-container { padding: 0; width: 100%; overflow-x: auto; border-radius: 20px; -webkit-overflow-scrolling: touch;}
             table { min-width: 800px; } 
 
@@ -392,18 +427,22 @@
 </div>
 
 <div id="crmView" class="hidden">
+    <div id="topNotch" class="top-swipe-notch" onclick="toggleMobileHeader()"></div>
+
     <div class="workspace-layout">
         
-        <header class="glass-panel">
+        <header class="glass-panel" id="mainHeader">
             <h1><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:6px; vertical-align:top;">PRO</span></h1>
             <div class="header-actions">
                 <button class="btn-secondary" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn">🌙</button>
                 <button class="btn-secondary" onclick="openModal('emiModal')" title="Calculator">🧮</button>
                 <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent;" onclick="logout()" title="Logout">⏻</button>
             </div>
+            <div class="header-swipe-up" onclick="toggleMobileHeader()"></div>
         </header>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
+            <div class="mobile-hint" style="margin-top:0; padding-bottom:8px;">👉 Swipe DOWN from very top edge for App Menu</div>
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -508,7 +547,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👉 Pull down to Refresh • Tap phone numbers to copy • Tap ⋮ for Actions</div>
+            <div class="mobile-hint">👉 Pull down page to Sync • Tap phone numbers to copy • Tap ⋮ for Actions</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -686,7 +725,6 @@
         }, 3000);
     }
 
-    // --- TAP TO COPY FUNCTION ---
     function copyToClipboard(text, type) {
         if(!text || text === '-') return;
         navigator.clipboard.writeText(text).then(() => {
@@ -697,14 +735,13 @@
         });
     }
 
-    // --- VOICE TYPING (SPEECH TO TEXT) ---
     function startDictation() {
         if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             const recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = 'en-IN'; // Hinglish & Indian English support
+            recognition.lang = 'en-IN'; 
             
             const micBtn = document.querySelector('.mic-btn');
             micBtn.classList.add('recording');
@@ -735,40 +772,84 @@
         }
     }
 
-    // --- PULL TO REFRESH LOGIC ---
+    // ====================================================
+    // ADVANCED MOBILE GESTURES: HEADER SLIDE & PULL-TO-REFRESH
+    // ====================================================
     let pStartY = 0;
     let pCurrentY = 0;
     const ptrSpinner = document.getElementById('ptrSpinner');
+    const mobileHeader = document.getElementById('mainHeader');
+
+    function toggleMobileHeader() {
+        if (window.innerWidth <= 992 && mobileHeader) {
+            mobileHeader.classList.toggle('visible');
+            haptic('light');
+        }
+    }
     
     document.addEventListener('touchstart', e => { 
-        if(window.scrollY === 0 && e.touches.length === 1) pStartY = e.touches[0].clientY; 
+        if(e.touches.length === 1) pStartY = e.touches[0].clientY; 
         else pStartY = 0; 
     }, {passive: true});
     
     document.addEventListener('touchmove', e => { 
-        if(pStartY && window.scrollY === 0) {
+        if(pStartY) {
             pCurrentY = e.touches[0].clientY;
             let diff = pCurrentY - pStartY;
-            if(diff > 80) { ptrSpinner.classList.add('refreshing'); }
+            // Only trigger Pull-To-Refresh visually if swiped down > 80px, starting from BELOW top edge (70px)
+            if(window.scrollY === 0 && diff > 80 && pStartY > 70 && !mobileHeader.classList.contains('visible')) { 
+                ptrSpinner.classList.add('refreshing'); 
+            }
         }
     }, {passive: true});
     
     document.addEventListener('touchend', e => {
-        if(pStartY && pCurrentY && (pCurrentY - pStartY > 80) && window.scrollY === 0) {
-            haptic('medium');
-            ptrSpinner.innerText = "↻ Syncing...";
-            if(auth.currentUser) loadData(); // Re-fetch from Firebase
-            
-            setTimeout(() => { 
-                ptrSpinner.classList.remove('refreshing'); 
-                ptrSpinner.innerText = "↻ Refreshing...";
-                showNotification('Data Synced Successfully', 'success'); 
-            }, 1000);
+        if(!pStartY) return;
+        let pEndY = e.changedTouches[0].clientY;
+        let diff = pEndY - pStartY;
+
+        // 1. Swipe Up to close header
+        if (window.innerWidth <= 992 && mobileHeader.classList.contains('visible') && diff < -30) {
+            mobileHeader.classList.remove('visible');
+            haptic('light');
+        }
+        // 2. Swipe Down logic (only if at the very top of scroll)
+        else if(window.scrollY === 0 && diff > 50) {
+            if(pStartY <= 70 && window.innerWidth <= 992) {
+                // Swipe started from top edge -> Slide Down Header Menu
+                if(!mobileHeader.classList.contains('visible')) {
+                    mobileHeader.classList.add('visible');
+                    haptic('medium');
+                }
+            } else if(pStartY > 70 && !mobileHeader.classList.contains('visible')) {
+                // Swipe started lower -> Pull To Refresh Sync
+                haptic('medium');
+                ptrSpinner.innerText = "↻ Syncing...";
+                if(auth.currentUser) loadData(); 
+                
+                setTimeout(() => { 
+                    ptrSpinner.classList.remove('refreshing'); 
+                    ptrSpinner.innerText = "↻ Refreshing...";
+                    showNotification('Data Synced Successfully', 'success'); 
+                }, 1000);
+            }
         } else {
             ptrSpinner.classList.remove('refreshing');
         }
+        
         pStartY = 0; pCurrentY = 0;
     });
+
+    // Close header when tapping outside of it
+    document.addEventListener('click', e => {
+        if(window.innerWidth <= 992 && mobileHeader && mobileHeader.classList.contains('visible')) {
+            if(!mobileHeader.contains(e.target) && e.target.id !== 'topNotch') {
+                mobileHeader.classList.remove('visible');
+            }
+        }
+    });
+
+    // ====================================================
 
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
@@ -821,6 +902,7 @@
             if(window.innerWidth > 992) {
                 document.getElementById('tabAddForm').classList.add('active');
                 document.getElementById('tabDataView').classList.add('active');
+                if(mobileHeader) mobileHeader.classList.remove('visible'); // Reset state
             } else {
                 if(document.getElementById('tabAddForm').classList.contains('active') && document.getElementById('tabDataView').classList.contains('active')) {
                     document.getElementById('tabAddForm').classList.remove('active');
@@ -978,7 +1060,6 @@
         document.body.removeChild(a); window.URL.revokeObjectURL(url);
     }
 
-    // Add haptic feedback on form inputs for premium feel
     document.querySelectorAll('select, input[type="date"], input[type="time"]').forEach(el => {
         el.addEventListener('change', () => haptic('light'));
     });
@@ -1046,9 +1127,6 @@
         return data;
     }
 
-    // ====================================================
-    // SIMPLE TOUCH ACTION MENU (BOTTOM SHEET)
-    // ====================================================
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
 
     function openActionSheet(id, phone, name, proj, btnElement) {
@@ -1099,7 +1177,6 @@
             tr.title = "Double-click to Edit, Tap ⋮ for Actions";
             tr.ondblclick = () => editLead(c.id);
             
-            // Attach dataset for data tracking
             tr.dataset.id = c.id;
             tr.dataset.phone = c.phone;
             tr.dataset.name = c.name.replace(/'/g, "\\'");
