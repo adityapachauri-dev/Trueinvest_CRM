@@ -281,8 +281,13 @@
         .btn-edit { background: #ff9f0a; color: white; }
         .btn-del { background: #ff3b30; color: white; }
 
-        /* Call Log specific buttons */
-        .call-status-btn { flex: 1; height: 48px; border-radius: 16px; font-size: 13px; font-weight: 700; background: transparent; transition: all 0.2s; }
+        /* BUG FIX: Call Log specific buttons (Grid Layout to prevent overflow) */
+        .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 5px;}
+        .call-status-btn { 
+            width: 100%; height: 48px; border-radius: 14px; font-size: 12px; font-weight: 700; 
+            background: transparent; transition: all 0.2s; padding: 0 4px; 
+            display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2;
+        }
         .call-status-btn.connected { border: 2px solid #34c759; color: #34c759; }
         .call-status-btn.connected.active { background: #34c759; color: white; box-shadow: 0 4px 15px rgba(52,199,89,0.4); }
         .call-status-btn.no-answer { border: 2px solid #ff9f0a; color: #ff9f0a; }
@@ -411,7 +416,7 @@
         </div>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="mobile-hint" style="padding-bottom:12px;">👉 Pull down page to Sync Data</div>
+            <div class="mobile-hint" style="padding-bottom:12px;">👉 Pull down or Shake Phone to Sync Data</div>
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -567,9 +572,10 @@
 </nav>
 
 <div id="emiModal" class="modal-overlay" onclick="handleModalClick(event, 'emiModal')">
-    <div class="modal-content glass-panel" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeModal('emiModal')">×</button>
-        <h2 style="margin-top:0; color:var(--accent-blue); font-size:24px; font-weight:800;">🧮 EMI Calculator</h2>
+    <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <button class="modal-close" onclick="closeModal('emiModal')" style="margin-top:10px;">×</button>
+        <h2 style="margin-top:10px; color:var(--accent-blue); font-size:24px; font-weight:800;">🧮 EMI Calculator</h2>
         <label>Property Amount (₹)</label><input type="number" id="emiAmount" placeholder="e.g. 5000000" min="0">
         <label>Interest Rate (% p.a)</label><input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
         <label>Tenure (Years)</label><input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
@@ -579,9 +585,10 @@
 </div>
 
 <div id="waModal" class="modal-overlay" onclick="handleModalClick(event, 'waModal')">
-    <div class="modal-content glass-panel" onclick="event.stopPropagation()">
-        <button class="modal-close" onclick="closeModal('waModal')">×</button>
-        <h2 style="margin-top:0; color:var(--whatsapp-green); font-size:24px; font-weight:800;">📱 Smart WA</h2>
+    <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <button class="modal-close" onclick="closeModal('waModal')" style="margin-top:10px;">×</button>
+        <h2 style="margin-top:10px; color:var(--whatsapp-green); font-size:24px; font-weight:800;">📱 Smart WA</h2>
         <p style="font-size:15px; color:var(--text-color); margin-bottom:24px; font-weight:600; background:var(--input-bg); padding:16px; border-radius:16px;" id="waTargetName">Sending to: </p>
         <input type="hidden" id="waTargetPhone">
         
@@ -634,21 +641,21 @@
 <div id="callLogModal" class="action-modal-overlay" onclick="closeCallLogModal()">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
-        <h3 style="margin:0; margin-top:10px; color:var(--text-color); text-align:center; font-weight:800;">📞 Update Call Log</h3>
-        <p style="text-align:center; font-size:14px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-blue);" id="callLogName"></p>
+        <h3 style="margin:0; margin-top:20px; color:var(--text-color); text-align:center; font-weight:800; font-size:18px;">📞 Update Call Log</h3>
+        <p style="text-align:center; font-size:13px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-blue);" id="callLogName"></p>
         
         <label style="margin-top:10px;">Call Status</label>
-        <div style="display:flex; gap:10px;">
+        <div class="call-status-grid">
             <button type="button" id="btnConnect" class="call-status-btn connected active" onclick="setCallStatus('Connected')">Connected</button>
             <button type="button" id="btnNoAnswer" class="call-status-btn no-answer" onclick="setCallStatus('No Answer')">No Answer</button>
             <button type="button" id="btnBusy" class="call-status-btn busy" onclick="setCallStatus('Busy')">Busy</button>
         </div>
         <input type="hidden" id="callLogStatus" value="Connected">
         
-        <label style="margin-top:10px;">Remark</label>
-        <textarea id="callLogRemark" placeholder="Write follow-up update..." rows="2" style="margin-bottom:0;"></textarea>
+        <label style="margin-top:16px;">Follow-up Remark</label>
+        <textarea id="callLogRemark" placeholder="Write specific update..." rows="2" style="margin-bottom:0;"></textarea>
         
-        <button onclick="saveCallLog()" style="margin-top:10px;">Save Log to History</button>
+        <button onclick="saveCallLog()" style="margin-top:16px; width:100%;">Save to History</button>
     </div>
 </div>
 
@@ -786,11 +793,10 @@
         let isDragging = false;
         
         sheet.addEventListener('touchstart', (e) => {
-            // Disable swipe if user is interacting with text area
             if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
             startY = e.touches[0].clientY;
             isDragging = true;
-            sheet.style.transition = 'none'; // remove transition for smooth drag
+            sheet.style.transition = 'none'; 
         }, {passive: true});
 
         sheet.addEventListener('touchmove', (e) => {
@@ -806,10 +812,10 @@
             if(!isDragging) return;
             isDragging = false;
             sheet.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            sheet.style.transform = ''; // reset to CSS defined transform
+            sheet.style.transform = ''; 
             
             let diff = currentY - startY;
-            if (diff > 120 && currentY > 0) { // Dragged down enough
+            if (diff > 120 && currentY > 0) { 
                 sheet.parentElement.classList.remove('active');
                 haptic('light');
             }
@@ -819,7 +825,7 @@
 
 
     // ====================================================
-    // CLEAN PULL-TO-REFRESH LOGIC
+    // PULL-TO-REFRESH & SHAKE TO SYNC LOGIC
     // ====================================================
     let pStartY = 0;
     let pCurrentY = 0;
@@ -840,20 +846,55 @@
     
     document.addEventListener('touchend', e => {
         if(pStartY && pCurrentY && (pCurrentY - pStartY > 80) && window.scrollY === 0) {
-            haptic('medium');
-            ptrSpinner.innerText = "↻ Syncing...";
-            if(auth.currentUser) loadData(); 
-            
-            setTimeout(() => { 
-                ptrSpinner.classList.remove('refreshing'); 
-                ptrSpinner.innerText = "↻ Refreshing...";
-                showNotification('Data Synced Successfully', 'success'); 
-            }, 1000);
+            triggerDataSync("↻ Syncing...");
         } else {
             ptrSpinner.classList.remove('refreshing');
         }
         pStartY = 0; pCurrentY = 0;
     });
+
+    // SHAKE TO SYNC
+    let shake_last_x = 0, shake_last_y = 0, shake_last_z = 0;
+    let shake_last_time = 0;
+    const SHAKE_THRESHOLD = 1500; 
+    let isShakeSyncing = false;
+
+    window.addEventListener('devicemotion', function(e) {
+        let current_time = new Date().getTime();
+        let diffTime = current_time - shake_last_time;
+
+        if (diffTime > 100) {
+            let acceleration = e.accelerationIncludingGravity;
+            if(!acceleration || acceleration.x === null) return;
+
+            let speed = Math.abs(acceleration.x + acceleration.y + acceleration.z - shake_last_x - shake_last_y - shake_last_z) / diffTime * 10000;
+
+            if (speed > SHAKE_THRESHOLD && !isShakeSyncing) {
+                isShakeSyncing = true;
+                if(auth.currentUser && !document.querySelector('.action-modal-overlay.active')) {
+                    triggerDataSync("📳 Shake Sync...");
+                }
+                setTimeout(() => { isShakeSyncing = false; }, 2000); 
+            }
+            shake_last_x = acceleration.x;
+            shake_last_y = acceleration.y;
+            shake_last_z = acceleration.z;
+            shake_last_time = current_time;
+        }
+    });
+
+    function triggerDataSync(msg) {
+        haptic('heavy');
+        ptrSpinner.classList.add('refreshing');
+        ptrSpinner.innerText = msg;
+        if(auth.currentUser) loadData(); 
+        
+        setTimeout(() => { 
+            ptrSpinner.classList.remove('refreshing'); 
+            ptrSpinner.innerText = "↻ Refreshing...";
+            showNotification('Data Synced Successfully', 'success'); 
+        }, 1200);
+    }
 
     // ====================================================
     // FIREBASE INITIALIZATION & OFFLINE PERSISTENCE
@@ -1172,7 +1213,6 @@
         document.getElementById('actionModal').classList.remove('active');
     }
 
-    // Call Feature Modified
     function executeSwipeCall() { 
         closeActionMenu(); 
         isCalling = true;
@@ -1187,13 +1227,13 @@
             isCalling = false;
             setTimeout(() => {
                 openCallLogModal();
-            }, 800); // small delay to allow screen to load fully
+            }, 800); 
         }
     });
 
     function openCallLogModal() {
         haptic('medium');
-        setCallStatus('Connected'); // default
+        setCallStatus('Connected'); 
         document.getElementById('callLogRemark').value = "";
         document.getElementById('callLogModal').classList.add('active');
     }
@@ -1206,7 +1246,6 @@
         haptic('light');
         document.getElementById('callLogStatus').value = status;
         
-        // Update Button UI
         document.getElementById('btnConnect').classList.remove('active');
         document.getElementById('btnNoAnswer').classList.remove('active');
         document.getElementById('btnBusy').classList.remove('active');
