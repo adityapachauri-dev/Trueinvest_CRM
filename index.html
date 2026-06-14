@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0 (Simple Touch)</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0 (Mobile Edition)</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -188,6 +188,23 @@
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
 
         /* ====================================================
+           MOBILE FEATURES: PULL-TO-REFRESH, MIC, TAP-TO-COPY
+           ==================================================== */
+        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10000; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
+        .ptr-spinner.refreshing { top: max(20px, env(safe-area-inset-top)); }
+
+        .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
+        .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; }
+        
+        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none;}
+        .mic-btn:hover { background: rgba(0, 113, 227, 0.2); }
+        .mic-btn.recording { background: #ff3b30; color: white; animation: pulse 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
+
+        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
+        .copyable:active { opacity: 0.5; color: var(--accent-blue); }
+
+        /* ====================================================
            ACTION MODAL (SIMPLE TOUCH - NO SWIPE)
            ==================================================== */
         .action-modal-overlay {
@@ -302,6 +319,9 @@
 </head>
 <body class="">
 
+<!-- Pull to Refresh Spinner -->
+<div id="ptrSpinner" class="ptr-spinner">↻ Refreshing...</div>
+
 <div class="liquid-bg">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -413,7 +433,11 @@
                 <div id="historyTimeline" class="history-timeline glass-panel"></div>
                 
                 <label>Add Follow-up Remark</label>
-                <textarea id="newRemark" placeholder="Write new update (will be added to history timeline)..." rows="2" style="resize:vertical;"></textarea>
+                <!-- Voice Typing Mic Button Added Here -->
+                <div class="remark-wrapper">
+                    <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
+                    <button type="button" class="mic-btn" onclick="startDictation()" title="Voice Typing">🎤</button>
+                </div>
                 
                 <div class="check-item" style="border-color: var(--accent-blue); background: var(--accent-glow);">
                     <input type="checkbox" id="syncCalendar" checked>
@@ -437,7 +461,7 @@
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
             
-            <div class="mobile-hint">👉 Tap the ⋮ dots to open Quick Actions</div>
+            <div class="mobile-hint">👉 Pull down to Refresh • Tap phone numbers to copy • Tap ⋮ for Actions</div>
 
             <div class="table-container glass-panel" id="tableView">
                 <div id="skeletonLoader" class="skeleton-loader">Loading Data securely...</div>
@@ -524,6 +548,9 @@
     </div>
 </div>
 
+<!-- ====================================================
+   ACTION MODAL (SIMPLE TOUCH - NO SWIPE)
+   ==================================================== -->
 <div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
     <div class="action-modal-content" onclick="event.stopPropagation()">
         <div class="action-btn-wrapper">
@@ -615,27 +642,89 @@
         }, 3000);
     }
 
-    function playSuccessSound() {
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if(!AudioContext) return;
-            const ctx = new AudioContext();
-            if(ctx.state === 'suspended') ctx.resume();
-            
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 0.5);
-            haptic('heavy');
-        } catch(e) { console.log("Audio skipped"); }
+    // --- TAP TO COPY FUNCTION ---
+    function copyToClipboard(text, type) {
+        if(!text || text === '-') return;
+        navigator.clipboard.writeText(text).then(() => {
+            haptic('light');
+            showNotification(`${type} Copied!`, 'success');
+        }).catch(err => {
+            showNotification('Failed to copy', 'error');
+        });
     }
+
+    // --- VOICE TYPING (SPEECH TO TEXT) ---
+    function startDictation() {
+        if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-IN'; // Hinglish & Indian English support
+            
+            const micBtn = document.querySelector('.mic-btn');
+            micBtn.classList.add('recording');
+            haptic('medium');
+            showNotification("Listening... Speak now.", 'warning');
+
+            recognition.start();
+
+            recognition.onresult = function(e) {
+                const transcript = e.results[0][0].transcript;
+                const textArea = document.getElementById('newRemark');
+                textArea.value += (textArea.value ? ' ' : '') + transcript;
+                micBtn.classList.remove('recording');
+                haptic('light');
+                showNotification("Voice typed successfully!", 'success');
+            };
+
+            recognition.onerror = function(e) {
+                micBtn.classList.remove('recording');
+                showNotification("Mic error or no voice detected.", 'error');
+            };
+            
+            recognition.onend = function() {
+                micBtn.classList.remove('recording');
+            };
+        } else {
+            showNotification("Voice typing not supported on this browser/device.", 'error');
+        }
+    }
+
+    // --- PULL TO REFRESH LOGIC ---
+    let pStartY = 0;
+    let pCurrentY = 0;
+    const ptrSpinner = document.getElementById('ptrSpinner');
+    
+    document.addEventListener('touchstart', e => { 
+        if(window.scrollY === 0 && e.touches.length === 1) pStartY = e.touches[0].clientY; 
+        else pStartY = 0; 
+    }, {passive: true});
+    
+    document.addEventListener('touchmove', e => { 
+        if(pStartY && window.scrollY === 0) {
+            pCurrentY = e.touches[0].clientY;
+            let diff = pCurrentY - pStartY;
+            if(diff > 80) { ptrSpinner.classList.add('refreshing'); }
+        }
+    }, {passive: true});
+    
+    document.addEventListener('touchend', e => {
+        if(pStartY && pCurrentY && (pCurrentY - pStartY > 80) && window.scrollY === 0) {
+            haptic('medium');
+            ptrSpinner.innerText = "↻ Syncing...";
+            if(auth.currentUser) loadData(); // Re-fetch from Firebase
+            
+            setTimeout(() => { 
+                ptrSpinner.classList.remove('refreshing'); 
+                ptrSpinner.innerText = "↻ Refreshing...";
+                showNotification('Data Synced Successfully', 'success'); 
+            }, 1000);
+        } else {
+            ptrSpinner.classList.remove('refreshing');
+        }
+        pStartY = 0; pCurrentY = 0;
+    });
 
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
@@ -845,6 +934,11 @@
         document.body.removeChild(a); window.URL.revokeObjectURL(url);
     }
 
+    // Add haptic feedback on form inputs for premium feel
+    document.querySelectorAll('select, input[type="date"], input[type="time"]').forEach(el => {
+        el.addEventListener('change', () => haptic('light'));
+    });
+
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
@@ -968,9 +1062,11 @@
             tr.dataset.name = c.name.replace(/'/g, "\\'");
             tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
 
+            // Note: Added copyToClipboard function calls to Phone numbers
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
-                <td style="font-weight:700">${c.name}</td><td>${c.phone}</td>
+                <td style="font-weight:700">${c.name}</td>
+                <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                 <td><span class="badge ${badge}">${displayStatus}</span></td>
                 <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
                 <td style="font-size:12px; font-weight:700;">${c.projectCategory || '-'}${unitDisp}</td>
@@ -1006,7 +1102,7 @@
                             <span>${c.name} ${cold}</span>
                             <span class="action-dots" style="padding:0 5px;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
                         </div>
-                        <div class="k-card-detail">📞 ${c.phone}</div>
+                        <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
                         <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisplayFormatted}</div>
                     </div>
