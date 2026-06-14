@@ -188,39 +188,53 @@
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
 
         /* ====================================================
-           NATIVE iOS CALL APP SWIPE MENU (LEFT SWIPE)
+           MINIMALISTIC "REVEAL" SWIPE MENU (BUG-FREE)
            ==================================================== */
         .ios-swipe-menu {
             position: fixed;
-            right: -220px; /* Hidden offscreen */
+            right: 0;
+            transform: translateX(100%); /* Hidden completely off-screen */
             display: flex;
             z-index: 9999;
-            transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border-radius: 12px 0 0 12px;
+            border-radius: 24px 0 0 24px;
             overflow: hidden;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+            background: var(--nav-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border-highlight);
+            border-right: none;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: 0 8px;
+            width: 200px; /* Fixed width for proper reveal tracking */
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .ios-swipe-menu.active { right: 0; }
+        .dark-theme .ios-swipe-menu { box-shadow: -5px 0 25px rgba(0,0,0,0.6); }
+        .ios-swipe-menu.active { transform: translateX(0); }
         
         .ios-action-btn {
-            height: 100%;
-            width: 55px;
+            height: 42px;
+            width: 42px;
             border: none;
-            color: white;
-            font-size: 20px;
+            background: transparent;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             margin: 0;
-            border-radius: 0;
-            transition: opacity 0.2s;
+            border-radius: 50%;
+            transition: transform 0.2s, background 0.2s;
         }
-        .ios-action-btn:active { opacity: 0.7; }
-        .btn-call { background: #34c759; }
-        .btn-wa { background: #0071e3; }
-        .btn-edit { background: #ff9f0a; }
-        .btn-del { background: #ff3b30; }
+        .ios-action-btn:active { transform: scale(0.85); background: rgba(0,0,0,0.1); }
+        .dark-theme .ios-action-btn:active { background: rgba(255,255,255,0.1); }
+        
+        /* Modern colored icons instead of bulky backgrounds */
+        .btn-call { color: #34c759; }
+        .btn-wa { color: #0071e3; }
+        .btn-edit { color: #ff9f0a; }
+        .btn-del { color: #ff3b30; }
 
         .action-dots {
             font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer;
@@ -893,18 +907,25 @@
     }
 
     // ====================================================
-    // iOS CALL APP STYLE SWIPE LOGIC
+    // BUG-FREE MINIMALISTIC REVEAL SWIPE LOGIC
     // ====================================================
     let touchstartX = 0, touchstartY = 0, currentX = 0, currentY = 0;
     let activeSwipeRow = null;
     let isSwiping = false;
+    let axisLocked = null; // STRICT FIX: Prevents swipe trigger during vertical scroll
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
 
     function closeSwipeMenu() {
         if (activeSwipeRow) {
+            activeSwipeRow.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
             activeSwipeRow.style.transform = 'translateX(0)';
             activeSwipeRow.classList.remove('swiped');
-            document.getElementById('iosSwipeMenu').classList.remove('active');
+            
+            const menu = document.getElementById('iosSwipeMenu');
+            menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+            menu.style.transform = 'translateX(100%)';
+            menu.classList.remove('active');
+            
             activeSwipeRow = null;
         }
     }
@@ -921,13 +942,18 @@
         const menu = document.getElementById('iosSwipeMenu');
         const rect = target.getBoundingClientRect();
         
+        menu.style.transition = 'none'; // Snap instantly to correct Y position
         menu.style.top = rect.top + 'px';
         menu.style.height = rect.height + 'px';
-        menu.style.right = '0px';
+        
+        void menu.offsetWidth; // Force DOM reflow
+        
+        menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        menu.style.transform = 'translateX(0)';
         menu.classList.add('active');
         
         target.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
-        target.style.transform = `translateX(-220px)`;
+        target.style.transform = `translateX(-200px)`;
         target.classList.add('swiped');
         activeSwipeRow = target;
     }
@@ -936,20 +962,19 @@
         if (e.touches.length > 1) return;
         const row = e.currentTarget;
 
-        if (activeSwipeRow && activeSwipeRow !== row) {
-            closeSwipeMenu();
-        }
+        if (activeSwipeRow && activeSwipeRow !== row) closeSwipeMenu();
 
         touchstartX = e.touches[0].clientX;
         touchstartY = e.touches[0].clientY;
         isSwiping = false;
+        axisLocked = null; // Reset axis lock on new touch
 
         bsActionId = row.dataset.id;
         bsActionPhone = row.dataset.phone;
         bsActionName = row.dataset.name;
         bsActionProj = row.dataset.proj;
         
-        row.style.transition = 'none'; // precise 1:1 finger tracking
+        row.style.transition = 'none'; // Precise 1:1 finger tracking
     }
 
     function handleTouchMove(e) {
@@ -958,15 +983,22 @@
         currentY = e.touches[0].clientY;
 
         let diffX = currentX - touchstartX;
-        let diffY = Math.abs(currentY - touchstartY);
+        let diffY = currentY - touchstartY;
 
-        // If scrolling vertically more than horizontally, abort swipe
-        if (diffY > Math.abs(diffX) || diffY > 20) return;
+        // Lock the scrolling axis completely on first movement
+        if (!axisLocked) {
+            if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
+                axisLocked = Math.abs(diffX) > Math.abs(diffY) ? 'horizontal' : 'vertical';
+            }
+        }
 
-        // Left swipe mapping
-        if (diffX < -10 && diffX > -220) {
+        // If user is scrolling down/up, kill the swipe logic entirely
+        if (axisLocked === 'vertical') return; 
+
+        // Execute horizontal Reveal Swipe
+        if (axisLocked === 'horizontal' && diffX < 0 && diffX > -200) {
             isSwiping = true;
-            e.preventDefault(); // Stop horizontal scroll
+            e.preventDefault(); // Stop horizontal screen bouncing
             
             const row = e.currentTarget;
             row.style.transform = `translateX(${diffX}px)`;
@@ -975,13 +1007,16 @@
             const rect = row.getBoundingClientRect();
             menu.style.top = rect.top + 'px';
             menu.style.height = rect.height + 'px';
-            // Slide in visually
-            menu.style.right = Math.min(0, -220 - diffX) + 'px'; 
-            menu.classList.add('active'); // ensure display is triggerable
+            
+            // Smooth Parallax Reveal tracking
+            menu.style.transition = 'none';
+            menu.style.transform = `translateX(${Math.max(0, 200 + diffX)}px)`; 
+            menu.classList.add('active');
         }
     }
 
     function handleTouchEnd(e) {
+        if (!touchstartX) return;
         const row = e.currentTarget;
         row.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
         
@@ -992,23 +1027,23 @@
         
         let diffX = currentX - touchstartX;
         const menu = document.getElementById('iosSwipeMenu');
+        menu.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
 
-        if (diffX < -60) {
+        if (diffX < -70) {
             // Threshold crossed, lock open
-            row.style.transform = `translateX(-220px)`;
+            row.style.transform = `translateX(-200px)`;
             row.classList.add('swiped');
-            menu.style.right = '0px';
+            menu.style.transform = 'translateX(0)';
             menu.classList.add('active');
             activeSwipeRow = row;
             haptic('medium');
         } else {
             // Snap back closed
-            row.style.transform = 'translateX(0)';
-            menu.style.right = '-220px';
-            menu.classList.remove('active');
-            activeSwipeRow = null;
+            closeSwipeMenu();
         }
+        
         isSwiping = false;
+        axisLocked = null;
         touchstartX = 0; currentX = 0;
     }
 
