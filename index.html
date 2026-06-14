@@ -378,7 +378,6 @@
 <div id="crmView" class="hidden">
     <div class="workspace-layout">
         
-        <!-- Clean Static Top Bar (Replaces Problematic Header) -->
         <div class="top-bar glass-panel">
             <h1 class="main-title"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
@@ -581,9 +580,6 @@
     </div>
 </div>
 
-<!-- ====================================================
-   ACTION MODAL (BOTTOM SHEET)
-   ==================================================== -->
 <div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
     <div class="action-modal-content" onclick="event.stopPropagation()">
         <div class="action-btn-wrapper">
@@ -763,10 +759,18 @@
     });
 
     // ====================================================
+    // FIREBASE INITIALIZATION & OFFLINE PERSISTENCE
+    // ====================================================
 
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth(); const db = firebase.firestore();
+    const auth = firebase.auth(); 
+    const db = firebase.firestore();
+
+    // ERROR FIX 2: Enable offline persistence so app works without internet
+    db.enablePersistence({ synchronizeTabs: true }).catch(function(err) {
+        console.log("Firebase Offline Mode Error:", err.code);
+    });
 
     let clients = [];
     let customProjects = [];
@@ -774,6 +778,7 @@
     let currentProjectFilter = 'All'; 
     let currentQuickFilter = 'All'; 
     let initialLoad = true;
+    let unsubscribeSnapshot = null; // ERROR FIX 1: Prevent memory leak
     
     let sortColumn = 'leadDate';
     let sortAscending = false;
@@ -805,6 +810,7 @@
             document.getElementById('loginView').classList.remove('hidden');
             document.getElementById('crmView').classList.add('hidden');
             document.getElementById('bottomNav').style.display = 'none';
+            if(unsubscribeSnapshot) unsubscribeSnapshot(); // Clean up on logout
         }
     });
 
@@ -824,14 +830,29 @@
 
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        btn.innerText = "Authenticating..."; btn.disabled = true;
+        
         auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
-            .catch(err => { showNotification(err.message, 'error'); });
+            .then(() => {
+                btn.innerText = "Authorize Entry"; btn.disabled = false;
+            })
+            .catch(err => { 
+                showNotification(err.message, 'error'); 
+                btn.innerText = "Authorize Entry"; btn.disabled = false;
+            });
     });
+
     function logout() { auth.signOut(); showNotification('Logged out successfully', 'warning');}
 
+    // ERROR FIX 1: Cleaned up listener duplication on pull-to-refresh
     function loadData() {
         if(!auth.currentUser) return;
-        db.collection("leads").where("ownerId", "==", auth.currentUser.uid).onSnapshot(snap => {
+        
+        // Remove old listener before adding new one to stop duplicate reads
+        if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
+
+        unsubscribeSnapshot = db.collection("leads").where("ownerId", "==", auth.currentUser.uid).onSnapshot(snap => {
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             
             if(initialLoad) {
@@ -851,6 +872,8 @@
 
             updateDashboard();
             renderData();
+        }, error => {
+            showNotification("Data Sync Error: " + error.message, 'error');
         });
     }
 
@@ -1172,7 +1195,8 @@
         window.currentEditHistory = []; document.getElementById('historyTimeline').style.display = 'none';
     }
 
-    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+    // ERROR FIX 3: Safe CSV importing avoiding unhandled exceptions
+    document.getElementById('csvFileInput').addEventListener('change', async function(e) {
         const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = async function(event) {
@@ -1187,16 +1211,21 @@
             showNotification('Importing leads, please wait...', 'warning');
             let importCount = 0;
             for(let i = 1; i < rows.length; i++) {
-                const cols = rows[i].split(',');
-                const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : ''; let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim().replace(/[^0-9]/g, '') : '';
-                if(!name || !phone) continue;
-                
-                const srcIdx = headers.findIndex(h => h.includes('source')); const fileSource = (srcIdx !== -1 && cols[srcIdx]) ? cols[srcIdx].replace(/"/g,'').trim() : 'CSV Import';
+                try {
+                    const cols = rows[i].split(',');
+                    const name = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : ''; let phone = cols[phoneIdx] ? cols[phoneIdx].replace(/"/g,'').trim().replace(/[^0-9]/g, '') : '';
+                    if(!name || !phone) continue;
+                    
+                    const srcIdx = headers.findIndex(h => h.includes('source')); const fileSource = (srcIdx !== -1 && cols[srcIdx]) ? cols[srcIdx].replace(/"/g,'').trim() : 'CSV Import';
 
-                await db.collection("leads").add({
-                    ownerId: auth.currentUser.uid, leadDate: getToday(), name: name, phone: phone, leadSource: fileSource, status: 'New', 
-                    history: [{date: getToday(), time: getTime(), note: 'Imported via CSV'}], remark: 'Imported via CSV'
-                }); importCount++;
+                    await db.collection("leads").add({
+                        ownerId: auth.currentUser.uid, leadDate: getToday(), name: name, phone: phone, leadSource: fileSource, status: 'New', 
+                        history: [{date: getToday(), time: getTime(), note: 'Imported via CSV'}], remark: 'Imported via CSV'
+                    }); 
+                    importCount++;
+                } catch(error) {
+                    console.log("Error importing row " + i, error);
+                }
             }
             showNotification(`🎉 Successfully imported ${importCount} leads!`, 'success'); e.target.value = ''; 
         }; reader.readAsText(file);
@@ -1213,6 +1242,8 @@
             card.addEventListener('dragend', (e) => { e.currentTarget.style.opacity = '1'; draggedCardId = null; });
         });
     }
+    
+    // ERROR FIX 4: Proper error catching during Drag & Drop Firebase update
     function initDragAndDrop() {
         document.querySelectorAll('.kanban-dropzone').forEach(zone => {
             zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -1221,10 +1252,15 @@
                 e.preventDefault(); zone.classList.remove('drag-over');
                 const newStatus = zone.dataset.status;
                 if(draggedCardId) {
-                    db.collection("leads").doc(draggedCardId).update({ status: newStatus });
-                    showNotification(`Lead moved to ${newStatus}`, 'success');
-                    haptic('medium');
-                    if(newStatus === 'Closed') fireConfetti();
+                    db.collection("leads").doc(draggedCardId).update({ status: newStatus })
+                    .then(() => {
+                        showNotification(`Lead moved to ${newStatus}`, 'success');
+                        haptic('medium');
+                        if(newStatus === 'Closed') fireConfetti();
+                    })
+                    .catch(err => {
+                        showNotification("Failed to update status: " + err.message, 'error');
+                    });
                 }
             });
         });
