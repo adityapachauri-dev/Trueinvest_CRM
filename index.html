@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <link rel="icon" type="image/png" href="http://googleusercontent.com/image_generation_content/239">
-    <link rel="apple-touch-icon" href="http://googleusercontent.com/image_generation_content/239">
+    <link rel="icon" type="image/png" href="https://googleusercontent.com/image_generation_content/239">
+    <link rel="apple-touch-icon" href="https://googleusercontent.com/image_generation_content/239">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -183,11 +183,17 @@
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px;}
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
-        th { background: rgba(255,255,255,0.2); backdrop-filter: blur(15px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s;}
+        
+        /* 🛠️ BUG FIX: Table Headers wrapping */
+        th { background: rgba(255,255,255,0.2); backdrop-filter: blur(15px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s; white-space: nowrap; }
+        
         th:hover { background: rgba(0, 113, 227, 0.15); }
         .dark-theme th { background: rgba(0,0,0,0.3); }
         .dark-theme th:hover { background: rgba(10, 132, 255, 0.25); }
         
+        /* 🛠️ BUG FIX: Date columns formatting class */
+        .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
+
         tbody tr { cursor: pointer; background-color: transparent; } 
         tbody tr:last-child td { border-bottom: none; }
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
@@ -199,7 +205,7 @@
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none;}
         .kanban-col { flex: 1; min-width: 300px; padding: 16px; display: flex; flex-direction: column; }
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
-        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative;}
+        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative; touch-action: pan-y;}
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
         .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between;}
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px;}
@@ -281,7 +287,6 @@
         .btn-edit { background: #ff9f0a; color: white; }
         .btn-del { background: #ff3b30; color: white; }
 
-        /* BUG FIX: Call Log specific buttons (Grid Layout to prevent overflow) */
         .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 5px;}
         .call-status-btn { 
             width: 100%; height: 48px; border-radius: 14px; font-size: 12px; font-weight: 700; 
@@ -473,7 +478,7 @@
                     <div>
                         <label>Project / Site</label>
                         <select id="projectCategory">
-                            </select>
+                        </select>
                     </div>
                     <div>
                         <label>Specific Unit (Inventory)</label>
@@ -517,7 +522,7 @@
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
                 <button class="btn-secondary" onclick="downloadCSV()">📤 Export</button>
-                <button class="btn-secondary" onclick="removeDuplicates()" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Remove duplicate phone numbers">🧹 Clean</button>
+                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Clean Options">🧹 Clean</button>
             </div>
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
@@ -608,6 +613,17 @@
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; font-family:inherit;"></textarea>
             <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); border-top: 1px solid rgba(255,255,255,0.4);">Send via WhatsApp 🚀</button>
         </div>
+    </div>
+</div>
+
+<div id="cleanModal" class="action-modal-overlay" onclick="closeModal('cleanModal')">
+    <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <h3 style="margin:0; margin-top:20px; color:var(--text-color); text-align:center; font-weight:800; font-size:18px;">🧹 Data Cleanup</h3>
+        <p style="text-align:center; font-size:13px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-blue);">Choose what you want to clean</p>
+        
+        <button onclick="removeDuplicates()" style="background:var(--input-bg); color:var(--text-color); border:1px solid var(--border-color); box-shadow:none; margin-top:16px;">🗑️ Remove Duplicates Only</button>
+        <button onclick="deleteAllLeads()" style="background:rgba(211,47,47,0.1); color:var(--notify-red); border:1px solid rgba(211,47,47,0.3); box-shadow:none; margin-top:0;">⚠️ Delete ALL Leads</button>
     </div>
 </div>
 
@@ -738,8 +754,10 @@
     }
 
     function startDictation() {
-        if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        // BUG FIX: Updated the check to avoid reference errors on non-supported browsers
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
             const recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
@@ -788,7 +806,7 @@
         let isDragging = false;
         
         sheet.addEventListener('touchstart', (e) => {
-            if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+            if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
             startY = e.touches[0].clientY;
             isDragging = true;
             sheet.style.transition = 'none'; 
@@ -817,7 +835,6 @@
             startY = 0; currentY = 0;
         });
     });
-
 
     // ====================================================
     // PULL-TO-REFRESH & SHAKE TO SYNC LOGIC
@@ -866,7 +883,7 @@
 
             if (speed > SHAKE_THRESHOLD && !isShakeSyncing) {
                 isShakeSyncing = true;
-                if(auth.currentUser && !document.querySelector('.action-modal-overlay.active')) {
+                if(auth.currentUser && !document.querySelector('.action-modal-overlay.active') && !document.querySelector('.modal-overlay.active')) {
                     triggerDataSync("📳 Shake Sync...");
                 }
                 setTimeout(() => { isShakeSyncing = false; }, 2000); 
@@ -894,7 +911,6 @@
     // ====================================================
     // FIREBASE INITIALIZATION & OFFLINE PERSISTENCE
     // ====================================================
-
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); 
@@ -925,6 +941,15 @@
     };
 
     const getTime = () => { return new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute:'2-digit', hour12: true }); };
+
+    // 🛠️ BUG FIX: Improved Date Formatter for Premium Table Display
+    const formatDisplayDate = (dateStr) => {
+        if (!dateStr) return '-';
+        const parts = dateStr.split('-');
+        if(parts.length !== 3) return dateStr; 
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return `${parts[2]}-${months[parseInt(parts[1])-1]}-${parts[0]}`;
+    };
 
     auth.onAuthStateChanged(user => {
         if (user) {
@@ -1141,7 +1166,7 @@
             const existingClient = clients.find(x => x.id === id);
             if(existingClient && existingClient.remark) { historyArray.push({date: existingClient.leadDate || getToday(), time: '', note: existingClient.remark}); }
         }
-        if(newRemarkText) { historyArray.unshift({ date: getToday(), time: getTime(), note: newRemarkText }); }
+        if(newRemarkText) { historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText }); }
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
@@ -1260,7 +1285,7 @@
                 const client = clients.find(c => c.id === callTargetId);
                 if(client) {
                     let history = client.history || [];
-                    history.unshift({ date: getToday(), time: getTime(), note: finalRemark });
+                    history.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: finalRemark });
 
                     await db.collection("leads").doc(callTargetId).update({
                         history: history,
@@ -1320,14 +1345,15 @@
             tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
 
             tr.innerHTML = `
-                <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
+                <td style="opacity:0.4; font-weight:700;">${serial++}</td>
+                <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
                 <td style="font-weight:700">${c.name}</td>
                 <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                 <td><span class="badge ${badge}">${displayStatus}</span></td>
                 <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
                 <td style="font-size:12px; font-weight:700;">${c.projectCategory || '-'}${unitDisp}</td>
                 <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
-                <td style="font-weight:800; color:var(--text-color);">${c.followup || '-'}${timeDisplayFormatted}</td>
+                <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
                 <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
                 <td class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</td>
             `;
@@ -1360,7 +1386,7 @@
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
-                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${c.followup || '-'} ${timeDisplayFormatted}</div>
+                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
                     </div>
                 `;
             }
@@ -1410,7 +1436,6 @@
             const rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
             if(rows.length < 2) { showNotification('CSV file is empty or invalid.', 'error'); return; }
 
-            // Safe CSV Row Parser (Handles Commas inside Quotes)
             const parseCSVRow = (row) => {
                 const cols = []; let cur = '', inQuotes = false;
                 for(let char of row) {
@@ -1423,7 +1448,6 @@
 
             const headers = parseCSVRow(rows[0]).map(h => h.toLowerCase());
             
-            // Smart Keyword Matching
             const getIdx = (keywords) => headers.findIndex(h => keywords.some(kw => h.includes(kw)));
 
             const colMap = {
@@ -1468,18 +1492,20 @@
                     const location = cleanVal(colMap.location);
                     const budget = cleanVal(colMap.budget);
                     let status = cleanVal(colMap.status) || 'New';
-                    const remark = cleanVal(colMap.remark) || 'Imported via CSV';
+                    
+                    const remark = cleanVal(colMap.remark) || ''; 
 
-                    // Strict Status Normalization
                     const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed', 'Not Interested'];
                     const matchedStatus = validStatuses.find(s => s.toLowerCase() === status.toLowerCase());
                     if (matchedStatus) status = matchedStatus; else status = 'New';
+                    
+                    const historyArr = remark ? [{date: formatDisplayDate(getToday()), time: getTime(), note: remark}] : [];
 
                     await db.collection("leads").add({
                         ownerId: auth.currentUser.uid, leadDate: leadDate, name: name, phone: phone, 
                         leadSource: source, projectCategory: project, specificUnit: unit, location: location, 
                         status: status, budget: budget, visitDone: false, followup: "", followupTime: "", 
-                        remark: remark, history: [{date: getToday(), time: getTime(), note: remark}]
+                        remark: remark, history: historyArr
                     }); 
                     importCount++;
                 } catch(error) { console.log("Error importing row " + i, error); }
@@ -1585,27 +1611,25 @@
     }
 
     // ====================================================
-    // REMOVE DUPLICATE LEADS (SMART CLEANER)
+    // REMOVE DUPLICATE LEADS / DELETE ALL (SMART CLEANER)
     // ====================================================
     async function removeDuplicates() {
+        closeModal('cleanModal');
         if(!auth.currentUser) return;
         if(clients.length === 0) { showNotification("No leads to check.", "warning"); return; }
 
         if(!confirm("⚠️ This will scan and permanently delete duplicate leads based on their Phone Number.\n\nIt will safely keep the most recently updated record. Proceed?")) return;
 
-        const btn = document.querySelector('button[onclick="removeDuplicates()"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "⏳ Cleaning..."; btn.disabled = true;
+        showNotification("⏳ Cleaning Duplicates...", "warning");
 
         try {
             const phoneMap = new Map();
             let duplicateIds = [];
 
-            // Sort clients to prioritize keeping the ones with the most recent follow-up or leadDate
             const sortedClients = [...clients].sort((a, b) => {
                 const dateA = new Date(a.followup || a.leadDate || '1970-01-01').getTime();
                 const dateB = new Date(b.followup || b.leadDate || '1970-01-01').getTime();
-                return dateB - dateA; // Descending order
+                return dateB - dateA; 
             });
 
             sortedClients.forEach(client => {
@@ -1621,11 +1645,8 @@
 
             if(duplicateIds.length === 0) {
                 showNotification("Clean! No duplicate leads found. 🎉", "success");
-                btn.innerHTML = originalText; btn.disabled = false;
                 return;
             }
-
-            showNotification(`Found ${duplicateIds.length} duplicates. Deleting safely...`, "warning");
 
             let deletedCount = 0;
             for (const id of duplicateIds) {
@@ -1637,8 +1658,34 @@
             haptic('heavy');
         } catch (err) {
             showNotification("Error cleaning duplicates: " + err.message, "error");
-        } finally {
-            btn.innerHTML = originalText; btn.disabled = false;
+        }
+    }
+
+    async function deleteAllLeads() {
+        closeModal('cleanModal');
+        if(!auth.currentUser) return;
+        if(clients.length === 0) { showNotification("No leads to delete.", "warning"); return; }
+
+        const typedText = prompt(`⚠️ DANGER ZONE: This will permanently delete ALL ${clients.length} leads.\n\nType "DELETE" below to confirm this action:`);
+        
+        if (typedText !== "DELETE") {
+            if(typedText !== null) showNotification("Action cancelled. Incorrect text.", "error");
+            return;
+        }
+
+        showNotification("⏳ Deleting ALL leads... Please wait.", "warning");
+
+        try {
+            let deletedCount = 0;
+            for (const client of clients) {
+                await db.collection("leads").doc(client.id).delete();
+                deletedCount++;
+            }
+
+            showNotification(`🗑️ Successfully deleted ${deletedCount} leads!`, "success");
+            haptic('heavy');
+        } catch (err) {
+            showNotification("Error deleting leads: " + err.message, "error");
         }
     }
 
@@ -1646,7 +1693,7 @@
         try {
             const manifestData = {
                 name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#050505", theme_color: "#0071e3", start_url: ".",
-                icons: [{"src": "http://googleusercontent.com/image_generation_content/239", "sizes": "512x512", "type": "image/png"}]
+                icons: [{"src": "https://googleusercontent.com/image_generation_content/239", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
