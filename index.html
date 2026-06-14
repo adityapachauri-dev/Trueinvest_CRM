@@ -305,7 +305,6 @@
         @media (max-width: 992px) {
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
-                /* Space added for top notch so stats grid doesn't overlap phone notch */
                 padding-top: max(32px, env(safe-area-inset-top)); 
                 padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
             }
@@ -330,23 +329,24 @@
             .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
             .header-actions button { margin: 0; height: 44px; width: 44px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
 
-            /* SWIPE NOTCHES */
+            /* SWIPE NOTCHES (Larger Hitbox for better touch) */
             .top-swipe-notch {
-                display: block; position: fixed; top: max(8px, env(safe-area-inset-top));
-                left: 50%; transform: translateX(-50%); width: 40px; height: 5px;
-                background: var(--text-color); opacity: 0.15; border-radius: 10px;
-                z-index: 10000; cursor: pointer;
+                display: flex; position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+                width: 120px; height: 40px; align-items: center; justify-content: center;
+                z-index: 10000; cursor: pointer; padding-top: max(8px, env(safe-area-inset-top));
             }
-            .dark-theme .top-swipe-notch { opacity: 0.3; }
+            .top-swipe-notch::after {
+                content: ''; width: 40px; height: 5px; background: var(--text-color); opacity: 0.2; border-radius: 10px;
+            }
+            .dark-theme .top-swipe-notch::after { opacity: 0.4; }
             
             .header-swipe-up {
-                width: 100%; display: flex; justify-content: center; margin-top: 8px; cursor: pointer;
+                width: 100%; display: flex; justify-content: center; margin-top: 8px; cursor: pointer; padding: 10px 0;
             }
             .header-swipe-up::after {
-                content: ''; width: 40px; height: 5px; background: var(--text-color);
-                opacity: 0.15; border-radius: 10px;
+                content: ''; width: 40px; height: 5px; background: var(--text-color); opacity: 0.2; border-radius: 10px;
             }
-            .dark-theme .header-swipe-up::after { opacity: 0.3; }
+            .dark-theme .header-swipe-up::after { opacity: 0.4; }
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
@@ -442,7 +442,7 @@
         </header>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="mobile-hint" style="margin-top:0; padding-bottom:8px;">👉 Swipe DOWN from very top edge for App Menu</div>
+            <div class="mobile-hint" style="margin-top:0; padding-bottom:8px;">👉 Tap or Swipe DOWN top edge for Menu</div>
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -773,18 +773,54 @@
     }
 
     // ====================================================
-    // ADVANCED MOBILE GESTURES: HEADER SLIDE & PULL-TO-REFRESH
+    // ADVANCED MOBILE GESTURES: HEADER AUTO-HIDE & PULL-TO-REFRESH
     // ====================================================
     let pStartY = 0;
     let pCurrentY = 0;
+    let headerTimeout = null;
     const ptrSpinner = document.getElementById('ptrSpinner');
     const mobileHeader = document.getElementById('mainHeader');
 
+    // Logic to open header and set a 2-second auto-close timer
+    function openHeaderTemporarily() {
+        if (window.innerWidth <= 992 && mobileHeader) {
+            if(!mobileHeader.classList.contains('visible')) {
+                mobileHeader.classList.add('visible');
+                haptic('medium');
+            }
+            
+            // Clear existing timeout and set a new one for 2 seconds
+            if(headerTimeout) clearTimeout(headerTimeout);
+            headerTimeout = setTimeout(() => {
+                mobileHeader.classList.remove('visible');
+            }, 2000);
+        }
+    }
+
+    // Manual click toggle
     function toggleMobileHeader() {
         if (window.innerWidth <= 992 && mobileHeader) {
-            mobileHeader.classList.toggle('visible');
-            haptic('light');
+            if (mobileHeader.classList.contains('visible')) {
+                mobileHeader.classList.remove('visible');
+                if(headerTimeout) clearTimeout(headerTimeout);
+            } else {
+                openHeaderTemporarily();
+            }
         }
+    }
+
+    // Prevent auto-hide while user is actively touching the header
+    if (mobileHeader) {
+        mobileHeader.addEventListener('touchstart', () => {
+            if(headerTimeout) clearTimeout(headerTimeout);
+        }, {passive: true});
+
+        mobileHeader.addEventListener('touchend', () => {
+            if(headerTimeout) clearTimeout(headerTimeout);
+            headerTimeout = setTimeout(() => {
+                mobileHeader.classList.remove('visible');
+            }, 2000);
+        }, {passive: true});
     }
     
     document.addEventListener('touchstart', e => { 
@@ -796,7 +832,7 @@
         if(pStartY) {
             pCurrentY = e.touches[0].clientY;
             let diff = pCurrentY - pStartY;
-            // Only trigger Pull-To-Refresh visually if swiped down > 80px, starting from BELOW top edge (70px)
+            // Trigger Pull-To-Refresh visually if swiped down > 80px, starting from BELOW top edge
             if(window.scrollY === 0 && diff > 80 && pStartY > 70 && !mobileHeader.classList.contains('visible')) { 
                 ptrSpinner.classList.add('refreshing'); 
             }
@@ -808,19 +844,17 @@
         let pEndY = e.changedTouches[0].clientY;
         let diff = pEndY - pStartY;
 
-        // 1. Swipe Up to close header
+        // 1. Swipe Up to close header manually
         if (window.innerWidth <= 992 && mobileHeader.classList.contains('visible') && diff < -30) {
             mobileHeader.classList.remove('visible');
+            if(headerTimeout) clearTimeout(headerTimeout);
             haptic('light');
         }
-        // 2. Swipe Down logic (only if at the very top of scroll)
+        // 2. Swipe Down logic
         else if(window.scrollY === 0 && diff > 50) {
             if(pStartY <= 70 && window.innerWidth <= 992) {
-                // Swipe started from top edge -> Slide Down Header Menu
-                if(!mobileHeader.classList.contains('visible')) {
-                    mobileHeader.classList.add('visible');
-                    haptic('medium');
-                }
+                // Swipe started from top edge -> Open Header Temporarily
+                openHeaderTemporarily();
             } else if(pStartY > 70 && !mobileHeader.classList.contains('visible')) {
                 // Swipe started lower -> Pull To Refresh Sync
                 haptic('medium');
@@ -845,6 +879,7 @@
         if(window.innerWidth <= 992 && mobileHeader && mobileHeader.classList.contains('visible')) {
             if(!mobileHeader.contains(e.target) && e.target.id !== 'topNotch') {
                 mobileHeader.classList.remove('visible');
+                if(headerTimeout) clearTimeout(headerTimeout);
             }
         }
     });
