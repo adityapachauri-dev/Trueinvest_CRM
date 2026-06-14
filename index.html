@@ -21,39 +21,50 @@
            ==================================================== */
         :root {
             --bg-color: #f0f4f8; 
-            --card-bg: rgba(255, 255, 255, 0.4); 
+            --card-bg: rgba(255, 255, 255, 0.65); 
             --text-color: #111111; 
-            --border-color: rgba(255, 255, 255, 0.6); 
-            --border-highlight: rgba(255, 255, 255, 0.9);
-            --input-bg: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(255, 255, 255, 0.8); 
+            --border-highlight: rgba(255, 255, 255, 1);
+            --input-bg: rgba(255, 255, 255, 0.7);
             --accent-blue: #0071e3; 
-            --accent-glow: rgba(0, 113, 227, 0.4);
+            --accent-glow: rgba(0, 113, 227, 0.3);
             --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
-            --highlight-today: rgba(255, 249, 196, 0.6); --hot-bg: rgba(253, 232, 232, 0.6); --hot-text: #9b1c1c; 
-            --closed-bg: rgba(222, 247, 236, 0.6); --closed-text: #03543f; --cold-bg: rgba(229, 231, 235, 0.6); --cold-text: #4b5563;
+            --highlight-today: rgba(255, 249, 196, 0.8); --hot-bg: rgba(253, 232, 232, 0.8); --hot-text: #9b1c1c; 
+            --closed-bg: rgba(222, 247, 236, 0.8); --closed-text: #03543f; --cold-bg: rgba(229, 231, 235, 0.8); --cold-text: #4b5563;
             --shadow-sm: 0 8px 32px rgba(31, 38, 135, 0.07);
             --shadow-lg: 0 12px 48px rgba(31, 38, 135, 0.1);
-            --nav-bg: rgba(255, 255, 255, 0.5);
+            --nav-bg: rgba(255, 255, 255, 0.85);
             --glass-blur: blur(40px);
         }
 
         .dark-theme {
             --bg-color: #050505;
-            --card-bg: rgba(20, 20, 25, 0.4);
+            --card-bg: rgba(20, 20, 25, 0.6);
             --text-color: #f5f5f7;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-highlight: rgba(255, 255, 255, 0.2);
-            --input-bg: rgba(0, 0, 0, 0.4);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --border-highlight: rgba(255, 255, 255, 0.25);
+            --input-bg: rgba(0, 0, 0, 0.5);
             --accent-blue: #0a84ff;
             --accent-glow: rgba(10, 132, 255, 0.4);
-            --highlight-today: rgba(58, 58, 28, 0.6); --hot-bg: rgba(59, 28, 28, 0.6); --hot-text: #ff6b6b;
-            --closed-bg: rgba(28, 59, 43, 0.6); --closed-text: #4ade80; --cold-bg: rgba(44, 44, 46, 0.6); --cold-text: #9ca3af;
-            --shadow-sm: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6);
-            --nav-bg: rgba(20, 20, 25, 0.5);
+            --highlight-today: rgba(58, 58, 28, 0.8); --hot-bg: rgba(59, 28, 28, 0.8); --hot-text: #ff6b6b;
+            --closed-bg: rgba(28, 59, 43, 0.8); --closed-text: #4ade80; --cold-bg: rgba(44, 44, 46, 0.8); --cold-text: #9ca3af;
+            --shadow-sm: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.7);
+            --nav-bg: rgba(20, 20, 25, 0.85);
         }
         
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; width: 100vw; -webkit-font-smoothing: antialiased; transition: background 0.4s ease, color 0.4s ease; padding-bottom: env(safe-area-inset-bottom); min-height: 100vh;}
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; padding: 0; 
+            overflow-x: hidden; 
+            width: 100vw; 
+            -webkit-font-smoothing: antialiased; 
+            transition: background 0.4s ease, color 0.4s ease; 
+            min-height: 100vh;
+        }
+        
         * { box-sizing: border-box; }
 
         /* LIQUID BACKGROUND BLOBS */
@@ -83,9 +94,23 @@
             border-radius: 24px;
         }
 
-        .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 24px; max-width: 1750px; margin: 0 auto; padding: 24px; padding-top: max(24px, env(safe-area-inset-top)); width: 100%; }
+        .workspace-layout { 
+            display: grid; 
+            grid-template-columns: 420px 1fr; 
+            gap: 24px; 
+            max-width: 1750px; 
+            margin: 0 auto; 
+            padding: 24px; 
+            padding-top: max(24px, env(safe-area-inset-top)); 
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
+            width: 100%; 
+        }
 
-        header { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; position: sticky; top: max(12px, env(safe-area-inset-top)); z-index: 100; animation: fadeInDown 0.5s ease-out forwards; transition: all 0.4s ease;}
+        header { 
+            grid-column: span 2; display: flex; justify-content: space-between; align-items: center; 
+            padding: 16px 24px; position: sticky; top: max(12px, env(safe-area-inset-top)); 
+            z-index: 100; animation: fadeInDown 0.5s ease-out forwards; transition: all 0.4s ease;
+        }
         h1 { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1 span.brand { background: linear-gradient(135deg, #0071e3, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
@@ -100,15 +125,25 @@
         .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-card span { font-size: 32px; font-weight: 900; }
 
-        .notification-bar { background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; box-shadow: 0 8px 32px rgba(211, 47, 47, 0.3); border: 1px solid rgba(255,255,255,0.2); }
+        .notification-bar { 
+            background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; 
+            font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s ease-out forwards; 
+            box-shadow: 0 8px 32px rgba(211, 47, 47, 0.3); border: 1px solid rgba(255,255,255,0.2); 
+        }
 
         form, .table-container, .kanban-container, .login-card { padding: 28px; animation: slideInRight 0.5s ease-out 0.2s both; width: 100%; transition: background 0.4s ease, border 0.4s ease;}
         .login-card { max-width: 420px; margin: 15vh auto; text-align: center; animation: popIn 0.6s both; }
 
         label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: inherit; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px;}
         
-        input, textarea, button, select { padding: 16px 20px; margin: 0 0 20px 0; width: 100%; border: 1px solid var(--border-color); border-radius: 16px; background: var(--input-bg); color: var(--text-color); font-size: 16px; font-weight: 500; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        input[type="date"], input[type="time"], select { height: 54px; }
+        input, textarea, button, select { 
+            padding: 16px 20px; margin: 0 0 20px 0; width: 100%; border: 1px solid var(--border-color); 
+            border-radius: 16px; background: var(--input-bg); color: var(--text-color); font-size: 16px; 
+            font-weight: 500; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+        }
+        input[type="date"], input[type="time"], select { height: 54px; appearance: none; -webkit-appearance: none; }
         input:focus, select:focus, textarea:focus { background: var(--card-bg); border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: translateY(-2px); }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -150,10 +185,10 @@
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px;}
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
-        th { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s;}
-        th:hover { background: rgba(0, 113, 227, 0.1); }
-        .dark-theme th { background: rgba(0,0,0,0.2); }
-        .dark-theme th:hover { background: rgba(10, 132, 255, 0.2); }
+        th { background: rgba(255,255,255,0.2); backdrop-filter: blur(15px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s;}
+        th:hover { background: rgba(0, 113, 227, 0.15); }
+        .dark-theme th { background: rgba(0,0,0,0.3); }
+        .dark-theme th:hover { background: rgba(10, 132, 255, 0.25); }
         
         tbody tr { cursor: pointer; background-color: transparent; } 
         tbody tr:last-child td { border-bottom: none; }
@@ -180,9 +215,9 @@
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.9) translateY(20px); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.9) translateY(20px); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); max-height: 90vh; overflow-y: auto; }
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
@@ -190,13 +225,14 @@
         /* ====================================================
            MOBILE FEATURES: PULL-TO-REFRESH, MIC, TAP-TO-COPY
            ==================================================== */
-        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10000; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
+        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
         .ptr-spinner.refreshing { top: max(20px, env(safe-area-inset-top)); }
 
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; }
+        /* Fix overlapping mic icon by adding adequate bottom/right padding */
+        .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; padding-bottom: 20px; }
         
-        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none;}
+        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
         .mic-btn:hover { background: rgba(0, 113, 227, 0.2); }
         .mic-btn.recording { background: #ff3b30; color: white; animation: pulse 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
@@ -205,18 +241,19 @@
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
         /* ====================================================
-           ACTION MODAL (SIMPLE TOUCH - NO SWIPE)
+           ACTION MODAL (BOTTOM SHEET)
            ==================================================== */
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
-            z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            z-index: 10002; opacity: 0; pointer-events: none; transition: opacity 0.3s;
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .action-modal-content {
             background: var(--nav-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            width: 100%; max-width: 400px; padding: 24px 24px 40px 24px; border-radius: 32px 32px 0 0;
+            width: 100%; max-width: 400px; padding: 24px 24px calc(40px + env(safe-area-inset-bottom)) 24px; 
+            border-radius: 32px 32px 0 0;
             transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             border-top: 1px solid var(--border-highlight);
             display: flex; justify-content: space-around;
@@ -242,6 +279,8 @@
 
         .action-dots {
             font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
+            /* Ensure large enough touch target */
+            min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
         }
         .action-dots:active { transform: scale(0.8); }
 
@@ -249,7 +288,7 @@
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.4; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px;}
 
         /* PREMIUM TOAST NOTIFICATION SYSTEM */
-        #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
+        #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10005; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
         .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: #34c759; }
@@ -264,12 +303,15 @@
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
 
         @media (max-width: 992px) {
-            .workspace-layout { display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+            .workspace-layout { 
+                display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
+                padding-bottom: calc(110px + env(safe-area-inset-bottom)); /* Prevents overlap with nav bar */
+            }
             
             header { flex-direction: row; flex-wrap: wrap; text-align: left; gap: 12px; padding: 20px; border-radius: 24px;}
             header h1 { font-size: 1.5rem; width: 50%;}
             .header-actions { display: flex; gap: 10px; justify-content: flex-end; width: 45%; }
-            .header-actions button { margin: 0; height: 42px; width: 42px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
+            .header-actions button { margin: 0; height: 44px; width: 44px; padding: 0; border-radius: 50%; font-size: 18px; display:flex; align-items:center; justify-content:center;}
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             .stat-card { padding: 16px 8px; border-radius: 20px; }
@@ -279,10 +321,17 @@
             .form-grid > div { width: 100%; }
 
             /* FLOATING LIQUID PILL NAVIGATION */
-            .ios-bottom-nav { display: flex; position: fixed; bottom: max(20px, env(safe-area-inset-bottom)); left: 5%; width: 90%; background: var(--nav-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid var(--border-highlight); z-index: 999; padding: 12px 0; justify-content: space-evenly; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border-radius: 40px;}
+            .ios-bottom-nav { 
+                display: flex; position: fixed; 
+                bottom: max(20px, env(safe-area-inset-bottom)); /* Proper positioning above home indicator */
+                left: 5%; width: 90%; 
+                background: var(--nav-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
+                border: 1px solid var(--border-highlight); z-index: 9999; padding: 12px 0; justify-content: space-evenly; 
+                align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border-radius: 40px;
+            }
             .dark-theme .ios-bottom-nav { box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
             
-            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.3s;}
+            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.3s; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
             .tab-item.active { opacity: 1; color: var(--accent-blue); }
             .tab-item.active .icon { transform: scale(1.2) translateY(-4px); font-weight: bold; filter: drop-shadow(0 4px 8px var(--accent-glow));}
@@ -300,10 +349,10 @@
             .tab-add-btn { flex-shrink: 0; margin-left: 8px; }
 
             .mobile-hint { display: block; }
-            .table-container { padding: 0; width: 100%; overflow-x: auto; border-radius: 20px;}
+            .table-container { padding: 0; width: 100%; overflow-x: auto; border-radius: 20px; -webkit-overflow-scrolling: touch;}
             table { min-width: 800px; } 
 
-            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px; gap: 20px; max-width: 100vw; scrollbar-width: none; border-radius: 20px;}
+            .kanban-container { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px; gap: 20px; max-width: 100vw; scrollbar-width: none; border-radius: 20px; -webkit-overflow-scrolling: touch;}
             .kanban-container::-webkit-scrollbar { display: none; }
             .kanban-col { min-width: 85vw; scroll-snap-align: center; }
 
@@ -319,7 +368,6 @@
 </head>
 <body class="">
 
-<!-- Pull to Refresh Spinner -->
 <div id="ptrSpinner" class="ptr-spinner">↻ Refreshing...</div>
 
 <div class="liquid-bg">
@@ -433,7 +481,6 @@
                 <div id="historyTimeline" class="history-timeline glass-panel"></div>
                 
                 <label>Add Follow-up Remark</label>
-                <!-- Voice Typing Mic Button Added Here -->
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
                     <button type="button" class="mic-btn" onclick="startDictation()" title="Voice Typing">🎤</button>
@@ -478,7 +525,7 @@
                             <th onclick="handleSort('budget')">Budget ⇕</th>
                             <th onclick="handleSort('followup')">Follow-up ⇕</th>
                             <th style="max-width: 140px;">Latest Remark</th>
-                            <th style="width: 40px; text-align: center;"></th>
+                            <th style="width: 44px; text-align: center;"></th>
                         </tr>
                     </thead>
                     <tbody id="clientTable"></tbody>
@@ -548,9 +595,6 @@
     </div>
 </div>
 
-<!-- ====================================================
-   ACTION MODAL (SIMPLE TOUCH - NO SWIPE)
-   ==================================================== -->
 <div id="actionModal" class="action-modal-overlay" onclick="closeActionMenu()">
     <div class="action-modal-content" onclick="event.stopPropagation()">
         <div class="action-btn-wrapper">
@@ -1003,7 +1047,7 @@
     }
 
     // ====================================================
-    // SIMPLE TOUCH ACTION MENU (NO SWIPE)
+    // SIMPLE TOUCH ACTION MENU (BOTTOM SHEET)
     // ====================================================
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
 
@@ -1017,7 +1061,6 @@
         document.getElementById('actionModal').classList.remove('active');
     }
 
-    // Execute Actions from Swipe Menu (now Action Menu)
     function executeSwipeCall() { closeActionMenu(); window.location.href = 'tel:' + bsActionPhone; }
     function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
     function executeSwipeEdit() { closeActionMenu(); editLead(bsActionId); }
@@ -1062,7 +1105,6 @@
             tr.dataset.name = c.name.replace(/'/g, "\\'");
             tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
 
-            // Note: Added copyToClipboard function calls to Phone numbers
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td><td>${c.leadDate}</td>
                 <td style="font-weight:700">${c.name}</td>
@@ -1100,7 +1142,7 @@
                     <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${c.name.replace(/'/g, "\\'")}" data-proj="${(c.projectCategory||'').replace(/'/g, "\\'")}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
                             <span>${c.name} ${cold}</span>
-                            <span class="action-dots" style="padding:0 5px;" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
+                            <span class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">📞 ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
