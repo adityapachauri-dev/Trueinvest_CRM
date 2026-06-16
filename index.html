@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0 (3D Edition)</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,6 +14,8 @@
     <link rel="apple-touch-icon" href="https://googleusercontent.com/image_generation_content/239">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.51/build/spline-viewer.js"></script>
 
     <style>
         /* ====================================================
@@ -67,7 +69,32 @@
         
         * { box-sizing: border-box; }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
+        /* Custom Sleek Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 113, 227, 0.6); }
+        .dark-theme ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+
+        /* ====================================================
+           3D CINEMATIC BACKGROUND (Spline) & Liquid Fallback
+           ==================================================== */
+        .cinematic-3d-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -5; /* Behind everything */
+            pointer-events: none; /* Allows CRM to be clicked normally */
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+        spline-viewer::part(logo) {
+            display: none; /* Removes watermark */
+        }
+
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -6; overflow: hidden; pointer-events: none; }
         .blob { position: absolute; filter: blur(90px); border-radius: 50%; animation: float 12s infinite alternate ease-in-out; opacity: 0.5; mix-blend-mode: multiply; }
         .dark-theme .blob { mix-blend-mode: screen; opacity: 0.3; }
         .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(0, 113, 227, 0.6); }
@@ -90,6 +117,7 @@
             border-left: 1px solid var(--border-highlight);
             box-shadow: var(--shadow-sm);
             border-radius: 24px;
+            transform-style: preserve-3d; /* Smooth 3D rendering */
         }
 
         .workspace-layout { 
@@ -117,11 +145,11 @@
 
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
+        .stat-card { padding: 20px; text-align: center; transition: transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
         .stat-card:active { transform: scale(0.95); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 20px var(--accent-glow); }
-        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .stat-card span { font-size: 32px; font-weight: 900; }
+        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transform: translateZ(20px);} /* 3D POP */
+        .stat-card span { font-size: 32px; font-weight: 900; transform: translateZ(30px); display: inline-block;} /* 3D POP */
 
         .notification-bar { 
             background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
@@ -148,11 +176,42 @@
         .flex-row { display: flex; gap: 12px; width: 100%; }
         .flex-row input { margin-bottom: 0; }
 
+        /* LEAD TEMPERATURE (HOT/WARM/COLD) TICK SECTION */
+        .segmented-control {
+            display: flex; gap: 8px; background: var(--input-bg);
+            padding: 6px; border-radius: 16px; border: 1px solid var(--border-color);
+            margin-bottom: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .segmented-control input[type="radio"] { display: none; }
+        .segmented-control label {
+            flex: 1; text-align: center; padding: 14px 0; margin: 0;
+            border-radius: 12px; cursor: pointer; font-size: 14px;
+            font-weight: 700; opacity: 0.6; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .segmented-control input[type="radio"]:checked + label {
+            opacity: 1; transform: scale(1.02); box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .segmented-control input[type="radio"]:checked + .seg-hot {
+            background: rgba(255, 59, 48, 0.15); color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.4);
+        }
+        .segmented-control input[type="radio"]:checked + .seg-warm {
+            background: rgba(255, 159, 10, 0.15); color: #ff9f0a; border: 1px solid rgba(255, 159, 10, 0.4);
+        }
+        .segmented-control input[type="radio"]:checked + .seg-cold {
+            background: rgba(10, 132, 255, 0.15); color: #0a84ff; border: 1px solid rgba(10, 132, 255, 0.4);
+        }
+        .dark-theme .segmented-control input[type="radio"]:checked + label {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
         .badge { padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
         .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: rgba(255,107,107,0.4); }
         .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: rgba(74,222,128,0.4); }
         .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: var(--border-color); }
         .status-default { background: var(--input-bg); color: var(--text-color); border-color: var(--border-color); }
+        
+        .temp-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; }
 
         .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: all 0.3s; }
         .check-item input[type="checkbox"] { width: 26px; height: 26px; margin: 0; cursor: pointer; border-radius: 8px; accent-color: var(--accent-blue);}
@@ -184,18 +243,29 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
         
-        /* 🛠️ BUG FIX: Table Headers wrapping */
         th { background: rgba(255,255,255,0.2); backdrop-filter: blur(15px); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.3s; white-space: nowrap; }
         
         th:hover { background: rgba(0, 113, 227, 0.15); }
         .dark-theme th { background: rgba(0,0,0,0.3); }
         .dark-theme th:hover { background: rgba(10, 132, 255, 0.25); }
         
-        /* 🛠️ BUG FIX: Date columns formatting class */
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
-        tbody tr { cursor: pointer; background-color: transparent; } 
+        tbody tr { 
+            cursor: pointer; background-color: transparent; 
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.2s;
+        } 
+        tbody tr:hover {
+            transform: translateY(-2px) scale(1.01);
+            background: rgba(0, 113, 227, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+        .dark-theme tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
         tbody tr:last-child td { border-bottom: none; }
+        
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
         .row-cold { opacity: 0.6; filter: grayscale(50%); }
 
@@ -205,10 +275,10 @@
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none;}
         .kanban-col { flex: 1; min-width: 300px; padding: 16px; display: flex; flex-direction: column; }
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
-        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative; touch-action: pan-y;}
+        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative; touch-action: pan-y; transform-style: preserve-3d;}
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
-        .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between;}
-        .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px;}
+        .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transform: translateZ(20px);}
+        .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px; transform: translateZ(10px);}
         
         .kanban-dropzone { min-height: 100px; flex-grow: 1; border-radius: 16px; transition: background 0.3s;}
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); }
@@ -239,9 +309,7 @@
         .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
-        /* ====================================================
-           ACTION MODALS & BOTTOM SHEETS (WITH GESTURES)
-           ==================================================== */
+        /* ACTION MODALS & BOTTOM SHEETS */
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
@@ -260,7 +328,6 @@
         }
         .action-modal-overlay.active .action-modal-content { transform: translateY(0); }
         
-        /* Modal Handle for Swipe Indication */
         .sheet-handle {
             position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
             width: 40px; height: 5px; background: var(--text-color); opacity: 0.2; 
@@ -320,7 +387,10 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
 
+        /* Mobile Adjustments (Hides Heavy 3D Background) */
         @media (max-width: 992px) {
+            .cinematic-3d-bg { display: none; /* Disable Spline on mobile to save battery and keep smooth drag drops */ }
+            
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
                 padding-top: max(16px, env(safe-area-inset-top)); 
@@ -384,6 +454,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="">
+
+<div class="cinematic-3d-bg">
+    <spline-viewer url="https://prod.spline.design/dpBpd-yJ502X-2t0/scene.splinecode"></spline-viewer>
+</div>
 
 <div id="ptrSpinner" class="ptr-spinner">↻ Refreshing...</div>
 
@@ -451,6 +525,18 @@
                 <input type="text" id="name" placeholder="Full Name" required>
                 <input type="tel" id="phone" placeholder="10-Digit Phone" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 
+                <label>Lead Priority (Temperature)</label>
+                <div class="segmented-control">
+                    <input type="radio" id="tempHot" name="leadTemp" value="Hot">
+                    <label for="tempHot" class="seg-hot">🔥 Hot</label>
+
+                    <input type="radio" id="tempWarm" name="leadTemp" value="Warm" checked>
+                    <label for="tempWarm" class="seg-warm">☀️ Warm</label>
+
+                    <input type="radio" id="tempCold" name="leadTemp" value="Cold">
+                    <label for="tempCold" class="seg-cold">❄️ Cold</label>
+                </div>
+
                 <div class="form-grid">
                     <div>
                         <label>Lead Source</label>
@@ -754,7 +840,6 @@
     }
 
     function startDictation() {
-        // BUG FIX: Updated the check to avoid reference errors on non-supported browsers
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (SpeechRecognition) {
@@ -942,7 +1027,6 @@
 
     const getTime = () => { return new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute:'2-digit', hour12: true }); };
 
-    // 🛠️ BUG FIX: Improved Date Formatter for Premium Table Display
     const formatDisplayDate = (dateStr) => {
         if (!dateStr) return '-';
         const parts = dateStr.split('-');
@@ -1116,7 +1200,9 @@
         const today = getToday();
         const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
         document.getElementById('statTotal').innerText = clients.length;
-        document.getElementById('statHot').innerText = clients.filter(c => c.status === 'Hot').length;
+        
+        document.getElementById('statHot').innerText = clients.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot').length;
+        
         document.getElementById('statFollow').innerText = follow;
 
         const bar = document.getElementById('reminderAlert');
@@ -1168,6 +1254,8 @@
         }
         if(newRemarkText) { historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText }); }
 
+        const selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
+
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "", followupTime: document.getElementById('followupTime').value || "",
@@ -1175,6 +1263,7 @@
             leadSource: document.getElementById('leadSource').value, projectCategory: document.getElementById('projectCategory').value, 
             specificUnit: document.getElementById('specificUnit').value.trim(), location: document.getElementById('location').value, 
             status: statusVal, budget: document.getElementById('budget').value, visitDone: document.getElementById('visitDone').checked, 
+            leadTemperature: selectedTemp,
             history: historyArray, remark: historyArray.length > 0 ? historyArray[0].note : '' 
         };
 
@@ -1197,7 +1286,7 @@
     function getFilteredData() {
         let data = currentProjectFilter === 'All' ? [...clients] : clients.filter(c => c.projectCategory === currentProjectFilter);
         
-        if(currentQuickFilter === 'Hot') { data = data.filter(c => c.status === 'Hot'); } 
+        if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
         
         data.sort((a, b) => {
@@ -1241,7 +1330,6 @@
         window.location.href = 'tel:' + bsActionPhone; 
     }
 
-    // Listen to returning from native dialer
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible' && isCalling) {
             isCalling = false;
@@ -1300,7 +1388,6 @@
         }
         closeCallLogModal();
     }
-    // ====================================================
 
     function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
     function executeSwipeEdit() { closeActionMenu(); editLead(bsActionId); }
@@ -1334,6 +1421,12 @@
             let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
+            const tempVal = c.leadTemperature || 'Warm';
+            let tempBadge = '';
+            if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background:rgba(255,59,48,0.15); color:#ff3b30; border:1px solid rgba(255,59,48,0.3);">🔥 HOT</span>';
+            else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.15); color:#ff9f0a; border:1px solid rgba(255,159,10,0.3);">☀️ WARM</span>';
+            else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.15); color:#0a84ff; border:1px solid rgba(10,132,255,0.3);">❄️ COLD</span>';
+
             const tr = document.createElement('tr');
             tr.className = `${highlight} ${coldClass}`;
             tr.title = "Double-click to Edit, Tap ⋮ for Actions";
@@ -1347,7 +1440,7 @@
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                 <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                <td style="font-weight:700">${c.name}</td>
+                <td style="font-weight:700; white-space:nowrap;">${c.name} ${tempBadge}</td>
                 <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                 <td><span class="badge ${badge}">${displayStatus}</span></td>
                 <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
@@ -1378,10 +1471,16 @@
                 const cold = isColdLead(c.followup) ? '<span style="color:#0a84ff;">❄️</span>' : '';
                 let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
+                const tempVal = c.leadTemperature || 'Warm';
+                let tempIcon = '';
+                if(tempVal === 'Hot') tempIcon = '<span title="Hot Priority" style="font-size:14px; margin-left:4px;">🔥</span>';
+                else if(tempVal === 'Warm') tempIcon = '<span title="Warm Priority" style="font-size:14px; margin-left:4px;">☀️</span>';
+                else if(tempVal === 'Cold') tempIcon = '<span title="Cold Priority" style="font-size:14px; margin-left:4px;">❄️</span>';
+
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${c.name.replace(/'/g, "\\'")}" data-proj="${(c.projectCategory||'').replace(/'/g, "\\'")}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
-                            <span>${c.name} ${cold}</span>
+                            <span style="display:flex; align-items:center;">${c.name} ${tempIcon} ${cold}</span>
                             <span class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">📞 ${c.phone}</div>
@@ -1392,6 +1491,15 @@
             }
         });
         addDragEvents();
+        
+        // Re-initialize Vanilla-Tilt on newly rendered Kanban cards!
+        VanillaTilt.init(document.querySelectorAll(".k-card"), {
+            max: 10,
+            speed: 300,
+            glare: true,
+            "max-glare": 0.15,
+            scale: 1.02
+        });
     }
 
     function editLead(id) {
@@ -1404,6 +1512,13 @@
         });
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('saveBtn').innerText = "Update Record";
+
+        if(c.leadTemperature) {
+            const tempRadio = document.querySelector(`input[name="leadTemp"][value="${c.leadTemperature}"]`);
+            if(tempRadio) tempRadio.checked = true;
+        } else {
+            document.getElementById('tempWarm').checked = true;
+        }
         
         window.currentEditHistory = c.history || [];
         const tLine = document.getElementById('historyTimeline'); document.getElementById('newRemark').value = '';
@@ -1423,6 +1538,7 @@
         document.getElementById('clientForm').reset(); document.getElementById('editId').value = "";
         document.getElementById('saveBtn').innerText = "Save Record"; document.getElementById('leadDate').value = getToday();
         window.currentEditHistory = []; document.getElementById('historyTimeline').style.display = 'none';
+        if(document.getElementById('tempWarm')) document.getElementById('tempWarm').checked = true;
     }
 
     // ====================================================
@@ -1505,7 +1621,7 @@
                         ownerId: auth.currentUser.uid, leadDate: leadDate, name: name, phone: phone, 
                         leadSource: source, projectCategory: project, specificUnit: unit, location: location, 
                         status: status, budget: budget, visitDone: false, followup: "", followupTime: "", 
-                        remark: remark, history: historyArr
+                        leadTemperature: 'Warm', remark: remark, history: historyArr
                     }); 
                     importCount++;
                 } catch(error) { console.log("Error importing row " + i, error); }
@@ -1599,10 +1715,11 @@
     
     function downloadCSV() {
         if(clients.length === 0) { showNotification("No data to export!", 'error'); return; }
-        const headers = ["Date", "Name", "Phone", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
+        
+        const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
         const exportData = getFilteredData();
         const rows = exportData.map(c => [
-            c.leadDate, `"${c.name}"`, c.phone, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
+            c.leadDate, `"${c.name}"`, c.phone, `"${c.leadTemperature || 'Warm'}"`, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
             `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', c.followupTime || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
         ]);
         const link = document.createElement("a"); link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
@@ -1699,6 +1816,26 @@
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
         } catch(e) { console.log("PWA init handled"); }
     })();
+
+    // ====================================================
+    // 3D TILT EFFECTS (Vanilla-Tilt) INITIALIZATION
+    // ====================================================
+    document.addEventListener("DOMContentLoaded", function() {
+        VanillaTilt.init(document.querySelectorAll(".stat-card"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.3,
+            scale: 1.05
+        });
+
+        VanillaTilt.init(document.querySelector(".login-card"), {
+            max: 10,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2
+        });
+    });
 
 </script>
 </body>
