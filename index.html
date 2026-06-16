@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0 (3D Edition)</title>
+    <title>TRUE INVEST CRM - Apple Premium v3.0</title>
     
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,9 +13,13 @@
     <link rel="icon" type="image/png" href="https://googleusercontent.com/image_generation_content/239">
     <link rel="apple-touch-icon" href="https://googleusercontent.com/image_generation_content/239">
 
+    <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.51/build/spline-viewer.js"></script>
+    
+    <!-- iOS Icons (Ionicons) -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     <style>
         /* ====================================================
@@ -76,25 +80,9 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(0, 113, 227, 0.6); }
         .dark-theme ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
 
-        /* ====================================================
-           3D CINEMATIC BACKGROUND (Spline) & Liquid Fallback
-           ==================================================== */
-        .cinematic-3d-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -5; /* Behind everything */
-            pointer-events: none; /* Allows CRM to be clicked normally */
-            opacity: 0.8;
-            transition: opacity 0.5s ease;
-        }
-        spline-viewer::part(logo) {
-            display: none; /* Removes watermark */
-        }
+        ion-icon { vertical-align: -0.125em; font-size: 1.2em; }
 
-        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -6; overflow: hidden; pointer-events: none; }
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none; }
         .blob { position: absolute; filter: blur(90px); border-radius: 50%; animation: float 12s infinite alternate ease-in-out; opacity: 0.5; mix-blend-mode: multiply; }
         .dark-theme .blob { mix-blend-mode: screen; opacity: 0.3; }
         .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: rgba(0, 113, 227, 0.6); }
@@ -117,7 +105,6 @@
             border-left: 1px solid var(--border-highlight);
             box-shadow: var(--shadow-sm);
             border-radius: 24px;
-            transform-style: preserve-3d; /* Smooth 3D rendering */
         }
 
         .workspace-layout { 
@@ -145,11 +132,11 @@
 
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px; text-align: center; transition: transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; }
+        .stat-card { padding: 20px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s; animation: popIn 0.5s both; cursor: pointer; transform-style: preserve-3d; }
         .stat-card:active { transform: scale(0.95); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 20px var(--accent-glow); }
-        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transform: translateZ(20px);} /* 3D POP */
-        .stat-card span { font-size: 32px; font-weight: 900; transform: translateZ(30px); display: inline-block;} /* 3D POP */
+        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transform: translateZ(20px);}
+        .stat-card span { font-size: 32px; font-weight: 900; transform: translateZ(30px); display:inline-block; }
 
         .notification-bar { 
             background: rgba(211, 47, 47, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
@@ -224,7 +211,7 @@
         .btn-secondary:hover { background: var(--card-bg); border-color: var(--accent-blue); transform: translateY(-2px); }
 
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s ease-out 0.3s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 20px; font-weight: 600; font-size: 15px; background: var(--input-bg); box-shadow: 0 0 15px var(--accent-glow);}
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 40px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%230071e3" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%230071e3" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 14px center; box-shadow: 0 0 15px var(--accent-glow);}
         .controls-row button { height: 48px; margin: 0; padding: 0 20px; width: auto; }
 
         .project-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px; width: 100%; max-width: max-content; animation: slideInRight 0.5s ease-out 0.35s both; align-items: center;}
@@ -261,9 +248,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border-radius: 12px;
         }
-        .dark-theme tbody tr:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .dark-theme tbody tr:hover { background: rgba(255, 255, 255, 0.05); }
         tbody tr:last-child td { border-bottom: none; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
@@ -295,13 +280,13 @@
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
         .modal-close:hover { transform: rotate(90deg); background: var(--card-bg); }
 
-        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none;}
+        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px rgba(0,113,227,0.2); pointer-events: none; display: flex; align-items: center; gap: 8px;}
         .ptr-spinner.refreshing { top: max(30px, env(safe-area-inset-top)); }
 
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; padding-bottom: 20px; }
         
-        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
+        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
         .mic-btn:hover { background: rgba(0, 113, 227, 0.2); }
         .mic-btn.recording { background: #ff3b30; color: white; animation: pulse 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
@@ -368,7 +353,7 @@
         .call-status-btn.busy.active { background: #ff3b30; color: white; box-shadow: 0 4px 15px rgba(255,59,48,0.4); }
 
         .action-dots {
-            font-size: 22px; color: var(--accent-blue); text-align: center; font-weight: 900; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
+            font-size: 24px; color: var(--accent-blue); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
         }
         .action-dots:active { transform: scale(0.8); }
@@ -387,10 +372,7 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.7; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
 
-        /* Mobile Adjustments (Hides Heavy 3D Background) */
         @media (max-width: 992px) {
-            .cinematic-3d-bg { display: none; /* Disable Spline on mobile to save battery and keep smooth drag drops */ }
-            
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
                 padding-top: max(16px, env(safe-area-inset-top)); 
@@ -455,11 +437,7 @@
 </head>
 <body class="">
 
-<div class="cinematic-3d-bg">
-    <spline-viewer url="https://prod.spline.design/dpBpd-yJ502X-2t0/scene.splinecode"></spline-viewer>
-</div>
-
-<div id="ptrSpinner" class="ptr-spinner">↻ Refreshing...</div>
+<div id="ptrSpinner" class="ptr-spinner"><ion-icon name="sync-circle"></ion-icon> Refreshing...</div>
 
 <div class="liquid-bg">
     <div class="blob blob-1"></div>
@@ -488,9 +466,9 @@
         <div class="top-bar glass-panel">
             <h1 class="main-title"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
-                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn">🌙</button>
-                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="openModal('emiModal')" title="Calculator">🧮</button>
-                <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:18px; margin:0;" onclick="logout()" title="Logout">⏻</button>
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
+                <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
             </div>
         </div>
 
@@ -499,8 +477,8 @@
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label>🔥 Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
-                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label>⏰ Today's Action</label><span id="statFollow">0</span></div>
+                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:#ff3b30;"></ion-icon> Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
+                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label><ion-icon name="alarm"></ion-icon> Today's Action</label><span id="statFollow">0</span></div>
                 </div>
             </div>
             <div id="reminderAlert" class="notification-bar glass-panel"></div>
@@ -528,13 +506,13 @@
                 <label>Lead Priority (Temperature)</label>
                 <div class="segmented-control">
                     <input type="radio" id="tempHot" name="leadTemp" value="Hot">
-                    <label for="tempHot" class="seg-hot">🔥 Hot</label>
+                    <label for="tempHot" class="seg-hot"><ion-icon name="flame"></ion-icon> Hot</label>
 
                     <input type="radio" id="tempWarm" name="leadTemp" value="Warm" checked>
-                    <label for="tempWarm" class="seg-warm">☀️ Warm</label>
+                    <label for="tempWarm" class="seg-warm"><ion-icon name="sunny"></ion-icon> Warm</label>
 
                     <input type="radio" id="tempCold" name="leadTemp" value="Cold">
-                    <label for="tempCold" class="seg-cold">❄️ Cold</label>
+                    <label for="tempCold" class="seg-cold"><ion-icon name="snow"></ion-icon> Cold</label>
                 </div>
 
                 <div class="form-grid">
@@ -587,12 +565,12 @@
                 <label>Add Follow-up Remark</label>
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
-                    <button type="button" class="mic-btn" onclick="startDictation()" title="Voice Typing">🎤</button>
+                    <button type="button" class="mic-btn" onclick="startDictation()" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
                 </div>
                 
                 <div class="check-item" style="border-color: var(--accent-blue); background: var(--accent-glow);">
                     <input type="checkbox" id="syncCalendar" checked>
-                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:800;">📅 Sync to Apple / System Calendar</label>
+                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:800;"><ion-icon name="calendar"></ion-icon> Sync to Apple / System Calendar</label>
                 </div>
 
                 <button type="submit" id="saveBtn">Save Record</button>
@@ -606,9 +584,9 @@
             <div class="controls-row glass-panel">
                 <input type="text" id="search" class="search-box" placeholder="🔍 Direct Filter / Search leads...">
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-                <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()">📥 Import</button>
-                <button class="btn-secondary" onclick="downloadCSV()">📤 Export</button>
-                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Clean Options">🧹 Clean</button>
+                <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()"><ion-icon name="download"></ion-icon> Import</button>
+                <button class="btn-secondary" onclick="downloadCSV()"><ion-icon name="share"></ion-icon> Export</button>
+                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Clean Options"><ion-icon name="trash"></ion-icon> Clean</button>
             </div>
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
@@ -640,9 +618,9 @@
             <div class="kanban-container hidden glass-panel" id="kanbanView">
                 <div class="kanban-col"><h3 style="border-bottom-color:#0a84ff;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#ff9f0a;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#ff453a;">Hot 🔥</h3><div class="kanban-dropzone" data-status="Hot"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#ff453a;">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#bf5af2;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#32d74b;">Closed 🎉</h3><div class="kanban-dropzone" data-status="Closed"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#32d74b;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
         </div>
     </div>
@@ -650,15 +628,15 @@
 
 <nav class="ios-bottom-nav" id="bottomNav">
     <div class="tab-item" onclick="switchMobileTab('tabAddForm', this)">
-        <div class="icon">➕</div>
+        <div class="icon"><ion-icon name="add-circle"></ion-icon></div>
         <span>Add Lead</span>
     </div>
     <div class="tab-item active" onclick="switchMobileTab('tabDataView', this); setViewMode('table');">
-        <div class="icon">📋</div>
+        <div class="icon"><ion-icon name="list"></ion-icon></div>
         <span>List View</span>
     </div>
     <div class="tab-item" onclick="switchMobileTab('tabDataView', this); setViewMode('kanban');">
-        <div class="icon">📊</div>
+        <div class="icon"><ion-icon name="grid"></ion-icon></div>
         <span>Board View</span>
     </div>
 </nav>
@@ -680,7 +658,7 @@
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <button class="modal-close" onclick="closeModal('waModal')" style="margin-top:10px;">×</button>
-        <h2 style="margin-top:10px; color:var(--whatsapp-green); font-size:24px; font-weight:800;">📱 Smart WA</h2>
+        <h2 style="margin-top:10px; color:var(--whatsapp-green); font-size:24px; font-weight:800;"><ion-icon name="logo-whatsapp"></ion-icon> Smart WA</h2>
         <p style="font-size:15px; color:var(--text-color); margin-bottom:24px; font-weight:600; background:var(--input-bg); padding:16px; border-radius:16px;" id="waTargetName">Sending to: </p>
         <input type="hidden" id="waTargetPhone">
         
@@ -708,8 +686,8 @@
         <h3 style="margin:0; margin-top:20px; color:var(--text-color); text-align:center; font-weight:800; font-size:18px;">🧹 Data Cleanup</h3>
         <p style="text-align:center; font-size:13px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-blue);">Choose what you want to clean</p>
         
-        <button onclick="removeDuplicates()" style="background:var(--input-bg); color:var(--text-color); border:1px solid var(--border-color); box-shadow:none; margin-top:16px;">🗑️ Remove Duplicates Only</button>
-        <button onclick="deleteAllLeads()" style="background:rgba(211,47,47,0.1); color:var(--notify-red); border:1px solid rgba(211,47,47,0.3); box-shadow:none; margin-top:0;">⚠️ Delete ALL Leads</button>
+        <button class="btn-secondary" onclick="removeDuplicates()" style="margin-top:16px;">🗑️ Remove Duplicates Only</button>
+        <button class="btn-secondary" onclick="deleteAllLeads()" style="background:rgba(211,47,47,0.1); color:var(--notify-red); border:1px solid rgba(211,47,47,0.3); margin-top:0;">⚠️ Delete ALL Leads</button>
     </div>
 </div>
 
@@ -717,19 +695,19 @@
     <div class="action-modal-content swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <div class="action-btn-wrapper">
-            <button class="simple-action-btn btn-call" onclick="executeSwipeCall()">📞</button>
+            <button class="simple-action-btn btn-call" onclick="executeSwipeCall()"><ion-icon name="call"></ion-icon></button>
             <span>Call</span>
         </div>
         <div class="action-btn-wrapper">
-            <button class="simple-action-btn btn-wa" onclick="executeSwipeWa()">💬</button>
+            <button class="simple-action-btn btn-wa" onclick="executeSwipeWa()"><ion-icon name="logo-whatsapp"></ion-icon></button>
             <span>WhatsApp</span>
         </div>
         <div class="action-btn-wrapper">
-            <button class="simple-action-btn btn-edit" onclick="executeSwipeEdit()">📝</button>
+            <button class="simple-action-btn btn-edit" onclick="executeSwipeEdit()"><ion-icon name="create"></ion-icon></button>
             <span>Edit</span>
         </div>
         <div class="action-btn-wrapper">
-            <button class="simple-action-btn btn-del" onclick="executeSwipeDel()">🗑️</button>
+            <button class="simple-action-btn btn-del" onclick="executeSwipeDel()"><ion-icon name="trash"></ion-icon></button>
             <span>Delete</span>
         </div>
     </div>
@@ -772,7 +750,7 @@
         if(savedTheme === 'dark') {
             document.body.classList.add('dark-theme');
             const toggleBtn = document.getElementById('themeToggleBtn');
-            if(toggleBtn) toggleBtn.innerText = '☀️';
+            if(toggleBtn) toggleBtn.innerHTML = '<ion-icon name="sunny"></ion-icon>';
             document.getElementById('themeColorMeta').setAttribute('content', '#050505');
         }
     }
@@ -784,7 +762,7 @@
         const isDark = body.classList.contains('dark-theme');
         localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
         const toggleBtn = document.getElementById('themeToggleBtn');
-        if(toggleBtn) toggleBtn.innerText = isDark ? '☀️' : '🌙';
+        if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
         document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#050505' : '#f0f4f8');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
     }
@@ -815,9 +793,9 @@
         const toast = document.createElement('div');
         toast.className = `toast glass-panel ${type}`;
         
-        let icon = '✅';
-        if(type === 'error') icon = '❌';
-        if(type === 'warning') icon = '⚠️';
+        let icon = '<ion-icon name="checkmark-circle"></ion-icon>';
+        if(type === 'error') icon = '<ion-icon name="close-circle"></ion-icon>';
+        if(type === 'warning') icon = '<ion-icon name="warning"></ion-icon>';
 
         toast.innerHTML = `<span class="toast-icon">${icon}</span> <span>${message}</span>`;
         
@@ -1134,7 +1112,7 @@
             </div>`;
         });
         
-        tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site">➕</button>`;
+        tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site"><ion-icon name="add"></ion-icon></button>`;
         select.value = currentVal;
     }
 
@@ -1207,7 +1185,7 @@
 
         const bar = document.getElementById('reminderAlert');
         bar.style.display = follow > 0 ? 'block' : 'none';
-        bar.innerText = `🚨 ACTION: ${follow} urgent follow-ups today!`;
+        bar.innerHTML = `<ion-icon name="alert-circle"></ion-icon> ACTION: ${follow} urgent follow-ups today!`;
     }
 
     function syncToSystemCalendar(name, dateStr, timeStr, phone, project, remark) {
@@ -1306,15 +1284,23 @@
 
 
     // ====================================================
-    // SMART CALL LOGGING SYSTEM
+    // BUG FIX: SMART ACTION MENU TRIGGER 
     // ====================================================
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
     let isCalling = false;
     let callTargetId = null;
 
-    function openActionSheet(id, phone, name, proj, btnElement) {
+    // Fixed function: Grabs data from DOM dataset to avoid string quote breaking
+    function triggerActionMenu(btnElement) {
         haptic('medium');
-        bsActionId = id; bsActionPhone = phone; bsActionName = name; bsActionProj = proj;
+        let parent = btnElement.closest('tr') || btnElement.closest('.k-card');
+        if(!parent) return;
+
+        bsActionId = parent.dataset.id;
+        bsActionPhone = parent.dataset.phone;
+        bsActionName = parent.dataset.name;
+        bsActionProj = parent.dataset.proj;
+        
         document.getElementById('actionModal').classList.add('active');
     }
 
@@ -1418,24 +1404,25 @@
             const displayStatus = cold ? '❄️ Cold' : c.status;
 
             const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${c.specificUnit}</span>` : '';
-            let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;">⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+            let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
 
             const tempVal = c.leadTemperature || 'Warm';
             let tempBadge = '';
-            if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background:rgba(255,59,48,0.15); color:#ff3b30; border:1px solid rgba(255,59,48,0.3);">🔥 HOT</span>';
-            else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.15); color:#ff9f0a; border:1px solid rgba(255,159,10,0.3);">☀️ WARM</span>';
-            else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.15); color:#0a84ff; border:1px solid rgba(10,132,255,0.3);">❄️ COLD</span>';
+            if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background:rgba(255,59,48,0.15); color:#ff3b30; border:1px solid rgba(255,59,48,0.3);"><ion-icon name="flame"></ion-icon> HOT</span>';
+            else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.15); color:#ff9f0a; border:1px solid rgba(255,159,10,0.3);"><ion-icon name="sunny"></ion-icon> WARM</span>';
+            else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.15); color:#0a84ff; border:1px solid rgba(10,132,255,0.3);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
             const tr = document.createElement('tr');
             tr.className = `${highlight} ${coldClass}`;
             tr.title = "Double-click to Edit, Tap ⋮ for Actions";
             tr.ondblclick = () => editLead(c.id);
             
+            // Fixed the bug: Data is now safely stored here
             tr.dataset.id = c.id;
             tr.dataset.phone = c.phone;
-            tr.dataset.name = c.name.replace(/'/g, "\\'");
-            tr.dataset.proj = (c.projectCategory||'').replace(/'/g, "\\'");
+            tr.dataset.name = c.name; 
+            tr.dataset.proj = c.projectCategory || '';
 
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td>
@@ -1448,7 +1435,7 @@
                 <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
                 <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
                 <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
-                <td class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</td>
+                <td class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></td>
             `;
             table.appendChild(tr);
         });
@@ -1468,38 +1455,44 @@
             if(c.status === 'Not Interested') return; 
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
-                const cold = isColdLead(c.followup) ? '<span style="color:#0a84ff;">❄️</span>' : '';
-                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| ⏱ ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+                const cold = isColdLead(c.followup) ? '<ion-icon name="snow" style="color:#0a84ff;"></ion-icon>' : '';
+                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
-                if(tempVal === 'Hot') tempIcon = '<span title="Hot Priority" style="font-size:14px; margin-left:4px;">🔥</span>';
-                else if(tempVal === 'Warm') tempIcon = '<span title="Warm Priority" style="font-size:14px; margin-left:4px;">☀️</span>';
-                else if(tempVal === 'Cold') tempIcon = '<span title="Cold Priority" style="font-size:14px; margin-left:4px;">❄️</span>';
+                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#ff3b30; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#ff9f0a; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#0a84ff; font-size:14px; margin-left:4px;"></ion-icon>';
+
+                // Clean data for Kanban dataset
+                let safeName = c.name.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let safeProj = (c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
                 zone.innerHTML += `
-                    <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${c.name.replace(/'/g, "\\'")}" data-proj="${(c.projectCategory||'').replace(/'/g, "\\'")}" ondblclick="editLead('${c.id}')">
+                    <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
                             <span style="display:flex; align-items:center;">${c.name} ${tempIcon} ${cold}</span>
-                            <span class="action-dots" onclick="event.stopPropagation(); openActionSheet('${c.id}', '${c.phone}', '${c.name.replace(/'/g, "\\'")}', '${(c.projectCategory||'').replace(/'/g, "\\'")}', this)">⋮</span>
+                            <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                         </div>
-                        <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">📞 ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;">📍 ${c.specificUnit || c.projectCategory || '-'}</div>
-                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | 📅 ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
+                        <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
+                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;"><ion-icon name="location"></ion-icon> ${c.specificUnit || c.projectCategory || '-'}</div>
+                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
                     </div>
                 `;
             }
         });
         addDragEvents();
         
-        // Re-initialize Vanilla-Tilt on newly rendered Kanban cards!
-        VanillaTilt.init(document.querySelectorAll(".k-card"), {
-            max: 10,
-            speed: 300,
-            glare: true,
-            "max-glare": 0.15,
-            scale: 1.02
-        });
+        // Apply 3D Vanilla-Tilt logic without breaking anything
+        try {
+            VanillaTilt.init(document.querySelectorAll(".k-card"), {
+                max: 10,
+                speed: 300,
+                glare: true,
+                "max-glare": 0.15,
+                scale: 1.02
+            });
+        } catch(e) {}
     }
 
     function editLead(id) {
@@ -1636,7 +1629,7 @@
     function addDragEvents() {
         document.querySelectorAll('.k-card').forEach(card => {
             card.addEventListener('dragstart', (e) => { 
-                if(e.target.tagName === 'SPAN') { e.preventDefault(); return; } 
+                if(e.target.tagName === 'ION-ICON') { e.preventDefault(); return; } 
                 haptic('light');
                 draggedCardId = e.currentTarget.dataset.id; setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
             });
@@ -1818,23 +1811,25 @@
     })();
 
     // ====================================================
-    // 3D TILT EFFECTS (Vanilla-Tilt) INITIALIZATION
+    // 3D TILT EFFECTS INITIALIZATION (On Startup)
     // ====================================================
     document.addEventListener("DOMContentLoaded", function() {
-        VanillaTilt.init(document.querySelectorAll(".stat-card"), {
-            max: 15,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.3,
-            scale: 1.05
-        });
+        try {
+            VanillaTilt.init(document.querySelectorAll(".stat-card"), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.3,
+                scale: 1.05
+            });
 
-        VanillaTilt.init(document.querySelector(".login-card"), {
-            max: 10,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.2
-        });
+            VanillaTilt.init(document.querySelector(".login-card"), {
+                max: 10,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2
+            });
+        } catch(e) {}
     });
 
 </script>
