@@ -16,6 +16,14 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     
+    <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/index.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/default.css">
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            MobileDragDrop.polyfill({ dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride });
+        });
+    </script>
+    
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
@@ -71,7 +79,6 @@
         
         * { box-sizing: border-box; }
 
-        /* Custom Sleek Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.3); border-radius: 10px; }
@@ -161,7 +168,6 @@
         .flex-row { display: flex; gap: 12px; width: 100%; }
         .flex-row input { margin-bottom: 0; }
 
-        /* LEAD TEMPERATURE (HOT/WARM/COLD) TICK SECTION */
         .segmented-control {
             display: flex; gap: 8px; background: var(--input-bg);
             padding: 6px; border-radius: 16px; border: 1px solid var(--border-color);
@@ -563,7 +569,7 @@
                 <label>Add Follow-up Remark</label>
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
-                    <button type="button" class="mic-btn" onclick="startDictation()" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
+                    <button type="button" class="mic-btn" onclick="startDictation('newRemark')" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
                 </div>
                 
                 <div class="check-item" style="border-color: var(--accent-blue); background: var(--accent-glow);">
@@ -733,6 +739,14 @@
 </div>
 
 <script>
+    // --- XSS SANITIZER ---
+    const sanitizeText = (str) => {
+        if(!str) return '';
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+    };
+
     // --- HAPTIC ENGINE ---
     function haptic(type = 'light') {
         try {
@@ -815,7 +829,7 @@
         });
     }
 
-    function startDictation() {
+    function startDictation(targetInputId = 'newRemark') {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (SpeechRecognition) {
@@ -833,12 +847,9 @@
 
             recognition.onresult = function(e) {
                 const transcript = e.results[0][0].transcript;
-                const textArea = document.activeElement;
-                if(textArea && textArea.tagName === 'TEXTAREA') {
-                    textArea.value += (textArea.value ? ' ' : '') + transcript;
-                } else {
-                    const remarkBox = document.getElementById('newRemark');
-                    remarkBox.value += (remarkBox.value ? ' ' : '') + transcript;
+                const targetBox = document.getElementById(targetInputId);
+                if(targetBox) {
+                    targetBox.value += (targetBox.value ? ' ' : '') + transcript;
                 }
                 micBtn.classList.remove('recording');
                 haptic('light');
@@ -1223,7 +1234,7 @@
         const btn = document.getElementById('saveBtn'); btn.disabled = true; const oldText = btn.innerText;
         btn.innerText = "Saving...";
 
-        let historyArray = window.currentEditHistory || [];
+        let historyArray = window.currentEditHistory ? [...window.currentEditHistory] : [];
         if(id && historyArray.length === 0) {
             const existingClient = clients.find(x => x.id === id);
             if(existingClient && existingClient.remark) { historyArray.push({date: existingClient.leadDate || getToday(), time: '', note: existingClient.remark}); }
@@ -1288,7 +1299,6 @@
     let isCalling = false;
     let callTargetId = null;
 
-    // Fixed function: Grabs data from DOM dataset to avoid string quote breaking
     function triggerActionMenu(btnElement) {
         haptic('medium');
         let parent = btnElement.closest('tr') || btnElement.closest('.k-card');
@@ -1378,7 +1388,6 @@
     
     function executeSwipeDel() {
         closeActionMenu();
-        // 350ms delay added so the action modal closes smoothly before blocking UI
         setTimeout(async () => {
             if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
                 try { 
@@ -1410,9 +1419,10 @@
             const coldClass = cold ? 'row-cold' : '';
             const displayStatus = cold ? '❄️ Cold' : c.status;
 
-            const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${c.specificUnit}</span>` : '';
-            let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+            const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${sanitizeText(c.specificUnit)}</span>` : '';
+            let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
+            const safeName = sanitizeText(c.name);
 
             const tempVal = c.leadTemperature || 'Warm';
             let tempBadge = '';
@@ -1425,7 +1435,6 @@
             tr.title = "Double-click to Edit, Tap ⋮ for Actions";
             tr.ondblclick = () => editLead(c.id);
             
-            // Fixed the bug: Data is now safely stored here
             tr.dataset.id = c.id;
             tr.dataset.phone = c.phone;
             tr.dataset.name = c.name; 
@@ -1434,14 +1443,14 @@
             tr.innerHTML = `
                 <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                 <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                <td style="font-weight:700; white-space:nowrap;">${c.name} ${tempBadge}</td>
+                <td style="font-weight:700; white-space:nowrap;">${safeName} ${tempBadge}</td>
                 <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                 <td><span class="badge ${badge}">${displayStatus}</span></td>
                 <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                <td style="font-size:12px; font-weight:700;">${c.projectCategory || '-'}${unitDisp}</td>
-                <td style="color:var(--whatsapp-dark); font-weight:800">${c.budget || '-'}</td>
+                <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
                 <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
-                <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${latestNote}">${latestNote}</td>
+                <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${sanitizeText(latestNote)}">${sanitizeText(latestNote)}</td>
                 <td class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></td>
             `;
             table.appendChild(tr);
@@ -1463,7 +1472,7 @@
             const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
             if(zone) {
                 const cold = isColdLead(c.followup) ? '<ion-icon name="snow" style="color:#0a84ff;"></ion-icon>' : '';
-                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
@@ -1471,26 +1480,25 @@
                 else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#ff9f0a; font-size:14px; margin-left:4px;"></ion-icon>';
                 else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#0a84ff; font-size:14px; margin-left:4px;"></ion-icon>';
 
-                // Clean data for Kanban dataset
-                let safeName = c.name.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-                let safeProj = (c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                let safeUnit = sanitizeText(c.specificUnit||'');
 
                 zone.innerHTML += `
                     <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
-                            <span style="display:flex; align-items:center;">${c.name} ${tempIcon} ${cold}</span>
+                            <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${cold}</span>
                             <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;"><ion-icon name="location"></ion-icon> ${c.specificUnit || c.projectCategory || '-'}</div>
-                        <div class="k-card-detail">💰 ${c.budget || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
+                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
+                        <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
                     </div>
                 `;
             }
         });
         addDragEvents();
         
-        // Apply 3D Vanilla-Tilt logic without breaking anything
         try {
             VanillaTilt.init(document.querySelectorAll(".k-card"), {
                 max: 10,
@@ -1520,7 +1528,7 @@
             document.getElementById('tempWarm').checked = true;
         }
         
-        window.currentEditHistory = c.history || [];
+        window.currentEditHistory = c.history ? [...c.history] : [];
         const tLine = document.getElementById('historyTimeline'); document.getElementById('newRemark').value = '';
         
         if(window.currentEditHistory.length > 0) {
@@ -1689,8 +1697,11 @@
     }
     function executeWaSend() {
         haptic('light');
-        let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, ''); if (phone.length === 10) phone = '91' + phone;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank'); closeModal('waModal');
+        let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, ''); 
+        if (phone.startsWith('0')) phone = phone.substring(1);
+        if (phone.length === 10) phone = '91' + phone;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank'); 
+        closeModal('waModal');
     }
 
     function calculateEMI() {
@@ -1766,13 +1777,11 @@
                     return;
                 }
 
-                // FIREBASE BATCH WRITE FIX FOR SMOOTH PERFORMANCE
                 let deletedCount = 0;
                 let batch = db.batch();
                 for (let i = 0; i < duplicateIds.length; i++) {
                     batch.delete(db.collection("leads").doc(duplicateIds[i]));
                     deletedCount++;
-                    // Commit every 400 to respect Firebase batch limits smoothly
                     if (deletedCount % 400 === 0) {
                         await batch.commit();
                         batch = db.batch();
@@ -1806,7 +1815,6 @@
             showNotification("⏳ Deleting ALL leads... Please wait.", "warning");
 
             try {
-                // FIREBASE BATCH WRITE FIX FOR SMOOTH PERFORMANCE
                 let deletedCount = 0;
                 let batch = db.batch();
                 for (let i = 0; i < clients.length; i++) {
