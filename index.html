@@ -13,11 +13,9 @@
     <link rel="icon" type="image/png" href="https://googleusercontent.com/image_generation_content/239">
     <link rel="apple-touch-icon" href="https://googleusercontent.com/image_generation_content/239">
 
-    <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     
-    <!-- iOS Icons (Ionicons) -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
@@ -1377,12 +1375,21 @@
 
     function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
     function executeSwipeEdit() { closeActionMenu(); editLead(bsActionId); }
-    async function executeSwipeDel() { 
-        closeActionMenu(); 
-        if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
-            try { await db.collection("leads").doc(bsActionId).delete(); showNotification("Lead Permanently Deleted", "error"); } 
-            catch (err) { showNotification("Error deleting lead: " + err.message, "error"); }
-        }
+    
+    function executeSwipeDel() {
+        closeActionMenu();
+        // 350ms delay added so the action modal closes smoothly before blocking UI
+        setTimeout(async () => {
+            if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
+                try { 
+                    await db.collection("leads").doc(bsActionId).delete(); 
+                    showNotification("Lead Permanently Deleted", "error"); 
+                } 
+                catch (err) { 
+                    showNotification("Error deleting lead: " + err.message, "error"); 
+                }
+            }
+        }, 350);
     }
 
     function handleModalClick(e, modalId) {
@@ -1723,80 +1730,103 @@
     // ====================================================
     // REMOVE DUPLICATE LEADS / DELETE ALL (SMART CLEANER)
     // ====================================================
-    async function removeDuplicates() {
+    function removeDuplicates() {
         closeModal('cleanModal');
         if(!auth.currentUser) return;
         if(clients.length === 0) { showNotification("No leads to check.", "warning"); return; }
 
-        if(!confirm("⚠️ This will scan and permanently delete duplicate leads based on their Phone Number.\n\nIt will safely keep the most recently updated record. Proceed?")) return;
+        setTimeout(async () => {
+            if(!confirm("⚠️ This will scan and permanently delete duplicate leads based on their Phone Number.\n\nIt will safely keep the most recently updated record. Proceed?")) return;
 
-        showNotification("⏳ Cleaning Duplicates...", "warning");
+            showNotification("⏳ Cleaning Duplicates...", "warning");
 
-        try {
-            const phoneMap = new Map();
-            let duplicateIds = [];
+            try {
+                const phoneMap = new Map();
+                let duplicateIds = [];
 
-            const sortedClients = [...clients].sort((a, b) => {
-                const dateA = new Date(a.followup || a.leadDate || '1970-01-01').getTime();
-                const dateB = new Date(b.followup || b.leadDate || '1970-01-01').getTime();
-                return dateB - dateA; 
-            });
+                const sortedClients = [...clients].sort((a, b) => {
+                    const dateA = new Date(a.followup || a.leadDate || '1970-01-01').getTime();
+                    const dateB = new Date(b.followup || b.leadDate || '1970-01-01').getTime();
+                    return dateB - dateA; 
+                });
 
-            sortedClients.forEach(client => {
-                const phone = (client.phone || '').trim();
-                if(phone.length >= 10) {
-                    if(phoneMap.has(phone)) {
-                        duplicateIds.push(client.id);
-                    } else {
-                        phoneMap.set(phone, client.id);
+                sortedClients.forEach(client => {
+                    const phone = (client.phone || '').trim();
+                    if(phone.length >= 10) {
+                        if(phoneMap.has(phone)) {
+                            duplicateIds.push(client.id);
+                        } else {
+                            phoneMap.set(phone, client.id);
+                        }
+                    }
+                });
+
+                if(duplicateIds.length === 0) {
+                    showNotification("Clean! No duplicate leads found. 🎉", "success");
+                    return;
+                }
+
+                // FIREBASE BATCH WRITE FIX FOR SMOOTH PERFORMANCE
+                let deletedCount = 0;
+                let batch = db.batch();
+                for (let i = 0; i < duplicateIds.length; i++) {
+                    batch.delete(db.collection("leads").doc(duplicateIds[i]));
+                    deletedCount++;
+                    // Commit every 400 to respect Firebase batch limits smoothly
+                    if (deletedCount % 400 === 0) {
+                        await batch.commit();
+                        batch = db.batch();
                     }
                 }
-            });
+                if (deletedCount % 400 !== 0) {
+                    await batch.commit();
+                }
 
-            if(duplicateIds.length === 0) {
-                showNotification("Clean! No duplicate leads found. 🎉", "success");
-                return;
+                showNotification(`🧹 Successfully cleaned ${deletedCount} duplicate leads!`, "success");
+                haptic('heavy');
+            } catch (err) {
+                showNotification("Error cleaning duplicates: " + err.message, "error");
             }
-
-            let deletedCount = 0;
-            for (const id of duplicateIds) {
-                await db.collection("leads").doc(id).delete();
-                deletedCount++;
-            }
-
-            showNotification(`🧹 Successfully cleaned ${deletedCount} duplicate leads!`, "success");
-            haptic('heavy');
-        } catch (err) {
-            showNotification("Error cleaning duplicates: " + err.message, "error");
-        }
+        }, 350);
     }
 
-    async function deleteAllLeads() {
+    function deleteAllLeads() {
         closeModal('cleanModal');
         if(!auth.currentUser) return;
         if(clients.length === 0) { showNotification("No leads to delete.", "warning"); return; }
 
-        const typedText = prompt(`⚠️ DANGER ZONE: This will permanently delete ALL ${clients.length} leads.\n\nType "DELETE" below to confirm this action:`);
-        
-        if (typedText !== "DELETE") {
-            if(typedText !== null) showNotification("Action cancelled. Incorrect text.", "error");
-            return;
-        }
-
-        showNotification("⏳ Deleting ALL leads... Please wait.", "warning");
-
-        try {
-            let deletedCount = 0;
-            for (const client of clients) {
-                await db.collection("leads").doc(client.id).delete();
-                deletedCount++;
+        setTimeout(async () => {
+            const typedText = prompt(`⚠️ DANGER ZONE: This will permanently delete ALL ${clients.length} leads.\n\nType "DELETE" below to confirm this action:`);
+            
+            if (typedText !== "DELETE") {
+                if(typedText !== null) showNotification("Action cancelled. Incorrect text.", "error");
+                return;
             }
 
-            showNotification(`🗑️ Successfully deleted ${deletedCount} leads!`, "success");
-            haptic('heavy');
-        } catch (err) {
-            showNotification("Error deleting leads: " + err.message, "error");
-        }
+            showNotification("⏳ Deleting ALL leads... Please wait.", "warning");
+
+            try {
+                // FIREBASE BATCH WRITE FIX FOR SMOOTH PERFORMANCE
+                let deletedCount = 0;
+                let batch = db.batch();
+                for (let i = 0; i < clients.length; i++) {
+                    batch.delete(db.collection("leads").doc(clients[i].id));
+                    deletedCount++;
+                    if (deletedCount % 400 === 0) {
+                        await batch.commit();
+                        batch = db.batch();
+                    }
+                }
+                if (deletedCount % 400 !== 0) {
+                    await batch.commit();
+                }
+
+                showNotification(`🗑️ Successfully deleted ${deletedCount} leads!`, "success");
+                haptic('heavy');
+            } catch (err) {
+                showNotification("Error deleting leads: " + err.message, "error");
+            }
+        }, 350);
     }
 
     (function initSingleFilePWA() {
