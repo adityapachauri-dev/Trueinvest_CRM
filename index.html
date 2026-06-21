@@ -272,10 +272,17 @@
         .kanban-dropzone { min-height: 100px; flex-grow: 1; border-radius: 16px; transition: background 0.3s;}
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); }
 
-        .history-timeline { max-height: 200px; overflow-y: auto; background: var(--input-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; display: none; }
+        .history-timeline { max-height: 250px; overflow-y: auto; background: var(--input-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; display: none; }
         .history-item { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px dashed var(--border-color); font-size: 14px; color: var(--text-color); line-height: 1.6; }
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px;}
+        .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
+
+        /* Styled History Edit & Delete Buttons */
+        .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 4px; transition: background 0.2s; user-select: none; }
+        .edit-history-btn:hover { background: rgba(0, 113, 227, 0.1); }
+        
+        .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 4px; transition: background 0.2s; margin-left: 6px; user-select: none;}
+        .delete-history-btn:hover { background: rgba(211, 47, 47, 0.1); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -572,11 +579,6 @@
                     <button type="button" class="mic-btn" onclick="startDictation('newRemark')" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
                 </div>
                 
-                <div class="check-item" style="border-color: var(--accent-blue); background: var(--accent-glow);">
-                    <input type="checkbox" id="syncCalendar" checked>
-                    <label for="syncCalendar" style="margin:0; cursor:pointer; color:var(--accent-blue); font-size:14px; font-weight:800;"><ion-icon name="calendar"></ion-icon> Sync to Apple / System Calendar</label>
-                </div>
-
                 <button type="submit" id="saveBtn">Save Record</button>
                 <button type="button" class="btn-secondary" style="width:100%; margin-top:12px; border-radius:20px;" onclick="resetForm()">Clear Form</button>
             </form>
@@ -612,7 +614,7 @@
                             <th onclick="handleSort('budget')">Budget ⇕</th>
                             <th onclick="handleSort('followup')">Follow-up ⇕</th>
                             <th style="max-width: 140px;">Latest Remark</th>
-                            <th style="width: 44px; text-align: center;"></th>
+                            <th style="width: 70px; text-align: center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="clientTable"></tbody>
@@ -755,6 +757,13 @@
             if (type === 'medium') navigator.vibrate(30);
             if (type === 'heavy') navigator.vibrate([30, 50, 30]);
         } catch(e) {}
+    }
+
+    // --- CONFETTI EFFECT ---
+    function fireConfetti() {
+        if(typeof confetti === 'function') {
+            confetti({ zIndex: 10008, particleCount: 100, spread: 70, origin: {y: 0.6} });
+        }
     }
 
     function initTheme() {
@@ -1197,49 +1206,100 @@
         bar.innerHTML = `<ion-icon name="alert-circle"></ion-icon> ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    function syncToSystemCalendar(name, dateStr, timeStr, phone, project, remark) {
-        if(!dateStr) return;
-        let startFormat, endFormat;
-        if (timeStr) {
-            const [hours, minutes] = timeStr.split(':'); const [year, month, day] = dateStr.split('-');
-            startFormat = `${year}${month}${day}T${hours}${minutes}00`;
-            let d = new Date(year, month - 1, day, hours, minutes); d.setHours(d.getHours() + 1);
-            const eyyyy = d.getFullYear(); const emm = String(d.getMonth() + 1).padStart(2, '0');
-            const edd = String(d.getDate()).padStart(2, '0'); const ehh = String(d.getHours()).padStart(2, '0');
-            const emin = String(d.getMinutes()).padStart(2, '0'); endFormat = `${eyyyy}${emm}${edd}T${ehh}${emin}00`;
-        } else {
-            const d = new Date(dateStr); startFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
-            d.setDate(d.getDate() + 1); endFormat = d.toISOString().replace(/-|:|\.\d+/g, '').substring(0,8);
-        }
-
-        const icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//True Invest CRM//EN\nBEGIN:VEVENT\n" +
-                       (timeStr ? `DTSTART;TZID=Asia/Kolkata:${startFormat}\nDTEND;TZID=Asia/Kolkata:${endFormat}\n` : `DTSTART;VALUE=DATE:${startFormat}\nDTEND;VALUE=DATE:${endFormat}\n`) +
-                       "SUMMARY:Follow-up: " + name + "\nDESCRIPTION:Phone: " + phone + "\\nProject: " + (project || 'N/A') + "\\nRemark: " + (remark || 'None') + "\nEND:VEVENT\nEND:VCALENDAR";
-
-        const blob = new Blob([icsMSG], { type: 'text/calendar;charset=utf-8' });
-        const url = window.URL.createObjectURL(blob); const a = document.createElement('a');
-        a.href = url; a.download = `Followup_${name.replace(/\s+/g, '_')}.ics`; document.body.appendChild(a); a.click();
-        document.body.removeChild(a); window.URL.revokeObjectURL(url);
-    }
-
     document.querySelectorAll('select, input[type="date"], input[type="time"]').forEach(el => {
         el.addEventListener('change', () => haptic('light'));
     });
+
+    // ====================================================
+    // EDIT & DELETE HISTORY REMARKS FEATURE
+    // ====================================================
+    function renderHistoryTimeline() {
+        const tLine = document.getElementById('historyTimeline');
+        if(window.currentEditHistory && window.currentEditHistory.length > 0) {
+            tLine.style.display = 'block';
+            tLine.innerHTML = window.currentEditHistory.map((h, index) => `
+                <div class="history-item">
+                    <span class="history-meta">
+                        <span>${h.date} | ${h.time || 'N/A'}</span>
+                        <span style="display:flex; align-items:center;">
+                            <ion-icon name="create" class="edit-history-btn" onclick="triggerEditHistory(${index})" title="Edit this remark"></ion-icon>
+                            <ion-icon name="trash" class="delete-history-btn" onclick="triggerDeleteHistory(${index})" title="Delete this remark"></ion-icon>
+                        </span>
+                    </span>
+                    <span style="display:block; margin-top:4px;">${sanitizeText(h.note)}</span>
+                </div>
+            `).join('');
+        } else {
+            tLine.style.display = 'none'; 
+            tLine.innerHTML = ''; 
+        }
+    }
+
+    async function triggerEditHistory(index) {
+        haptic('light');
+        const currentNote = window.currentEditHistory[index].note;
+        const newNote = prompt("Edit your remark:", currentNote);
+        
+        if (newNote !== null && newNote.trim() !== '' && newNote.trim() !== currentNote) {
+            window.currentEditHistory[index].note = newNote.trim();
+            renderHistoryTimeline(); 
+            
+            const editId = document.getElementById('editId').value;
+            if (editId) {
+                try {
+                    const updateData = { history: window.currentEditHistory };
+                    if (index === 0) updateData.remark = newNote.trim(); 
+                    
+                    await db.collection("leads").doc(editId).update(updateData);
+                    showNotification("Remark updated successfully!", "success");
+                } catch (err) {
+                    showNotification("Failed to update remark in database.", "error");
+                }
+            } else {
+                showNotification("Remark updated locally. Click 'Save Record' to finalize.", "success");
+            }
+        }
+    }
+
+    async function triggerDeleteHistory(index) {
+        haptic('medium');
+        if(confirm("Are you sure you want to permanently delete this remark?")) {
+            window.currentEditHistory.splice(index, 1);
+            renderHistoryTimeline(); 
+
+            const editId = document.getElementById('editId').value;
+            if (editId) {
+                try {
+                    const updateData = { history: window.currentEditHistory };
+                    updateData.remark = window.currentEditHistory.length > 0 ? window.currentEditHistory[0].note : '';
+                    
+                    await db.collection("leads").doc(editId).update(updateData);
+                    showNotification("Remark deleted successfully!", "success");
+                } catch (err) {
+                    showNotification("Failed to delete remark in database.", "error");
+                }
+            } else {
+                showNotification("Remark deleted locally. Click 'Save Record' to finalize.", "warning");
+            }
+        }
+    }
+
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
         const statusVal = document.getElementById('status').value;
         const newRemarkText = document.getElementById('newRemark').value.trim();
-        const btn = document.getElementById('saveBtn'); btn.disabled = true; const oldText = btn.innerText;
+        const btn = document.getElementById('saveBtn'); 
+        
+        const oldText = btn.innerText;
+        btn.disabled = true; 
         btn.innerText = "Saving...";
 
         let historyArray = window.currentEditHistory ? [...window.currentEditHistory] : [];
-        if(id && historyArray.length === 0) {
-            const existingClient = clients.find(x => x.id === id);
-            if(existingClient && existingClient.remark) { historyArray.push({date: existingClient.leadDate || getToday(), time: '', note: existingClient.remark}); }
+        if(newRemarkText) { 
+            historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText }); 
         }
-        if(newRemarkText) { historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText }); }
 
         const selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
 
@@ -1254,6 +1314,7 @@
             history: historyArray, remark: historyArray.length > 0 ? historyArray[0].note : '' 
         };
 
+        let saveSuccess = false;
         try {
             if (id) { await db.collection("leads").doc(id).update(data); showNotification(`Lead Updated: ${data.name}`, 'success'); } 
             else { await db.collection("leads").add(data); showNotification(`New Lead Saved!`, 'success'); }
@@ -1261,13 +1322,18 @@
             if(statusVal === 'Closed') fireConfetti(); 
             else haptic('medium'); 
             
-            const doSync = document.getElementById('syncCalendar').checked;
-            if (doSync && data.followup && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
-                syncToSystemCalendar(data.name, data.followup, data.followupTime, data.phone, data.projectCategory, data.remark);
+            saveSuccess = true;
+        } catch (err) { 
+            showNotification("Error saving lead: " + err.message, 'error'); 
+        } finally { 
+            btn.disabled = false;
+            if (saveSuccess) {
+                resetForm(); 
+                if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[1].click(); }
+            } else {
+                btn.innerText = oldText;
             }
-            resetForm(); if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[1].click(); }
-        } catch (err) { showNotification("Error saving lead: " + err.message, 'error'); } 
-        finally { btn.disabled = false; btn.innerText = oldText; }
+        }
     });
 
     function getFilteredData() {
@@ -1293,7 +1359,7 @@
 
 
     // ====================================================
-    // BUG FIX: SMART ACTION MENU TRIGGER 
+    // SMART ACTION MENU TRIGGER & FOLLOW-UP "DONE" BUTTON
     // ====================================================
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
     let isCalling = false;
@@ -1314,6 +1380,27 @@
 
     function closeActionMenu() {
         document.getElementById('actionModal').classList.remove('active');
+    }
+
+    async function markFollowupDone(id) {
+        haptic('medium');
+        const c = clients.find(x => x.id === id); if(!c) return;
+        
+        const newRemark = "✅ Follow-up completed today.";
+        let history = c.history || [];
+        history.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemark });
+        
+        try {
+            await db.collection("leads").doc(id).update({
+                history: history,
+                remark: newRemark,
+                followup: "" // Clears out the followup to mark it successfully "Done"
+            });
+            showNotification("Follow-up marked as Done!", "success");
+            fireConfetti();
+        } catch(e) {
+            showNotification("Error: " + e.message, "error");
+        }
     }
 
     function executeSwipeCall() { 
@@ -1430,6 +1517,9 @@
             else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.15); color:#ff9f0a; border:1px solid rgba(255,159,10,0.3);"><ion-icon name="sunny"></ion-icon> WARM</span>';
             else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.15); color:#0a84ff; border:1px solid rgba(10,132,255,0.3);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
+            const tickButton = (c.followup === today && c.status !== 'Closed') ? 
+                `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
+
             const tr = document.createElement('tr');
             tr.className = `${highlight} ${coldClass}`;
             tr.title = "Double-click to Edit, Tap ⋮ for Actions";
@@ -1451,7 +1541,10 @@
                 <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
                 <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
                 <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${sanitizeText(latestNote)}">${sanitizeText(latestNote)}</td>
-                <td class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></td>
+                <td style="display:flex; justify-content:center; align-items:center;">
+                    ${tickButton}
+                    <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
+                </td>
             `;
             table.appendChild(tr);
         });
@@ -1529,23 +1622,29 @@
         }
         
         window.currentEditHistory = c.history ? [...c.history] : [];
-        const tLine = document.getElementById('historyTimeline'); document.getElementById('newRemark').value = '';
+        if (window.currentEditHistory.length === 0 && c.remark) {
+            window.currentEditHistory.push({ date: c.leadDate || getToday(), time: '', note: c.remark });
+        }
         
-        if(window.currentEditHistory.length > 0) {
-            tLine.style.display = 'block';
-            tLine.innerHTML = window.currentEditHistory.map(h => `<div class="history-item"><span class="history-meta">${h.date} | ${h.time || 'N/A'}</span>${h.note}</div>`).join('');
-        } else if (c.remark) {
-            tLine.style.display = 'block'; tLine.innerHTML = `<div class="history-item"><span class="history-meta">Legacy Note</span>${c.remark}</div>`;
-        } else { tLine.style.display = 'none'; tLine.innerHTML = ''; }
+        document.getElementById('newRemark').value = '';
+        renderHistoryTimeline();
 
         if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[0].click(); } 
         else { window.scrollTo({top: 0, behavior: 'smooth'}); }
     }
 
     function resetForm() {
-        document.getElementById('clientForm').reset(); document.getElementById('editId').value = "";
-        document.getElementById('saveBtn').innerText = "Save Record"; document.getElementById('leadDate').value = getToday();
-        window.currentEditHistory = []; document.getElementById('historyTimeline').style.display = 'none';
+        document.getElementById('clientForm').reset(); 
+        document.getElementById('editId').value = "";
+        document.getElementById('saveBtn').innerText = "Save Record"; 
+        document.getElementById('leadDate').value = getToday();
+        document.getElementById('newRemark').value = "";
+        document.getElementById('followup').value = "";
+        document.getElementById('followupTime').value = "";
+        
+        window.currentEditHistory = []; 
+        renderHistoryTimeline();
+        
         if(document.getElementById('tempWarm')) document.getElementById('tempWarm').checked = true;
     }
 
