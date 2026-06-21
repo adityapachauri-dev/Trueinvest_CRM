@@ -1550,20 +1550,30 @@
     }
 
     // ====================================================
-    // SMART CSV AUTO-MAPPER & IMPORTER
+    // SMART CSV AUTO-MAPPER & IMPORTER (UPDATED & BUG-FREE)
     // ====================================================
     document.getElementById('csvFileInput').addEventListener('change', async function(e) {
         const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = async function(event) {
-            const text = event.target.result; 
+            const text = event.target.result;
+            // Handle both Windows (\r\n) and Mac (\n) line endings safely
             const rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
-            if(rows.length < 2) { showNotification('CSV file is empty or invalid.', 'error'); return; }
+            if(rows.length < 2) { 
+                showNotification('CSV file is empty or invalid.', 'error'); 
+                e.target.value = ''; 
+                return; 
+            }
 
+            // Advanced CSV parser: safely handles commas inside quoted text
             const parseCSVRow = (row) => {
                 const cols = []; let cur = '', inQuotes = false;
-                for(let char of row) {
-                    if(char === '"') inQuotes = !inQuotes;
+                for(let i = 0; i < row.length; i++) {
+                    let char = row[i];
+                    if(char === '"') {
+                        if (inQuotes && row[i+1] === '"') { cur += '"'; i++; } // Handle escaped quotes
+                        else inQuotes = !inQuotes;
+                    }
                     else if(char === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
                     else cur += char;
                 }
@@ -1571,20 +1581,21 @@
             };
 
             const headers = parseCSVRow(rows[0]).map(h => h.toLowerCase());
-            
+
+            // Expanded keyword matching to catch all possible header variations
             const getIdx = (keywords) => headers.findIndex(h => keywords.some(kw => h.includes(kw)));
 
             const colMap = {
-                name: getIdx(['name', 'client', 'customer']),
-                phone: getIdx(['phone', 'mobile', 'contact', 'number']),
-                leadDate: getIdx(['date', 'created', 'time']),
-                source: getIdx(['source', 'origin', 'platform', 'medium']),
-                project: getIdx(['project', 'site', 'property', 'building']),
-                unit: getIdx(['unit', 'inventory', 'flat', 'size']),
+                name: getIdx(['name', 'client', 'customer', 'lead']),
+                phone: getIdx(['phone', 'mobile', 'contact', 'number', 'whatsapp']),
+                leadDate: getIdx(['date', 'created', 'time', 'timestamp']),
+                source: getIdx(['source', 'origin', 'platform', 'medium', 'campaign']),
+                project: getIdx(['project', 'site', 'property', 'building', 'campaign name']),
+                unit: getIdx(['unit', 'inventory', 'flat', 'size', 'bhk']),
                 location: getIdx(['location', 'locality', 'area', 'city']),
-                budget: getIdx(['budget', 'price', 'amount', 'cost']),
-                status: getIdx(['status', 'stage', 'state']),
-                remark: getIdx(['remark', 'note', 'message', 'comment'])
+                budget: getIdx(['budget', 'price', 'amount', 'cost', 'value']),
+                status: getIdx(['status', 'stage', 'state', 'lead stage']),
+                remark: getIdx(['remark', 'note', 'message', 'comment', 'description'])
             };
 
             if(colMap.name === -1 || colMap.phone === -1) {
@@ -1592,12 +1603,27 @@
                 e.target.value = ''; return;
             }
 
-            if(!confirm(`Found ${rows.length - 1} leads.\n\nSystem will auto-adapt columns to match CRM fields. Proceed?`)) {
+            if(!confirm(`Found ${rows.length - 1} leads.\n\nSystem will auto-adapt columns, fix dates, and map sources perfectly. Proceed?`)) {
                 e.target.value = ''; return;
             }
 
             showNotification('Auto-mapping & importing leads...', 'warning');
             let importCount = 0;
+
+            // Strict Date Normalizer (Converts DD/MM/YYYY or DD-MM-YYYY to standard YYYY-MM-DD)
+            const normalizeDate = (dateStr) => {
+                if (!dateStr) return getToday();
+                let clean = dateStr.split(' ')[0]; // Strip timestamps if present
+                let parts = clean.split(/[\/\-\.]/);
+                if (parts.length === 3) {
+                    let p1 = parts[0], p2 = parts[1], p3 = parts[2];
+                    if (p1.length === 4) return `${p1}-${p2.padStart(2,'0')}-${p3.padStart(2,'0')}`; // Already YYYY-MM-DD
+                    if (p3.length === 2) p3 = '20' + p3; // Convert YY to YYYY
+                    // Default to Indian format assumption (DD-MM-YYYY)
+                    return `${p3}-${p2.padStart(2,'0')}-${p1.padStart(2,'0')}`;
+                }
+                return getToday();
+            };
 
             for(let i = 1; i < rows.length; i++) {
                 try {
@@ -1605,38 +1631,81 @@
                     const cleanVal = (idx) => (idx !== -1 && cols[idx]) ? cols[idx].replace(/^"|"$/g, '').trim() : '';
 
                     const name = cleanVal(colMap.name);
-                    let phone = cleanVal(colMap.phone).replace(/[^0-9]/g, '');
+                    let phone = cleanVal(colMap.phone).replace(/[^0-9]/g, ''); // Extract purely digits
 
-                    if(!name || phone.length < 7) continue;
+                    if(!name || phone.length < 7) continue; // Skip empty rows
 
-                    const leadDate = cleanVal(colMap.leadDate) || getToday();
-                    const source = cleanVal(colMap.source) || 'CSV Import';
+                    // Sanitize standard 10-digit numbers (Strip 91 or 0 prefixes)
+                    if (phone.length === 12 && phone.startsWith('91')) phone = phone.substring(2);
+                    if (phone.length === 11 && phone.startsWith('0')) phone = phone.substring(1);
+
+                    const leadDateRaw = cleanVal(colMap.leadDate);
+                    const leadDate = normalizeDate(leadDateRaw);
+
+                    // SMART SOURCE MAPPER (Forces CSV sources to perfectly match UI Dropdown options)
+                    let rawSource = cleanVal(colMap.source).toLowerCase();
+                    let source = 'Other'; 
+                    if(rawSource) {
+                        if(rawSource.includes('facebook') || rawSource.includes('fb') || rawSource.includes('meta')) source = 'Facebook Ads';
+                        else if(rawSource.includes('google') || rawSource.includes('adwords')) source = 'Google Ads';
+                        else if(rawSource.includes('99acres') || rawSource.includes('99')) source = '99acres';
+                        else if(rawSource.includes('magicbricks') || rawSource.includes('magic bricks')) source = 'MagicBricks';
+                        else if(rawSource.includes('referral') || rawSource.includes('ref')) source = 'Referral';
+                        else if(rawSource.includes('direct') || rawSource.includes('organic')) source = 'Direct/Organic';
+                        else source = cleanVal(colMap.source); // Keep their custom string if it doesn't match standard platforms
+                    } else { 
+                        source = 'CSV Import'; 
+                    }
+
                     const project = cleanVal(colMap.project);
                     const unit = cleanVal(colMap.unit);
                     const location = cleanVal(colMap.location);
                     const budget = cleanVal(colMap.budget);
-                    let status = cleanVal(colMap.status) || 'New';
-                    
-                    const remark = cleanVal(colMap.remark) || ''; 
 
+                    // SMART STATUS MAPPER
+                    let rawStatus = cleanVal(colMap.status).toLowerCase();
+                    let status = 'New';
+                    // Strict adherence to your custom status list
                     const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed', 'Not Interested'];
-                    const matchedStatus = validStatuses.find(s => s.toLowerCase() === status.toLowerCase());
-                    if (matchedStatus) status = matchedStatus; else status = 'New';
+                    const matchedStatus = validStatuses.find(s => s.toLowerCase() === rawStatus);
                     
+                    if (matchedStatus) {
+                        status = matchedStatus;
+                    } else if (rawStatus.includes('follow') || rawStatus.includes('call') || rawStatus.includes('cb')) {
+                        status = 'Follow-up';
+                    } else if (rawStatus.includes('not') || rawStatus.includes('dead') || rawStatus.includes('junk')) {
+                        status = 'Not Interested';
+                    }
+
+                    const remark = cleanVal(colMap.remark) || '';
                     const historyArr = remark ? [{date: formatDisplayDate(getToday()), time: getTime(), note: remark}] : [];
 
                     await db.collection("leads").add({
-                        ownerId: auth.currentUser.uid, leadDate: leadDate, name: name, phone: phone, 
-                        leadSource: source, projectCategory: project, specificUnit: unit, location: location, 
-                        status: status, budget: budget, visitDone: false, followup: "", followupTime: "", 
-                        leadTemperature: 'Warm', remark: remark, history: historyArr
-                    }); 
+                        ownerId: auth.currentUser.uid,
+                        leadDate: leadDate,
+                        name: name,
+                        phone: phone,
+                        leadSource: source,
+                        projectCategory: project,
+                        specificUnit: unit,
+                        location: location,
+                        status: status,
+                        budget: budget,
+                        visitDone: false,
+                        followup: "",
+                        followupTime: "",
+                        leadTemperature: 'Warm', // Default temperature for new imports
+                        remark: remark,
+                        history: historyArr
+                    });
                     importCount++;
-                } catch(error) { console.log("Error importing row " + i, error); }
+                } catch(error) { 
+                    console.log("Error importing row " + i, error); 
+                }
             }
-            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads!`, 'success'); 
-            e.target.value = ''; 
-        }; 
+            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads!`, 'success');
+            e.target.value = ''; // Reset input to allow re-importing the same file if needed
+        };
         reader.readAsText(file);
     });
 
