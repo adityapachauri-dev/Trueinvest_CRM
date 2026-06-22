@@ -1649,7 +1649,7 @@
     }
 
     // ====================================================
-    // SMART CSV AUTO-MAPPER & IMPORTER (UPDATED & BUG-FREE)
+    // SMART CSV AUTO-MAPPER & IMPORTER (BATCH FIX APPLIED)
     // ====================================================
     document.getElementById('csvFileInput').addEventListener('change', async function(e) {
         const file = e.target.files[0]; if(!file) return;
@@ -1724,6 +1724,10 @@
                 return getToday();
             };
 
+            // 🚀 FAST BATCH LOGIC SETUP START
+            let batch = db.batch();
+            let batchCount = 0;
+
             for(let i = 1; i < rows.length; i++) {
                 try {
                     const cols = parseCSVRow(rows[i]);
@@ -1741,7 +1745,7 @@
                     const leadDateRaw = cleanVal(colMap.leadDate);
                     const leadDate = normalizeDate(leadDateRaw);
 
-                    // SMART SOURCE MAPPER (Forces CSV sources to perfectly match UI Dropdown options)
+                    // SMART SOURCE MAPPER
                     let rawSource = cleanVal(colMap.source).toLowerCase();
                     let source = 'Other'; 
                     if(rawSource) {
@@ -1751,7 +1755,7 @@
                         else if(rawSource.includes('magicbricks') || rawSource.includes('magic bricks')) source = 'MagicBricks';
                         else if(rawSource.includes('referral') || rawSource.includes('ref')) source = 'Referral';
                         else if(rawSource.includes('direct') || rawSource.includes('organic')) source = 'Direct/Organic';
-                        else source = cleanVal(colMap.source); // Keep their custom string if it doesn't match standard platforms
+                        else source = cleanVal(colMap.source); // Keep their custom string
                     } else { 
                         source = 'CSV Import'; 
                     }
@@ -1764,7 +1768,6 @@
                     // SMART STATUS MAPPER
                     let rawStatus = cleanVal(colMap.status).toLowerCase();
                     let status = 'New';
-                    // Strict adherence to your custom status list
                     const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed', 'Not Interested'];
                     const matchedStatus = validStatuses.find(s => s.toLowerCase() === rawStatus);
                     
@@ -1779,7 +1782,9 @@
                     const remark = cleanVal(colMap.remark) || '';
                     const historyArr = remark ? [{date: formatDisplayDate(getToday()), time: getTime(), note: remark}] : [];
 
-                    await db.collection("leads").add({
+                    // ✅ GENERATE DOC REF & ADD TO BATCH
+                    const docRef = db.collection("leads").doc();
+                    batch.set(docRef, {
                         ownerId: auth.currentUser.uid,
                         leadDate: leadDate,
                         name: name,
@@ -1793,17 +1798,32 @@
                         visitDone: false,
                         followup: "",
                         followupTime: "",
-                        leadTemperature: 'Warm', // Default temperature for new imports
+                        leadTemperature: 'Warm', // Default temperature
                         remark: remark,
                         history: historyArr
                     });
+
                     importCount++;
+                    batchCount++;
+
+                    // Commit every 400 rows to stay safely under Firestore's 500 limit
+                    if (batchCount === 400) {
+                        await batch.commit();
+                        batch = db.batch(); // Create a fresh batch
+                        batchCount = 0;
+                    }
                 } catch(error) { 
                     console.log("Error importing row " + i, error); 
                 }
             }
-            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads!`, 'success');
-            e.target.value = ''; // Reset input to allow re-importing the same file if needed
+
+            // ✅ COMMIT ANY REMAINING ROWS
+            if (batchCount > 0) {
+                await batch.commit();
+            }
+
+            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads in lightning speed!`, 'success');
+            e.target.value = ''; // Reset input
         };
         reader.readAsText(file);
     });
