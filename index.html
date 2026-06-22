@@ -1342,6 +1342,18 @@
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
         
+        // 🔥 FIX 1: ULTRA-FAST MEMORY SEARCH INSTEAD OF DOM SEARCH
+        const searchVal = document.getElementById('search').value.toLowerCase().trim();
+        if(searchVal) {
+            data = data.filter(c => 
+                (c.name && c.name.toLowerCase().includes(searchVal)) || 
+                (c.phone && c.phone.includes(searchVal)) || 
+                (c.projectCategory && c.projectCategory.toLowerCase().includes(searchVal)) ||
+                (c.status && c.status.toLowerCase().includes(searchVal)) ||
+                (c.specificUnit && c.specificUnit.toLowerCase().includes(searchVal))
+            );
+        }
+        
         data.sort((a, b) => {
             let valA = (a[sortColumn] || '').toString().toLowerCase();
             let valB = (b[sortColumn] || '').toString().toLowerCase();
@@ -1494,10 +1506,14 @@
 
     function renderData() { renderTable(); renderKanban(); }
 
+    // 🔥 FIX 2: HIGH PERFORMANCE TABLE RENDERING (NO DOM FREEZE)
     function renderTable() {
-        const table = document.getElementById('clientTable'); table.innerHTML = ''; let serial = 1;
+        const table = document.getElementById('clientTable'); 
+        let serial = 1;
         const today = getToday();
         const exportData = getFilteredData();
+        
+        let htmlRows = ''; // Using String Buffer for insane speed
         
         exportData.forEach(c => {
             const cold = isColdLead(c.followup) && c.status !== 'Closed';
@@ -1520,87 +1536,84 @@
             const tickButton = (c.followup === today && c.status !== 'Closed') ? 
                 `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
 
-            const tr = document.createElement('tr');
-            tr.className = `${highlight} ${coldClass}`;
-            tr.title = "Double-click to Edit, Tap ⋮ for Actions";
-            tr.ondblclick = () => editLead(c.id);
-            
-            tr.dataset.id = c.id;
-            tr.dataset.phone = c.phone;
-            tr.dataset.name = c.name; 
-            tr.dataset.proj = c.projectCategory || '';
+            // Safe attributes for inline handlers
+            const safeNameAttr = safeName.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+            const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+            const safeNoteAttr = sanitizeText(latestNote).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
-            tr.innerHTML = `
-                <td style="opacity:0.4; font-weight:700;">${serial++}</td>
-                <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                <td style="font-weight:700; white-space:nowrap;">${safeName} ${tempBadge}</td>
-                <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
-                <td><span class="badge ${badge}">${displayStatus}</span></td>
-                <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
-                <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
-                <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
-                <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${sanitizeText(latestNote)}">${sanitizeText(latestNote)}</td>
-                <td style="display:flex; justify-content:center; align-items:center;">
-                    ${tickButton}
-                    <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                </td>
+            htmlRows += `
+                <tr class="${highlight} ${coldClass}" title="Double-click to Edit, Tap ⋮ for Actions" ondblclick="editLead('${c.id}')" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}">
+                    <td style="opacity:0.4; font-weight:700;">${serial++}</td>
+                    <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
+                    <td style="font-weight:700; white-space:nowrap;">${safeName} ${tempBadge}</td>
+                    <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
+                    <td><span class="badge ${badge}">${displayStatus}</span></td>
+                    <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
+                    <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                    <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
+                    <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
+                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${safeNoteAttr}">${sanitizeText(latestNote)}</td>
+                    <td style="display:flex; justify-content:center; align-items:center;">
+                        ${tickButton}
+                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
+                    </td>
+                </tr>
             `;
-            table.appendChild(tr);
         });
-
-        const searchInput = document.getElementById('search');
-        if(searchInput.value) {
-            const val = searchInput.value.toLowerCase();
-            document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
-        }
+        
+        // Single DOM insert instead of thousands of appends
+        table.innerHTML = htmlRows;
     }
 
+    // 🔥 FIX 3: HIGH PERFORMANCE KANBAN RENDERING (NO DOM FREEZE)
     function renderKanban() {
-        document.querySelectorAll('.kanban-dropzone').forEach(zone => zone.innerHTML = '');
+        const zonesHTML = { 'New': [], 'Follow-up': [], 'Hot': [], 'Broker': [], 'Closed': [] };
         const exportData = getFilteredData();
 
         exportData.forEach(c => {
-            if(c.status === 'Not Interested') return; 
-            const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
-            if(zone) {
-                const cold = isColdLead(c.followup) ? '<ion-icon name="snow" style="color:#0a84ff;"></ion-icon>' : '';
-                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
-                
-                const tempVal = c.leadTemperature || 'Warm';
-                let tempIcon = '';
-                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#ff3b30; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#ff9f0a; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#0a84ff; font-size:14px; margin-left:4px;"></ion-icon>';
+            if(c.status === 'Not Interested' || !zonesHTML[c.status]) return; 
+            
+            const cold = isColdLead(c.followup) ? '<ion-icon name="snow" style="color:#0a84ff;"></ion-icon>' : '';
+            let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
+            
+            const tempVal = c.leadTemperature || 'Warm';
+            let tempIcon = '';
+            if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#ff3b30; font-size:14px; margin-left:4px;"></ion-icon>';
+            else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#ff9f0a; font-size:14px; margin-left:4px;"></ion-icon>';
+            else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#0a84ff; font-size:14px; margin-left:4px;"></ion-icon>';
 
-                let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-                let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-                let safeUnit = sanitizeText(c.specificUnit||'');
+            let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+            let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+            let safeUnit = sanitizeText(c.specificUnit||'');
 
-                zone.innerHTML += `
-                    <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
-                        <div class="k-card-title">
-                            <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${cold}</span>
-                            <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                        </div>
-                        <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
-                        <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
+            zonesHTML[c.status].push(`
+                <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
+                    <div class="k-card-title">
+                        <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${cold}</span>
+                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                     </div>
-                `;
-            }
+                    <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
+                    <div class="k-card-detail" style="color:var(--accent-blue); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
+                    <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
+                </div>
+            `);
         });
+
+        Object.keys(zonesHTML).forEach(status => {
+            const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
+            if(zone) zone.innerHTML = zonesHTML[status].join('');
+        });
+
         addDragEvents();
         
-        try {
-            VanillaTilt.init(document.querySelectorAll(".k-card"), {
-                max: 10,
-                speed: 300,
-                glare: true,
-                "max-glare": 0.15,
-                scale: 1.02
-            });
-        } catch(e) {}
+        // 🔥 FIX 4: PREVENT RAM CRASH BY DISABLING 3D TILT FOR HEAVY LOAD
+        if (exportData.length < 250) {
+            try {
+                VanillaTilt.init(document.querySelectorAll(".k-card"), {
+                    max: 10, speed: 300, glare: true, "max-glare": 0.15, scale: 1.02
+                });
+            } catch(e) {}
+        }
     }
 
     function editLead(id) {
@@ -1656,7 +1669,6 @@
         const reader = new FileReader();
         reader.onload = async function(event) {
             const text = event.target.result;
-            // Handle both Windows (\r\n) and Mac (\n) line endings safely
             const rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
             if(rows.length < 2) { 
                 showNotification('CSV file is empty or invalid.', 'error'); 
@@ -1664,13 +1676,12 @@
                 return; 
             }
 
-            // Advanced CSV parser: safely handles commas inside quoted text
             const parseCSVRow = (row) => {
                 const cols = []; let cur = '', inQuotes = false;
                 for(let i = 0; i < row.length; i++) {
                     let char = row[i];
                     if(char === '"') {
-                        if (inQuotes && row[i+1] === '"') { cur += '"'; i++; } // Handle escaped quotes
+                        if (inQuotes && row[i+1] === '"') { cur += '"'; i++; } 
                         else inQuotes = !inQuotes;
                     }
                     else if(char === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
@@ -1680,8 +1691,6 @@
             };
 
             const headers = parseCSVRow(rows[0]).map(h => h.toLowerCase());
-
-            // Expanded keyword matching to catch all possible header variations
             const getIdx = (keywords) => headers.findIndex(h => keywords.some(kw => h.includes(kw)));
 
             const colMap = {
@@ -1709,22 +1718,19 @@
             showNotification('Auto-mapping & importing leads...', 'warning');
             let importCount = 0;
 
-            // Strict Date Normalizer (Converts DD/MM/YYYY or DD-MM-YYYY to standard YYYY-MM-DD)
             const normalizeDate = (dateStr) => {
                 if (!dateStr) return getToday();
-                let clean = dateStr.split(' ')[0]; // Strip timestamps if present
+                let clean = dateStr.split(' ')[0]; 
                 let parts = clean.split(/[\/\-\.]/);
                 if (parts.length === 3) {
                     let p1 = parts[0], p2 = parts[1], p3 = parts[2];
-                    if (p1.length === 4) return `${p1}-${p2.padStart(2,'0')}-${p3.padStart(2,'0')}`; // Already YYYY-MM-DD
-                    if (p3.length === 2) p3 = '20' + p3; // Convert YY to YYYY
-                    // Default to Indian format assumption (DD-MM-YYYY)
+                    if (p1.length === 4) return `${p1}-${p2.padStart(2,'0')}-${p3.padStart(2,'0')}`; 
+                    if (p3.length === 2) p3 = '20' + p3; 
                     return `${p3}-${p2.padStart(2,'0')}-${p1.padStart(2,'0')}`;
                 }
                 return getToday();
             };
 
-            // 🚀 FAST BATCH LOGIC SETUP START
             let batch = db.batch();
             let batchCount = 0;
 
@@ -1734,18 +1740,16 @@
                     const cleanVal = (idx) => (idx !== -1 && cols[idx]) ? cols[idx].replace(/^"|"$/g, '').trim() : '';
 
                     const name = cleanVal(colMap.name);
-                    let phone = cleanVal(colMap.phone).replace(/[^0-9]/g, ''); // Extract purely digits
+                    let phone = cleanVal(colMap.phone).replace(/[^0-9]/g, ''); 
 
-                    if(!name || phone.length < 7) continue; // Skip empty rows
+                    if(!name || phone.length < 7) continue; 
 
-                    // Sanitize standard 10-digit numbers (Strip 91 or 0 prefixes)
                     if (phone.length === 12 && phone.startsWith('91')) phone = phone.substring(2);
                     if (phone.length === 11 && phone.startsWith('0')) phone = phone.substring(1);
 
                     const leadDateRaw = cleanVal(colMap.leadDate);
                     const leadDate = normalizeDate(leadDateRaw);
 
-                    // SMART SOURCE MAPPER
                     let rawSource = cleanVal(colMap.source).toLowerCase();
                     let source = 'Other'; 
                     if(rawSource) {
@@ -1755,7 +1759,7 @@
                         else if(rawSource.includes('magicbricks') || rawSource.includes('magic bricks')) source = 'MagicBricks';
                         else if(rawSource.includes('referral') || rawSource.includes('ref')) source = 'Referral';
                         else if(rawSource.includes('direct') || rawSource.includes('organic')) source = 'Direct/Organic';
-                        else source = cleanVal(colMap.source); // Keep their custom string
+                        else source = cleanVal(colMap.source); 
                     } else { 
                         source = 'CSV Import'; 
                     }
@@ -1765,7 +1769,6 @@
                     const location = cleanVal(colMap.location);
                     const budget = cleanVal(colMap.budget);
 
-                    // SMART STATUS MAPPER
                     let rawStatus = cleanVal(colMap.status).toLowerCase();
                     let status = 'New';
                     const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed', 'Not Interested'];
@@ -1782,7 +1785,6 @@
                     const remark = cleanVal(colMap.remark) || '';
                     const historyArr = remark ? [{date: formatDisplayDate(getToday()), time: getTime(), note: remark}] : [];
 
-                    // ✅ GENERATE DOC REF & ADD TO BATCH
                     const docRef = db.collection("leads").doc();
                     batch.set(docRef, {
                         ownerId: auth.currentUser.uid,
@@ -1798,7 +1800,7 @@
                         visitDone: false,
                         followup: "",
                         followupTime: "",
-                        leadTemperature: 'Warm', // Default temperature
+                        leadTemperature: 'Warm', 
                         remark: remark,
                         history: historyArr
                     });
@@ -1806,10 +1808,9 @@
                     importCount++;
                     batchCount++;
 
-                    // Commit every 400 rows to stay safely under Firestore's 500 limit
                     if (batchCount === 400) {
                         await batch.commit();
-                        batch = db.batch(); // Create a fresh batch
+                        batch = db.batch(); 
                         batchCount = 0;
                     }
                 } catch(error) { 
@@ -1817,13 +1818,12 @@
                 }
             }
 
-            // ✅ COMMIT ANY REMAINING ROWS
             if (batchCount > 0) {
                 await batch.commit();
             }
 
             showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads in lightning speed!`, 'success');
-            e.target.value = ''; // Reset input
+            e.target.value = ''; 
         };
         reader.readAsText(file);
     });
@@ -1907,9 +1907,13 @@
             </div>`;
     }
 
+    // 🔥 FIX 5: DEBOUNCED SEARCH LISTENER (NO KEYBOARD FREEZE)
+    let searchTimeout;
     document.getElementById('search').addEventListener('input', e => {
-        const val = e.target.value.toLowerCase();
-        document.querySelectorAll('#clientTable tr').forEach(tr => { tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none'; });
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            renderData(); // Re-renders efficiently from memory instead of manipulating thousands of DOM elements
+        }, 300); 
     });
     
     function downloadCSV() {
@@ -1926,9 +1930,6 @@
         document.body.appendChild(link); link.click(); document.body.removeChild(link); showNotification("CSV Exported Successfully!", "success");
     }
 
-    // ====================================================
-    // REMOVE DUPLICATE LEADS / DELETE ALL (SMART CLEANER)
-    // ====================================================
     function removeDuplicates() {
         closeModal('cleanModal');
         if(!auth.currentUser) return;
@@ -2036,24 +2037,14 @@
         } catch(e) { console.log("PWA init handled"); }
     })();
 
-    // ====================================================
-    // 3D TILT EFFECTS INITIALIZATION (On Startup)
-    // ====================================================
     document.addEventListener("DOMContentLoaded", function() {
         try {
             VanillaTilt.init(document.querySelectorAll(".stat-card"), {
-                max: 15,
-                speed: 400,
-                glare: true,
-                "max-glare": 0.3,
-                scale: 1.05
+                max: 15, speed: 400, glare: true, "max-glare": 0.3, scale: 1.05
             });
 
             VanillaTilt.init(document.querySelector(".login-card"), {
-                max: 10,
-                speed: 400,
-                glare: true,
-                "max-glare": 0.2
+                max: 10, speed: 400, glare: true, "max-glare": 0.2
             });
         } catch(e) {}
     });
