@@ -593,7 +593,10 @@
 
                 <div id="historyTimeline" class="history-timeline glass-panel"></div>
                 
-                <label>Add Follow-up Remark</label>
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Add Follow-up Remark</span>
+                    <span onclick="generateSmartSummary()" style="color:var(--accent-blue); font-size:11px; cursor:pointer; font-weight:800; text-transform:uppercase;"><ion-icon name="sparkles"></ion-icon> Smart Summary</span>
+                </label>
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
                     <button type="button" class="mic-btn" onclick="startDictation('newRemark')" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
@@ -725,7 +728,7 @@
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; font-family:inherit;"></textarea>
             
-            <button id="waSendBtnObj" onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); border-top: 1px solid rgba(255,255,255,0.4);">Send via WhatsApp API 🚀</button>
+            <button id="waSendBtnObj" onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); border-top: 1px solid rgba(255,255,255,0.4);">Send via WhatsApp App 🚀</button>
         </div>
     </div>
 </div>
@@ -922,6 +925,35 @@
         } else {
             showNotification("Voice typing not supported on this browser/device.", 'error');
         }
+    }
+
+    // AI Context Summarization Logic (Simulated for Frontend)
+    function generateSmartSummary() {
+        if(!window.currentEditHistory || window.currentEditHistory.length === 0) {
+            showNotification("No history data to summarize yet.", "warning"); 
+            return;
+        }
+        haptic('medium');
+        const summaryBox = document.getElementById('newRemark');
+        const oldVal = summaryBox.value;
+        summaryBox.value = "⏳ Processing AI summary...";
+        
+        setTimeout(() => {
+            const latest = window.currentEditHistory[0].note;
+            const totalCalls = window.currentEditHistory.length;
+            
+            // Extracting basic intent heuristically
+            let intent = "Follow-up required";
+            if(latest.toLowerCase().includes("budget") || latest.toLowerCase().includes("price")) intent = "Budget discussion";
+            if(latest.toLowerCase().includes("visit") || latest.toLowerCase().includes("site")) intent = "Site visit oriented";
+            if(latest.toLowerCase().includes("not interested") || latest.toLowerCase().includes("drop")) intent = "Low interest / Drop";
+
+            const safeContext = latest.length > 40 ? latest.substring(0, 40) + "..." : latest;
+            summaryBox.value = `✨ [Auto-Summary]: Total ${totalCalls} interactions. Priority: ${intent}. Last Update: "${safeContext}"`;
+            
+            showNotification("Smart Summary generated!", "success");
+            fireConfetti();
+        }, 800);
     }
 
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
@@ -1669,7 +1701,6 @@
             `;
         });
         
-        // requestAnimationFrame for Extreme UI Performance
         requestAnimationFrame(() => {
             table.innerHTML = htmlRows;
         });
@@ -1712,7 +1743,6 @@
             `);
         });
 
-        // requestAnimationFrame for Extreme UI Performance
         requestAnimationFrame(() => {
             Object.keys(zonesHTML).forEach(status => {
                 const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
@@ -2027,14 +2057,17 @@
             </div>`;
     }
 
+    // --- Search Optimization Update ---
     let searchTimeout;
     document.getElementById('search').addEventListener('input', e => {
         clearTimeout(searchTimeout);
+        // Reduced timeout for snappier feedback without crashing UI
         searchTimeout = setTimeout(() => {
             renderData(); 
-        }, 300); 
+        }, 150); 
     });
     
+    // --- CSV Export Architecture Update (No data length limit) ---
     function downloadCSV() {
         if(clients.length === 0) { showNotification("No data to export!", 'error'); return; }
         
@@ -2044,9 +2077,20 @@
             c.leadDate, `"${c.name}"`, c.phone, `"${c.leadTemperature || 'Warm'}"`, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
             `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', c.followupTime || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
         ]);
-        const link = document.createElement("a"); link.setAttribute("href", encodeURI("data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n")));
+        
+        const csvContent = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a"); 
+        link.setAttribute("href", url);
         link.setAttribute("download", `CRM_Export_${currentProjectFilter.replace(/\s+/g, '_')}_${getToday()}.csv`);
-        document.body.appendChild(link); link.click(); document.body.removeChild(link); showNotification("CSV Exported Successfully!", "success");
+        document.body.appendChild(link); 
+        link.click(); 
+        document.body.removeChild(link); 
+        
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        showNotification("CSV Exported Successfully!", "success");
     }
 
     function removeDuplicates() {
