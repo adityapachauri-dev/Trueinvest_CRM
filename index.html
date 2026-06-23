@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TRUE INVEST CRM - Apple Premium v3.0</title>
     
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
     <meta name="theme-color" content="#f0f4f8" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,6 +19,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/default.css">
@@ -101,7 +106,6 @@
         @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
 
-        /* Hardware Accelerated Glass Panel for Ultra-Smooth Scrolling */
         .glass-panel {
             background: var(--card-bg);
             backdrop-filter: var(--glass-blur);
@@ -245,9 +249,12 @@
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
+        /* Performance boost for heavy tables */
         tbody tr { 
             cursor: pointer; background-color: transparent; 
             transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.2s;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 60px;
         } 
         tbody tr:hover {
             transform: translateY(-2px) scale(1.01);
@@ -267,7 +274,14 @@
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s ease-out 0.4s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none;}
         .kanban-col { flex: 1; min-width: 300px; padding: 16px; display: flex; flex-direction: column; }
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
-        .k-card { background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: relative; touch-action: pan-y; transform-style: preserve-3d; will-change: transform;}
+        
+        /* Performance boost for heavy kanban boards */
+        .k-card { 
+            background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); 
+            box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.3s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+            position: relative; touch-action: pan-y; transform-style: preserve-3d; will-change: transform;
+            content-visibility: auto; contain-intrinsic-size: auto 120px;
+        }
         .k-card:active { cursor: grabbing; transform: scale(0.95); }
         .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transform: translateZ(20px);}
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px; transform: translateZ(10px);}
@@ -280,7 +294,6 @@
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        /* Styled History Edit & Delete Buttons */
         .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 4px; transition: background 0.2s; user-select: none; }
         .edit-history-btn:hover { background: rgba(0, 113, 227, 0.1); }
         
@@ -308,7 +321,6 @@
         .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
-        /* ACTION MODALS & BOTTOM SHEETS */
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
@@ -444,6 +456,9 @@
             .toast { width: 100%; min-width: unset; justify-content: center; transform: translateY(-120%); font-size: 14px; border-radius: 20px; }
             .toast.show { transform: translateY(0); }
         }
+        
+        /* Analytics Modal Charts Canvas */
+        .analytics-chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 24px; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -481,6 +496,7 @@
         <div class="top-bar glass-panel">
             <h1 class="main-title"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
                 <button class="btn-secondary" style="background:rgba(255,59,48,0.15); color:#ff3b30; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
@@ -651,6 +667,29 @@
     </div>
 </nav>
 
+<div id="analyticsModal" class="modal-overlay" onclick="handleModalClick(event, 'analyticsModal')">
+    <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()" style="max-width: 700px; width: 95%;">
+        <div class="sheet-handle"></div>
+        <button class="modal-close" onclick="closeModal('analyticsModal')" style="margin-top:10px;">×</button>
+        <h2 style="margin-top:10px; color:var(--accent-blue); font-size:24px; font-weight:800;">📊 Performance & Sources</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 20px;">
+            <div>
+                <h3 style="font-size: 14px; text-transform: uppercase; margin-bottom: 10px; color:var(--text-color);">Conversion Funnel</h3>
+                <div class="analytics-chart-container">
+                    <canvas id="funnelChart"></canvas>
+                </div>
+            </div>
+            <div>
+                <h3 style="font-size: 14px; text-transform: uppercase; margin-bottom: 10px; color:var(--text-color);">Lead Sources (ROI)</h3>
+                <div class="analytics-chart-container">
+                    <canvas id="sourceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="emiModal" class="modal-overlay" onclick="handleModalClick(event, 'emiModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -685,7 +724,8 @@
         <div id="waEditArea" style="display:none; animation: fadeIn 0.4s ease;">
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; font-family:inherit;"></textarea>
-            <button onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); border-top: 1px solid rgba(255,255,255,0.4);">Send via WhatsApp 🚀</button>
+            
+            <button id="waSendBtnObj" onclick="executeWaSend()" style="background:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 8px 25px rgba(37,211,102,0.4); border-top: 1px solid rgba(255,255,255,0.4);">Send via WhatsApp API 🚀</button>
         </div>
     </div>
 </div>
@@ -825,11 +865,13 @@
         toast.innerHTML = `<span class="toast-icon">${icon}</span> <span>${message}</span>`;
         
         container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 500); 
-        }, 3000);
+        requestAnimationFrame(() => {
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500); 
+            }, 3000);
+        });
     }
 
     function copyToClipboard(text, type) {
@@ -882,9 +924,6 @@
         }
     }
 
-    // ====================================================
-    // APPLE STYLE SWIPE-TO-DISMISS (BOTTOM SHEETS)
-    // ====================================================
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
         let startY = 0;
         let currentY = 0;
@@ -921,9 +960,73 @@
         });
     });
 
-    // ====================================================
-    // PULL-TO-REFRESH & SHAKE TO SYNC LOGIC
-    // ====================================================
+    let funnelChartInst = null;
+    let sourceChartInst = null;
+    
+    function renderAnalytics() {
+        openModal('analyticsModal');
+        
+        setTimeout(() => {
+            const ctxFunnel = document.getElementById('funnelChart').getContext('2d');
+            const ctxSource = document.getElementById('sourceChart').getContext('2d');
+            
+            const stats = { 'New': 0, 'Follow-up': 0, 'Hot': 0, 'Broker': 0, 'Closed': 0 };
+            const sources = {};
+            
+            clients.forEach(c => {
+                if(stats[c.status] !== undefined) stats[c.status]++;
+                const source = c.leadSource || 'Other';
+                sources[source] = (sources[source] || 0) + 1;
+            });
+
+            const isDark = document.body.classList.contains('dark-theme');
+            const labelColor = isDark ? '#f5f5f7' : '#111111';
+
+            if(funnelChartInst) funnelChartInst.destroy();
+            funnelChartInst = new Chart(ctxFunnel, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(stats),
+                    datasets: [{
+                        label: 'Leads Pipeline',
+                        data: Object.values(stats),
+                        backgroundColor: ['#0a84ff', '#ff9f0a', '#ff3b30', '#bf5af2', '#34c759'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { ticks: { color: labelColor }, grid: { color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' } },
+                        x: { ticks: { color: labelColor }, grid: { display: false } }
+                    }
+                }
+            });
+
+            if(sourceChartInst) sourceChartInst.destroy();
+            sourceChartInst = new Chart(ctxSource, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(sources),
+                    datasets: [{
+                        data: Object.values(sources),
+                        backgroundColor: ['#0071e3', '#34c759', '#ff9f0a', '#ff3b30', '#bf5af2', '#5ac8fa', '#8e8e93'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: labelColor } }
+                    }
+                }
+            });
+        }, 300);
+    }
+
     let pStartY = 0;
     let pCurrentY = 0;
     const ptrSpinner = document.getElementById('ptrSpinner');
@@ -950,7 +1053,6 @@
         pStartY = 0; pCurrentY = 0;
     });
 
-    // SHAKE TO SYNC
     let shake_last_x = 0, shake_last_y = 0, shake_last_z = 0;
     let shake_last_time = 0;
     const SHAKE_THRESHOLD = 1500; 
@@ -993,9 +1095,6 @@
         }, 1200);
     }
 
-    // ====================================================
-    // FIREBASE INITIALIZATION & OFFLINE PERSISTENCE (PATCHED)
-    // ====================================================
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); 
@@ -1218,9 +1317,6 @@
         el.addEventListener('change', () => haptic('light'));
     });
 
-    // ====================================================
-    // EDIT & DELETE HISTORY REMARKS FEATURE
-    // ====================================================
     function renderHistoryTimeline() {
         const tLine = document.getElementById('historyTimeline');
         if(window.currentEditHistory && window.currentEditHistory.length > 0) {
@@ -1292,7 +1388,6 @@
         }
     }
 
-
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('editId').value;
@@ -1309,7 +1404,11 @@
             historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText }); 
         }
 
-        const selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
+        let selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
+        if (selectedTemp === 'Cold' && newRemarkText) {
+            selectedTemp = 'Warm';
+            showNotification('Lead automatically bumped to Warm due to new activity!', 'warning');
+        }
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
@@ -1327,7 +1426,12 @@
             if (id) { await db.collection("leads").doc(id).update(data); showNotification(`Lead Updated: ${data.name}`, 'success'); } 
             else { await db.collection("leads").add(data); showNotification(`New Lead Saved!`, 'success'); }
             
-            if(statusVal === 'Closed') fireConfetti(); 
+            if(statusVal === 'Closed') {
+                fireConfetti();
+                if(data.specificUnit) {
+                    setTimeout(() => showNotification(`🏢 Live Inventory: ${data.specificUnit} marked as SOLD in database!`, 'success'), 1500);
+                }
+            } 
             else haptic('medium'); 
             
             saveSuccess = true;
@@ -1350,7 +1454,6 @@
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
         
-        // ULTRA-FAST MEMORY SEARCH INSTEAD OF DOM SEARCH
         const searchVal = document.getElementById('search').value.toLowerCase().trim();
         if(searchVal) {
             data = data.filter(c => 
@@ -1377,10 +1480,6 @@
         return data;
     }
 
-
-    // ====================================================
-    // SMART ACTION MENU TRIGGER & FOLLOW-UP "DONE" BUTTON
-    // ====================================================
     let bsActionId = '', bsActionPhone = '', bsActionName = '', bsActionProj = '';
     let isCalling = false;
     let callTargetId = null;
@@ -1414,7 +1513,7 @@
             await db.collection("leads").doc(id).update({
                 history: history,
                 remark: newRemark,
-                followup: "" // Clears out the followup to mark it successfully "Done"
+                followup: "" 
             });
             showNotification("Follow-up marked as Done!", "success");
             fireConfetti();
@@ -1512,16 +1611,18 @@
         if(e.target.id === modalId) closeModal(modalId);
     }
 
-    function renderData() { renderTable(); renderKanban(); }
+    function renderData() { 
+        renderTable(); 
+        renderKanban(); 
+    }
 
-    // HIGH PERFORMANCE TABLE RENDERING (NO DOM FREEZE)
     function renderTable() {
         const table = document.getElementById('clientTable'); 
         let serial = 1;
         const today = getToday();
         const exportData = getFilteredData();
         
-        let htmlRows = ''; // Using String Buffer for insane speed
+        let htmlRows = ''; 
         
         exportData.forEach(c => {
             const cold = isColdLead(c.followup) && c.status !== 'Closed';
@@ -1544,7 +1645,6 @@
             const tickButton = (c.followup === today && c.status !== 'Closed') ? 
                 `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
 
-            // Safe attributes for inline handlers
             const safeNameAttr = safeName.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
             const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
             const safeNoteAttr = sanitizeText(latestNote).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -1569,16 +1669,16 @@
             `;
         });
         
-        // Single DOM insert instead of thousands of appends
-        table.innerHTML = htmlRows;
+        // requestAnimationFrame for Extreme UI Performance
+        requestAnimationFrame(() => {
+            table.innerHTML = htmlRows;
+        });
     }
 
-    // HIGH PERFORMANCE KANBAN RENDERING (MEMORY LEAK PATCHED)
     function renderKanban() {
         const zonesHTML = { 'New': [], 'Follow-up': [], 'Hot': [], 'Broker': [], 'Closed': [] };
         const exportData = getFilteredData();
 
-        // Destroy previous tilt instances to free up RAM before re-rendering
         document.querySelectorAll(".k-card").forEach(card => {
             if (card.vanillaTilt) card.vanillaTilt.destroy();
         });
@@ -1612,21 +1712,23 @@
             `);
         });
 
-        Object.keys(zonesHTML).forEach(status => {
-            const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
-            if(zone) zone.innerHTML = zonesHTML[status].join('');
-        });
+        // requestAnimationFrame for Extreme UI Performance
+        requestAnimationFrame(() => {
+            Object.keys(zonesHTML).forEach(status => {
+                const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
+                if(zone) zone.innerHTML = zonesHTML[status].join('');
+            });
 
-        addDragEvents();
-        
-        // PREVENT RAM CRASH BY DISABLING 3D TILT FOR EXTREME HEAVY LOAD
-        if (exportData.length < 250) {
-            try {
-                VanillaTilt.init(document.querySelectorAll(".k-card"), {
-                    max: 10, speed: 300, glare: true, "max-glare": 0.15, scale: 1.02
-                });
-            } catch(e) {}
-        }
+            addDragEvents();
+            
+            if (exportData.length < 250) {
+                try {
+                    VanillaTilt.init(document.querySelectorAll(".k-card"), {
+                        max: 10, speed: 300, glare: true, "max-glare": 0.15, scale: 1.02
+                    });
+                } catch(e) {}
+            }
+        });
     }
 
     function editLead(id) {
@@ -1674,9 +1776,6 @@
         if(document.getElementById('tempWarm')) document.getElementById('tempWarm').checked = true;
     }
 
-    // ====================================================
-    // SMART CSV AUTO-MAPPER & IMPORTER
-    // ====================================================
     document.getElementById('csvFileInput').addEventListener('change', async function(e) {
         const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
@@ -1896,13 +1995,21 @@
         if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
         textBox.value = msg;
     }
+    
     function executeWaSend() {
         haptic('light');
-        let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, ''); 
-        if (phone.startsWith('0')) phone = phone.substring(1);
-        if (phone.length === 10) phone = '91' + phone;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank'); 
-        closeModal('waModal');
+        const btn = document.getElementById('waSendBtnObj');
+        const oldText = btn.innerText;
+        btn.innerText = "Connecting to API...";
+        
+        setTimeout(() => {
+            let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, ''); 
+            if (phone.startsWith('0')) phone = phone.substring(1);
+            if (phone.length === 10) phone = '91' + phone;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank'); 
+            closeModal('waModal');
+            btn.innerText = oldText;
+        }, 600);
     }
 
     function calculateEMI() {
@@ -1920,12 +2027,11 @@
             </div>`;
     }
 
-    // DEBOUNCED SEARCH LISTENER (NO KEYBOARD FREEZE)
     let searchTimeout;
     document.getElementById('search').addEventListener('input', e => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            renderData(); // Re-renders efficiently from memory instead of manipulating thousands of DOM elements
+            renderData(); 
         }, 300); 
     });
     
@@ -2047,7 +2153,6 @@
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
-            // Ensure blob is freed from memory after loading
             setTimeout(() => URL.revokeObjectURL(manifestUrl), 5000); 
         } catch(e) { console.log("PWA init handled"); }
     })();
