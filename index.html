@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - AI Premium v3.5 (Hinglish)</title>
+    <title>TRUE INVEST CRM - AI Premium v4.0 (Fast & Furious)</title>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -14,7 +14,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <!-- Professional TI Logo -->
     <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
 
@@ -202,6 +201,7 @@
         .status-default { background: var(--input-bg); color: var(--text-color); border-color: var(--border-color); }
         
         .temp-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; }
+        .score-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; border: 1px solid; }
 
         .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: all 0.2s; }
         .check-item input[type="checkbox"] { width: 26px; height: 26px; margin: 0; cursor: pointer; border-radius: 8px; accent-color: var(--accent-blue);}
@@ -655,6 +655,8 @@
         <button class="modal-close" onclick="closeModal('analyticsModal')" style="margin-top:10px;">×</button>
         <h2 style="margin-top:10px; color:var(--accent-blue); font-size:24px; font-weight:800;">📊 Performance & Sources</h2>
         
+        <div id="smartInsightsContent"></div>
+
         <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 20px;">
             <div>
                 <h3 style="font-size: 14px; text-transform: uppercase; margin-bottom: 10px; color:var(--text-color);">Conversion Funnel</h3>
@@ -768,6 +770,85 @@
 </div>
 
 <script>
+    // ==========================================
+    // SMART MODULE 1: AUTO LEAD SCORING ENGINE
+    // ==========================================
+    function calculateSmartScore(client) {
+        let score = 0;
+        if (client.visitDone) score += 35;
+        if (client.budget && client.budget.trim() !== '') score += 15;
+        if (client.projectCategory && client.projectCategory.length > 3) score += 10;
+        if (client.specificUnit && client.specificUnit.length > 2) score += 10;
+        if (client.history && client.history.length > 0) score += Math.min(client.history.length * 5, 20);
+        if (client.leadTemperature === 'Hot') score += 10;
+        if (client.status === 'Broker') score += 5;
+        return Math.min(score, 100);
+    }
+
+    // ==========================================
+    // SMART MODULE 2: AUTO BUSINESS ANALYST
+    // ==========================================
+    function generateDeepAnalyticsInsights() {
+        if (clients.length === 0) return;
+        let totalLeads = clients.length;
+        let closedLeads = clients.filter(c => c.status === 'Closed').length;
+        let sourceCount = {};
+        clients.forEach(c => {
+            if (c.status === 'Closed' && c.leadSource) {
+                sourceCount[c.leadSource] = (sourceCount[c.leadSource] || 0) + 1;
+            }
+        });
+        
+        // Find best source (handles empty object safely)
+        let sortedSources = Object.keys(sourceCount).sort((a, b) => sourceCount[b] - sourceCount[a]);
+        let bestSource = sortedSources.length > 0 ? sortedSources[0] : 'Direct/Organic';
+        
+        let conversionRate = totalLeads > 0 ? ((closedLeads / totalLeads) * 100).toFixed(1) : 0;
+        const today = getToday();
+        let neglectedLeads = clients.filter(c => (c.leadTemperature === 'Hot' || c.leadTemperature === 'Warm') && c.status !== 'Closed' && (!c.followup || c.followup < today)).length;
+        
+        const insightsDiv = document.getElementById('smartInsightsContent');
+        if(insightsDiv) {
+            insightsDiv.innerHTML = `
+                <div style="background:var(--accent-glow); padding:16px; border-radius:16px; border:1px solid var(--accent-blue); margin-bottom:20px;">
+                    <h4 style="margin:0 0 10px 0; color:var(--accent-blue); font-size:14px; text-transform:uppercase;">🤖 AI Business Analyst</h4>
+                    <ul style="margin:0; padding-left:20px; font-size:13px; color:var(--text-color); line-height:1.6;">
+                        <li><b>Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-blue);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
+                        <li><b>Top Source:</b> Sabse zyada business <span style="font-weight:bold; color:var(--accent-blue);">${bestSource}</span> se aa raha hai.</li>
+                        <li><b>Attention Needed:</b> <span style="font-weight:bold; color:var(--notify-red);">${neglectedLeads}</span> Hot/Warm leads aisi hain jinka follow-up date miss ho gaya hai!</li>
+                    </ul>
+                </div>
+            `;
+        }
+    }
+
+    // ==========================================
+    // SMART MODULE 3: SILENT DATA SANITIZER
+    // ==========================================
+    function silentDataSanitizer() {
+        let batch = db.batch();
+        let needsUpdate = false;
+        let count = 0;
+        
+        clients.forEach(c => {
+            let updates = {};
+            // Strict Bug Killer & Consistency Rules
+            if (c.status === 'Follow-up Done') updates.status = 'Follow-up'; 
+            if (c.specificUnit && c.specificUnit.includes('835 sq ft')) updates.specificUnit = c.specificUnit.replace('835', '830');
+            if (c.projectCategory && c.projectCategory.includes('Lock & key')) updates.projectCategory = c.projectCategory.replace('Lock & key', 'Lock n key');
+            
+            if (Object.keys(updates).length > 0) {
+                batch.update(db.collection("leads").doc(c.id), updates);
+                needsUpdate = true;
+                count++;
+            }
+        });
+        
+        if (needsUpdate && count <= 400) {
+            batch.commit().catch(e => console.log("Silent sanitization error:", e));
+        }
+    }
+
     const sanitizeText = (str) => {
         if(!str) return '';
         const div = document.createElement('div');
@@ -993,6 +1074,8 @@
     let sourceChartInst = null;
     
     function renderAnalytics() {
+        // Trigger Smart AI Analyst before opening modal
+        generateDeepAnalyticsInsights();
         openModal('analyticsModal');
         
         setTimeout(() => {
@@ -1162,6 +1245,9 @@
                 document.getElementById('skeletonLoader').style.display = 'none';
                 initialLoad = false;
             }
+
+            // Run silent bug killer in background
+            silentDataSanitizer();
 
             let dbProjects = [];
             clients.forEach(c => {
@@ -1605,6 +1691,9 @@
         renderKanban(); 
     }
 
+    // =========================================================
+    // SMART RENDERER (Fast Document Rendering & AI Score added)
+    // =========================================================
     function renderTable() {
         const table = document.getElementById('clientTable'); 
         let serial = 1;
@@ -1621,12 +1710,18 @@
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
             const safeName = sanitizeText(c.name);
 
+            // LEAD SCORE INJECTION
+            const leadScore = calculateSmartScore(c);
+            const scoreColor = leadScore >= 70 ? '#34c759' : (leadScore >= 40 ? '#ff9f0a' : '#ff3b30');
+            const scoreBadge = `<span class="score-badge" style="color:${scoreColor}; border-color:${scoreColor}60; background:${scoreColor}10;" title="AI Win Score"><ion-icon name="analytics"></ion-icon> ${leadScore}%</span>`;
+
             const tempVal = c.leadTemperature || 'Warm';
             let tempBadge = '';
             if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background:rgba(255,59,48,0.1); color:#ff3b30; border:1px solid rgba(255,59,48,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
             else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.1); color:#ff9f0a; border:1px solid rgba(255,159,10,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
             else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.1); color:#0a84ff; border:1px solid rgba(10,132,255,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
+            // Strictly mapped to match "Today" logic
             const tickButton = (c.followup === today && c.status !== 'Closed') ? 
                 `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
 
@@ -1638,7 +1733,7 @@
                 <tr class="${highlight}" title="Double-click to Edit, Tap ⋮ for Actions" ondblclick="editLead('${c.id}')" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}">
                     <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                     <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                    <td style="font-weight:700; white-space:nowrap;">${safeName} ${tempBadge}</td>
+                    <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
                     <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                     <td><span class="badge ${badge}">${displayStatus}</span></td>
                     <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
