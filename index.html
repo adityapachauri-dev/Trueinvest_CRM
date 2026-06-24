@@ -14,8 +14,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <!-- Professional TI Logo -->
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
 
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
@@ -257,9 +258,6 @@
         tbody tr:last-child td { border-bottom: none; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
-        
-        /* FADE REMOVED COMPLETELY AS REQUESTED */
-        .row-cold { opacity: 1 !important; filter: none !important; }
 
         .skeleton-loader { position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%); background-size: 1000px 100%; animation: shimmer 1.5s infinite linear; z-index: 10; border-radius: 0 0 24px 24px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px;}
         .dark-theme .skeleton-loader { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0) 100%); }
@@ -299,17 +297,9 @@
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
         .modal-close:hover { transform: rotate(90deg); }
 
-        .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s ease; background: var(--nav-bg); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 4px 15px rgba(0,113,227,0.15); pointer-events: none; display: flex; align-items: center; gap: 8px;}
-        .ptr-spinner.refreshing { top: max(30px, env(safe-area-inset-top)); }
-
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; padding-bottom: 20px; }
+        .remark-wrapper textarea { margin-bottom: 0; padding-bottom: 16px; padding-right: 16px; }
         
-        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
-        .mic-btn:hover { background: rgba(0, 113, 227, 0.2); }
-        .mic-btn.recording { background: #ff3b30; color: white; animation: pulse 1.2s infinite ease-in-out; }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5); } 70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
-
         .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
@@ -456,8 +446,6 @@
 </head>
 <body class="">
 
-<div id="ptrSpinner" class="ptr-spinner"><ion-icon name="sync-circle"></ion-icon> Refreshing...</div>
-
 <div id="toastContainer"></div>
 
 <div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
@@ -487,7 +475,6 @@
         </div>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="mobile-hint" style="padding-bottom:12px;">👉 Pull down or Shake Phone to Sync Data</div>
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
@@ -591,8 +578,7 @@
                     <span onclick="generateSmartSummary()" style="color:var(--accent-blue); font-size:11px; cursor:pointer; font-weight:800; text-transform:uppercase;"><ion-icon name="sparkles"></ion-icon> ✨ AI Summary</span>
                 </label>
                 <div class="remark-wrapper">
-                    <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
-                    <button type="button" class="mic-btn" onclick="startDictation('newRemark')" title="Voice Typing"><ion-icon name="mic"></ion-icon></button>
+                    <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical; padding-bottom:16px; padding-right:16px;"></textarea>
                 </div>
                 
                 <button type="submit" id="saveBtn">Save Record</button>
@@ -936,46 +922,6 @@
         };
     }
 
-    function startDictation(targetInputId = 'newRemark') {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = 'en-IN'; 
-            
-            const micBtn = document.querySelector('.mic-btn');
-            micBtn.classList.add('recording');
-            haptic('medium');
-            showNotification("Bolna shuru karein...", 'warning');
-
-            recognition.start();
-
-            recognition.onresult = function(e) {
-                const transcript = e.results[0][0].transcript;
-                const targetBox = document.getElementById(targetInputId);
-                if(targetBox) {
-                    targetBox.value += (targetBox.value ? ' ' : '') + transcript;
-                }
-                micBtn.classList.remove('recording');
-                haptic('light');
-                showNotification("Voice type ho gaya!", 'success');
-            };
-
-            recognition.onerror = function(e) {
-                micBtn.classList.remove('recording');
-                showNotification("Awaaz detect nahi hui.", 'error');
-            };
-            
-            recognition.onend = function() {
-                micBtn.classList.remove('recording');
-            };
-        } else {
-            showNotification("Voice typing is browser par supported nahi hai.", 'error');
-        }
-    }
-
     function generateSmartSummary() {
         if(!window.currentEditHistory || window.currentEditHistory.length === 0) {
             showNotification("Summary ban banane ke liye history nahi hai.", "warning"); 
@@ -1108,74 +1054,6 @@
                 }
             });
         }, 300);
-    }
-
-    let pStartY = 0;
-    let pCurrentY = 0;
-    const ptrSpinner = document.getElementById('ptrSpinner');
-    
-    document.addEventListener('touchstart', e => { 
-        if(window.scrollY === 0 && e.touches.length === 1) pStartY = e.touches[0].clientY; 
-        else pStartY = 0; 
-    }, {passive: true});
-    
-    document.addEventListener('touchmove', e => { 
-        if(pStartY && window.scrollY === 0) {
-            pCurrentY = e.touches[0].clientY;
-            let diff = pCurrentY - pStartY;
-            if(diff > 80) { ptrSpinner.classList.add('refreshing'); }
-        }
-    }, {passive: true});
-    
-    document.addEventListener('touchend', e => {
-        if(pStartY && pCurrentY && (pCurrentY - pStartY > 80) && window.scrollY === 0) {
-            triggerDataSync("↻ Syncing...");
-        } else {
-            ptrSpinner.classList.remove('refreshing');
-        }
-        pStartY = 0; pCurrentY = 0;
-    });
-
-    let shake_last_x = 0, shake_last_y = 0, shake_last_z = 0;
-    let shake_last_time = 0;
-    const SHAKE_THRESHOLD = 1500; 
-    let isShakeSyncing = false;
-
-    window.addEventListener('devicemotion', function(e) {
-        let current_time = new Date().getTime();
-        let diffTime = current_time - shake_last_time;
-
-        if (diffTime > 100) {
-            let acceleration = e.accelerationIncludingGravity;
-            if(!acceleration || acceleration.x === null) return;
-
-            let speed = Math.abs(acceleration.x + acceleration.y + acceleration.z - shake_last_x - shake_last_y - shake_last_z) / diffTime * 10000;
-
-            if (speed > SHAKE_THRESHOLD && !isShakeSyncing) {
-                isShakeSyncing = true;
-                if(auth.currentUser && !document.querySelector('.action-modal-overlay.active') && !document.querySelector('.modal-overlay.active')) {
-                    triggerDataSync("📳 Shake Sync...");
-                }
-                setTimeout(() => { isShakeSyncing = false; }, 2000); 
-            }
-            shake_last_x = acceleration.x;
-            shake_last_y = acceleration.y;
-            shake_last_z = acceleration.z;
-            shake_last_time = current_time;
-        }
-    });
-
-    function triggerDataSync(msg) {
-        haptic('heavy');
-        ptrSpinner.classList.add('refreshing');
-        ptrSpinner.innerText = msg;
-        if(auth.currentUser) loadData(); 
-        
-        setTimeout(() => { 
-            ptrSpinner.classList.remove('refreshing'); 
-            ptrSpinner.innerText = "↻ Refreshing...";
-            showNotification('Data Synced Successfully', 'success'); 
-        }, 1000);
     }
 
     const firebaseConfig = { apiKey: "AIzaSyAsb9cwYp3LJWM7motWSK6UAy2ct7t-6zY", authDomain: "truecrm-6cf8e.firebaseapp.com", projectId: "truecrm-6cf8e", storageBucket: "truecrm-6cf8e.firebasestorage.app", messagingSenderId: "791381407537", appId: "1:791381407537:web:45e9946a939f8d23b56210" };
@@ -1390,12 +1268,6 @@
         if(sortColumn === column) { sortAscending = !sortAscending; } 
         else { sortColumn = column; sortAscending = true; }
         renderData();
-    }
-
-    function isColdLead(followDate) {
-        if(!followDate) return false;
-        const diff = Math.ceil((new Date(getToday()) - new Date(followDate)) / (1000 * 60 * 60 * 24));
-        return diff > 15;
     }
 
     function updateDashboard() {
@@ -1740,11 +1612,9 @@
         const exportData = getFilteredData();
         
         const htmlRows = exportData.map(c => {
-            const cold = isColdLead(c.followup) && c.status !== 'Closed';
-            const badge = cold ? 'status-cold' : (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
+            const badge = (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
             const highlight = (c.followup === today && c.status !== 'Closed') ? 'row-highlight' : '';
-            const coldClass = cold ? 'row-cold' : '';
-            const displayStatus = cold ? '❄️ Cold' : c.status;
+            const displayStatus = c.status;
 
             const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${sanitizeText(c.specificUnit)}</span>` : '';
             let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
@@ -1765,7 +1635,7 @@
             const safeNoteAttr = sanitizeText(latestNote).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
             return `
-                <tr class="${highlight} ${coldClass}" title="Double-click to Edit, Tap ⋮ for Actions" ondblclick="editLead('${c.id}')" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}">
+                <tr class="${highlight}" title="Double-click to Edit, Tap ⋮ for Actions" ondblclick="editLead('${c.id}')" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}">
                     <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                     <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
                     <td style="font-weight:700; white-space:nowrap;">${safeName} ${tempBadge}</td>
@@ -1796,7 +1666,6 @@
         exportData.forEach(c => {
             if(c.status === 'Not Interested' || !zonesHTML[c.status]) return; 
             
-            const cold = isColdLead(c.followup) ? '<ion-icon name="snow" style="color:#0a84ff;"></ion-icon>' : '';
             let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-blue);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
             
             const tempVal = c.leadTemperature || 'Warm';
@@ -1812,7 +1681,7 @@
             zonesHTML[c.status].push(`
                 <div class="k-card" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                     <div class="k-card-title">
-                        <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${cold}</span>
+                        <span style="display:flex; align-items:center;">${safeName} ${tempIcon}</span>
                         <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                     </div>
                     <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
@@ -2303,7 +2172,7 @@
         try {
             const manifestData = {
                 name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#f4f7f9", theme_color: "#0071e3", start_url: ".",
-                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>", "sizes": "512x512", "type": "image/png"}]
+                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
