@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Apple Premium v3.0</title>
+    <title>TRUE INVEST CRM - AI Premium v3.5 (Hinglish)</title>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -80,7 +80,7 @@
             transition: background 0.3s ease, color 0.3s ease; 
             min-height: 100vh;
         }
-        
+
         * { box-sizing: border-box; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -133,11 +133,13 @@
 
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s; animation: popIn 0.4s both; cursor: pointer; border-radius: 20px;}
+        
+        /* NORMALIZED DESKTOP STAT CARDS */
+        .stat-card { padding: 16px 12px; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s; animation: popIn 0.4s both; cursor: pointer; border-radius: 16px;}
         .stat-card:active { transform: scale(0.97); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 15px var(--accent-glow); }
-        .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card span { font-size: 32px; font-weight: 900; display:inline-block; }
+        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card span { font-size: 24px; font-weight: 900; display:inline-block; }
 
         .notification-bar { 
             background: rgba(211, 47, 47, 0.9); 
@@ -211,20 +213,25 @@
         .btn-secondary { background: var(--input-bg); color: var(--text-color); height: 48px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none;}
         .btn-secondary:hover { border-color: var(--accent-blue); transform: translateY(-1px); }
 
+        /* AI Button Style */
+        .btn-ai-voice { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-bottom: 20px; border-radius: 16px; height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
+        .btn-ai-voice:hover { box-shadow: 0 6px 20px rgba(191, 90, 242, 0.4); }
+
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.4s ease-out 0.2s both; margin-bottom: 0; width: 100%; }
         .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 40px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%230071e3" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%230071e3" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 14px center; box-shadow: 0 0 10px var(--accent-glow);}
         .controls-row button { height: 48px; margin: 0; padding: 0 20px; width: auto; }
 
-        .project-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px; width: 100%; max-width: max-content; animation: slideInRight 0.4s ease-out 0.25s both; align-items: center;}
+        /* REDUCED SIZE FOR PROJECT TABS PANEL (DESKTOP) */
+        .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 16px; width: 100%; max-width: max-content; animation: slideInRight 0.4s ease-out 0.25s both; align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; font-size: 14px; font-weight: 600; padding: 0 20px; margin: 0; border-radius: 14px; transition: all 0.2s; box-shadow: none; }
+        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 36px; font-size: 13px; font-weight: 600; padding: 0 16px; margin: 0; border-radius: 10px; transition: all 0.2s; box-shadow: none; }
         .tab-btn.active { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); border-color: transparent; font-weight: 700;}
         
-        .tab-delete-btn { position: absolute; top: -8px; right: -8px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 24px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 8px rgba(255,69,58,0.3); font-weight: bold; transition: transform 0.2s;}
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 8px rgba(255,69,58,0.3); font-weight: bold; transition: transform 0.2s;}
         .tab-delete-btn:hover { transform: scale(1.1); }
         .tab-wrapper:hover .tab-delete-btn { display: block; }
         
-        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; width: 44px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 14px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
+        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 36px; width: 36px; padding: 0; font-size: 18px; font-weight: 700; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
         .tab-add-btn:hover { transform: scale(1.05); border-color: var(--accent-blue); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.5s ease-out 0.3s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px; transform: translateZ(0); backface-visibility: hidden; }
@@ -383,6 +390,7 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--accent-blue); letter-spacing: 0.5px;}
 
+        /* Mobile specific grid adjustments */
         @media (max-width: 992px) {
             .workspace-layout { 
                 display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; 
@@ -394,9 +402,9 @@
             h1.main-title { font-size: 1.4rem; }
             .top-bar .btn-secondary { height: 40px; width: 40px; font-size: 16px; }
 
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-            .stat-card { padding: 16px 8px; border-radius: 20px; }
-            .stat-card span { font-size: 24px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .stat-card { padding: 12px 6px; border-radius: 14px; }
+            .stat-card span { font-size: 20px; }
 
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
@@ -496,6 +504,9 @@
             <form id="clientForm" class="glass-panel">
                 <input type="hidden" id="editId" value="">
                 
+                <!-- NEW AI FEATURE: VOICE AUTOFILL -->
+                <button type="button" class="btn-ai-voice" id="aiVoiceBtn" onclick="startSmartVoiceFill()"><ion-icon name="mic"></ion-icon> ✨ Smart AI Voice Fill</button>
+
                 <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
                     <div>
@@ -580,7 +591,7 @@
                 
                 <label style="display:flex; justify-content:space-between; align-items:center;">
                     <span>Add Follow-up Remark</span>
-                    <span onclick="generateSmartSummary()" style="color:var(--accent-blue); font-size:11px; cursor:pointer; font-weight:800; text-transform:uppercase;"><ion-icon name="sparkles"></ion-icon> Smart Summary</span>
+                    <span onclick="generateSmartSummary()" style="color:var(--accent-blue); font-size:11px; cursor:pointer; font-weight:800; text-transform:uppercase;"><ion-icon name="sparkles"></ion-icon> ✨ AI Summary</span>
                 </label>
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical;"></textarea>
@@ -702,6 +713,7 @@
         <label>Select Template</label>
         <select id="waTemplateSelector" onchange="loadWaTemplate()" style="border-color:var(--whatsapp-green);">
             <option value="">-- Select a template to edit --</option>
+            <option value="ai" style="font-weight:bold; color: #bf5af2;">✨ AI Auto-Draft (Personalized)</option>
             <option value="1">📄 Send Project Brochure & Details</option>
             <option value="2">📍 Send Site Visit Location</option>
             <option value="3">👋 Gentle Follow-up Greeting</option>
@@ -789,6 +801,7 @@
         } catch(e) {}
     }
 
+    // NORMAL CONFETTI RESTORED
     function fireConfetti() {
         if(typeof confetti === 'function') {
             confetti({ zIndex: 10008, particleCount: 100, spread: 70, origin: {y: 0.6} });
@@ -869,6 +882,67 @@
         });
     }
 
+    // --- AI VOICE FILL ENGINE (HINGLISH) ---
+    function startSmartVoiceFill() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            showNotification("Voice AI is browser me support nahi karta.", 'error');
+            return;
+        }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-IN';
+
+        const btn = document.getElementById('aiVoiceBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<ion-icon name="mic" class="recording"></ion-icon> 🤖 AI sun raha hai...`;
+        btn.style.background = '#ff3b30';
+
+        recognition.start();
+        haptic('medium');
+
+        recognition.onresult = function(e) {
+            const transcript = e.results[0][0].transcript;
+            showNotification("🤖 AI Processing: " + transcript, 'success');
+
+            // 1. Phone extraction
+            const phoneMatch = transcript.match(/\b\d{10}\b/);
+            if (phoneMatch) document.getElementById('phone').value = phoneMatch[0];
+
+            // 2. Budget extraction
+            const budgetMatch = transcript.match(/([\d\.]+\s*(cr|crore|lakh|lac|k))/i);
+            if (budgetMatch) document.getElementById('budget').value = budgetMatch[0].toUpperCase();
+
+            // 3. Priority detection
+            if (transcript.toLowerCase().includes('hot') || transcript.toLowerCase().includes('urgent') || transcript.toLowerCase().includes('buying') || transcript.toLowerCase().includes('lene wala')) {
+                document.getElementById('tempHot').checked = true;
+                document.getElementById('status').value = 'Hot';
+            } else if (transcript.toLowerCase().includes('cold') || transcript.toLowerCase().includes('baad mein') || transcript.toLowerCase().includes('later')) {
+                document.getElementById('tempCold').checked = true;
+            }
+
+            // 4. Site visit
+            if (transcript.toLowerCase().includes('visit done') || transcript.toLowerCase().includes('visited') || transcript.toLowerCase().includes('dekh liya')) {
+                document.getElementById('visitDone').checked = true;
+            }
+
+            // 5. Name extraction (heuristic)
+            const nameMatch = transcript.match(/(name (is )?|naam (hai )?)([a-zA-Z\s]+?)( phone| budget| looking| for| priority|$)/i);
+            if (nameMatch && nameMatch[4]) {
+                document.getElementById('name').value = nameMatch[4].trim();
+            }
+
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            haptic('light');
+        };
+
+        recognition.onerror = function() {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            showNotification("🤖 AI ko awaaz clear nahi aayi.", 'error');
+        };
+    }
+
     function startDictation(targetInputId = 'newRemark') {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
@@ -881,7 +955,7 @@
             const micBtn = document.querySelector('.mic-btn');
             micBtn.classList.add('recording');
             haptic('medium');
-            showNotification("Listening... Speak now.", 'warning');
+            showNotification("Bolna shuru karein...", 'warning');
 
             recognition.start();
 
@@ -893,47 +967,52 @@
                 }
                 micBtn.classList.remove('recording');
                 haptic('light');
-                showNotification("Voice typed successfully!", 'success');
+                showNotification("Voice type ho gaya!", 'success');
             };
 
             recognition.onerror = function(e) {
                 micBtn.classList.remove('recording');
-                showNotification("Mic error or no voice detected.", 'error');
+                showNotification("Awaaz detect nahi hui.", 'error');
             };
             
             recognition.onend = function() {
                 micBtn.classList.remove('recording');
             };
         } else {
-            showNotification("Voice typing not supported on this browser/device.", 'error');
+            showNotification("Voice typing is browser par supported nahi hai.", 'error');
         }
     }
 
+    // --- AI SMART SUMMARY ENGINE (HINGLISH) ---
     function generateSmartSummary() {
         if(!window.currentEditHistory || window.currentEditHistory.length === 0) {
-            showNotification("No history data to summarize yet.", "warning"); 
+            showNotification("Summary ban banane ke liye history nahi hai.", "warning"); 
             return;
         }
         haptic('medium');
         const summaryBox = document.getElementById('newRemark');
-        const oldVal = summaryBox.value;
-        summaryBox.value = "⏳ Processing AI summary...";
+        summaryBox.value = "⏳ AI poori history analyze kar raha hai...";
         
         setTimeout(() => {
-            const latest = window.currentEditHistory[0].note;
-            const totalCalls = window.currentEditHistory.length;
-            
-            let intent = "Follow-up required";
-            if(latest.toLowerCase().includes("budget") || latest.toLowerCase().includes("price")) intent = "Budget discussion";
-            if(latest.toLowerCase().includes("visit") || latest.toLowerCase().includes("site")) intent = "Site visit oriented";
-            if(latest.toLowerCase().includes("not interested") || latest.toLowerCase().includes("drop")) intent = "Low interest / Drop";
+            const history = window.currentEditHistory;
+            const total = history.length;
+            const fullText = history.map(h => h.note.toLowerCase()).join(" ");
 
-            const safeContext = latest.length > 40 ? latest.substring(0, 40) + "..." : latest;
-            summaryBox.value = `✨ [Auto-Summary]: Total ${totalCalls} interactions. Priority: ${intent}. Last Update: "${safeContext}"`;
+            let sentiment = "Neutral (Follow-up zaroori hai)";
+            let action = "Normal follow-up ki zaroorat hai";
+
+            if(fullText.match(/budget|price|expensive|mahenga|sasta|cr|lakh|discount/)) action = "Budget ya Price ki baat chal rahi hai";
+            if(fullText.match(/visit|site|location|aunga|coming/)) action = "Site Visit ki planning ho rahi hai";
+            if(fullText.match(/not interested|drop|stop|wrong|nahi chahiye/)) { action = "Client zyada interested nahi hai"; sentiment = "Negative (Chances kam hain)"; }
+            if(fullText.match(/hot|buy|ready|token|cheque|booking|lena hai/)) { action = "Deal closing stage par hai!"; sentiment = "Highly Positive (Jaldi close ho sakta hai)"; }
+
+            const latest = history[0].note.length > 40 ? history[0].note.substring(0, 40) + "..." : history[0].note;
+
+            summaryBox.value = `🤖 [AI Summary]: Total ${total} baar baat hui hai. Lead ka mood ${sentiment} lag raha hai. Main focus: ${action}. Last update: "${latest}"`;
             
-            showNotification("Smart Summary generated!", "success");
+            showNotification("✨ AI Summary ban gayi!", "success");
             fireConfetti();
-        }, 600);
+        }, 800);
     }
 
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
@@ -1214,7 +1293,6 @@
                 initialLoad = false;
             }
 
-            // Splitting dual projects perfectly for the tab creation
             let dbProjects = [];
             clients.forEach(c => {
                 if(c.projectCategory) {
@@ -1424,7 +1502,6 @@
         const newRemarkText = document.getElementById('newRemark').value.trim();
         const btn = document.getElementById('saveBtn'); 
         
-        // Handling the dual project selection safely
         const p1 = document.getElementById('projectCategory').value;
         const p2 = document.getElementById('projectCategory2').value;
         let pArray = [];
@@ -1442,10 +1519,21 @@
         }
 
         let selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
-        if (selectedTemp === 'Cold' && newRemarkText) {
+        
+        // --- AI PREDICTIVE LEAD SCORING ---
+        if (selectedTemp === 'Cold' && (newRemarkText || statusVal !== 'Not Interested')) {
             selectedTemp = 'Warm';
-            showNotification('Lead automatically bumped to Warm due to new activity!', 'warning');
+            showNotification('🤖 AI ne naye update ke base par lead WARM kar di hai!', 'warning');
         }
+        if (document.getElementById('visitDone').checked && selectedTemp === 'Cold') {
+            selectedTemp = 'Warm';
+            showNotification('🤖 AI ne lead ko WARM kar diya (Site Visit Done)', 'warning');
+        }
+        if (statusVal === 'Hot' && selectedTemp !== 'Hot') {
+            selectedTemp = 'Hot';
+            showNotification('🤖 AI ne priority ko HOT se align kar diya hai.', 'success');
+        }
+        // ----------------------------------
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
@@ -1542,7 +1630,7 @@
         haptic('medium');
         const c = clients.find(x => x.id === id); if(!c) return;
         
-        const newRemark = "✅ Follow-up completed today.";
+        const newRemark = "✅ Follow-up aaj complete ho gaya.";
         let history = c.history || [];
         history.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemark });
         
@@ -1616,7 +1704,7 @@
                         history: history,
                         remark: finalRemark
                     });
-                    showNotification("Call logged successfully!", "success");
+                    showNotification("Call log save ho gaya!", "success");
                     haptic('medium');
                 }
             } catch(e) {
@@ -1812,7 +1900,7 @@
             const text = event.target.result;
             const rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
             if(rows.length < 2) { 
-                showNotification('CSV file is empty or invalid.', 'error'); 
+                showNotification('CSV file empty hai ya invalid hai.', 'error'); 
                 e.target.value = ''; 
                 return; 
             }
@@ -1848,15 +1936,15 @@
             };
 
             if(colMap.name === -1 || colMap.phone === -1) {
-                showNotification('Error: CSV file must contain at least "Name" and "Phone" columns.', 'error');
+                showNotification('Error: CSV file mein kam se kam "Name" aur "Phone" column hona zaroori hai.', 'error');
                 e.target.value = ''; return;
             }
 
-            if(!confirm(`Found ${rows.length - 1} leads.\n\nSystem will auto-adapt columns, fix dates, and map sources perfectly. Proceed?`)) {
+            if(!confirm(`Total ${rows.length - 1} leads mili hain.\n\nSystem inko auto-map karke import karega. Aage badhein?`)) {
                 e.target.value = ''; return;
             }
 
-            showNotification('Auto-mapping & importing leads...', 'warning');
+            showNotification('Auto-mapping aur importing chalu hai...', 'warning');
             let importCount = 0;
 
             const normalizeDate = (dateStr) => {
@@ -1905,7 +1993,6 @@
                         source = 'CSV Import'; 
                     }
 
-                    // Replace commas with '+' to fit the dual project structure perfectly
                     const project = cleanVal(colMap.project).replace(/,/g, ' + ');
                     const unit = cleanVal(colMap.unit);
                     const location = cleanVal(colMap.location);
@@ -1964,7 +2051,7 @@
                 await batch.commit();
             }
 
-            showNotification(`🎉 Successfully auto-mapped & imported ${importCount} leads in lightning speed!`, 'success');
+            showNotification(`🎉 ${importCount} leads successfully import ho gayi hain!`, 'success');
             e.target.value = ''; 
         };
         reader.readAsText(file);
@@ -1992,12 +2079,12 @@
                 if(draggedCardId) {
                     db.collection("leads").doc(draggedCardId).update({ status: newStatus })
                     .then(() => {
-                        showNotification(`Lead moved to ${newStatus}`, 'success');
+                        showNotification(`Lead ko ${newStatus} me move kar diya gaya`, 'success');
                         haptic('medium');
                         if(newStatus === 'Closed') fireConfetti();
                     })
                     .catch(err => {
-                        showNotification("Failed to update status: " + err.message, 'error');
+                        showNotification("Status update failed: " + err.message, 'error');
                     });
                 }
             });
@@ -2014,15 +2101,40 @@
         document.getElementById('waTargetPhone').value = phone; document.getElementById('waTemplateSelector').value = "";
         document.getElementById('waEditArea').style.display = 'none'; openModal('waModal');
     }
+    
+    // --- AI WHATSAPP DRAFT ENGINE (HINGLISH) ---
     function loadWaTemplate() {
         const type = document.getElementById('waTemplateSelector').value;
-        const editArea = document.getElementById('waEditArea'); const textBox = document.getElementById('waMessageText');
-        if (!type) { editArea.style.display = 'none'; return; } editArea.style.display = 'block'; let msg = '';
-        if (type === '1') msg = `Hi ${currentWaName}, greetings from True Invest! 🌟\n\nAs discussed, please find the brochure and details for ${currentWaProj} attached below.\n\nLet me know if you need any more details or floor plans.`;
-        if (type === '2') msg = `Hello ${currentWaName}, looking forward to our site visit! 📍\n\nHere is the Google Maps location for ${currentWaProj}.\n\nPlease reach out to me when you are nearby.`;
-        if (type === '3') msg = `Hi ${currentWaName}, this is a gentle follow-up regarding your inquiry for ${currentWaProj}.\n\nAre you still looking for options in this segment? Let's connect! 🤝`;
-        if (type === '4') msg = `Dear ${currentWaName},\n\nI have an exciting update regarding pricing. We have a special limited-time offer that aligns well with your budget.\n\nLet me know a good time to call you. 📞`;
-        if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
+        const editArea = document.getElementById('waEditArea'); 
+        const textBox = document.getElementById('waMessageText');
+        
+        if (!type) { editArea.style.display = 'none'; return; } 
+        editArea.style.display = 'block'; 
+        let msg = '';
+        
+        if (type === 'ai') {
+            const phoneVal = document.getElementById('waTargetPhone').value.replace(/\D/g, '');
+            const client = clients.find(c => c.phone.includes(phoneVal) || phoneVal.includes(c.phone));
+            
+            if(client) {
+                let context = "";
+                if(client.status === 'Hot') context = "Main aapko inventory ke baare mein ek priority update dena chahta tha.";
+                else if(client.visitDone) context = "Aapse site visit par milkar bohot acha laga! Agar layouts ya details me koi aur help chahiye toh zaroor batayiye.";
+                else context = "Main aapko ek personalized site tour ke liye invite karna chahta tha, jab bhi aapke paas time ho.";
+
+                let budgetText = client.budget ? ` jo aapke ${client.budget} wale budget ke hisaab se hai` : "";
+
+                msg = `Hi ${client.name},\n\nKaise hain aap?\n\nMain ${client.projectCategory || 'hamari exclusive properties'}${budgetText} ke baare me message kar raha hoon. ${context}\n\nBatayiye aapse kis waqt baat ho sakti hai? 🤝\n\nBest Regards,\nTrue Invest Team`;
+            } else {
+                msg = `Hi ${currentWaName},\n\nKaise hain aap?\n\nMain aapko ${currentWaProj} ke baare mein kuch exciting property updates dene ke liye message kar raha hoon. Jab bhi aap free ho, please batayiye taaki hum 2 minute baat kar sakein! 🏡\n\nBest Regards,\nTrue Invest Team`;
+            }
+        }
+        else if (type === '1') msg = `Hi ${currentWaName}, True Invest ki taraf se greetings! 🌟\n\nJaisa ki discuss hua tha, main aapko ${currentWaProj} ki details aur brochure bhej raha hoon.\n\nAgar aapko floor plans ya pricing ki aur details chahiye toh mujhe batayiye.`;
+        else if (type === '2') msg = `Hello ${currentWaName}, mujhe aapke site visit ka intezaar rahega! 📍\n\nYeh rahi ${currentWaProj} ki Google Maps location.\n\nJab aap aas-paas hon, toh mujhe call kar lijiye.`;
+        else if (type === '3') msg = `Hi ${currentWaName}, main ${currentWaProj} ki aapki enquiry ke regarding ek chota sa follow-up le raha tha.\n\nKya aap abhi bhi is segment me options dekh rahe hain? Batayiye kaise aage badhna hai! 🤝`;
+        else if (type === '4') msg = `Dear ${currentWaName},\n\nPricing ko lekar ek exciting update hai. Hamare paas ek limited-time offer hai jo aapke budget me fit aayega.\n\nEk quick call arrange karein? 📞`;
+        else if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
+        
         textBox.value = msg;
     }
     
@@ -2066,7 +2178,7 @@
     });
     
     function downloadCSV() {
-        if(clients.length === 0) { showNotification("No data to export!", 'error'); return; }
+        if(clients.length === 0) { showNotification("Export karne ke liye data nahi hai!", 'error'); return; }
         
         const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
         const exportData = getFilteredData();
@@ -2093,12 +2205,12 @@
     function removeDuplicates() {
         closeModal('cleanModal');
         if(!auth.currentUser) return;
-        if(clients.length === 0) { showNotification("No leads to check.", "warning"); return; }
+        if(clients.length === 0) { showNotification("Check karne ke liye leads nahi hain.", "warning"); return; }
 
         setTimeout(async () => {
-            if(!confirm("⚠️ This will scan and permanently delete duplicate leads based on their Phone Number.\n\nIt will safely keep the most recently updated record. Proceed?")) return;
+            if(!confirm("⚠️ Yeh Phone Number ke base par duplicate leads scan aur delete kar dega.\n\nYeh safely bas latest record ko rakhega. Aage badhein?")) return;
 
-            showNotification("⏳ Cleaning Duplicates...", "warning");
+            showNotification("⏳ Duplicates clean ho rahe hain...", "warning");
 
             try {
                 const phoneMap = new Map();
@@ -2122,7 +2234,7 @@
                 });
 
                 if(duplicateIds.length === 0) {
-                    showNotification("Clean! No duplicate leads found. 🎉", "success");
+                    showNotification("Clean! Koi duplicate nahi mili. 🎉", "success");
                     return;
                 }
 
@@ -2140,7 +2252,7 @@
                     await batch.commit();
                 }
 
-                showNotification(`🧹 Successfully cleaned ${deletedCount} duplicate leads!`, "success");
+                showNotification(`🧹 ${deletedCount} duplicate leads delete ho gayi!`, "success");
                 haptic('heavy');
             } catch (err) {
                 showNotification("Error cleaning duplicates: " + err.message, "error");
@@ -2151,17 +2263,17 @@
     function deleteAllLeads() {
         closeModal('cleanModal');
         if(!auth.currentUser) return;
-        if(clients.length === 0) { showNotification("No leads to delete.", "warning"); return; }
+        if(clients.length === 0) { showNotification("Delete karne ke liye leads nahi hain.", "warning"); return; }
 
         setTimeout(async () => {
-            const typedText = prompt(`⚠️ DANGER ZONE: This will permanently delete ALL ${clients.length} leads.\n\nType "DELETE" below to confirm this action:`);
+            const typedText = prompt(`⚠️ DANGER ZONE: Isse poori ${clients.length} leads permanently delete ho jayengi.\n\nConfirm karne ke liye neeche "DELETE" type karein:`);
             
             if (typedText !== "DELETE") {
-                if(typedText !== null) showNotification("Action cancelled. Incorrect text.", "error");
+                if(typedText !== null) showNotification("Action cancel ho gaya. Text galat tha.", "error");
                 return;
             }
 
-            showNotification("⏳ Deleting ALL leads... Please wait.", "warning");
+            showNotification("⏳ Saari leads delete ho rahi hain... Please wait.", "warning");
 
             try {
                 let deletedCount = 0;
@@ -2178,7 +2290,7 @@
                     await batch.commit();
                 }
 
-                showNotification(`🗑️ Successfully deleted ${deletedCount} leads!`, "success");
+                showNotification(`🗑️ Successfully ${deletedCount} leads delete kar di gayi hain!`, "success");
                 haptic('heavy');
             } catch (err) {
                 showNotification("Error deleting leads: " + err.message, "error");
@@ -2189,7 +2301,7 @@
     (function initSingleFilePWA() {
         try {
             const manifestData = {
-                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#050505", theme_color: "#0071e3", start_url: ".",
+                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#f4f7f9", theme_color: "#0071e3", start_url: ".",
                 icons: [{"src": "https://googleusercontent.com/image_generation_content/239", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
