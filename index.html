@@ -38,7 +38,7 @@
            ==================================================== */
         :root {
             --bg-color: #f4f7f9; 
-            --card-bg: rgba(255, 255, 255, 0.95); /* Solidified for performance */
+            --card-bg: rgba(255, 255, 255, 0.95); 
             --text-color: #1a1a1a; 
             --border-color: rgba(0, 0, 0, 0.06); 
             --border-highlight: rgba(255, 255, 255, 0.8);
@@ -99,7 +99,6 @@
 
         .glass-panel {
             background: var(--card-bg);
-            /* Blur removed for extreme performance */
             border: 1px solid var(--border-color);
             border-top: 1px solid var(--border-highlight);
             border-left: 1px solid var(--border-highlight);
@@ -134,7 +133,7 @@
 
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s; animation: popIn 0.4s both; cursor: pointer; border-radius: 20px;}
+        .stat-card { padding: 20px; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s ease; animation: popIn 0.4s both; cursor: pointer; border-radius: 20px;}
         .stat-card:active { transform: scale(0.97); }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 15px var(--accent-glow); }
         .stat-card label { display: block; font-size: 11px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -155,14 +154,14 @@
         input, textarea, button, select { 
             padding: 16px 20px; margin: 0 0 20px 0; width: 100%; border: 1px solid var(--border-color); 
             border-radius: 16px; background: var(--input-bg); color: var(--text-color); font-size: 16px; 
-            font-weight: 500; box-sizing: border-box; transition: all 0.2s ease; 
+            font-weight: 500; box-sizing: border-box; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; 
         }
         input[type="date"], input[type="time"], select { height: 54px; appearance: none; -webkit-appearance: none; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 3px var(--accent-glow); transform: translateY(-1px); }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .flex-row { display: flex; gap: 12px; width: 100%; }
-        .flex-row input { margin-bottom: 0; }
+        .flex-row input, .flex-row select { margin-bottom: 0; }
 
         .segmented-control {
             display: flex; gap: 8px; background: var(--border-color);
@@ -173,7 +172,7 @@
         .segmented-control label {
             flex: 1; text-align: center; padding: 14px 0; margin: 0;
             border-radius: 12px; cursor: pointer; font-size: 14px;
-            font-weight: 700; opacity: 0.6; transition: all 0.2s ease;
+            font-weight: 700; opacity: 0.6; transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             letter-spacing: 0.5px; text-transform: uppercase;
         }
         .segmented-control input[type="radio"]:checked + label {
@@ -202,10 +201,10 @@
         
         .temp-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; }
 
-        .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: all 0.2s; }
+        .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: background-color 0.2s ease, border-color 0.2s ease; }
         .check-item input[type="checkbox"] { width: 26px; height: 26px; margin: 0; cursor: pointer; border-radius: 8px; accent-color: var(--accent-blue);}
 
-        button { cursor: pointer; background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 20px; font-size: 16px; letter-spacing: 0.5px; transition: all 0.2s ease; box-shadow: 0 4px 15px var(--accent-glow); }
+        button { cursor: pointer; background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 20px; font-size: 16px; letter-spacing: 0.5px; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 15px var(--accent-glow); }
         button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
         button:active { transform: scale(0.98); }
         
@@ -218,21 +217,21 @@
 
         .project-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px; width: 100%; max-width: max-content; animation: slideInRight 0.4s ease-out 0.25s both; align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; font-size: 14px; font-weight: 600; padding: 0 20px; margin: 0; border-radius: 14px; transition: all 0.2s; box-shadow: none; }
+        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; font-size: 14px; font-weight: 600; padding: 0 20px; margin: 0; border-radius: 14px; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; box-shadow: none; }
         .tab-btn.active { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); border-color: transparent; font-weight: 700;}
         
-        .tab-delete-btn { position: absolute; top: -8px; right: -8px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 24px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 8px rgba(255,69,58,0.3); font-weight: bold; transition: transform 0.2s;}
+        .tab-delete-btn { position: absolute; top: -8px; right: -8px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 14px; line-height: 24px; text-align: center; cursor: pointer; padding: 0; z-index: 10; display: none; box-shadow: 0 2px 8px rgba(255,69,58,0.3); font-weight: bold; transition: transform 0.2s ease;}
         .tab-delete-btn:hover { transform: scale(1.1); }
         .tab-wrapper:hover .tab-delete-btn { display: block; }
         
-        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; width: 44px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 14px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
+        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 44px; width: 44px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 14px; transition: transform 0.2s ease, border-color 0.2s ease; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
         .tab-add-btn:hover { transform: scale(1.05); border-color: var(--accent-blue); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.5s ease-out 0.3s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px; transform: translateZ(0); backface-visibility: hidden; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle;}
         
-        th { background: rgba(240,244,248,0.9); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
+        th { background: rgba(240,244,248,0.9); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
         th:hover { background: rgba(0, 113, 227, 0.1); }
         .dark-theme th { background: rgba(30,30,35,0.95); }
         .dark-theme th:hover { background: rgba(10, 132, 255, 0.15); }
@@ -265,7 +264,7 @@
         
         .k-card { 
             background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); 
-            box-shadow: var(--shadow-sm); cursor: grab; transition: all 0.2s; 
+            box-shadow: var(--shadow-sm); cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease; 
             position: relative; touch-action: pan-y; transform-style: preserve-3d; will-change: transform;
             content-visibility: auto; contain-intrinsic-size: auto 120px;
         }
@@ -273,7 +272,7 @@
         .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
         
-        .kanban-dropzone { min-height: 100px; flex-grow: 1; border-radius: 16px; transition: background 0.2s;}
+        .kanban-dropzone { min-height: 100px; flex-grow: 1; border-radius: 16px; transition: background 0.2s ease;}
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); }
 
         .history-timeline { max-height: 250px; overflow-y: auto; background: var(--input-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; display: none; }
@@ -281,17 +280,17 @@
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 4px; transition: background 0.2s; user-select: none; }
+        .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 4px; transition: background 0.2s ease; user-select: none; }
         .edit-history-btn:hover { background: rgba(0, 113, 227, 0.1); }
         
-        .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 4px; transition: background 0.2s; margin-left: 6px; user-select: none;}
+        .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 4px; transition: background 0.2s ease; margin-left: 6px; user-select: none;}
         .delete-history-btn:hover { background: rgba(211, 47, 47, 0.1); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(15px); transition: all 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(15px); transition: transform 0.3s ease; max-height: 90vh; overflow-y: auto; }
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s;}
+        .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s ease;}
         .modal-close:hover { transform: rotate(90deg); }
 
         .ptr-spinner { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); z-index: 10001; transition: top 0.3s ease; background: var(--nav-bg); border: 1px solid var(--accent-blue); padding: 10px 20px; border-radius: 30px; color: var(--accent-blue); font-weight: 800; font-size: 14px; box-shadow: 0 4px 15px rgba(0,113,227,0.15); pointer-events: none; display: flex; align-items: center; gap: 8px;}
@@ -300,18 +299,18 @@
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         .remark-wrapper textarea { margin-bottom: 0; padding-right: 50px; padding-bottom: 20px; }
         
-        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: none; z-index: 2;}
+        .mic-btn { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 113, 227, 0.1); border: none; color: var(--accent-blue); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; box-shadow: none; z-index: 2;}
         .mic-btn:hover { background: rgba(0, 113, 227, 0.2); }
         .mic-btn.recording { background: #ff3b30; color: white; animation: pulse 1.2s infinite ease-in-out; }
         @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5); } 70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
 
-        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s; }
+        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: opacity 0.2s ease; }
         .copyable:active { opacity: 0.5; color: var(--accent-blue); }
 
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
-            z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .action-modal-content {
@@ -343,7 +342,7 @@
         .simple-action-btn {
             height: 64px; width: 64px; border: none; border-radius: 50%; font-size: 28px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: transform 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: transform 0.2s ease;
         }
         .simple-action-btn:active { transform: scale(0.95); }
         .btn-call { background: #34c759; color: white; }
@@ -354,7 +353,7 @@
         .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 5px;}
         .call-status-btn { 
             width: 100%; height: 48px; border-radius: 14px; font-size: 12px; font-weight: 700; 
-            background: transparent; transition: all 0.2s; padding: 0 4px; 
+            background: transparent; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; padding: 0 4px; 
             display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2;
         }
         .call-status-btn.connected { border: 2px solid #34c759; color: #34c759; }
@@ -365,7 +364,7 @@
         .call-status-btn.busy.active { background: #ff3b30; color: white; box-shadow: 0 4px 12px rgba(255,59,48,0.3); }
 
         .action-dots {
-            font-size: 24px; color: var(--accent-blue); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s;
+            font-size: 24px; color: var(--accent-blue); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s ease;
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
         }
         .action-dots:active { transform: scale(0.9); }
@@ -411,7 +410,7 @@
             }
             .dark-theme .ios-bottom-nav { box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
             
-            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: all 0.2s; min-height: 44px;}
+            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s ease, color 0.2s ease; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.2s ease; }
             .tab-item.active { opacity: 1; color: var(--accent-blue); }
             .tab-item.active .icon { transform: scale(1.1) translateY(-2px); font-weight: bold;}
@@ -548,26 +547,34 @@
                             <option>Not Interested</option>
                         </select>
                     </div>
-                    <div>
-                        <label>Project / Site</label>
-                        <select id="projectCategory">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Project / Site (Max 2)</label>
+                    <div class="flex-row">
+                        <select id="projectCategory" style="flex:1;">
+                        </select>
+                        <select id="projectCategory2" style="flex:1;">
                         </select>
                     </div>
+                </div>
+                
+                <div class="form-grid">
                     <div>
                         <label>Specific Unit (Inventory)</label>
                         <input type="text" id="specificUnit" placeholder="e.g. Flat 101, 830 sq ft">
                     </div>
+                    <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
                 </div>
 
                 <div class="form-grid">
-                    <div><label>Locality</label><input type="text" id="location" placeholder="Locality"></div>
                     <div><label>Budget</label><input type="text" id="budget" placeholder="e.g. 1.25 Cr"></div>
+                    <div class="check-item" style="margin-bottom:0; align-items:center;">
+                        <input type="checkbox" id="visitDone">
+                        <label for="visitDone" style="margin:0; cursor:pointer; font-size:15px; font-weight: 600;">Site Visit Done</label>
+                    </div>
                 </div>
-
-                <div class="check-item">
-                    <input type="checkbox" id="visitDone">
-                    <label for="visitDone" style="margin:0; cursor:pointer; font-size:15px; font-weight: 600;">Site Visit Done</label>
-                </div>
+                <br>
 
                 <div id="historyTimeline" class="history-timeline glass-panel"></div>
                 
@@ -825,8 +832,10 @@
         haptic('light');
         const t = document.getElementById('tableView'); 
         const k = document.getElementById('kanbanView');
-        if(mode === 'table') { k.classList.add('hidden'); t.classList.remove('hidden'); currentViewMode = 'table'; }
-        if(mode === 'kanban') { t.classList.add('hidden'); k.classList.remove('hidden'); currentViewMode = 'kanban'; }
+        currentViewMode = mode; 
+        if(mode === 'table') { k.classList.add('hidden'); t.classList.remove('hidden'); }
+        if(mode === 'kanban') { t.classList.add('hidden'); k.classList.remove('hidden'); }
+        renderData(); 
     }
 
     function showNotification(message, type = 'success') {
@@ -909,7 +918,6 @@
         }
         haptic('medium');
         const summaryBox = document.getElementById('newRemark');
-        const oldVal = summaryBox.value;
         summaryBox.value = "⏳ Processing AI summary...";
         
         setTimeout(() => {
@@ -1207,11 +1215,20 @@
                 initialLoad = false;
             }
 
-            let dbProjects = [...new Set(clients.map(c => c.projectCategory).filter(Boolean))];
+            let dbProjects = [];
+            clients.forEach(c => {
+                if(c.projectCategory) {
+                    c.projectCategory.split(' + ').forEach(p => {
+                        let cleanP = p.trim();
+                        if(cleanP && !dbProjects.includes(cleanP)) dbProjects.push(cleanP);
+                    });
+                }
+            });
             let added = false;
             dbProjects.forEach(p => {
                 if(!customProjects.includes(p)) { customProjects.push(p); added = true; }
             });
+
             if(added) {
                 localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
                 renderProjectTabsAndDropdown();
@@ -1225,16 +1242,21 @@
     }
 
     function renderProjectTabsAndDropdown() {
-        const select = document.getElementById('projectCategory');
-        const currentVal = select.value;
-        select.innerHTML = '<option value="">Select Project</option>';
+        const select1 = document.getElementById('projectCategory');
+        const select2 = document.getElementById('projectCategory2');
+        const currentVal1 = select1.value;
+        const currentVal2 = select2.value;
+        
+        select1.innerHTML = '<option value="">Select Project 1</option>';
+        select2.innerHTML = '<option value="">-- Optional 2nd --</option>';
         
         const tabsContainer = document.getElementById('projectTabs');
         tabsContainer.innerHTML = `<button class="tab-btn ${currentProjectFilter === 'All' ? 'active' : ''}" onclick="setProjectFilter('All', this)">All</button>`;
         
         customProjects.forEach(p => {
             const safeP = p.replace(/'/g, "\\'");
-            select.innerHTML += `<option value="${p}">${p}</option>`;
+            select1.innerHTML += `<option value="${p}">${p}</option>`;
+            select2.innerHTML += `<option value="${p}">${p}</option>`;
             tabsContainer.innerHTML += `
             <div class="tab-wrapper">
                 <button class="tab-btn ${currentProjectFilter === p ? 'active' : ''}" onclick="setProjectFilter('${safeP}', this)">${p}</button>
@@ -1243,7 +1265,9 @@
         });
         
         tabsContainer.innerHTML += `<button class="tab-add-btn" onclick="addNewProject()" title="Add New Project Site"><ion-icon name="add"></ion-icon></button>`;
-        select.value = currentVal;
+        
+        select1.value = currentVal1;
+        select2.value = currentVal2;
     }
 
     function addNewProject() {
@@ -1400,6 +1424,13 @@
         const newRemarkText = document.getElementById('newRemark').value.trim();
         const btn = document.getElementById('saveBtn'); 
         
+        const p1 = document.getElementById('projectCategory').value;
+        const p2 = document.getElementById('projectCategory2').value;
+        let pArray = [];
+        if(p1) pArray.push(p1);
+        if(p2 && p2 !== p1) pArray.push(p2);
+        const finalProjectCategory = pArray.join(' + ');
+
         const oldText = btn.innerText;
         btn.disabled = true; 
         btn.innerText = "Saving...";
@@ -1419,7 +1450,7 @@
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
             followup: document.getElementById('followup').value || "", followupTime: document.getElementById('followupTime').value || "",
             name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
-            leadSource: document.getElementById('leadSource').value, projectCategory: document.getElementById('projectCategory').value, 
+            leadSource: document.getElementById('leadSource').value, projectCategory: finalProjectCategory, 
             specificUnit: document.getElementById('specificUnit').value.trim(), location: document.getElementById('location').value, 
             status: statusVal, budget: document.getElementById('budget').value, visitDone: document.getElementById('visitDone').checked, 
             leadTemperature: selectedTemp,
@@ -1454,7 +1485,7 @@
     });
 
     function getFilteredData() {
-        let data = currentProjectFilter === 'All' ? [...clients] : clients.filter(c => c.projectCategory === currentProjectFilter);
+        let data = currentProjectFilter === 'All' ? [...clients] : clients.filter(c => c.projectCategory && c.projectCategory.includes(currentProjectFilter));
         
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
@@ -1617,8 +1648,11 @@
     }
 
     function renderData() { 
-        renderTable(); 
-        renderKanban(); 
+        if (currentViewMode === 'table') {
+            renderTable(); 
+        } else {
+            renderKanban(); 
+        }
     }
 
     function renderTable() {
@@ -1677,11 +1711,52 @@
         });
     }
 
+    let dndInitialized = false;
+    function initDragAndDrop() {
+        if(dndInitialized) return;
+        
+        const kContainer = document.getElementById('kanbanView');
+        
+        kContainer.addEventListener('dragstart', (e) => { 
+            const card = e.target.closest('.k-card');
+            if(!card) return;
+            if(e.target.tagName === 'ION-ICON') { e.preventDefault(); return; } 
+            haptic('light');
+            draggedCardId = card.dataset.id; 
+            setTimeout(() => card.style.opacity = '0.5', 0); 
+        });
+        
+        kContainer.addEventListener('dragend', (e) => { 
+            const card = e.target.closest('.k-card');
+            if(card) card.style.opacity = '1'; 
+            draggedCardId = null; 
+        });
+
+        document.querySelectorAll('.kanban-dropzone').forEach(zone => {
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+            zone.addEventListener('dragleave', e => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault(); zone.classList.remove('drag-over');
+                const newStatus = zone.dataset.status;
+                if(draggedCardId) {
+                    db.collection("leads").doc(draggedCardId).update({ status: newStatus })
+                    .then(() => {
+                        showNotification(`Lead moved to ${newStatus}`, 'success');
+                        haptic('medium');
+                        if(newStatus === 'Closed') fireConfetti();
+                    })
+                    .catch(err => {
+                        showNotification("Failed to update status: " + err.message, 'error');
+                    });
+                }
+            });
+        });
+        dndInitialized = true;
+    }
+
     function renderKanban() {
         const zonesHTML = { 'New': [], 'Follow-up': [], 'Hot': [], 'Broker': [], 'Closed': [] };
         const exportData = getFilteredData();
-
-        /* VANILLA TILT REMOVED FROM LIST FOR MAXIMUM PERFORMANCE */
 
         exportData.forEach(c => {
             if(c.status === 'Not Interested' || !zonesHTML[c.status]) return; 
@@ -1717,8 +1792,6 @@
                 const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
                 if(zone) zone.innerHTML = zonesHTML[status].join('');
             });
-
-            addDragEvents();
         });
     }
 
@@ -1727,9 +1800,14 @@
         const c = clients.find(x => x.id === id); if(!c) return;
         document.getElementById('editId').value = c.id;
         
-        ['leadDate', 'followup', 'followupTime', 'name', 'phone', 'leadSource', 'projectCategory', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
+        ['leadDate', 'followup', 'followupTime', 'name', 'phone', 'leadSource', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
             if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
+        
+        const savedProjs = (c.projectCategory || '').split(' + ').map(s => s.trim());
+        document.getElementById('projectCategory').value = savedProjs[0] || '';
+        document.getElementById('projectCategory2').value = savedProjs[1] || '';
+
         document.getElementById('visitDone').checked = !!c.visitDone;
         document.getElementById('saveBtn').innerText = "Update Record";
 
@@ -1760,6 +1838,9 @@
         document.getElementById('newRemark').value = "";
         document.getElementById('followup').value = "";
         document.getElementById('followupTime').value = "";
+        
+        document.getElementById('projectCategory').value = "";
+        document.getElementById('projectCategory2').value = "";
         
         window.currentEditHistory = []; 
         renderHistoryTimeline();
@@ -1867,7 +1948,7 @@
                         source = 'CSV Import'; 
                     }
 
-                    const project = cleanVal(colMap.project);
+                    const project = cleanVal(colMap.project).replace(/,/g, ' + ');
                     const unit = cleanVal(colMap.unit);
                     const location = cleanVal(colMap.location);
                     const budget = cleanVal(colMap.budget);
@@ -1931,44 +2012,6 @@
         reader.readAsText(file);
     });
 
-    let draggedCardId = null;
-    function addDragEvents() {
-        document.querySelectorAll('.k-card').forEach(card => {
-            card.addEventListener('dragstart', (e) => { 
-                if(e.target.tagName === 'ION-ICON') { e.preventDefault(); return; } 
-                haptic('light');
-                draggedCardId = e.currentTarget.dataset.id; setTimeout(() => e.currentTarget.style.opacity = '0.5', 0); 
-            });
-            card.addEventListener('dragend', (e) => { e.currentTarget.style.opacity = '1'; draggedCardId = null; });
-        });
-    }
-    
-    function initDragAndDrop() {
-        document.querySelectorAll('.kanban-dropzone').forEach(zone => {
-            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-            zone.addEventListener('dragleave', e => zone.classList.remove('drag-over'));
-            zone.addEventListener('drop', e => {
-                e.preventDefault(); zone.classList.remove('drag-over');
-                const newStatus = zone.dataset.status;
-                if(draggedCardId) {
-                    db.collection("leads").doc(draggedCardId).update({ status: newStatus })
-                    .then(() => {
-                        showNotification(`Lead moved to ${newStatus}`, 'success');
-                        haptic('medium');
-                        if(newStatus === 'Closed') fireConfetti();
-                    })
-                    .catch(err => {
-                        showNotification("Failed to update status: " + err.message, 'error');
-                    });
-                }
-            });
-        });
-    }
-
-    function openModal(id) { haptic('light'); document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { haptic('light'); document.getElementById(id).classList.remove('active'); }
-    
-    let currentWaName = ''; let currentWaProj = '';
     function openWaModal(phone, name, project) {
         currentWaName = name; currentWaProj = project || 'our premium properties';
         document.getElementById('waTargetName').innerText = `👤 ${name}  |  📞 ${phone}`;
