@@ -257,7 +257,9 @@
         tbody tr:last-child td { border-bottom: none; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
-        .row-cold { opacity: 0.6; filter: grayscale(30%); }
+        
+        /* FADE REMOVED COMPLETELY AS REQUESTED */
+        .row-cold { opacity: 1 !important; filter: none !important; }
 
         .skeleton-loader { position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%); background-size: 1000px 100%; animation: shimmer 1.5s infinite linear; z-index: 10; border-radius: 0 0 24px 24px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px;}
         .dark-theme .skeleton-loader { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0) 100%); }
