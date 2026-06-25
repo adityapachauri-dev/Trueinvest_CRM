@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - AI Premium v4.0 (Fast & Furious)</title>
+    <title>TRUE INVEST CRM - AI Premium v5.0 (Fully Automated)</title>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -496,7 +496,7 @@
                     <div>
                         <label>Follow-up Date & Time</label>
                         <div class="flex-row">
-                            <input type="date" id="followup" style="flex:1;">
+                            <input type="date" id="followup" style="flex:1;" title="Leave blank for Auto-Schedule">
                             <input type="time" id="followupTime" style="width:130px;" title="Follow-up Time">
                         </div>
                     </div>
@@ -786,36 +786,50 @@
     }
 
     // ==========================================
-    // SMART MODULE 2: AUTO BUSINESS ANALYST
+    // SMART MODULE 2: AI BUSINESS & REVENUE ANALYST
     // ==========================================
     function generateDeepAnalyticsInsights() {
         if (clients.length === 0) return;
+        
         let totalLeads = clients.length;
         let closedLeads = clients.filter(c => c.status === 'Closed').length;
         let sourceCount = {};
+        let projectedRevenue = 0; 
+
         clients.forEach(c => {
             if (c.status === 'Closed' && c.leadSource) {
                 sourceCount[c.leadSource] = (sourceCount[c.leadSource] || 0) + 1;
             }
+            
+            if ((c.status === 'Hot' || c.status === 'Broker' || c.leadTemperature === 'Hot') && c.budget) {
+                let budgetVal = parseFloat(c.budget.replace(/[^0-9.]/g, ''));
+                if (!isNaN(budgetVal)) {
+                    if (c.budget.toLowerCase().includes('cr')) projectedRevenue += (budgetVal * 10000000);
+                    else if (c.budget.toLowerCase().includes('lakh') || c.budget.toLowerCase().includes('lac')) projectedRevenue += (budgetVal * 100000);
+                    else projectedRevenue += budgetVal; 
+                }
+            }
         });
         
-        // Find best source (handles empty object safely)
         let sortedSources = Object.keys(sourceCount).sort((a, b) => sourceCount[b] - sourceCount[a]);
         let bestSource = sortedSources.length > 0 ? sortedSources[0] : 'Direct/Organic';
-        
         let conversionRate = totalLeads > 0 ? ((closedLeads / totalLeads) * 100).toFixed(1) : 0;
+        
         const today = getToday();
         let neglectedLeads = clients.filter(c => (c.leadTemperature === 'Hot' || c.leadTemperature === 'Warm') && c.status !== 'Closed' && (!c.followup || c.followup < today)).length;
         
+        let displayRevenue = projectedRevenue >= 10000000 ? `₹ ${(projectedRevenue/10000000).toFixed(2)} Cr` : `₹ ${(projectedRevenue/100000).toFixed(2)} Lakh`;
+
         const insightsDiv = document.getElementById('smartInsightsContent');
         if(insightsDiv) {
             insightsDiv.innerHTML = `
                 <div style="background:var(--accent-glow); padding:16px; border-radius:16px; border:1px solid var(--accent-blue); margin-bottom:20px;">
                     <h4 style="margin:0 0 10px 0; color:var(--accent-blue); font-size:14px; text-transform:uppercase;">🤖 AI Business Analyst</h4>
                     <ul style="margin:0; padding-left:20px; font-size:13px; color:var(--text-color); line-height:1.6;">
-                        <li><b>Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-blue);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
-                        <li><b>Top Source:</b> Sabse zyada business <span style="font-weight:bold; color:var(--accent-blue);">${bestSource}</span> se aa raha hai.</li>
-                        <li><b>Attention Needed:</b> <span style="font-weight:bold; color:var(--notify-red);">${neglectedLeads}</span> Hot/Warm leads aisi hain jinka follow-up date miss ho gaya hai!</li>
+                        <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#34c759;">${displayRevenue}</span> ka business HOT stage par hai!</li>
+                        <li><b>📈 Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-blue);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
+                        <li><b>🔥 Top Source:</b> Sabse zyada closing <span style="font-weight:bold; color:var(--accent-blue);">${bestSource}</span> se aa rahi hai.</li>
+                        <li><b>⚠️ Attention Needed:</b> <span style="font-weight:bold; color:var(--notify-red);">${neglectedLeads}</span> High-priority leads ka follow-up date miss ho gaya hai, inko aaj hi call karein!</li>
                     </ul>
                 </div>
             `;
@@ -823,20 +837,46 @@
     }
 
     // ==========================================
-    // SMART MODULE 3: SILENT DATA SANITIZER
+    // SMART MODULE 3: AI PIPELINE HEALTH-CHECKER
     // ==========================================
+    const parseHistoryDate = (dateStr) => {
+        if(!dateStr) return new Date();
+        const months = {Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11};
+        const parts = dateStr.split('-');
+        if(parts.length === 3) return new Date(parts[2], months[parts[1]], parts[0]);
+        return new Date(dateStr);
+    };
+
     function silentDataSanitizer() {
         let batch = db.batch();
         let needsUpdate = false;
         let count = 0;
+        let today = new Date();
         
         clients.forEach(c => {
             let updates = {};
-            // Strict Bug Killer & Consistency Rules
+            
             if (c.status === 'Follow-up Done') updates.status = 'Follow-up'; 
             if (c.specificUnit && c.specificUnit.includes('835 sq ft')) updates.specificUnit = c.specificUnit.replace('835', '830');
             if (c.projectCategory && c.projectCategory.includes('Lock & key')) updates.projectCategory = c.projectCategory.replace('Lock & key', 'Lock n key');
             
+            // AUTO-DECAY: Downgrade neglected HOT leads to WARM
+            if (c.leadTemperature === 'Hot' && c.history && c.history.length > 0) {
+                let lastActionDate = parseHistoryDate(c.history[0].date);
+                
+                if(!isNaN(lastActionDate.getTime())) {
+                    let diffDays = Math.floor((today - lastActionDate) / (1000 * 60 * 60 * 24));
+                    if(diffDays >= 7) {
+                        updates.leadTemperature = 'Warm'; 
+                        let newHistory = [...c.history];
+                        let autoNote = "🤖 AI Alert: 7 din se koi follow-up nahi hua, priority Hot se Warm ki gayi.";
+                        newHistory.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: autoNote });
+                        updates.history = newHistory;
+                        updates.remark = autoNote;
+                    }
+                }
+            }
+
             if (Object.keys(updates).length > 0) {
                 batch.update(db.collection("leads").doc(c.id), updates);
                 needsUpdate = true;
@@ -845,7 +885,9 @@
         });
         
         if (needsUpdate && count <= 400) {
-            batch.commit().catch(e => console.log("Silent sanitization error:", e));
+            batch.commit().then(() => {
+                console.log(`🤖 CRM Auto-Sanitized & Optimized ${count} leads in background.`);
+            }).catch(e => console.log("Silent sanitization error:", e));
         }
     }
 
@@ -1074,7 +1116,6 @@
     let sourceChartInst = null;
     
     function renderAnalytics() {
-        // Trigger Smart AI Analyst before opening modal
         generateDeepAnalyticsInsights();
         openModal('analyticsModal');
         
@@ -1159,6 +1200,7 @@
     let currentQuickFilter = 'All'; 
     let initialLoad = true;
     let unsubscribeSnapshot = null; 
+    let hasSanitized = false; // Bug killer lock
     
     let sortColumn = 'leadDate';
     let sortAscending = false;
@@ -1235,7 +1277,6 @@
 
     function loadData() {
         if(!auth.currentUser) return;
-        
         if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
 
         unsubscribeSnapshot = db.collection("leads").where("ownerId", "==", auth.currentUser.uid).onSnapshot(snap => {
@@ -1246,8 +1287,11 @@
                 initialLoad = false;
             }
 
-            // Run silent bug killer in background
-            silentDataSanitizer();
+            // Run silent bug killer in background ONLY ONCE to prevent infinite snapshot loops
+            if (!hasSanitized) {
+                silentDataSanitizer();
+                hasSanitized = true;
+            }
 
             let dbProjects = [];
             clients.forEach(c => {
@@ -1360,9 +1404,7 @@
         const today = getToday();
         const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
         document.getElementById('statTotal').innerText = clients.length;
-        
         document.getElementById('statHot').innerText = clients.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot').length;
-        
         document.getElementById('statFollow').innerText = follow;
 
         const bar = document.getElementById('reminderAlert');
@@ -1483,9 +1525,28 @@
             showNotification('🤖 AI ne priority ko HOT se align kar diya hai.', 'success');
         }
 
+        // ==========================================
+        // SMART AUTO-SCHEDULER LOGIC
+        // ==========================================
+        let finalFollowupDate = document.getElementById('followup').value;
+        
+        if(!finalFollowupDate && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
+            let nextDate = new Date();
+            if(selectedTemp === 'Hot') nextDate.setDate(nextDate.getDate() + 1); 
+            else if(selectedTemp === 'Warm') nextDate.setDate(nextDate.getDate() + 3); 
+            else nextDate.setDate(nextDate.getDate() + 7); 
+            
+            const y = nextDate.getFullYear();
+            const m = String(nextDate.getMonth() + 1).padStart(2, '0');
+            const d = String(nextDate.getDate()).padStart(2, '0');
+            finalFollowupDate = `${y}-${m}-${d}`;
+            
+            showNotification(`🤖 AI Auto-Schedule: Next Call on ${formatDisplayDate(finalFollowupDate)}`, 'success');
+        }
+
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
-            followup: document.getElementById('followup').value || "", followupTime: document.getElementById('followupTime').value || "",
+            followup: finalFollowupDate, followupTime: document.getElementById('followupTime').value || "",
             name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
             leadSource: document.getElementById('leadSource').value, projectCategory: finalProjectCategory, 
             specificUnit: document.getElementById('specificUnit').value.trim(), location: document.getElementById('location').value, 
@@ -1687,30 +1748,35 @@
     }
 
     function renderData() { 
-        renderTable(); 
+        renderTableOptimized(); 
         renderKanban(); 
     }
 
     // =========================================================
     // SMART RENDERER (Fast Document Rendering & AI Score added)
     // =========================================================
-    function renderTable() {
-        const table = document.getElementById('clientTable'); 
+    function renderTableOptimized() {
+        const tableBody = document.getElementById('clientTable'); 
+        tableBody.innerHTML = ''; 
+        
+        const fragment = document.createDocumentFragment();
         let serial = 1;
         const today = getToday();
         const exportData = getFilteredData();
         
-        const htmlRows = exportData.map(c => {
+        exportData.forEach(c => {
+            const tr = document.createElement('tr');
+            
             const badge = (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
             const highlight = (c.followup === today && c.status !== 'Closed') ? 'row-highlight' : '';
+            if (highlight) tr.classList.add(highlight);
+            
             const displayStatus = c.status;
-
             const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${sanitizeText(c.specificUnit)}</span>` : '';
             let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-blue); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
             const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
             const safeName = sanitizeText(c.name);
 
-            // LEAD SCORE INJECTION
             const leadScore = calculateSmartScore(c);
             const scoreColor = leadScore >= 70 ? '#34c759' : (leadScore >= 40 ? '#ff9f0a' : '#ff3b30');
             const scoreBadge = `<span class="score-badge" style="color:${scoreColor}; border-color:${scoreColor}60; background:${scoreColor}10;" title="AI Win Score"><ion-icon name="analytics"></ion-icon> ${leadScore}%</span>`;
@@ -1721,7 +1787,6 @@
             else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background:rgba(255,159,10,0.1); color:#ff9f0a; border:1px solid rgba(255,159,10,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
             else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background:rgba(10,132,255,0.1); color:#0a84ff; border:1px solid rgba(10,132,255,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
-            // Strictly mapped to match "Today" logic
             const tickButton = (c.followup === today && c.status !== 'Closed') ? 
                 `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
 
@@ -1729,28 +1794,34 @@
             const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
             const safeNoteAttr = sanitizeText(latestNote).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
-            return `
-                <tr class="${highlight}" title="Double-click to Edit, Tap ⋮ for Actions" ondblclick="editLead('${c.id}')" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}">
-                    <td style="opacity:0.4; font-weight:700;">${serial++}</td>
-                    <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                    <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
-                    <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
-                    <td><span class="badge ${badge}">${displayStatus}</span></td>
-                    <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                    <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
-                    <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
-                    <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
-                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${safeNoteAttr}">${sanitizeText(latestNote)}</td>
-                    <td style="display:flex; justify-content:center; align-items:center;">
-                        ${tickButton}
-                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                    </td>
-                </tr>
+            tr.title = "Double-click to Edit, Tap ⋮ for Actions";
+            tr.dataset.id = c.id;
+            tr.dataset.phone = c.phone;
+            tr.dataset.name = safeNameAttr;
+            tr.dataset.proj = safeProjAttr;
+            tr.ondblclick = () => editLead(c.id);
+
+            tr.innerHTML = `
+                <td style="opacity:0.4; font-weight:700;">${serial++}</td>
+                <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
+                <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
+                <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
+                <td><span class="badge ${badge}">${displayStatus}</span></td>
+                <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
+                <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
+                <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
+                <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${safeNoteAttr}">${sanitizeText(latestNote)}</td>
+                <td style="display:flex; justify-content:center; align-items:center;">
+                    ${tickButton}
+                    <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
+                </td>
             `;
-        }).join('');
+            fragment.appendChild(tr);
+        });
         
         requestAnimationFrame(() => {
-            table.innerHTML = htmlRows;
+            tableBody.appendChild(fragment);
         });
     }
 
