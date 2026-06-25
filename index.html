@@ -2211,15 +2211,40 @@
         }, 350); 
     });
     
+    // =========================================================
+    // EXPORT TO CSV REWRITTEN (Old se le kar New taak + Bug Fixes)
+    // =========================================================
     function downloadCSV() {
         if(clients.length === 0) { showNotification("Export karne ke liye data nahi hai!", 'error'); return; }
         
-        const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Latest Remark"];
+        const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Full Remark History"];
         const exportData = getFilteredData();
-        const rows = exportData.map(c => [
-            c.leadDate, `"${c.name}"`, c.phone, `"${c.leadTemperature || 'Warm'}"`, `"${c.leadSource || ''}"`, c.status, `"${c.projectCategory || ''}"`, `"${c.specificUnit || ''}"`, 
-            `"${c.budget || ''}"`, c.visitDone ? 'Yes' : 'No', c.followup || '', c.followupTime || '', `"${(c.history && c.history.length > 0) ? c.history[0].note.replace(/"/g, '""') : (c.remark||'').replace(/"/g, '""')}"`
-        ]);
+        
+        const rows = exportData.map(c => {
+            let fullHistory = "";
+            if (c.history && c.history.length > 0) {
+                // history is stored newest first, so we reverse it to get oldest to newest
+                fullHistory = [...c.history].reverse().map(h => `[${h.date}] ${h.note}`).join(" || ");
+            } else {
+                fullHistory = c.remark || "";
+            }
+
+            return [
+                c.leadDate || '',
+                `"${(c.name || '').replace(/"/g, '""')}"`,
+                c.phone || '',
+                `"${c.leadTemperature || 'Warm'}"`,
+                `"${c.leadSource || ''}"`,
+                c.status || 'New',
+                `"${(c.projectCategory || '').replace(/"/g, '""')}"`,
+                `"${(c.specificUnit || '').replace(/"/g, '""')}"`,
+                `"${(c.budget || '').replace(/"/g, '""')}"`,
+                c.visitDone ? 'Yes' : 'No',
+                c.followup || '',
+                c.followupTime || '',
+                `"${fullHistory.replace(/"/g, '""')}"`
+            ];
+        });
         
         const csvContent = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
