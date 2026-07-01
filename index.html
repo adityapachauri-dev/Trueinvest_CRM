@@ -562,7 +562,7 @@
 <div id="splashScreen">
     <div class="splash-logo-container">
         <div class="splash-icon">TI</div>
-        <h1 class="splash-title"><span class="brand">TRUE</span> INVEST</h1>
+        <h1 class="splash-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST</h1>
         <div class="splash-loading-bar"></div>
     </div>
 </div>
@@ -571,7 +571,7 @@
 
 <div id="loginView" class="container hidden" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
     <div class="login-card glass-panel" style="margin-top: calc(15vh + env(safe-area-inset-top));">
-        <h1 style="margin-bottom:30px; font-size:36px;"><span class="brand">TRUE</span> INVEST</h1>
+        <h1 style="margin-bottom:30px; font-size:36px; cursor: pointer;" onclick="window.location.reload();" title="Refresh Page"><span class="brand">TRUE</span> INVEST</h1>
         <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important; backdrop-filter:none;">
             <label>Secure CRM Login</label>
             <input type="email" id="loginEmail" placeholder="Work Email" required>
@@ -586,7 +586,7 @@
     <div class="workspace-layout">
         
         <div class="top-bar glass-panel">
-            <h1 class="main-title"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
+            <h1 class="main-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
