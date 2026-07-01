@@ -23,11 +23,6 @@
     
     <script defer src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/default.css">
-    <script defer>
-        window.addEventListener('DOMContentLoaded', () => {
-            MobileDragDrop.polyfill({ dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride });
-        });
-    </script>
     
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -83,6 +78,69 @@
 
         * { box-sizing: border-box; }
 
+        /* ====================================================
+           SPLASH SCREEN ANIMATION STYLES
+           ==================================================== */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color);
+            z-index: 99999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.6s;
+        }
+        
+        .splash-logo-container {
+            display: flex; flex-direction: column; align-items: center;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .splash-icon {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, #0071e3, #4facfe);
+            color: white; font-size: 38px; font-weight: 800; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px var(--accent-glow);
+            animation: pulseGlowSplash 2s infinite ease-in-out;
+        }
+        
+        .splash-title {
+            font-size: 32px; font-weight: 900; margin: 0; letter-spacing: 0.5px;
+            color: var(--text-color);
+        }
+        
+        .splash-title .brand {
+            background: linear-gradient(135deg, #0071e3, #4facfe);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        .splash-loading-bar {
+            width: 140px; height: 4px; background: var(--border-color);
+            border-radius: 4px; margin-top: 30px; overflow: hidden; position: relative;
+        }
+        
+        .splash-loading-bar::after {
+            content: ''; position: absolute; left: -50px; top: 0; height: 100%; width: 50px;
+            background: linear-gradient(135deg, #0071e3, #4facfe);
+            border-radius: 4px;
+            animation: splashLoadAnim 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlowSplash {
+            0% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 113, 227, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
+        }
+        
+        @keyframes splashLoadAnim {
+            0% { left: -50px; width: 30%; }
+            50% { width: 30%; }
+            100% { left: 100%; width: 30%; }
+        }
+
+        .splash-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+
+        /* Existing Styles Continue Below */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.3); border-radius: 10px; transition: background 0.3s ease;}
@@ -480,12 +538,33 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // INIT THEME EARLY TO PREVENT FLASHING DURING SPLASH SCREEN
+        function initThemeEarly() {
+            const savedTheme = localStorage.getItem('crm_theme') || 'light';
+            if(savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+                document.getElementById('themeColorMeta').setAttribute('content', '#121212');
+            }
+        }
+        initThemeEarly();
+    </script>
 </head>
 <body class="">
 
+<!-- FULL-SCREEN ANIMATED SPLASH SCREEN (LIKE JIO APP) -->
+<div id="splashScreen">
+    <div class="splash-logo-container">
+        <div class="splash-icon">TI</div>
+        <h1 class="splash-title"><span class="brand">TRUE</span> INVEST</h1>
+        <div class="splash-loading-bar"></div>
+    </div>
+</div>
+
 <div id="toastContainer"></div>
 
-<div id="loginView" class="container" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
+<div id="loginView" class="container hidden" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
     <div class="login-card glass-panel" style="margin-top: calc(15vh + env(safe-area-inset-top));">
         <h1 style="margin-bottom:30px; font-size:36px;"><span class="brand">TRUE</span> INVEST</h1>
         <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important; backdrop-filter:none;">
@@ -686,6 +765,7 @@
     </div>
 </nav>
 
+<!-- Modals Section remains structurally untouched but functionally optimized -->
 <div id="analyticsModal" class="modal-overlay" onclick="handleModalClick(event, 'analyticsModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()" style="max-width: 700px; width: 95%;">
         <div class="sheet-handle"></div>
@@ -807,6 +887,15 @@
 </div>
 
 <script>
+    // ==========================================
+    // BUG FIX: Ensure Drag and Drop polyfill loads safely
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+        if (typeof MobileDragDrop !== 'undefined') {
+            MobileDragDrop.polyfill({ dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride });
+        }
+    });
+
     // ==========================================
     // SMOOTH NUMBER COUNTER ANIMATION ENGINE
     // ==========================================
@@ -971,27 +1060,22 @@
     }
 
     function initTheme() {
-        const savedTheme = localStorage.getItem('crm_theme') || 'light';
-        if(savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
-            const toggleBtn = document.getElementById('themeToggleBtn');
-            if(toggleBtn) toggleBtn.innerHTML = '<ion-icon name="sunny"></ion-icon>';
-            document.getElementById('themeColorMeta').setAttribute('content', '#121212');
-        }
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        const isDark = document.documentElement.classList.contains('dark-theme');
+        if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
     }
     
     function toggleTheme() {
         haptic('medium');
-        const body = document.body;
-        body.classList.toggle('dark-theme');
-        const isDark = body.classList.contains('dark-theme');
+        const isDark = document.documentElement.classList.toggle('dark-theme');
         localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
         const toggleBtn = document.getElementById('themeToggleBtn');
         if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
         document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#121212' : '#f4f7f9');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
     }
-    initTheme();
+    // Ensures theme toggle icon is correct on load
+    window.addEventListener('DOMContentLoaded', initTheme);
 
     function switchMobileTab(tabId, element) {
         if(window.innerWidth > 992) return; 
@@ -1187,8 +1271,13 @@
         openModal('analyticsModal');
         
         setTimeout(() => {
-            const ctxFunnel = document.getElementById('funnelChart').getContext('2d');
-            const ctxSource = document.getElementById('sourceChart').getContext('2d');
+            // BUG FIX: Ensure elements exist before calling canvas context
+            const funnelCanvas = document.getElementById('funnelChart');
+            const sourceCanvas = document.getElementById('sourceChart');
+            if(!funnelCanvas || !sourceCanvas) return;
+            
+            const ctxFunnel = funnelCanvas.getContext('2d');
+            const ctxSource = sourceCanvas.getContext('2d');
             
             const stats = { 'New': 0, 'Follow-up': 0, 'Hot': 0, 'Broker': 0, 'Closed': 0 };
             const sources = {};
@@ -1199,7 +1288,7 @@
                 sources[source] = (sources[source] || 0) + 1;
             });
 
-            const isDark = document.body.classList.contains('dark-theme');
+            const isDark = document.documentElement.classList.contains('dark-theme');
             const labelColor = isDark ? '#f5f5f7' : '#111111';
 
             if(funnelChartInst) funnelChartInst.destroy();
@@ -1293,6 +1382,11 @@
         return `${parts[2]}-${months[parseInt(parts[1])-1]}-${parts[0]}`;
     };
 
+    // ====================================================
+    // SPLASH SCREEN & AUTH LOGIC (Bug Free & Smooth Execution)
+    // ====================================================
+    let isAppInitialized = false;
+
     auth.onAuthStateChanged(user => {
         if (user) {
             document.getElementById('loginView').classList.add('hidden');
@@ -1310,6 +1404,18 @@
             document.getElementById('crmView').classList.add('hidden');
             document.getElementById('bottomNav').style.display = 'none';
             if(unsubscribeSnapshot) unsubscribeSnapshot(); 
+        }
+
+        // Hide Splash Screen gracefully after a minimum of 2 seconds for visual aesthetic
+        if (!isAppInitialized) {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                if(splash) {
+                    splash.classList.add('splash-hidden');
+                    setTimeout(() => splash.remove(), 600); // Fully remove from DOM after fade out
+                }
+            }, 2000); 
+            isAppInitialized = true;
         }
     });
 
@@ -1468,7 +1574,6 @@
         renderData();
     }
 
-    // ANIMATED UPDATE DASHBOARD 
     function updateDashboard() {
         const today = getToday();
         const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
@@ -1500,7 +1605,7 @@
             tLine.innerHTML = window.currentEditHistory.map((h, index) => `
                 <div class="history-item" style="animation-delay: ${index * 0.1}s">
                     <span class="history-meta">
-                        <span>${h.date} | ${h.time || 'N/A'}</span>
+                        <span>${h.date || ''} | ${h.time || 'N/A'}</span>
                         <span style="display:flex; align-items:center;">
                             <ion-icon name="create" class="edit-history-btn" onclick="triggerEditHistory(${index})" title="Edit this remark"></ion-icon>
                             <ion-icon name="trash" class="delete-history-btn" onclick="triggerDeleteHistory(${index})" title="Delete this remark"></ion-icon>
@@ -1827,9 +1932,6 @@
         renderKanban(); 
     }
 
-    // =========================================================
-    // SMART RENDERER (Staggered Row Animation & Fast DOM)
-    // =========================================================
     function renderTableOptimized() {
         const tableBody = document.getElementById('clientTable'); 
         tableBody.innerHTML = ''; 
@@ -2294,9 +2396,6 @@
         }, 350); 
     });
     
-    // =========================================================
-    // EXPORT TO CSV REWRITTEN (Old se le kar New taak + Bug Fixes)
-    // =========================================================
     function downloadCSV() {
         if(clients.length === 0) { showNotification("Export karne ke liye data nahi hai!", 'error'); return; }
         
@@ -2455,13 +2554,15 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         try {
-            VanillaTilt.init(document.querySelectorAll(".stat-card"), {
-                max: 10, speed: 400, glare: true, "max-glare": 0.2, scale: 1.05, transition: true
-            });
+            if (typeof VanillaTilt !== 'undefined') {
+                VanillaTilt.init(document.querySelectorAll(".stat-card"), {
+                    max: 10, speed: 400, glare: true, "max-glare": 0.2, scale: 1.05, transition: true
+                });
 
-            VanillaTilt.init(document.querySelector(".login-card"), {
-                max: 8, speed: 400, glare: true, "max-glare": 0.15, transition: true
-            });
+                VanillaTilt.init(document.querySelector(".login-card"), {
+                    max: 8, speed: 400, glare: true, "max-glare": 0.15, transition: true
+                });
+            }
         } catch(e) {}
     });
 
