@@ -9,13 +9,13 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
-    <meta name="theme-color" content="#BDD8E9" id="themeColorMeta">
+    <meta name="theme-color" content="#eef2f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001D39'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001D39'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231e3a8a'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%231e3a8a'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
 
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
@@ -29,60 +29,52 @@
 
     <style>
         /* ====================================================
-           "UNIQUE OCEAN SAPPHIRE" THEME (Integrated Custom Palette)
+           "PREMIUM MIDNIGHT SAPPHIRE" THEME 
            ==================================================== */
         :root {
-            /* Palette: #BDD8E9 (lightest), #7BBDE8, #6EA2B3, #4E8EA2, #49769F, #0A4174, #001D39 (darkest) */
-            --bg-color: #BDD8E9; 
-            --card-bg: rgba(255, 255, 255, 0.88); 
-            --text-color: #001D39; 
-            --border-color: rgba(123, 189, 232, 0.5); 
+            --bg-color: #eef2f6; 
+            --card-bg: rgba(255, 255, 255, 0.97); 
+            --text-color: #0f172a; 
+            --border-color: rgba(15, 23, 42, 0.08); 
             --border-highlight: rgba(255, 255, 255, 0.9);
-            --input-bg: rgba(255, 255, 255, 0.95); 
-            --accent-blue: #0A4174; 
-            --accent-glow: rgba(10, 65, 116, 0.2);
-            --btn-gradient: linear-gradient(135deg, #0A4174, #49769F);
-            --table-th-bg: #6EA2B3;
-            --table-th-text: #ffffff;
-            
-            /* Status UX Colors remain standard for clarity */
+            --input-bg: #ffffff; 
+            --accent-blue: #1e3a8a; /* Deep Royal Sapphire */
+            --accent-glow: rgba(30, 58, 138, 0.12);
             --whatsapp-green: #16a34a; --whatsapp-dark: #15803d; --notify-red: #dc2626; 
-            --highlight-today: rgba(110, 162, 179, 0.2); --hot-bg: rgba(254, 226, 226, 0.9); --hot-text: #991b1b; 
-            --closed-bg: rgba(220, 252, 231, 0.9); --closed-text: #166534; --cold-bg: #7BBDE8; --cold-text: #001D39;
-            --shadow-sm: 0 4px 20px rgba(0, 29, 57, 0.08); 
-            --shadow-lg: 0 10px 40px rgba(0, 29, 57, 0.15);
+            --highlight-today: rgba(254, 252, 232, 0.8); --hot-bg: rgba(254, 226, 226, 0.9); --hot-text: #991b1b; 
+            --closed-bg: rgba(220, 252, 231, 0.9); --closed-text: #166534; --cold-bg: rgba(241, 245, 249, 0.9); --cold-text: #334155;
+            --shadow-sm: 0 4px 20px rgba(15, 23, 42, 0.04); 
+            --shadow-lg: 0 10px 40px rgba(15, 23, 42, 0.08);
             --nav-bg: rgba(255, 255, 255, 0.98);
+            --btn-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6);
         }
 
         .dark-theme {
-            --bg-color: #001D39; 
-            --card-bg: rgba(10, 65, 116, 0.25);
-            --text-color: #BDD8E9;
-            --border-color: rgba(78, 142, 162, 0.3);
-            --border-highlight: rgba(73, 118, 159, 0.5);
-            --input-bg: rgba(0, 29, 57, 0.6); 
-            --accent-blue: #7BBDE8; 
-            --accent-glow: rgba(123, 189, 232, 0.25);
-            --btn-gradient: linear-gradient(135deg, #49769F, #4E8EA2);
-            --table-th-bg: rgba(10, 65, 116, 0.8);
-            --table-th-text: #BDD8E9;
-            
-            --highlight-today: rgba(78, 142, 162, 0.3); --hot-bg: rgba(153, 27, 27, 0.3); --hot-text: #fca5a5;
-            --closed-bg: rgba(22, 101, 52, 0.3); --closed-text: #86efac; --cold-bg: rgba(73, 118, 159, 0.4); --cold-text: #BDD8E9;
+            --bg-color: #0f172a; /* Rich Slate / Obsidian */
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --text-color: #f8fafc;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-highlight: rgba(255, 255, 255, 0.1);
+            --input-bg: #1e293b; 
+            --accent-blue: #3b82f6; /* Bright Royal Blue for visibility */
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --highlight-today: rgba(234, 179, 8, 0.15); --hot-bg: rgba(153, 27, 27, 0.3); --hot-text: #fca5a5;
+            --closed-bg: rgba(22, 101, 52, 0.3); --closed-text: #86efac; --cold-bg: rgba(51, 65, 85, 0.5); --cold-text: #cbd5e1;
             --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-            --nav-bg: rgba(0, 29, 57, 0.98);
+            --nav-bg: rgba(15, 23, 42, 0.98);
+            --btn-gradient: linear-gradient(135deg, #3b82f6, #60a5fa);
         }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
-            background: var(--bg-color); 
+            background-color: var(--bg-color); 
             color: var(--text-color); 
             margin: 0; padding: 0; 
             overflow-x: hidden; 
             width: 100vw; 
             -webkit-font-smoothing: antialiased; 
-            transition: background 0.4s ease, color 0.4s ease; 
+            transition: background-color 0.4s ease, color 0.4s ease; 
             min-height: 100vh;
         }
 
@@ -138,8 +130,8 @@
 
         @keyframes pulseGlowSplash {
             0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-            70% { box-shadow: 0 0 0 15px rgba(10, 65, 116, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(10, 65, 116, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(30, 58, 138, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
         }
         
         @keyframes splashLoadAnim {
@@ -152,9 +144,9 @@
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #49769F; border-radius: 10px; transition: background-color 0.3s ease;}
-        ::-webkit-scrollbar-thumb:hover { background: #0A4174; }
-        .dark-theme ::-webkit-scrollbar-thumb { background: #4E8EA2; }
+        ::-webkit-scrollbar-thumb { background: rgba(30, 58, 138, 0.2); border-radius: 10px; transition: background-color 0.3s ease;}
+        ::-webkit-scrollbar-thumb:hover { background: rgba(30, 58, 138, 0.5); }
+        .dark-theme ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
 
@@ -174,8 +166,8 @@
             box-shadow: var(--shadow-sm);
             border-radius: 24px;
             transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .glass-panel:hover {
@@ -262,12 +254,12 @@
             background: #fffbeb; color: #d97706; border: 1px solid rgba(217, 119, 6, 0.2);
         }
         .segmented-control input[type="radio"]:checked + .seg-cold {
-            background: #BDD8E9; color: #001D39; border: 1px solid #7BBDE8;
+            background: #eff6ff; color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2);
         }
         
         .dark-theme .segmented-control input[type="radio"]:checked + .seg-hot { background: rgba(220, 38, 38, 0.15); }
         .dark-theme .segmented-control input[type="radio"]:checked + .seg-warm { background: rgba(217, 119, 6, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-cold { background: rgba(73, 118, 159, 0.4); color: #BDD8E9; }
+        .dark-theme .segmented-control input[type="radio"]:checked + .seg-cold { background: rgba(37, 99, 235, 0.15); }
         .dark-theme .segmented-control input[type="radio"]:checked + label { box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
         .badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; transition: background-color 0.3s ease, color 0.3s ease;}
@@ -296,7 +288,7 @@
         .btn-secondary:active { transform: scale(0.96); }
 
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--border-color); height: 48px; border-radius: 16px; padding-left: 44px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%2349769F" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%2349769F" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 16px center; box-shadow: var(--shadow-sm); transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--border-color); height: 48px; border-radius: 16px; padding-left: 44px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%2394a3b8" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%2394a3b8" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 16px center; box-shadow: var(--shadow-sm); transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
         .search-box:focus { border-color: var(--accent-blue); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px);}
         .controls-row button { height: 48px; margin: 0; padding: 0 20px; width: auto; }
 
@@ -317,9 +309,10 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle; transition: background-color 0.2s ease, border-color 0.3s ease;}
         
-        th { background: var(--table-th-bg); font-weight: 800; font-size: 12px; color: var(--table-th-text); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
-        th:hover { background: var(--accent-blue); color: #fff; }
-        .dark-theme th:hover { background: #49769F; color: #fff;}
+        th { background: rgba(248,250,252,0.95); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
+        th:hover { background: rgba(30, 58, 138, 0.05); color: #1e3a8a; }
+        .dark-theme th { background: rgba(15,23,42,0.95); }
+        .dark-theme th:hover { background: rgba(59, 130, 246, 0.1); color: #fff;}
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
@@ -331,9 +324,9 @@
         } 
         tbody tr:hover {
             transform: translateY(-2px) scale(1.005);
-            background-color: rgba(10, 65, 116, 0.05); /* Uses palette dark blue */
+            background-color: rgba(30, 58, 138, 0.03);
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 29, 57, 0.05);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
             z-index: 2; position: relative;
         }
         .dark-theme tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
@@ -368,7 +361,7 @@
         }
         .kanban-dropzone::-webkit-scrollbar { width: 4px; }
         .kanban-dropzone::-webkit-scrollbar-track { background: transparent; }
-        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(10, 65, 116, 0.2); border-radius: 4px;}
+        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(30, 58, 138, 0.2); border-radius: 4px;}
         
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); transform: scale(1.02); }
 
@@ -378,12 +371,12 @@
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
         .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 6px; transition: transform 0.2s ease, background-color 0.2s ease; user-select: none; }
-        .edit-history-btn:hover { background-color: rgba(10, 65, 116, 0.1); transform: scale(1.2) rotate(15deg); }
+        .edit-history-btn:hover { background-color: rgba(30, 58, 138, 0.1); transform: scale(1.2) rotate(15deg); }
         
         .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 6px; transition: transform 0.2s ease, background-color 0.2s ease; margin-left: 6px; user-select: none;}
         .delete-history-btn:hover { background-color: rgba(220, 38, 38, 0.1); transform: scale(1.2) rotate(-15deg); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0; }
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
@@ -393,16 +386,16 @@
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         .remark-wrapper textarea { margin-bottom: 0; padding-bottom: 16px; padding-right: 16px; }
         
-        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(10, 65, 116, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
+        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(30, 58, 138, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
         .copyable:hover { color: var(--accent-blue); transform: scale(1.02); }
         .copyable:active { opacity: 0.5; transform: scale(0.95); }
 
-        .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(10, 65, 116, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(30, 58, 138, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .history-link:hover { opacity: 0.7; transform: scale(1.02); }
 
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 29, 57, 0.6); display: flex; align-items: flex-end; justify-content: center;
+            background: rgba(15, 23, 42, 0.6); display: flex; align-items: flex-end; justify-content: center;
             z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -468,7 +461,7 @@
             font-size: 24px; color: var(--accent-blue); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
-        .action-dots:hover { opacity: 1; transform: scale(1.2); background-color: rgba(10, 65, 116, 0.08); }
+        .action-dots:hover { opacity: 1; transform: scale(1.2); background-color: rgba(30, 58, 138, 0.08); }
         .action-dots:active { transform: scale(0.8); }
 
         .hidden { display: none !important; }
@@ -509,7 +502,7 @@
                 bottom: max(20px, env(safe-area-inset-bottom)); 
                 left: 5%; width: 90%; 
                 background: var(--nav-bg); border: 1px solid var(--border-color); z-index: 9999; padding: 12px 0; justify-content: space-evenly; 
-                align-items: center; box-shadow: 0 10px 40px rgba(0,29,57,0.1); border-radius: 40px;
+                align-items: center; box-shadow: 0 10px 40px rgba(15,23,42,0.1); border-radius: 40px;
                 animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
                 transition: background-color 0.3s ease, border-color 0.3s ease;
                 backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -600,7 +593,7 @@
             const savedTheme = localStorage.getItem('crm_theme') || 'light';
             if(savedTheme === 'dark') {
                 document.documentElement.classList.add('dark-theme');
-                document.getElementById('themeColorMeta').setAttribute('content', '#001D39');
+                document.getElementById('themeColorMeta').setAttribute('content', '#0f172a');
             }
         }
         initThemeEarly();
@@ -790,10 +783,10 @@
             </div>
 
             <div class="kanban-container hidden glass-panel" id="kanbanView">
-                <div class="kanban-col"><h3 style="border-bottom-color:#0A4174;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#3b82f6;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#f59e0b;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#ef4444;">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#7BBDE8;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#a855f7;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#22c55e;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
         </div>
@@ -1126,7 +1119,7 @@
         localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
         const toggleBtn = document.getElementById('themeToggleBtn');
         if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
-        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#001D39' : '#BDD8E9');
+        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#0f172a' : '#eef2f6');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
     }
 
@@ -1230,7 +1223,6 @@
     let funnelChartInst = null;
     let sourceChartInst = null;
     
-    // UPDATED WITH UNIQUE 7-COLOR PALETTE
     function renderAnalytics() {
         generateDeepAnalyticsInsights();
         openModal('analyticsModal');
@@ -1263,7 +1255,7 @@
                     datasets: [{
                         label: 'Leads Pipeline',
                         data: Object.values(stats),
-                        backgroundColor: ['#0A4174', '#49769F', '#4E8EA2', '#6EA2B3', '#7BBDE8'],
+                        backgroundColor: ['#3b82f6', '#f59e0b', '#ef4444', '#a855f7', '#22c55e'],
                         borderRadius: 8
                     }]
                 },
@@ -1286,7 +1278,7 @@
                     labels: Object.keys(sources),
                     datasets: [{
                         data: Object.values(sources),
-                        backgroundColor: ['#001D39', '#0A4174', '#49769F', '#4E8EA2', '#6EA2B3', '#7BBDE8', '#BDD8E9'],
+                        backgroundColor: ['#1e3a8a', '#22c55e', '#f59e0b', '#ef4444', '#a855f7', '#0ea5e9', '#64748b'],
                         borderWidth: 0
                     }]
                 },
@@ -2523,8 +2515,8 @@
     (function initSingleFilePWA() {
         try {
             const manifestData = {
-                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#BDD8E9", theme_color: "#001D39", start_url: ".",
-                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23001D39'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
+                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#eef2f6", theme_color: "#1e3a8a", start_url: ".",
+                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231e3a8a'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
