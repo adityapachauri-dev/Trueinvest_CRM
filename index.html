@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - AI Premium v5.0 (Fully Automated)</title>
+    <title>TRUE INVEST CRM - Premium v5.0</title>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -284,9 +284,6 @@
         .btn-secondary:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 6px 15px var(--shadow-sm); }
         .btn-secondary:active { transform: scale(0.96); }
 
-        .btn-ai-voice { background: linear-gradient(135deg, #bf5af2, #5e5ce6); margin-bottom: 20px; border-radius: 16px; height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; box-shadow: 0 4px 15px rgba(191, 90, 242, 0.3); }
-        .btn-ai-voice:hover { box-shadow: 0 8px 25px rgba(191, 90, 242, 0.5); transform: translateY(-2px); }
-
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; margin-bottom: 0; width: 100%; }
         .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 40px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%230071e3" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%230071e3" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 14px center; box-shadow: 0 0 10px var(--accent-glow); transition: box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
         .search-box:focus { box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px);}
@@ -390,7 +387,6 @@
         .copyable:hover { color: var(--accent-blue); transform: scale(1.02); }
         .copyable:active { opacity: 0.5; transform: scale(0.95); }
 
-        /* NAYA CSS: History Link styling */
         .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(0, 113, 227, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .history-link:hover { opacity: 0.7; transform: scale(1.02); }
 
@@ -652,15 +648,13 @@
         <div class="left-panel mobile-tab-content" id="tabAddForm">
             <form id="clientForm" class="glass-panel">
                 <input type="hidden" id="editId" value="">
-                
-                <button type="button" class="btn-ai-voice" id="aiVoiceBtn" onclick="startSmartVoiceFill()"><ion-icon name="mic"></ion-icon> ✨ Smart AI Voice Fill</button>
 
                 <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
                     <div>
                         <label>Follow-up Date & Time</label>
                         <div class="flex-row">
-                            <input type="date" id="followup" style="flex:1;" title="Leave blank for Auto-Schedule">
+                            <input type="date" id="followup" style="flex:1;">
                             <input type="time" id="followupTime" style="width:130px;" title="Follow-up Time">
                         </div>
                     </div>
@@ -737,10 +731,7 @@
 
                 <div id="historyTimeline" class="history-timeline glass-panel"></div>
                 
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Add Follow-up Remark</span>
-                    <span onclick="generateSmartSummary()" style="color:var(--accent-blue); font-size:11px; cursor:pointer; font-weight:800; text-transform:uppercase; transition: transform 0.2s ease;"><ion-icon name="sparkles"></ion-icon> ✨ AI Summary</span>
-                </label>
+                <label>Add Follow-up Remark</label>
                 <div class="remark-wrapper">
                     <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical; padding-bottom:16px; padding-right:16px;"></textarea>
                 </div>
@@ -855,14 +846,13 @@
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <button class="modal-close" onclick="closeModal('waModal')" style="margin-top:10px;">×</button>
-        <h2 style="margin-top:10px; color:var(--whatsapp-green); font-size:24px; font-weight:800;"><ion-icon name="logo-whatsapp"></ion-icon> Smart WA</h2>
+        <h2 style="margin-top:10px; color:var(--whatsapp-green); font-size:24px; font-weight:800;"><ion-icon name="logo-whatsapp"></ion-icon> Quick WA</h2>
         <p style="font-size:15px; color:var(--text-color); margin-bottom:24px; font-weight:600; background-color:var(--input-bg); padding:16px; border-radius:16px;" id="waTargetName">Sending to: </p>
         <input type="hidden" id="waTargetPhone">
         
         <label>Select Template</label>
         <select id="waTemplateSelector" onchange="loadWaTemplate()" style="border-color:var(--whatsapp-green);">
             <option value="">-- Select a template to edit --</option>
-            <option value="ai" style="font-weight:bold; color: #bf5af2;">✨ AI Auto-Draft (Personalized)</option>
             <option value="1">📄 Send Project Brochure & Details</option>
             <option value="2">📍 Send Site Visit Location</option>
             <option value="3">👋 Gentle Follow-up Greeting</option>
@@ -879,7 +869,7 @@
     </div>
 </div>
 
-<!-- NAYA FEATURE: HISTORY MODAL POPUP -->
+<!-- HISTORY MODAL POPUP -->
 <div id="historyModal" class="modal-overlay" onclick="handleModalClick(event, 'historyModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -1047,7 +1037,7 @@
         if(insightsDiv) {
             insightsDiv.innerHTML = `
                 <div style="background-color:var(--accent-glow); padding:16px; border-radius:16px; border:1px solid var(--accent-blue); margin-bottom:20px; animation: popIn 0.5s ease;">
-                    <h4 style="margin:0 0 10px 0; color:var(--accent-blue); font-size:14px; text-transform:uppercase;">🤖 AI Business Analyst</h4>
+                    <h4 style="margin:0 0 10px 0; color:var(--accent-blue); font-size:14px; text-transform:uppercase;">📊 Business Insights</h4>
                     <ul style="margin:0; padding-left:20px; font-size:13px; color:var(--text-color); line-height:1.6;">
                         <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#34c759;">${displayRevenue}</span> ka business HOT stage par hai!</li>
                         <li><b>📈 Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-blue);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
@@ -1071,7 +1061,6 @@
         let batch = db.batch();
         let needsUpdate = false;
         let count = 0;
-        let today = new Date();
         
         clients.forEach(c => {
             let updates = {};
@@ -1080,22 +1069,6 @@
             if (c.specificUnit && c.specificUnit.includes('835 sq ft')) updates.specificUnit = c.specificUnit.replace('835', '830');
             if (c.projectCategory && c.projectCategory.includes('Lock & key')) updates.projectCategory = c.projectCategory.replace('Lock & key', 'Lock n key');
             
-            if (c.leadTemperature === 'Hot' && c.history && c.history.length > 0) {
-                let lastActionDate = parseHistoryDate(c.history[0].date);
-                
-                if(!isNaN(lastActionDate.getTime())) {
-                    let diffDays = Math.floor((today - lastActionDate) / (1000 * 60 * 60 * 24));
-                    if(diffDays >= 7) {
-                        updates.leadTemperature = 'Warm'; 
-                        let newHistory = [...c.history];
-                        let autoNote = "🤖 AI Alert: 7 din se koi follow-up nahi hua, priority Hot se Warm ki gayi.";
-                        newHistory.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: autoNote });
-                        updates.history = newHistory;
-                        updates.remark = autoNote;
-                    }
-                }
-            }
-
             if (Object.keys(updates).length > 0 && count < 400) {
                 batch.update(db.collection("leads").doc(c.id), updates);
                 needsUpdate = true;
@@ -1104,9 +1077,7 @@
         });
         
         if (needsUpdate && count > 0) {
-            batch.commit().then(() => {
-                console.log(`🤖 CRM Auto-Sanitized & Optimized ${count} leads in background.`);
-            }).catch(e => console.log("Silent sanitization error:", e));
+            batch.commit().catch(e => console.log("Silent sanitization error:", e));
         }
     }
 
@@ -1209,95 +1180,6 @@
         }).catch(err => {
             showNotification('Failed to copy', 'error');
         });
-    }
-
-    function startSmartVoiceFill() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            showNotification("Voice AI is browser me support nahi karta.", 'error');
-            return;
-        }
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-IN';
-
-        const btn = document.getElementById('aiVoiceBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = `<ion-icon name="mic" class="recording" style="animation: pulseGlow 1s infinite;"></ion-icon> 🤖 AI sun raha hai...`;
-        btn.style.backgroundColor = '#ff3b30';
-
-        recognition.start();
-        haptic('medium');
-
-        recognition.onresult = function(e) {
-            const transcript = e.results[0][0].transcript;
-            showNotification("🤖 AI Processing: " + transcript, 'success');
-
-            const phoneMatch = transcript.match(/\b\d{10}\b/);
-            if (phoneMatch) {
-                let cleanPhone = phoneMatch[0].replace(/\D/g, '');
-                document.getElementById('phone').value = cleanPhone.slice(-10);
-            }
-
-            const budgetMatch = transcript.match(/([\d\.]+\s*(cr|crore|lakh|lac|k))/i);
-            if (budgetMatch) document.getElementById('budget').value = budgetMatch[0].toUpperCase();
-
-            if (transcript.toLowerCase().includes('hot') || transcript.toLowerCase().includes('urgent') || transcript.toLowerCase().includes('buying') || transcript.toLowerCase().includes('lene wala')) {
-                document.getElementById('tempHot').checked = true;
-                document.getElementById('status').value = 'Hot';
-            } else if (transcript.toLowerCase().includes('cold') || transcript.toLowerCase().includes('baad mein') || transcript.toLowerCase().includes('later')) {
-                document.getElementById('tempCold').checked = true;
-            }
-
-            if (transcript.toLowerCase().includes('visit done') || transcript.toLowerCase().includes('visited') || transcript.toLowerCase().includes('dekh liya')) {
-                document.getElementById('visitDone').checked = true;
-            }
-
-            const nameMatch = transcript.match(/(name (is )?|naam (hai )?)([a-zA-Z\s]+?)( phone| budget| looking| for| priority|$)/i);
-            if (nameMatch && nameMatch[4]) {
-                document.getElementById('name').value = nameMatch[4].trim();
-            }
-
-            btn.innerHTML = originalText;
-            btn.style.backgroundColor = '';
-            haptic('light');
-        };
-
-        recognition.onerror = function() {
-            btn.innerHTML = originalText;
-            btn.style.backgroundColor = '';
-            showNotification("🤖 AI ko awaaz clear nahi aayi.", 'error');
-        };
-    }
-
-    function generateSmartSummary() {
-        if(!window.currentEditHistory || window.currentEditHistory.length === 0) {
-            showNotification("Summary ban banane ke liye history nahi hai.", "warning"); 
-            return;
-        }
-        haptic('medium');
-        const summaryBox = document.getElementById('newRemark');
-        summaryBox.value = "⏳ AI poori history analyze kar raha hai...";
-        
-        setTimeout(() => {
-            const history = window.currentEditHistory;
-            const total = history.length;
-            const fullText = history.map(h => h.note.toLowerCase()).join(" ");
-
-            let sentiment = "Neutral (Follow-up zaroori hai)";
-            let action = "Normal follow-up ki zaroorat hai";
-
-            if(fullText.match(/budget|price|expensive|mahenga|sasta|cr|lakh|discount/)) action = "Budget ya Price ki baat chal rahi hai";
-            if(fullText.match(/visit|site|location|aunga|coming/)) action = "Site Visit ki planning ho rahi hai";
-            if(fullText.match(/not interested|drop|stop|wrong|nahi chahiye/)) { action = "Client zyada interested nahi hai"; sentiment = "Negative (Chances kam hain)"; }
-            if(fullText.match(/hot|buy|ready|token|cheque|booking|lena hai/)) { action = "Deal closing stage par hai!"; sentiment = "Highly Positive (Jaldi close ho sakta hai)"; }
-
-            const latest = history[0].note.length > 40 ? history[0].note.substring(0, 40) + "..." : history[0].note;
-
-            summaryBox.value = `🤖 [AI Summary]: Total ${total} baar baat hui hai. Lead ka mood ${sentiment} lag lag raha hai. Main focus: ${action}. Last update: "${latest}"`;
-            
-            showNotification("✨ AI Summary ban gayi!", "success");
-            fireConfetti();
-        }, 800);
     }
 
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
@@ -1776,35 +1658,7 @@
         }
 
         let selectedTemp = document.querySelector('input[name="leadTemp"]:checked') ? document.querySelector('input[name="leadTemp"]:checked').value : 'Warm';
-        
-        if (selectedTemp === 'Cold' && (newRemarkText || statusVal !== 'Not Interested')) {
-            selectedTemp = 'Warm';
-            showNotification('🤖 AI ne naye update ke base par lead WARM kar di hai!', 'warning');
-        }
-        if (document.getElementById('visitDone').checked && selectedTemp === 'Cold') {
-            selectedTemp = 'Warm';
-            showNotification('🤖 AI ne lead ko WARM kar diya (Site Visit Done)', 'warning');
-        }
-        if (statusVal === 'Hot' && selectedTemp !== 'Hot') {
-            selectedTemp = 'Hot';
-            showNotification('🤖 AI ne priority ko HOT se align kar diya hai.', 'success');
-        }
-
         let finalFollowupDate = document.getElementById('followup').value;
-        
-        if(!finalFollowupDate && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
-            let nextDate = new Date();
-            if(selectedTemp === 'Hot') nextDate.setDate(nextDate.getDate() + 1); 
-            else if(selectedTemp === 'Warm') nextDate.setDate(nextDate.getDate() + 3); 
-            else nextDate.setDate(nextDate.getDate() + 7); 
-            
-            const y = nextDate.getFullYear();
-            const m = String(nextDate.getMonth() + 1).padStart(2, '0');
-            const d = String(nextDate.getDate()).padStart(2, '0');
-            finalFollowupDate = `${y}-${m}-${d}`;
-            
-            showNotification(`🤖 AI Auto-Schedule: Next Call on ${formatDisplayDate(finalFollowupDate)}`, 'success');
-        }
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
@@ -2009,7 +1863,6 @@
         if(e.target.id === modalId) closeModal(modalId);
     }
 
-    // NAYA FUNCTION: History Modal Kholne Ke Liye
     function openHistoryModal(id) {
         haptic('light');
         const c = clients.find(x => x.id === id); 
@@ -2027,6 +1880,7 @@
         if (historyArr.length === 0) {
             container.innerHTML = '<p style="text-align:center; opacity:0.6; font-weight:600; padding:20px;">History available nahi hai.</p>';
         } else {
+            // Old to Latest
             historyArr.reverse().forEach((h, idx) => {
                 container.innerHTML += `
                     <div style="background:var(--input-bg); padding:16px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:12px; animation: fadeInUp ${(idx*0.05)}s ease-out forwards; opacity:0; transform:translateY(10px);">
@@ -2102,7 +1956,6 @@
                 tr.dataset.proj = safeProjAttr;
                 tr.ondblclick = () => editLead(c.id);
 
-                // HISTORY LINK ADDED BELOW IN THE 10th <td>
                 tr.innerHTML = `
                     <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                     <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
@@ -2479,24 +2332,7 @@
         editArea.style.display = 'block'; 
         let msg = '';
         
-        if (type === 'ai') {
-            const phoneVal = document.getElementById('waTargetPhone').value.replace(/\D/g, '');
-            const client = clients.find(c => c.phone.includes(phoneVal) || phoneVal.includes(c.phone));
-            
-            if(client) {
-                let context = "";
-                if(client.status === 'Hot') context = "Main aapko inventory ke baare mein ek priority update dena chahta tha.";
-                else if(client.visitDone) context = "Aapse site visit par milkar bohot acha laga! Agar layouts ya details me koi aur help chahiye toh zaroor batayiye.";
-                else context = "Main aapko ek personalized site tour ke liye invite karna chahta tha, jab bhi aapke paas time ho.";
-
-                let budgetText = client.budget ? ` jo aapke ${client.budget} wale budget ke hisaab se hai` : "";
-
-                msg = `Hi ${client.name},\n\nKaise hain aap?\n\nMain ${client.projectCategory || 'hamari exclusive properties'}${budgetText} ke baare me message kar raha hoon. ${context}\n\nBatayiye aapse kis waqt baat ho sakti hai? 🤝\n\nBest Regards,\nTrue Invest Team`;
-            } else {
-                msg = `Hi ${currentWaName},\n\nKaise hain aap?\n\nMain aapko ${currentWaProj} ke baare mein kuch exciting property updates dene ke liye message kar raha hoon. Jab bhi aap free ho, please batayiye taaki hum 2 minute baat kar sakein! 🏡\n\nBest Regards,\nTrue Invest Team`;
-            }
-        }
-        else if (type === '1') msg = `Hi ${currentWaName}, True Invest ki taraf se greetings! 🌟\n\nJaisa ki discuss hua tha, main aapko ${currentWaProj} ki details aur brochure bhej raha hoon.\n\nAgar aapko floor plans ya pricing ki aur details chahiye toh mujhe batayiye.`;
+        if (type === '1') msg = `Hi ${currentWaName}, True Invest ki taraf se greetings! 🌟\n\nJaisa ki discuss hua tha, main aapko ${currentWaProj} ki details aur brochure bhej raha hoon.\n\nAgar aapko floor plans ya pricing ki aur details chahiye toh mujhe batayiye.`;
         else if (type === '2') msg = `Hello ${currentWaName}, mujhe aapke site visit ka intezaar rahega! 📍\n\nYeh rahi ${currentWaProj} ki Google Maps location.\n\nJab aap aas-paas hon, toh mujhe call kar lijiye.`;
         else if (type === '3') msg = `Hi ${currentWaName}, main ${currentWaProj} ki aapki enquiry ke regarding ek chota sa follow-up le raha tha.\n\nKya aap abhi bhi is segment me options dekh rahe hain? Batayiye kaise aage badhna hai! 🤝`;
         else if (type === '4') msg = `Dear ${currentWaName},\n\nPricing ko lekar ek exciting update hai. Hamare paas ek limited-time offer hai jo aapke budget me fit aayega.\n\nEk quick call arrange karein? 📞`;
