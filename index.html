@@ -9,14 +9,13 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
-    <meta name="theme-color" content="#f4f7f9" id="themeColorMeta">
+    <meta name="theme-color" content="#BDD8E9" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <!-- BUG FIX: SVG URL Encoded to remove VS Code Errors -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230071e3'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230071e3'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001D39'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001D39'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
 
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
@@ -30,50 +29,60 @@
 
     <style>
         /* ====================================================
-           "SOFT MATTE" THEME - OPTIMIZED FOR PERFORMANCE
+           "UNIQUE OCEAN SAPPHIRE" THEME (Integrated Custom Palette)
            ==================================================== */
         :root {
-            --bg-color: #f4f7f9; 
-            --card-bg: rgba(255, 255, 255, 0.95); 
-            --text-color: #1a1a1a; 
-            --border-color: rgba(0, 0, 0, 0.06); 
-            --border-highlight: rgba(255, 255, 255, 0.8);
-            --input-bg: #ffffff; 
-            --accent-blue: #0071e3; 
-            --accent-glow: rgba(0, 113, 227, 0.2);
-            --whatsapp-green: #25D366; --whatsapp-dark: #128c7e; --notify-red: #d32f2f; 
-            --highlight-today: rgba(255, 249, 196, 0.6); --hot-bg: rgba(253, 232, 232, 0.9); --hot-text: #9b1c1c; 
-            --closed-bg: rgba(222, 247, 236, 0.9); --closed-text: #03543f; --cold-bg: rgba(229, 231, 235, 0.9); --cold-text: #4b5563;
-            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.03); 
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.05);
+            /* Palette: #BDD8E9 (lightest), #7BBDE8, #6EA2B3, #4E8EA2, #49769F, #0A4174, #001D39 (darkest) */
+            --bg-color: #BDD8E9; 
+            --card-bg: rgba(255, 255, 255, 0.88); 
+            --text-color: #001D39; 
+            --border-color: rgba(123, 189, 232, 0.5); 
+            --border-highlight: rgba(255, 255, 255, 0.9);
+            --input-bg: rgba(255, 255, 255, 0.95); 
+            --accent-blue: #0A4174; 
+            --accent-glow: rgba(10, 65, 116, 0.2);
+            --btn-gradient: linear-gradient(135deg, #0A4174, #49769F);
+            --table-th-bg: #6EA2B3;
+            --table-th-text: #ffffff;
+            
+            /* Status UX Colors remain standard for clarity */
+            --whatsapp-green: #16a34a; --whatsapp-dark: #15803d; --notify-red: #dc2626; 
+            --highlight-today: rgba(110, 162, 179, 0.2); --hot-bg: rgba(254, 226, 226, 0.9); --hot-text: #991b1b; 
+            --closed-bg: rgba(220, 252, 231, 0.9); --closed-text: #166534; --cold-bg: #7BBDE8; --cold-text: #001D39;
+            --shadow-sm: 0 4px 20px rgba(0, 29, 57, 0.08); 
+            --shadow-lg: 0 10px 40px rgba(0, 29, 57, 0.15);
             --nav-bg: rgba(255, 255, 255, 0.98);
         }
 
         .dark-theme {
-            --bg-color: #121212;
-            --card-bg: rgba(30, 30, 35, 0.95);
-            --text-color: #f5f5f7;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(255, 255, 255, 0.1);
-            --input-bg: #1e1e1e; 
-            --accent-blue: #0a84ff;
-            --accent-glow: rgba(10, 132, 255, 0.25);
-            --highlight-today: rgba(58, 58, 28, 0.6); --hot-bg: rgba(59, 28, 28, 0.9); --hot-text: #ff6b6b;
-            --closed-bg: rgba(28, 59, 43, 0.9); --closed-text: #4ade80; --cold-bg: rgba(44, 44, 46, 0.9); --cold-text: #9ca3af;
-            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
-            --nav-bg: rgba(20, 20, 25, 0.98);
+            --bg-color: #001D39; 
+            --card-bg: rgba(10, 65, 116, 0.25);
+            --text-color: #BDD8E9;
+            --border-color: rgba(78, 142, 162, 0.3);
+            --border-highlight: rgba(73, 118, 159, 0.5);
+            --input-bg: rgba(0, 29, 57, 0.6); 
+            --accent-blue: #7BBDE8; 
+            --accent-glow: rgba(123, 189, 232, 0.25);
+            --btn-gradient: linear-gradient(135deg, #49769F, #4E8EA2);
+            --table-th-bg: rgba(10, 65, 116, 0.8);
+            --table-th-text: #BDD8E9;
+            
+            --highlight-today: rgba(78, 142, 162, 0.3); --hot-bg: rgba(153, 27, 27, 0.3); --hot-text: #fca5a5;
+            --closed-bg: rgba(22, 101, 52, 0.3); --closed-text: #86efac; --cold-bg: rgba(73, 118, 159, 0.4); --cold-text: #BDD8E9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+            --nav-bg: rgba(0, 29, 57, 0.98);
         }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-color); 
+            background: var(--bg-color); 
             color: var(--text-color); 
             margin: 0; padding: 0; 
             overflow-x: hidden; 
             width: 100vw; 
             -webkit-font-smoothing: antialiased; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
+            transition: background 0.4s ease, color 0.4s ease; 
             min-height: 100vh;
         }
 
@@ -97,12 +106,12 @@
         
         .splash-icon {
             width: 90px; height: 90px; border-radius: 50%;
-            background: linear-gradient(135deg, #0071e3, #4facfe);
+            background: var(--btn-gradient);
             color: white; font-size: 38px; font-weight: 800; letter-spacing: 2px;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 24px;
             box-shadow: 0 10px 30px var(--accent-glow);
-            animation: pulseGlowSplash 1s infinite ease-in-out;
+            animation: pulseGlowSplash 1.5s infinite ease-in-out;
         }
         
         .splash-title {
@@ -111,7 +120,7 @@
         }
         
         .splash-title .brand {
-            background: linear-gradient(135deg, #0071e3, #4facfe);
+            background: var(--btn-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
@@ -122,15 +131,15 @@
         
         .splash-loading-bar::after {
             content: ''; position: absolute; left: -50px; top: 0; height: 100%; width: 50px;
-            background: linear-gradient(135deg, #0071e3, #4facfe);
+            background: var(--btn-gradient);
             border-radius: 4px;
-            animation: splashLoadAnim 0.7s infinite ease-in-out;
+            animation: splashLoadAnim 1s infinite ease-in-out;
         }
 
         @keyframes pulseGlowSplash {
-            0% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 113, 227, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
+            0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+            70% { box-shadow: 0 0 0 15px rgba(10, 65, 116, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(10, 65, 116, 0); }
         }
         
         @keyframes splashLoadAnim {
@@ -143,9 +152,9 @@
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.3); border-radius: 10px; transition: background-color 0.3s ease;}
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 113, 227, 0.6); }
-        .dark-theme ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+        ::-webkit-scrollbar-thumb { background: #49769F; border-radius: 10px; transition: background-color 0.3s ease;}
+        ::-webkit-scrollbar-thumb:hover { background: #0A4174; }
+        .dark-theme ::-webkit-scrollbar-thumb { background: #4E8EA2; }
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
 
@@ -165,6 +174,8 @@
             box-shadow: var(--shadow-sm);
             border-radius: 24px;
             transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .glass-panel:hover {
@@ -189,7 +200,7 @@
             background: var(--nav-bg); border-radius: 24px; margin-bottom: 8px; width: 100%;
         }
         h1.main-title { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
-        h1.main-title span.brand { background: linear-gradient(135deg, #0071e3, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1.main-title span.brand { background: var(--btn-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
@@ -197,17 +208,17 @@
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         
-        .stat-card { padding: 16px 12px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease, border-color 0.4s ease; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 16px;}
-        .stat-card:active { transform: scale(0.94) !important; }
-        .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 20px var(--accent-glow); animation: pulseGlow 1.5s infinite; }
-        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
-        .stat-card span { font-size: 24px; font-weight: 900; display:inline-block; transition: color 0.3s ease;}
+        .stat-card { padding: 18px 12px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease, border-color 0.4s ease; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px;}
+        .stat-card:active { transform: scale(0.96) !important; }
+        .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 25px var(--accent-glow); animation: pulseGlow 2s infinite; }
+        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
+        .stat-card span { font-size: 26px; font-weight: 900; display:inline-block; transition: color 0.3s ease;}
 
         .notification-bar { 
-            background: rgba(211, 47, 47, 0.9); 
+            background: rgba(220, 38, 38, 0.95); 
             color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; 
             font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.2); border: none; 
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.25); border: none; 
         }
 
         form, .table-container, .kanban-container, .login-card { padding: 28px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both; width: 100%; }
@@ -217,8 +228,8 @@
         
         input, textarea, button, select { 
             padding: 16px 20px; margin: 0 0 20px 0; width: 100%; border: 1px solid var(--border-color); 
-            border-radius: 16px; background: var(--input-bg); color: var(--text-color); font-size: 16px; 
-            font-weight: 500; box-sizing: border-box; 
+            border-radius: 16px; background: var(--input-bg); color: var(--text-color); font-size: 15px; 
+            font-weight: 600; box-sizing: border-box; 
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; 
         }
         input[type="date"], input[type="time"], select { height: 54px; appearance: none; -webkit-appearance: none; cursor: pointer; }
@@ -236,80 +247,79 @@
         .segmented-control input[type="radio"] { display: none; }
         .segmented-control label {
             flex: 1; text-align: center; padding: 14px 0; margin: 0;
-            border-radius: 12px; cursor: pointer; font-size: 14px;
+            border-radius: 12px; cursor: pointer; font-size: 13px;
             font-weight: 700; opacity: 0.6; transition: opacity 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
             letter-spacing: 0.5px; text-transform: uppercase;
         }
-        .segmented-control label:hover { opacity: 0.8; transform: translateY(-1px); }
+        .segmented-control label:hover { opacity: 0.9; transform: translateY(-1px); }
         .segmented-control input[type="radio"]:checked + label {
-            opacity: 1; transform: scale(1.03); box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 1; transform: scale(1.02); box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
         .segmented-control input[type="radio"]:checked + .seg-hot {
-            background: #ffebeb; color: #ff3b30; border: 1px solid rgba(255, 59, 48, 0.3);
+            background: #fef2f2; color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.2);
         }
         .segmented-control input[type="radio"]:checked + .seg-warm {
-            background: #fff4e5; color: #ff9f0a; border: 1px solid rgba(255, 159, 10, 0.3);
+            background: #fffbeb; color: #d97706; border: 1px solid rgba(217, 119, 6, 0.2);
         }
         .segmented-control input[type="radio"]:checked + .seg-cold {
-            background: #e5f1ff; color: #0a84ff; border: 1px solid rgba(10, 132, 255, 0.3);
+            background: #BDD8E9; color: #001D39; border: 1px solid #7BBDE8;
         }
         
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-hot { background: rgba(255, 59, 48, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-warm { background: rgba(255, 159, 10, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-cold { background: rgba(10, 132, 255, 0.15); }
+        .dark-theme .segmented-control input[type="radio"]:checked + .seg-hot { background: rgba(220, 38, 38, 0.15); }
+        .dark-theme .segmented-control input[type="radio"]:checked + .seg-warm { background: rgba(217, 119, 6, 0.15); }
+        .dark-theme .segmented-control input[type="radio"]:checked + .seg-cold { background: rgba(73, 118, 159, 0.4); color: #BDD8E9; }
         .dark-theme .segmented-control input[type="radio"]:checked + label { box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-        .badge { padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; transition: background-color 0.3s ease, color 0.3s ease;}
-        .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: rgba(255,107,107,0.2); }
-        .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: rgba(74,222,128,0.2); }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; transition: background-color 0.3s ease, color 0.3s ease;}
+        .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: rgba(220,38,38,0.2); }
+        .status-closed { background: var(--closed-bg); color: var(--closed-text); border-color: rgba(22,163,74,0.2); }
         .status-cold { background: var(--cold-bg); color: var(--cold-text); border-color: var(--border-color); }
         .status-default { background: var(--input-bg); color: var(--text-color); border-color: var(--border-color); }
         
-        .temp-badge, .score-badge { padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; transition: transform 0.3s ease;}
+        .temp-badge, .score-badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; margin-left: 6px; display: inline-block; vertical-align: middle; transition: transform 0.3s ease;}
         .score-badge { border: 1px solid; }
 
         .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: border-color 0.3s ease, transform 0.2s ease, background-color 0.3s ease; cursor: pointer; }
         .check-item:hover { border-color: var(--accent-blue); transform: translateY(-1px); }
-        .check-item input[type="checkbox"] { width: 26px; height: 26px; margin: 0; cursor: pointer; border-radius: 8px; accent-color: var(--accent-blue); transition: transform 0.2s ease;}
+        .check-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; cursor: pointer; border-radius: 6px; accent-color: var(--accent-blue); transition: transform 0.2s ease;}
         .check-item input[type="checkbox"]:active { transform: scale(0.85); }
 
-        button { cursor: pointer; background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 20px; font-size: 16px; letter-spacing: 0.5px; transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow); position: relative; overflow: hidden; z-index: 1;}
-        button::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.1); opacity: 0; transition: opacity 0.3s ease; z-index: -1; }
+        button { cursor: pointer; background: var(--btn-gradient); color: #fff; border: none; font-weight: 700; height: 54px; border-radius: 18px; font-size: 16px; letter-spacing: 0.5px; transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow); position: relative; overflow: hidden; z-index: 1;}
+        button::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.15); opacity: 0; transition: opacity 0.3s ease; z-index: -1; }
         button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
         button:hover::after { opacity: 1; }
         button:active { transform: scale(0.96) translateY(0); box-shadow: 0 2px 10px var(--accent-glow); }
         
         .btn-secondary { background: var(--input-bg); color: var(--text-color); height: 48px; font-size: 14px; border: 1px solid var(--border-color); box-shadow: none; transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;}
         .btn-secondary::after { display: none; }
-        .btn-secondary:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 6px 15px var(--shadow-sm); }
+        .btn-secondary:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow-sm); }
         .btn-secondary:active { transform: scale(0.96); }
 
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; margin-bottom: 0; width: 100%; }
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--accent-blue); height: 48px; border-radius: 16px; padding-left: 40px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%230071e3" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%230071e3" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 14px center; box-shadow: 0 0 10px var(--accent-glow); transition: box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
-        .search-box:focus { box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px);}
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--border-color); height: 48px; border-radius: 16px; padding-left: 44px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%2349769F" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%2349769F" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 16px center; box-shadow: var(--shadow-sm); transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
+        .search-box:focus { border-color: var(--accent-blue); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px);}
         .controls-row button { height: 48px; margin: 0; padding: 0 20px; width: auto; }
 
         .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 16px; width: 100%; max-width: max-content; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s both; align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
-        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 36px; font-size: 13px; font-weight: 600; padding: 0 16px; margin: 0; border-radius: 10px; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; box-shadow: none; }
+        .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 38px; font-size: 13px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 12px; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; box-shadow: none; }
         .tab-btn:hover { border-color: var(--accent-blue); transform: translateY(-1px); }
-        .tab-btn.active { background: linear-gradient(135deg, #0071e3, #4facfe); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); border-color: transparent; font-weight: 700; transform: scale(1.05); }
+        .tab-btn.active { background: var(--btn-gradient); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); border-color: transparent; font-weight: 700; transform: scale(1.03); }
         
-        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ff453a; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; z-index: 10; opacity: 0; transform: scale(0.5); transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease; pointer-events: none; box-shadow: 0 2px 8px rgba(255,69,58,0.3); font-weight: bold;}
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; opacity: 0; transform: scale(0.5); transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease; pointer-events: none; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3); font-weight: bold;}
         .tab-wrapper:hover .tab-delete-btn { opacity: 1; transform: scale(1); pointer-events: auto; }
-        .tab-delete-btn:hover { transform: scale(1.2) !important; background: #d32f2f; }
+        .tab-delete-btn:hover { transform: scale(1.15) !important; background: #b91c1c; }
         
-        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 36px; width: 36px; padding: 0; font-size: 18px; font-weight: 700; border-radius: 10px; transition: transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
+        .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 38px; width: 38px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 12px; transition: transform 0.3s ease, border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
         .tab-add-btn:hover { transform: scale(1.1) rotate(90deg); border-color: var(--accent-blue); color: var(--accent-blue); }
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle; transition: background-color 0.2s ease, border-color 0.3s ease;}
         
-        th { background: rgba(240,244,248,0.9); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
-        th:hover { background: rgba(0, 113, 227, 0.1); color: #0056b3; }
-        .dark-theme th { background: rgba(30,30,35,0.95); }
-        .dark-theme th:hover { background: rgba(10, 132, 255, 0.15); color: #fff;}
+        th { background: var(--table-th-bg); font-weight: 800; font-size: 12px; color: var(--table-th-text); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
+        th:hover { background: var(--accent-blue); color: #fff; }
+        .dark-theme th:hover { background: #49769F; color: #fff;}
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
@@ -321,22 +331,22 @@
         } 
         tbody tr:hover {
             transform: translateY(-2px) scale(1.005);
-            background-color: rgba(0, 113, 227, 0.04);
+            background-color: rgba(10, 65, 116, 0.05); /* Uses palette dark blue */
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0, 29, 57, 0.05);
             z-index: 2; position: relative;
         }
-        .dark-theme tbody tr:hover { background-color: rgba(255, 255, 255, 0.04); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .dark-theme tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         tbody tr:last-child td { border-bottom: none; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
 
         .skeleton-loader { position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: transparent; overflow: hidden; z-index: 10; border-radius: 0 0 24px 24px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px;}
-        .skeleton-loader::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.5s infinite linear; z-index: -1; }
-        .dark-theme .skeleton-loader::after { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.08) 50%, rgba(0,0,0,0) 100%); }
+        .skeleton-loader::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.5s infinite linear; z-index: -1; }
+        .dark-theme .skeleton-loader::after { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0) 100%); }
 
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none; }
-        .kanban-col { flex: 1; min-width: 300px; padding: 16px; display: flex; flex-direction: column; }
+        .kanban-col { flex: 1; min-width: 320px; padding: 16px; display: flex; flex-direction: column; }
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px; transition: color 0.3s ease, border-color 0.3s ease;}
         
         .k-card { 
@@ -348,17 +358,17 @@
         }
         .k-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--accent-blue); }
         .k-card:active { cursor: grabbing; transform: scale(0.95); box-shadow: none; }
-        .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease;}
-        .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px; transition: color 0.3s ease;}
+        .k-card-title { font-weight: 800; font-size: 15px; color: var(--accent-blue); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease;}
+        .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:8px; transition: color 0.3s ease; font-weight: 500;}
         
         .kanban-dropzone { 
-            min-height: 100px; flex-grow: 1; border-radius: 16px; 
+            min-height: 120px; flex-grow: 1; border-radius: 16px; 
             transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
             max-height: 65vh; overflow-y: auto; overflow-x: hidden; padding-right: 4px;
         }
         .kanban-dropzone::-webkit-scrollbar { width: 4px; }
         .kanban-dropzone::-webkit-scrollbar-track { background: transparent; }
-        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.2); border-radius: 4px;}
+        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(10, 65, 116, 0.2); border-radius: 4px;}
         
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--accent-blue); transform: scale(1.02); }
 
@@ -367,38 +377,38 @@
         .history-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .history-meta { font-size: 11px; color: var(--accent-blue); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 4px; transition: transform 0.2s ease, background-color 0.2s ease; user-select: none; }
-        .edit-history-btn:hover { background-color: rgba(0, 113, 227, 0.1); transform: scale(1.2) rotate(15deg); }
+        .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-blue); padding: 4px; border-radius: 6px; transition: transform 0.2s ease, background-color 0.2s ease; user-select: none; }
+        .edit-history-btn:hover { background-color: rgba(10, 65, 116, 0.1); transform: scale(1.2) rotate(15deg); }
         
-        .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 4px; transition: transform 0.2s ease, background-color 0.2s ease; margin-left: 6px; user-select: none;}
-        .delete-history-btn:hover { background-color: rgba(211, 47, 47, 0.1); transform: scale(1.2) rotate(-15deg); }
+        .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 6px; transition: transform 0.2s ease, background-color 0.2s ease; margin-left: 6px; user-select: none;}
+        .delete-history-btn:hover { background-color: rgba(220, 38, 38, 0.1); transform: scale(1.2) rotate(-15deg); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(3px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 29, 57, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0; }
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;}
-        .modal-close:hover { transform: rotate(90deg) scale(1.1); background: #ff453a; color: white; border-color: #ff453a; }
+        .modal-close:hover { transform: rotate(90deg) scale(1.1); background: #ef4444; color: white; border-color: #ef4444; }
 
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         .remark-wrapper textarea { margin-bottom: 0; padding-bottom: 16px; padding-right: 16px; }
         
-        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
+        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(10, 65, 116, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
         .copyable:hover { color: var(--accent-blue); transform: scale(1.02); }
         .copyable:active { opacity: 0.5; transform: scale(0.95); }
 
-        .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(0, 113, 227, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(10, 65, 116, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .history-link:hover { opacity: 0.7; transform: scale(1.02); }
 
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center;
-            z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(3px);
+            background: rgba(0, 29, 57, 0.6); display: flex; align-items: flex-end; justify-content: center;
+            z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
         .action-modal-content {
             background: var(--nav-bg);
-            width: 100%; max-width: 400px; padding: 24px 24px calc(40px + env(safe-area-inset-bottom)) 24px; 
+            width: 100%; max-width: 420px; padding: 24px 24px calc(40px + env(safe-area-inset-bottom)) 24px; 
             border-radius: 32px 32px 0 0;
             transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border-top: 1px solid var(--border-highlight);
@@ -409,14 +419,14 @@
         
         .sheet-handle {
             position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 5px; background: var(--text-color); opacity: 0.15; 
-            border-radius: 10px; cursor: grab; transition: width 0.3s ease;
+            width: 44px; height: 5px; background: var(--text-color); opacity: 0.15; 
+            border-radius: 10px; cursor: grab; transition: width 0.3s ease, opacity 0.3s ease;
         }
-        .action-modal-content:active .sheet-handle { width: 50px; opacity: 0.3; }
+        .action-modal-content:active .sheet-handle { width: 54px; opacity: 0.3; }
 
         @media (min-width: 992px) {
             .action-modal-overlay { align-items: center; }
-            .action-modal-content { border-radius: 32px; padding: 32px; border: 1px solid var(--border-highlight); transform: scale(0.95) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; }
+            .action-modal-content { border-radius: 32px; padding: 32px; border: 1px solid var(--border-highlight); transform: scale(0.95) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; box-shadow: var(--shadow-lg);}
             .action-modal-overlay.active .action-modal-content { transform: scale(1) translateY(0); opacity: 1; }
             .sheet-handle { display: none; }
         }
@@ -425,52 +435,52 @@
         .simple-action-btn {
             height: 64px; width: 64px; border: none; border-radius: 50%; font-size: 28px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .action-btn-wrapper:hover span { transform: translateY(2px); }
-        .simple-action-btn:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
+        .simple-action-btn:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
         .simple-action-btn:active { transform: scale(0.9); }
-        .btn-call { background: #34c759; color: white; }
-        .btn-call:hover { box-shadow: 0 10px 20px rgba(52,199,89,0.4); }
-        .btn-wa { background: #0071e3; color: white; }
-        .btn-wa:hover { box-shadow: 0 10px 20px rgba(0,113,227,0.4); }
-        .btn-edit { background: #ff9f0a; color: white; }
-        .btn-edit:hover { box-shadow: 0 10px 20px rgba(255,159,10,0.4); }
-        .btn-del { background: #ff3b30; color: white; }
-        .btn-del:hover { box-shadow: 0 10px 20px rgba(255,59,48,0.4); }
+        .btn-call { background: #22c55e; color: white; }
+        .btn-call:hover { box-shadow: 0 10px 20px rgba(34,197,94,0.3); }
+        .btn-wa { background: #1e3a8a; color: white; }
+        .btn-wa:hover { box-shadow: 0 10px 20px rgba(30,58,138,0.3); }
+        .btn-edit { background: #f59e0b; color: white; }
+        .btn-edit:hover { box-shadow: 0 10px 20px rgba(245,158,11,0.3); }
+        .btn-del { background: #ef4444; color: white; }
+        .btn-del:hover { box-shadow: 0 10px 20px rgba(239,68,68,0.3); }
 
-        .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 5px;}
+        .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 5px;}
         .call-status-btn { 
-            width: 100%; height: 48px; border-radius: 14px; font-size: 12px; font-weight: 700; 
+            width: 100%; height: 50px; border-radius: 14px; font-size: 13px; font-weight: 700; 
             background: transparent; transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; padding: 0 4px; 
             display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2;
         }
         .call-status-btn:hover { transform: translateY(-2px); }
         .call-status-btn:active { transform: scale(0.95); }
-        .call-status-btn.connected { border: 2px solid #34c759; color: #34c759; }
-        .call-status-btn.connected.active { background: #34c759; color: white; box-shadow: 0 6px 15px rgba(52,199,89,0.3); transform: scale(1.05); }
-        .call-status-btn.no-answer { border: 2px solid #ff9f0a; color: #ff9f0a; }
-        .call-status-btn.no-answer.active { background: #ff9f0a; color: white; box-shadow: 0 6px 15px rgba(255,159,10,0.3); transform: scale(1.05); }
-        .call-status-btn.busy { border: 2px solid #ff3b30; color: #ff3b30; }
-        .call-status-btn.busy.active { background: #ff3b30; color: white; box-shadow: 0 6px 15px rgba(255,59,48,0.3); transform: scale(1.05); }
+        .call-status-btn.connected { border: 2px solid #22c55e; color: #22c55e; }
+        .call-status-btn.connected.active { background: #22c55e; color: white; box-shadow: 0 6px 15px rgba(34,197,94,0.25); transform: scale(1.03); }
+        .call-status-btn.no-answer { border: 2px solid #f59e0b; color: #f59e0b; }
+        .call-status-btn.no-answer.active { background: #f59e0b; color: white; box-shadow: 0 6px 15px rgba(245,158,11,0.25); transform: scale(1.03); }
+        .call-status-btn.busy { border: 2px solid #ef4444; color: #ef4444; }
+        .call-status-btn.busy.active { background: #ef4444; color: white; box-shadow: 0 6px 15px rgba(239,68,68,0.25); transform: scale(1.03); }
 
         .action-dots {
             font-size: 24px; color: var(--accent-blue); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
-        .action-dots:hover { opacity: 1; transform: scale(1.2); background-color: rgba(0, 113, 227, 0.1); }
+        .action-dots:hover { opacity: 1; transform: scale(1.2); background-color: rgba(10, 65, 116, 0.08); }
         .action-dots:active { transform: scale(0.8); }
 
         .hidden { display: none !important; }
-        .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.3; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px; transition: opacity 0.3s ease, color 0.3s ease;}
-        .watermark:hover { opacity: 0.7; }
+        .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.35; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px; transition: opacity 0.3s ease, color 0.3s ease;}
+        .watermark:hover { opacity: 0.8; }
 
         #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10008; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
         .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%) scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.3s ease; display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
         .toast.show { transform: translateX(0) scale(1); opacity: 1; }
-        .toast.success { border-left-color: #34c759; }
-        .toast.error { border-left-color: #ff3b30; }
-        .toast.warning { border-left-color: #ffcc00; }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #eab308; }
         .toast-icon { margin-right: 16px; font-size: 24px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; }
 
         .ios-bottom-nav { display: none; } 
@@ -485,11 +495,11 @@
             
             .top-bar { padding: 20px; }
             h1.main-title { font-size: 1.4rem; }
-            .top-bar .btn-secondary { height: 40px; width: 40px; font-size: 16px; }
+            .top-bar .btn-secondary { height: 44px; width: 44px; font-size: 18px; }
 
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .stat-card { padding: 12px 6px; border-radius: 14px; }
-            .stat-card span { font-size: 20px; }
+            .stat-card { padding: 16px 8px; border-radius: 16px; }
+            .stat-card span { font-size: 22px; }
 
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
@@ -499,11 +509,12 @@
                 bottom: max(20px, env(safe-area-inset-bottom)); 
                 left: 5%; width: 90%; 
                 background: var(--nav-bg); border: 1px solid var(--border-color); z-index: 9999; padding: 12px 0; justify-content: space-evenly; 
-                align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-radius: 40px;
+                align-items: center; box-shadow: 0 10px 40px rgba(0,29,57,0.1); border-radius: 40px;
                 animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
                 transition: background-color 0.3s ease, border-color 0.3s ease;
+                backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             }
-            .dark-theme .ios-bottom-nav { box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+            .dark-theme .ios-bottom-nav { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
             
             .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s ease, opacity 0.3s ease, color 0.3s ease; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -575,7 +586,7 @@
         }
         #exitZenBtn:hover {
             transform: scale(1.1);
-            background: linear-gradient(135deg, #ff453a, #ff6b6b);
+            background: linear-gradient(135deg, #ef4444, #f87171);
         }
     </style>
 
@@ -589,7 +600,7 @@
             const savedTheme = localStorage.getItem('crm_theme') || 'light';
             if(savedTheme === 'dark') {
                 document.documentElement.classList.add('dark-theme');
-                document.getElementById('themeColorMeta').setAttribute('content', '#121212');
+                document.getElementById('themeColorMeta').setAttribute('content', '#001D39');
             }
         }
         initThemeEarly();
@@ -630,7 +641,7 @@
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
-                <button class="btn-secondary" style="background-color:#ffebeb; color:#ff3b30; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
+                <button class="btn-secondary" style="background-color:#fef2f2; color:#dc2626; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
             </div>
         </div>
 
@@ -638,7 +649,7 @@
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-blue)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:#ff3b30;"></ion-icon> Hot Leads</label><span id="statHot" style="color:#ff3b30">0</span></div>
+                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:#dc2626;"></ion-icon> Hot Leads</label><span id="statHot" style="color:#dc2626">0</span></div>
                     <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label><ion-icon name="alarm"></ion-icon> Today's Action</label><span id="statFollow">0</span></div>
                 </div>
             </div>
@@ -737,7 +748,7 @@
                 </div>
                 
                 <button type="submit" id="saveBtn">Save Record</button>
-                <button type="button" class="btn-secondary" style="width:100%; margin-top:12px; border-radius:20px;" onclick="resetForm()">Clear Form</button>
+                <button type="button" class="btn-secondary" style="width:100%; margin-top:12px; border-radius:18px;" onclick="resetForm()">Clear Form</button>
             </form>
 
             <div class="watermark">SYSTEM DESIGNED BY<br><span style="font-size:14px;">ADITYA PACHAURI</span></div>
@@ -749,7 +760,7 @@
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()"><ion-icon name="download"></ion-icon> Import</button>
                 <button class="btn-secondary" onclick="downloadCSV()"><ion-icon name="share"></ion-icon> Export</button>
-                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(211, 47, 47, 0.4);" title="Clean Options"><ion-icon name="trash"></ion-icon> Clean</button>
+                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(220, 38, 38, 0.4);" title="Clean Options"><ion-icon name="trash"></ion-icon> Clean</button>
             </div>
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
@@ -779,11 +790,11 @@
             </div>
 
             <div class="kanban-container hidden glass-panel" id="kanbanView">
-                <div class="kanban-col"><h3 style="border-bottom-color:#0a84ff;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#ff9f0a;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#ff453a;">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#bf5af2;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#32d74b;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#0A4174;">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#f59e0b;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#ef4444;">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#7BBDE8;">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#22c55e;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
         </div>
     </div>
@@ -864,12 +875,11 @@
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-green); resize:vertical; font-family:inherit;"></textarea>
             
-            <button id="waSendBtnObj" onclick="executeWaSend()" style="background-color:var(--whatsapp-green); width:100%; margin-top:12px; box-shadow: 0 4px 15px rgba(37,211,102,0.3);">Send via WhatsApp App 🚀</button>
+            <button id="waSendBtnObj" onclick="executeWaSend()" style="background-color:var(--whatsapp-green); background-image:none; width:100%; margin-top:12px; box-shadow: 0 4px 15px rgba(22,163,74,0.3);">Send via WhatsApp App 🚀</button>
         </div>
     </div>
 </div>
 
-<!-- HISTORY MODAL POPUP -->
 <div id="historyModal" class="modal-overlay" onclick="handleModalClick(event, 'historyModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -878,8 +888,7 @@
         <p style="font-size:15px; color:var(--text-color); margin-bottom:16px; font-weight:600; background-color:var(--input-bg); padding:16px; border-radius:16px;" id="historyModalName"></p>
         
         <div id="fullHistoryContainer" style="max-height: 400px; overflow-y: auto; padding-right: 10px; margin-bottom: 10px;">
-            <!-- Yahan history aayegi -->
-        </div>
+            </div>
     </div>
 </div>
 
@@ -890,7 +899,7 @@
         <p style="text-align:center; font-size:13px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-blue);">Choose what you want to clean</p>
         
         <button class="btn-secondary" onclick="removeDuplicates()" style="margin-top:16px;">🗑️ Remove Duplicates Only</button>
-        <button class="btn-secondary" onclick="deleteAllLeads()" style="background-color:#ffebeb; color:var(--notify-red); border:1px solid rgba(211,47,47,0.2); margin-top:0;">⚠️ Delete ALL Leads</button>
+        <button class="btn-secondary" onclick="deleteAllLeads()" style="background-color:#fef2f2; color:var(--notify-red); border:1px solid rgba(220,38,38,0.2); margin-top:0;">⚠️ Delete ALL Leads</button>
     </div>
 </div>
 
@@ -937,8 +946,7 @@
     </div>
 </div>
 
-<!-- EXIT ZEN MODE FLOATING BUTTON -->
-<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:60px; height:60px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none; background: linear-gradient(135deg, #0071e3, #4facfe); color: white; cursor: pointer;">
+<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:64px; height:64px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(0,0,0,0.4); border:none; background: var(--btn-gradient); color: white; cursor: pointer;">
     <ion-icon name="close"></ion-icon>
 </button>
 
@@ -1039,7 +1047,7 @@
                 <div style="background-color:var(--accent-glow); padding:16px; border-radius:16px; border:1px solid var(--accent-blue); margin-bottom:20px; animation: popIn 0.5s ease;">
                     <h4 style="margin:0 0 10px 0; color:var(--accent-blue); font-size:14px; text-transform:uppercase;">📊 Business Insights</h4>
                     <ul style="margin:0; padding-left:20px; font-size:13px; color:var(--text-color); line-height:1.6;">
-                        <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#34c759;">${displayRevenue}</span> ka business HOT stage par hai!</li>
+                        <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#22c55e;">${displayRevenue}</span> ka business HOT stage par hai!</li>
                         <li><b>📈 Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-blue);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
                         <li><b>🔥 Top Source:</b> Sabse zyada closing <span style="font-weight:bold; color:var(--accent-blue);">${bestSource}</span> se aa rahi hai.</li>
                         <li><b>⚠️ Attention Needed:</b> <span style="font-weight:bold; color:var(--notify-red);">${neglectedLeads}</span> High-priority leads ka follow-up date miss ho gaya hai, inko aaj hi call karein!</li>
@@ -1065,6 +1073,7 @@
         clients.forEach(c => {
             let updates = {};
             
+            // Background overrides actively maintained
             if (c.status === 'Follow-up Done') updates.status = 'Follow-up'; 
             if (c.specificUnit && c.specificUnit.includes('835 sq ft')) updates.specificUnit = c.specificUnit.replace('835', '830');
             if (c.projectCategory && c.projectCategory.includes('Lock & key')) updates.projectCategory = c.projectCategory.replace('Lock & key', 'Lock n key');
@@ -1117,7 +1126,7 @@
         localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
         const toggleBtn = document.getElementById('themeToggleBtn');
         if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
-        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#121212' : '#f4f7f9');
+        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#001D39' : '#BDD8E9');
         showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
     }
 
@@ -1221,6 +1230,7 @@
     let funnelChartInst = null;
     let sourceChartInst = null;
     
+    // UPDATED WITH UNIQUE 7-COLOR PALETTE
     function renderAnalytics() {
         generateDeepAnalyticsInsights();
         openModal('analyticsModal');
@@ -1243,7 +1253,7 @@
             });
 
             const isDark = document.documentElement.classList.contains('dark-theme');
-            const labelColor = isDark ? '#f5f5f7' : '#111111';
+            const labelColor = isDark ? '#f8fafc' : '#0f172a';
 
             if(funnelChartInst) funnelChartInst.destroy();
             funnelChartInst = new Chart(ctxFunnel, {
@@ -1253,7 +1263,7 @@
                     datasets: [{
                         label: 'Leads Pipeline',
                         data: Object.values(stats),
-                        backgroundColor: ['#0a84ff', '#ff9f0a', '#ff3b30', '#bf5af2', '#34c759'],
+                        backgroundColor: ['#0A4174', '#49769F', '#4E8EA2', '#6EA2B3', '#7BBDE8'],
                         borderRadius: 8
                     }]
                 },
@@ -1276,7 +1286,7 @@
                     labels: Object.keys(sources),
                     datasets: [{
                         data: Object.values(sources),
-                        backgroundColor: ['#0071e3', '#34c759', '#ff9f0a', '#ff3b30', '#bf5af2', '#5ac8fa', '#8e8e93'],
+                        backgroundColor: ['#001D39', '#0A4174', '#49769F', '#4E8EA2', '#6EA2B3', '#7BBDE8', '#BDD8E9'],
                         borderWidth: 0
                     }]
                 },
@@ -1933,17 +1943,18 @@
                 const safeName = sanitizeText(c.name);
 
                 const leadScore = calculateSmartScore(c);
-                const scoreColor = leadScore >= 70 ? '#34c759' : (leadScore >= 40 ? '#ff9f0a' : '#ff3b30');
+                const scoreColor = leadScore >= 70 ? '#22c55e' : (leadScore >= 40 ? '#f59e0b' : '#ef4444');
                 const scoreBadge = `<span class="score-badge" style="color:${scoreColor}; border-color:${scoreColor}60; background-color:${scoreColor}10;" title="AI Win Score"><ion-icon name="analytics"></ion-icon> ${leadScore}%</span>`;
 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempBadge = '';
-                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:rgba(255,59,48,0.1); color:#ff3b30; border:1px solid rgba(255,59,48,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
-                else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:rgba(255,159,10,0.1); color:#ff9f0a; border:1px solid rgba(255,159,10,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
-                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:rgba(10,132,255,0.1); color:#0a84ff; border:1px solid rgba(10,132,255,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
+                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:rgba(220,38,38,0.1); color:#dc2626; border:1px solid rgba(220,38,38,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
+                else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:rgba(217,119,6,0.1); color:#d97706; border:1px solid rgba(217,119,6,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
+                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:rgba(37,99,235,0.1); color:#2563eb; border:1px solid rgba(37,99,235,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
+                // Strictly enforcement logic matches exactly what was requested for the TickButton visibility
                 const tickButton = (c.followup === today && c.status !== 'Closed') ? 
-                    `<span class="action-dots" style="color:#34c759; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
+                    `<span class="action-dots" style="color:#22c55e; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
 
                 const safeNameAttr = safeName.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -2010,9 +2021,9 @@
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
-                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#ff3b30; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#ff9f0a; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#0a84ff; font-size:14px; margin-left:4px;"></ion-icon>';
+                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#dc2626; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#d97706; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#2563eb; font-size:14px; margin-left:4px;"></ion-icon>';
 
                 let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -2021,7 +2032,7 @@
                 let animDelay = i < 15 ? `${(i * 0.03)}s` : '0s';
 
                 const cardHTML = `
-                    <div class="k-card" style="animation-delay: ${animDelay};" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
+                    <div class="k-card" style="animation-delay: ${animDelay}; touch-action: none;" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
                             <span style="display:flex; align-items:center;">${safeName} ${tempIcon}</span>
                             <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
@@ -2512,8 +2523,8 @@
     (function initSingleFilePWA() {
         try {
             const manifestData = {
-                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#f4f7f9", theme_color: "#0071e3", start_url: ".",
-                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
+                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#BDD8E9", theme_color: "#001D39", start_url: ".",
+                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23001D39'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
