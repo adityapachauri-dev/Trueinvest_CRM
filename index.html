@@ -14,8 +14,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230071e3'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'>TI</text></svg>">
+    <!-- BUG FIX: SVG URL Encoded to remove VS Code Errors -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230071e3'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230071e3'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
 
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
@@ -353,13 +354,11 @@
         .k-card-title { font-weight: 800; font-size: 16px; color: var(--accent-blue); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease;}
         .k-card-detail { font-size: 13px; color: var(--text-color); opacity: 0.85; margin-bottom: 6px; display:flex; align-items:center; gap:6px; transition: color 0.3s ease;}
         
-        /* FIX 5: Kanban Vertical Overflow Bug */
         .kanban-dropzone { 
             min-height: 100px; flex-grow: 1; border-radius: 16px; 
             transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
             max-height: 65vh; overflow-y: auto; overflow-x: hidden; padding-right: 4px;
         }
-        /* Custom scrollbar for kanban dropzone to keep it looking clean */
         .kanban-dropzone::-webkit-scrollbar { width: 4px; }
         .kanban-dropzone::-webkit-scrollbar-track { background: transparent; }
         .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(0, 113, 227, 0.2); border-radius: 4px;}
@@ -390,6 +389,10 @@
         .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 113, 227, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
         .copyable:hover { color: var(--accent-blue); transform: scale(1.02); }
         .copyable:active { opacity: 0.5; transform: scale(0.95); }
+
+        /* NAYA CSS: History Link styling */
+        .history-link { color: var(--accent-blue); cursor: pointer; border-bottom: 1px dashed rgba(0, 113, 227, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .history-link:hover { opacity: 0.7; transform: scale(1.02); }
 
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -539,6 +542,45 @@
         
         .analytics-chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 24px; transition: transform 0.3s ease; }
         .analytics-chart-container:hover { transform: scale(1.02); }
+
+        /* ====================================================
+           ZEN MODE STYLES
+           ==================================================== */
+        body.zen-mode .top-bar,
+        body.zen-mode #statsWrapper,
+        body.zen-mode .left-panel,
+        body.zen-mode .ios-bottom-nav,
+        body.zen-mode .watermark {
+            display: none !important;
+        }
+        
+        body.zen-mode .workspace-layout {
+            display: block !important;
+            padding: 10px !important;
+            max-width: 100% !important;
+        }
+        
+        body.zen-mode .right-panel {
+            width: 100% !important;
+            height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        
+        body.zen-mode .table-container,
+        body.zen-mode .kanban-container {
+            height: calc(100vh - 150px) !important;
+            flex-grow: 1;
+        }
+        
+        #exitZenBtn {
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        #exitZenBtn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #ff453a, #ff6b6b);
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -588,6 +630,7 @@
         <div class="top-bar glass-panel">
             <h1 class="main-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
             <div style="display:flex; gap:10px;">
+                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleZenMode()" title="Zen Mode (Focus)"><ion-icon name="scan-outline"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
@@ -836,6 +879,20 @@
     </div>
 </div>
 
+<!-- NAYA FEATURE: HISTORY MODAL POPUP -->
+<div id="historyModal" class="modal-overlay" onclick="handleModalClick(event, 'historyModal')">
+    <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <button class="modal-close" onclick="closeModal('historyModal')" style="margin-top:10px;">×</button>
+        <h2 style="margin-top:10px; color:var(--accent-blue); font-size:24px; font-weight:800;"><ion-icon name="time"></ion-icon> Full History</h2>
+        <p style="font-size:15px; color:var(--text-color); margin-bottom:16px; font-weight:600; background-color:var(--input-bg); padding:16px; border-radius:16px;" id="historyModalName"></p>
+        
+        <div id="fullHistoryContainer" style="max-height: 400px; overflow-y: auto; padding-right: 10px; margin-bottom: 10px;">
+            <!-- Yahan history aayegi -->
+        </div>
+    </div>
+</div>
+
 <div id="cleanModal" class="action-modal-overlay" onclick="closeModal('cleanModal')">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -890,7 +947,32 @@
     </div>
 </div>
 
+<!-- EXIT ZEN MODE FLOATING BUTTON -->
+<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:60px; height:60px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.4); border:none; background: linear-gradient(135deg, #0071e3, #4facfe); color: white; cursor: pointer;">
+    <ion-icon name="close"></ion-icon>
+</button>
+
 <script>
+    // ==========================================
+    // ZEN MODE LOGIC ADDED
+    // ==========================================
+    function toggleZenMode() {
+        haptic('medium');
+        const body = document.body;
+        const isZen = body.classList.toggle('zen-mode');
+        const exitBtn = document.getElementById('exitZenBtn');
+        
+        if (isZen) {
+            exitBtn.classList.remove('hidden');
+            showNotification('🧘‍♂️ Zen Mode Active - Focused on Leads', 'success');
+        } else {
+            exitBtn.classList.add('hidden');
+            showNotification('Zen Mode Deactivated', 'warning');
+        }
+        
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 150);
+    }
+
     // ==========================================
     // FIXED: Drag and Drop Polyfill Check
     // ==========================================
@@ -900,9 +982,6 @@
         }
     });
 
-    // ==========================================
-    // SMOOTH NUMBER COUNTER ANIMATION ENGINE
-    // ==========================================
     function animateValue(obj, start, end, duration) {
         if(!obj) return;
         let startTimestamp = null;
@@ -920,9 +999,6 @@
         window.requestAnimationFrame(step);
     }
 
-    // ==========================================
-    // SMART MODULE 1: AUTO LEAD SCORING ENGINE
-    // ==========================================
     function calculateSmartScore(client) {
         let score = 0;
         if (client.visitDone) score += 35;
@@ -935,9 +1011,6 @@
         return Math.min(score, 100);
     }
 
-    // ==========================================
-    // SMART MODULE 2: AI BUSINESS & REVENUE ANALYST
-    // ==========================================
     function generateDeepAnalyticsInsights() {
         if (clients.length === 0) return;
         
@@ -986,9 +1059,6 @@
         }
     }
 
-    // ==========================================
-    // SMART MODULE 3: AI PIPELINE HEALTH-CHECKER
-    // ==========================================
     const parseHistoryDate = (dateStr) => {
         if(!dateStr) return new Date();
         const months = {Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11};
@@ -1010,7 +1080,6 @@
             if (c.specificUnit && c.specificUnit.includes('835 sq ft')) updates.specificUnit = c.specificUnit.replace('835', '830');
             if (c.projectCategory && c.projectCategory.includes('Lock & key')) updates.projectCategory = c.projectCategory.replace('Lock & key', 'Lock n key');
             
-            // AUTO-DECAY: Downgrade neglected HOT leads to WARM
             if (c.leadTemperature === 'Hot' && c.history && c.history.length > 0) {
                 let lastActionDate = parseHistoryDate(c.history[0].date);
                 
@@ -1069,7 +1138,6 @@
         if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
     }
     
-    // Ensures theme toggle icon is correct on load
     window.addEventListener('DOMContentLoaded', initTheme);
 
     function toggleTheme() {
@@ -1225,7 +1293,7 @@
 
             const latest = history[0].note.length > 40 ? history[0].note.substring(0, 40) + "..." : history[0].note;
 
-            summaryBox.value = `🤖 [AI Summary]: Total ${total} baar baat hui hai. Lead ka mood ${sentiment} lag raha hai. Main focus: ${action}. Last update: "${latest}"`;
+            summaryBox.value = `🤖 [AI Summary]: Total ${total} baar baat hui hai. Lead ka mood ${sentiment} lag lag raha hai. Main focus: ${action}. Last update: "${latest}"`;
             
             showNotification("✨ AI Summary ban gayi!", "success");
             fireConfetti();
@@ -1386,9 +1454,6 @@
         return `${parts[2]}-${months[parseInt(parts[1])-1]}-${parts[0]}`;
     };
 
-    // ====================================================
-    // SPLASH SCREEN & AUTH LOGIC
-    // ====================================================
     let isAppInitialized = false;
 
     auth.onAuthStateChanged(user => {
@@ -1398,7 +1463,6 @@
             document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
             document.getElementById('leadDate').value = getToday();
             
-            // FIX 3: Cloud Sync for Custom Projects
             db.collection("users").doc(user.uid).get().then(doc => {
                 if(doc.exists && doc.data().projects) {
                     customProjects = doc.data().projects;
@@ -1726,7 +1790,6 @@
             showNotification('🤖 AI ne priority ko HOT se align kar diya hai.', 'success');
         }
 
-        // SMART AUTO-SCHEDULER LOGIC
         let finalFollowupDate = document.getElementById('followup').value;
         
         if(!finalFollowupDate && statusVal !== 'Closed' && statusVal !== 'Not Interested') {
@@ -1946,12 +2009,44 @@
         if(e.target.id === modalId) closeModal(modalId);
     }
 
+    // NAYA FUNCTION: History Modal Kholne Ke Liye
+    function openHistoryModal(id) {
+        haptic('light');
+        const c = clients.find(x => x.id === id); 
+        if(!c) return;
+        
+        document.getElementById('historyModalName').innerText = `👤 ${c.name} | 📞 ${c.phone}`;
+        const container = document.getElementById('fullHistoryContainer');
+        container.innerHTML = '';
+
+        let historyArr = c.history ? [...c.history] : [];
+        if (historyArr.length === 0 && c.remark) {
+            historyArr.push({ date: c.leadDate || getToday(), time: '', note: c.remark });
+        }
+
+        if (historyArr.length === 0) {
+            container.innerHTML = '<p style="text-align:center; opacity:0.6; font-weight:600; padding:20px;">History available nahi hai.</p>';
+        } else {
+            historyArr.reverse().forEach((h, idx) => {
+                container.innerHTML += `
+                    <div style="background:var(--input-bg); padding:16px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:12px; animation: fadeInUp ${(idx*0.05)}s ease-out forwards; opacity:0; transform:translateY(10px);">
+                        <div style="font-size:11px; color:var(--accent-blue); font-weight:800; margin-bottom:6px; display:flex; justify-content:space-between;">
+                            <span><ion-icon name="calendar"></ion-icon> ${h.date}</span>
+                            <span><ion-icon name="time"></ion-icon> ${h.time || 'N/A'}</span>
+                        </div>
+                        <div style="font-size:14px; color:var(--text-color); line-height:1.5;">${sanitizeText(h.note)}</div>
+                    </div>
+                `;
+            });
+        }
+        openModal('historyModal');
+    }
+
     function renderData() { 
         renderTableOptimized(); 
         renderKanban(); 
     }
 
-    // FIX 1: Chunked Background Rendering (Prevents App Freezing on 10k leads)
     function renderTableOptimized() {
         const tableBody = document.getElementById('clientTable'); 
         tableBody.innerHTML = ''; 
@@ -2007,6 +2102,7 @@
                 tr.dataset.proj = safeProjAttr;
                 tr.ondblclick = () => editLead(c.id);
 
+                // HISTORY LINK ADDED BELOW IN THE 10th <td>
                 tr.innerHTML = `
                     <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                     <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
@@ -2017,7 +2113,9 @@
                     <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
                     <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
                     <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
-                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${safeNoteAttr}">${sanitizeText(latestNote)}</td>
+                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                        <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
+                    </td>
                     <td style="display:flex; justify-content:center; align-items:center;">
                         ${tickButton}
                         <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
@@ -2037,12 +2135,10 @@
         if(exportData.length > 0) requestAnimationFrame(renderChunk);
     }
 
-    // FIX 1.2: Kanban Batch Rendering (Prevents freeze when clicking 'Board View' with lots of data)
     function renderKanban() {
         const zones = { 'New': [], 'Follow-up': [], 'Hot': [], 'Broker': [], 'Closed': [] };
         const exportData = getFilteredData();
 
-        // Clear existing boards
         Object.keys(zones).forEach(status => {
             const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
             if(zone) zone.innerHTML = '';
@@ -2425,21 +2521,6 @@
         }, 500);
     }
 
-    function calculateEMI() {
-        haptic('light');
-        const pStr = document.getElementById('emiAmount').value; const rStr = document.getElementById('emiRate').value; const nStr = document.getElementById('emiYears').value;
-        const resDiv = document.getElementById('emiResult');
-        if (!pStr || !rStr || !nStr) { resDiv.style.display = 'block'; resDiv.innerHTML = `<span style="color:var(--notify-red); font-size:14px; font-weight:700;">⚠️ Fill all fields.</span>`; return; }
-        const p = parseFloat(pStr); const r = (parseFloat(rStr) / 12) / 100; const n = parseFloat(nStr) * 12;
-        const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1); resDiv.style.display = 'block';
-        resDiv.innerHTML = `<div style="font-size:26px; font-weight:800; color:var(--accent-blue); margin-bottom:8px; letter-spacing:-0.5px;">EMI: ₹ ${Math.round(emi).toLocaleString('en-IN')} <span style="font-size:13px; color:#888;">/mo</span></div>
-            <div style="font-size:14px; color:var(--text-color); line-height:1.8; border-top:1px solid var(--border-color); padding-top:12px;">
-                <div style="display:flex; justify-content:space-between; opacity:0.8;"><span>Principal:</span> <b>₹ ${Math.round(p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between; opacity:0.8;"><span>Total Interest:</span> <b>₹ ${Math.round((emi*n)-p).toLocaleString('en-IN')}</b></div>
-                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:16px; font-weight:700;"><span>Total Payable:</span> <b>₹ ${Math.round(emi*n).toLocaleString('en-IN')}</b></div>
-            </div>`;
-    }
-
     let searchTimeout;
     document.getElementById('search').addEventListener('input', e => {
         clearTimeout(searchTimeout);
@@ -2592,7 +2673,6 @@
         }, 350);
     }
 
-    // FIX 2: Dynamic Service Worker for True Offline PWA Support
     (function initSingleFilePWA() {
         try {
             const manifestData = {
