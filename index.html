@@ -48,23 +48,6 @@
             --nav-bg: rgba(255, 255, 255, 0.98);
             --btn-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6);
         }
-
-        .dark-theme {
-            --bg-color: #0f172a; /* Rich Slate / Obsidian */
-            --card-bg: rgba(30, 41, 59, 0.95);
-            --text-color: #f8fafc;
-            --border-color: rgba(255, 255, 255, 0.06);
-            --border-highlight: rgba(255, 255, 255, 0.1);
-            --input-bg: #1e293b; 
-            --accent-blue: #3b82f6; /* Bright Royal Blue for visibility */
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --highlight-today: rgba(234, 179, 8, 0.15); --hot-bg: rgba(153, 27, 27, 0.3); --hot-text: #fca5a5;
-            --closed-bg: rgba(22, 101, 52, 0.3); --closed-text: #86efac; --cold-bg: rgba(51, 65, 85, 0.5); --cold-text: #cbd5e1;
-            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-            --nav-bg: rgba(15, 23, 42, 0.98);
-            --btn-gradient: linear-gradient(135deg, #3b82f6, #60a5fa);
-        }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
@@ -74,7 +57,6 @@
             overflow-x: hidden; 
             width: 100vw; 
             -webkit-font-smoothing: antialiased; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
             min-height: 100vh;
         }
 
@@ -88,7 +70,8 @@
             background: var(--bg-color);
             z-index: 99999;
             display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.4s ease, visibility 0.4s ease, background-color 0.4s ease;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            will-change: opacity, visibility;
         }
         
         .splash-logo-container {
@@ -104,6 +87,7 @@
             margin-bottom: 24px;
             box-shadow: 0 10px 30px var(--accent-glow);
             animation: pulseGlowSplash 1.5s infinite ease-in-out;
+            will-change: box-shadow;
         }
         
         .splash-title {
@@ -126,6 +110,7 @@
             background: var(--btn-gradient);
             border-radius: 4px;
             animation: splashLoadAnim 1s infinite ease-in-out;
+            will-change: left;
         }
 
         @keyframes pulseGlowSplash {
@@ -146,7 +131,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(30, 58, 138, 0.2); border-radius: 10px; transition: background-color 0.3s ease;}
         ::-webkit-scrollbar-thumb:hover { background: rgba(30, 58, 138, 0.5); }
-        .dark-theme ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
 
@@ -200,7 +184,7 @@
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         
-        .stat-card { padding: 18px 12px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease, border-color 0.4s ease; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px;}
+        .stat-card { padding: 18px 12px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease, border-color 0.4s ease; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px; will-change: transform;}
         .stat-card:active { transform: scale(0.96) !important; }
         .stat-card.active-filter { border: 2px solid var(--accent-blue); background: var(--input-bg); box-shadow: 0 0 25px var(--accent-glow); animation: pulseGlow 2s infinite; }
         .stat-card label { display: block; font-size: 12px; font-weight: 800; color: inherit; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
@@ -256,11 +240,6 @@
         .segmented-control input[type="radio"]:checked + .seg-cold {
             background: #eff6ff; color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2);
         }
-        
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-hot { background: rgba(220, 38, 38, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-warm { background: rgba(217, 119, 6, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + .seg-cold { background: rgba(37, 99, 235, 0.15); }
-        .dark-theme .segmented-control input[type="radio"]:checked + label { box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
         .badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; transition: background-color 0.3s ease, color 0.3s ease;}
         .status-hot { background: var(--hot-bg); color: var(--hot-text); border-color: rgba(220,38,38,0.2); }
@@ -311,8 +290,6 @@
         
         th { background: rgba(248,250,252,0.95); font-weight: 800; font-size: 12px; color: var(--accent-blue); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
         th:hover { background: rgba(30, 58, 138, 0.05); color: #1e3a8a; }
-        .dark-theme th { background: rgba(15,23,42,0.95); }
-        .dark-theme th:hover { background: rgba(59, 130, 246, 0.1); color: #fff;}
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
@@ -321,6 +298,7 @@
             transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             animation: fadeRowIn 0.3s ease-out forwards;
             opacity: 0;
+            will-change: transform, opacity;
         } 
         tbody tr:hover {
             transform: translateY(-2px) scale(1.005);
@@ -329,14 +307,12 @@
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
             z-index: 2; position: relative;
         }
-        .dark-theme tbody tr:hover { background-color: rgba(255, 255, 255, 0.03); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         tbody tr:last-child td { border-bottom: none; }
         
         .row-highlight { background-color: var(--highlight-today) !important; border-left: 4px solid var(--notify-red); }
 
         .skeleton-loader { position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: transparent; overflow: hidden; z-index: 10; border-radius: 0 0 24px 24px; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: 700; letter-spacing: 1px;}
         .skeleton-loader::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.5s infinite linear; z-index: -1; }
-        .dark-theme .skeleton-loader::after { background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0) 100%); }
 
         .kanban-container { display: flex; gap: 20px; overflow-x: auto; padding: 24px; background: transparent; min-height: 500px; animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both; -webkit-overflow-scrolling: touch; border-radius: 24px; border: none; }
         .kanban-col { flex: 1; min-width: 320px; padding: 16px; display: flex; flex-direction: column; }
@@ -348,6 +324,7 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.3s ease; 
             position: relative; touch-action: pan-y;
             animation: popIn 0.3s ease-out forwards;
+            will-change: transform;
         }
         .k-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--accent-blue); }
         .k-card:active { cursor: grabbing; transform: scale(0.95); box-shadow: none; }
@@ -378,7 +355,7 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0; }
+        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale(0.95) translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0; will-change: transform, opacity;}
         .modal-overlay.active .modal-content { transform: scale(1) translateY(0); opacity: 1; }
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;}
         .modal-close:hover { transform: rotate(90deg) scale(1.1); background: #ef4444; color: white; border-color: #ef4444; }
@@ -407,6 +384,7 @@
             border-top: 1px solid var(--border-highlight);
             display: flex; justify-content: space-around;
             position: relative;
+            will-change: transform;
         }
         .action-modal-overlay.active .action-modal-content { transform: translateY(0); }
         
@@ -469,7 +447,7 @@
         .watermark:hover { opacity: 0.8; }
 
         #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10008; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
-        .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%) scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.3s ease; display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
+        .toast { border-left: 6px solid var(--accent-blue); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translateX(120%) scale(0.9); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.3s ease; display: flex; align-items: center; pointer-events: auto; min-width: 320px; will-change: transform, opacity; }
         .toast.show { transform: translateX(0) scale(1); opacity: 1; }
         .toast.success { border-left-color: #22c55e; }
         .toast.error { border-left-color: #ef4444; }
@@ -507,7 +485,6 @@
                 transition: background-color 0.3s ease, border-color 0.3s ease;
                 backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             }
-            .dark-theme .ios-bottom-nav { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
             
             .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s ease, opacity 0.3s ease, color 0.3s ease; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -586,20 +563,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-    <script>
-        // INIT THEME EARLY TO PREVENT FLASHING DURING SPLASH SCREEN
-        function initThemeEarly() {
-            const savedTheme = localStorage.getItem('crm_theme') || 'light';
-            if(savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-                document.getElementById('themeColorMeta').setAttribute('content', '#0f172a');
-            }
-        }
-        initThemeEarly();
-    </script>
 </head>
-<body class="">
+<body>
 
 <div id="splashScreen">
     <div class="splash-logo-container">
@@ -632,7 +597,6 @@
             <div style="display:flex; gap:10px;">
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleZenMode()" title="Zen Mode (Focus)"><ion-icon name="scan-outline"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
-                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleTheme()" title="Toggle Dark/Light Mode" id="themeToggleBtn"><ion-icon name="moon"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
                 <button class="btn-secondary" style="background-color:#fef2f2; color:#dc2626; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
             </div>
@@ -1105,24 +1069,6 @@
         }
     }
 
-    function initTheme() {
-        const toggleBtn = document.getElementById('themeToggleBtn');
-        const isDark = document.documentElement.classList.contains('dark-theme');
-        if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
-    }
-    
-    window.addEventListener('DOMContentLoaded', initTheme);
-
-    function toggleTheme() {
-        haptic('medium');
-        const isDark = document.documentElement.classList.toggle('dark-theme');
-        localStorage.setItem('crm_theme', isDark ? 'dark' : 'light');
-        const toggleBtn = document.getElementById('themeToggleBtn');
-        if(toggleBtn) toggleBtn.innerHTML = isDark ? '<ion-icon name="sunny"></ion-icon>' : '<ion-icon name="moon"></ion-icon>';
-        document.getElementById('themeColorMeta').setAttribute('content', isDark ? '#0f172a' : '#eef2f6');
-        showNotification(isDark ? 'Dark Mode Activated' : 'Light Mode Activated', 'success');
-    }
-
     function switchMobileTab(tabId, element) {
         if(window.innerWidth > 992) return; 
         haptic('light');
@@ -1244,8 +1190,7 @@
                 sources[source] = (sources[source] || 0) + 1;
             });
 
-            const isDark = document.documentElement.classList.contains('dark-theme');
-            const labelColor = isDark ? '#f8fafc' : '#0f172a';
+            const labelColor = '#0f172a';
 
             if(funnelChartInst) funnelChartInst.destroy();
             funnelChartInst = new Chart(ctxFunnel, {
@@ -1265,7 +1210,7 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { 
-                        y: { ticks: { color: labelColor }, grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' } },
+                        y: { ticks: { color: labelColor }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         x: { ticks: { color: labelColor }, grid: { display: false } }
                     }
                 }
@@ -1370,13 +1315,12 @@
         }
 
         if (!isAppInitialized) {
-            setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                if(splash) {
-                    splash.classList.add('splash-hidden');
-                    setTimeout(() => splash.remove(), 400); 
-                }
-            }, 900); 
+            const splash = document.getElementById('splashScreen');
+            if(splash) {
+                splash.style.transition = 'opacity 0.2s ease';
+                splash.style.opacity = '0';
+                setTimeout(() => splash.remove(), 200);
+            }
             isAppInitialized = true;
         }
     });
@@ -1944,6 +1888,9 @@
                 else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:rgba(217,119,6,0.1); color:#d97706; border:1px solid rgba(217,119,6,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
                 else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:rgba(37,99,235,0.1); color:#2563eb; border:1px solid rgba(37,99,235,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
+                // Added: Visited Badge logic for visual feedback in table view
+                const visitBadge = c.visitDone ? `<br><span class="badge status-closed" style="margin-top: 6px; font-size: 10px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;"><ion-icon name="checkmark-done-circle"></ion-icon> VISITED</span>` : '';
+
                 // Strictly enforcement logic matches exactly what was requested for the TickButton visibility
                 const tickButton = (c.followup === today && c.status !== 'Closed') ? 
                     `<span class="action-dots" style="color:#22c55e; margin-right:4px;" onclick="event.stopPropagation(); markFollowupDone('${c.id}')" title="Mark Follow-up Done"><ion-icon name="checkmark-circle"></ion-icon></span>` : '';
@@ -1964,7 +1911,7 @@
                     <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
                     <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
                     <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
-                    <td><span class="badge ${badge}">${displayStatus}</span></td>
+                    <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
                     <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
                     <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
                     <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
@@ -2017,6 +1964,9 @@
                 else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#d97706; font-size:14px; margin-left:4px;"></ion-icon>';
                 else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#2563eb; font-size:14px; margin-left:4px;"></ion-icon>';
 
+                // Added: Visited Badge logic for Kanban view
+                let visitIcon = c.visitDone ? '<ion-icon name="footsteps" title="Site Visit Done" style="color:#22c55e; font-size:14px; margin-left:4px;"></ion-icon>' : '';
+
                 let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeUnit = sanitizeText(c.specificUnit||'');
@@ -2026,7 +1976,7 @@
                 const cardHTML = `
                     <div class="k-card" style="animation-delay: ${animDelay}; touch-action: none;" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
-                            <span style="display:flex; align-items:center;">${safeName} ${tempIcon}</span>
+                            <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${visitIcon}</span>
                             <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
