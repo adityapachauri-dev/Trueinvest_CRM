@@ -162,7 +162,6 @@
             animation: fadeRowIn 0.3s ease-out forwards;
         }
 
-        /* Removed GPU-heavy backdrop-filter from cards to make scrolling fast & furious */
         .glass-panel {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -659,11 +658,8 @@
                 <div class="form-grid">
                     <div><label>Lead Date</label><input type="date" id="leadDate"></div>
                     <div>
-                        <label>Follow-up Date & Time</label>
-                        <div class="flex-row">
-                            <input type="date" id="followup" style="flex:1;">
-                            <input type="time" id="followupTime" style="width:130px;" title="Follow-up Time">
-                        </div>
+                        <label>Follow-up Date</label>
+                        <input type="date" id="followup">
                     </div>
                 </div>
 
@@ -883,11 +879,18 @@
         <h2 style="margin-top:10px; color:var(--accent-dark); font-size:24px; font-weight:800;"><ion-icon name="time"></ion-icon> Full History</h2>
         <p style="font-size:15px; color:var(--text-color); margin-bottom:16px; font-weight:600; background-color:var(--bg-color); padding:16px; border-radius:16px;" id="historyModalName"></p>
         
-        <div id="fullHistoryContainer" style="max-height: 400px; overflow-y: auto; padding-right: 10px; margin-bottom: 10px; transform: translateZ(0);">
+        <div id="fullHistoryContainer" style="max-height: 250px; overflow-y: auto; padding-right: 10px; margin-bottom: 10px; transform: translateZ(0);">
+        </div>
+        
+        <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <label>Add Quick Remark</label>
+            <div class="remark-wrapper" style="margin-bottom: 10px;">
+                <textarea id="quickRemarkInput" placeholder="Write new update here..." rows="2" style="resize:vertical;"></textarea>
             </div>
+            <button onclick="addQuickRemark(event)" style="width: 100%; height: 48px; font-size: 14px;">Save Remark</button>
+        </div>
     </div>
 </div>
-
 <div id="cleanModal" class="action-modal-overlay" onclick="closeModal('cleanModal')">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -1111,7 +1114,6 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    /* 🔥 OPTIMIZED VIEW SWITCHER: Lazy renders only what is shown! 🔥 */
     function setViewMode(mode) {
         haptic('light');
         const t = document.getElementById('tableView'); 
@@ -1316,6 +1318,7 @@
     let sortColumn = 'leadDate';
     let sortAscending = false;
     window.currentEditHistory = []; 
+    let currentHistoryLeadId = null; // Keeps track of which lead is open in History Modal
     
     const getToday = () => {
         const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
@@ -1660,7 +1663,7 @@
 
         const data = {
             ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
-            followup: finalFollowupDate, followupTime: document.getElementById('followupTime').value || "",
+            followup: finalFollowupDate,
             name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
             leadSource: document.getElementById('leadSource').value, projectCategory: finalProjectCategory, 
             specificUnit: document.getElementById('specificUnit').value.trim(), location: document.getElementById('location').value, 
@@ -1866,7 +1869,10 @@
         const c = clients.find(x => x.id === id); 
         if(!c) return;
         
+        currentHistoryLeadId = id; // Store ID globally so the Quick Remark can use it
         document.getElementById('historyModalName').innerText = `👤 ${c.name} | 📞 ${c.phone}`;
+        document.getElementById('quickRemarkInput').value = ""; // Clear Quick Remark box
+        
         const container = document.getElementById('fullHistoryContainer');
         container.innerHTML = '';
 
@@ -1893,7 +1899,48 @@
         openModal('historyModal');
     }
 
-    /* 🔥 RESTRICTED RENDER: Only renders the currently active tab to prevent lag! 🔥 */
+    /* 🔥 FAST NEW FEATURE: ADD REMARK STRAIGHT FROM HISTORY MODAL 🔥 */
+    async function addQuickRemark(event) {
+        if (!currentHistoryLeadId) return;
+        const input = document.getElementById('quickRemarkInput');
+        const newRemarkText = input.value.trim();
+        
+        if (!newRemarkText) {
+            showNotification("Pehle update likhiye!", "warning");
+            return;
+        }
+
+        const c = clients.find(x => x.id === currentHistoryLeadId);
+        if (!c) return;
+
+        const btn = event.target;
+        const oldText = btn.innerText;
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
+        let historyArray = c.history ? [...c.history] : [];
+        // Add new note to the beginning
+        historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText });
+
+        try {
+            await db.collection("leads").doc(currentHistoryLeadId).update({
+                history: historyArray,
+                remark: newRemarkText
+            });
+            showNotification("Remark updated quickly!", "success");
+            haptic('medium');
+            
+            // Instantly refresh modal view
+            openHistoryModal(currentHistoryLeadId);
+        } catch(e) {
+            showNotification("Error saving: " + e.message, "error");
+        } finally {
+            btn.innerText = oldText;
+            btn.disabled = false;
+        }
+    }
+    /* ============================================================= */
+
     function renderData() { 
         if (currentViewMode === 'table') {
             renderTableOptimized(); 
@@ -1902,7 +1949,6 @@
         }
     }
 
-    /* 🔥 SUPER-FAST HTML STRING BATCHING FOR TABLE (C++ ENGINE) 🔥 */
     function renderTableOptimized() {
         const tableBody = document.getElementById('clientTable'); 
         tableBody.innerHTML = ''; 
@@ -1925,7 +1971,6 @@
                 
                 const displayStatus = c.status;
                 const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${sanitizeText(c.specificUnit)}</span>` : '';
-                let timeDisplayFormatted = c.followupTime ? `<br><span style="font-size:11px; color:var(--accent-brand); font-weight:800;"><ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 const latestNote = (c.history && c.history.length > 0) ? c.history[0].note : (c.remark || '-');
                 const safeName = sanitizeText(c.name);
 
@@ -1960,7 +2005,7 @@
                         <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
                         <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
                         <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
-                        <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
+                        <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}</td>
                         <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                             <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
                         </td>
@@ -1983,7 +2028,6 @@
         if(exportData.length > 0) requestAnimationFrame(renderChunk);
     }
 
-    /* 🔥 SUPER-FAST HTML STRING BATCHING FOR KANBAN 🔥 */
     function renderKanban() {
         const exportData = getFilteredData();
         const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed'];
@@ -2003,8 +2047,6 @@
             for(let i = currentIndex; i < end; i++) {
                 const c = exportData[i];
                 if(c.status === 'Not Interested' || htmlChunks[c.status] === undefined) continue; 
-                
-                let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-brand);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
@@ -2028,7 +2070,7 @@
                         </div>
                         <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
                         <div class="k-card-detail" style="color:var(--accent-dark); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
-                        <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
+                        <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)}</div>
                     </div>
                 `;
             }
@@ -2054,7 +2096,7 @@
         const c = clients.find(x => x.id === id); if(!c) return;
         document.getElementById('editId').value = c.id;
         
-        ['leadDate', 'followup', 'followupTime', 'name', 'phone', 'leadSource', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
+        ['leadDate', 'followup', 'name', 'phone', 'leadSource', 'specificUnit', 'location', 'status', 'budget'].forEach(f => {
             if(document.getElementById(f)) document.getElementById(f).value = c[f] || '';
         });
         
@@ -2091,7 +2133,6 @@
         document.getElementById('leadDate').value = getToday();
         document.getElementById('newRemark').value = "";
         document.getElementById('followup').value = "";
-        document.getElementById('followupTime').value = "";
         document.getElementById('search').value = ""; 
         
         document.getElementById('projectCategory').value = "";
@@ -2245,7 +2286,6 @@
                         budget: budget,
                         visitDone: false,
                         followup: "",
-                        followupTime: "",
                         leadTemperature: 'Warm', 
                         remark: remark,
                         history: historyArr
@@ -2275,7 +2315,6 @@
     });
 
     let draggedCardId = null;
-    /* 🔥 GLOBAL DELEGATED DRAG & DROP (Kills Memory Leaks) 🔥 */
     function initDragAndDrop() {
         const kanbanContainer = document.getElementById('kanbanView');
         if (kanbanContainer) {
@@ -2374,7 +2413,7 @@
     function downloadCSV() {
         if(clients.length === 0) { showNotification("Export karne ke liye data nahi hai!", 'error'); return; }
         
-        const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Time", "Full Remark History"];
+        const headers = ["Date", "Name", "Phone", "Priority", "Source", "Status", "Project", "Specific Unit", "Budget", "Visit Done", "Follow-up", "Full Remark History"];
         const exportData = getFilteredData();
         
         const rows = exportData.map(c => {
@@ -2397,7 +2436,6 @@
                 `"${(c.budget || '').replace(/"/g, '""')}"`,
                 c.visitDone ? 'Yes' : 'No',
                 c.followup || '',
-                c.followupTime || '',
                 `"${fullHistory.replace(/"/g, '""')}"`
             ];
         });
@@ -2542,7 +2580,6 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         try {
-            /* Restricted VanillaTilt to non-touch devices only (saves RAM & Battery on mobile) */
             if (typeof VanillaTilt !== 'undefined' && window.matchMedia("(hover: hover)").matches) {
                 VanillaTilt.init(document.querySelectorAll(".stat-card"), {
                     max: 8, speed: 400, glare: true, "max-glare": 0.15, scale: 1.05, transition: true
