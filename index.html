@@ -872,6 +872,7 @@
     </div>
 </div>
 
+<!-- ================= QUICK REMARK HISTORY MODAL ================= -->
 <div id="historyModal" class="modal-overlay" onclick="handleModalClick(event, 'historyModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -891,6 +892,8 @@
         </div>
     </div>
 </div>
+<!-- ==================================================================== -->
+
 <div id="cleanModal" class="action-modal-overlay" onclick="closeModal('cleanModal')">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -950,6 +953,11 @@
 </button>
 
 <script>
+    // Global Memory for Scroll Positons
+    let lastDesktopScrollY = 0;
+    let lastListScrollY = 0;
+    let isFirstRender = true;
+
     function toggleZenMode() {
         haptic('medium');
         const body = document.body;
@@ -1107,11 +1115,21 @@
     function switchMobileTab(tabId, element) {
         if(window.innerWidth > 992) return; 
         haptic('light');
+        
+        if(document.getElementById('tabDataView').classList.contains('active')) {
+            lastListScrollY = window.scrollY || document.documentElement.scrollTop;
+        }
+
         document.querySelectorAll('.mobile-tab-content').forEach(tab => tab.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('.tab-item').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        
+        if(tabId === 'tabAddForm') {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        } else if (tabId === 'tabDataView') {
+            window.scrollTo(0, lastListScrollY);
+        }
     }
 
     function setViewMode(mode) {
@@ -1124,7 +1142,7 @@
         if(mode === 'table') { 
             k.classList.add('hidden'); 
             t.classList.remove('hidden'); 
-            if (previousMode !== 'table') renderTableOptimized();
+            if (previousMode !== 'table') renderTableOptimized(true);
             requestAnimationFrame(() => {
                 t.style.animation = 'none';
                 void t.offsetWidth;
@@ -1134,7 +1152,7 @@
         if(mode === 'kanban') { 
             t.classList.add('hidden'); 
             k.classList.remove('hidden'); 
-            if (previousMode !== 'kanban') renderKanban();
+            if (previousMode !== 'kanban') renderKanban(true);
             requestAnimationFrame(() => {
                 k.style.animation = 'none';
                 void k.offsetWidth;
@@ -1318,7 +1336,7 @@
     let sortColumn = 'leadDate';
     let sortAscending = false;
     window.currentEditHistory = []; 
-    let currentHistoryLeadId = null; // Keeps track of which lead is open in History Modal
+    let currentHistoryLeadId = null; 
     
     const getToday = () => {
         const d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
@@ -1449,7 +1467,8 @@
             }
 
             updateDashboard();
-            renderData();
+            renderData(isFirstRender);
+            isFirstRender = false; // Prevent sliding animations on background refreshes
         }, error => {
             showNotification("Data Sync Error: " + error.message, 'error');
         });
@@ -1508,7 +1527,7 @@
             if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).set({projects: customProjects}, {merge: true});
             
             if (currentProjectFilter === projectName) { currentProjectFilter = 'All'; }
-            renderProjectTabsAndDropdown(); renderData();
+            renderProjectTabsAndDropdown(); renderData(true);
             showNotification(`Project Tab '${projectName}' removed`, 'warning');
         }
     }
@@ -1521,7 +1540,7 @@
         document.getElementById('search').value = ''; currentQuickFilter = 'All';
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
         document.getElementById('filterAll').classList.add('active-filter');
-        renderData();
+        renderData(true);
     }
 
     function applyQuickFilter(type) {
@@ -1530,14 +1549,14 @@
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
         document.getElementById(`filter${type}`).classList.add('active-filter');
         if(window.innerWidth <= 992 && currentQuickFilter !== 'All') { document.querySelectorAll('.tab-item')[1].click(); }
-        document.getElementById('search').value = ''; renderData();
+        document.getElementById('search').value = ''; renderData(true);
     }
 
     function handleSort(column) {
         haptic('light');
         if(sortColumn === column) { sortAscending = !sortAscending; } 
         else { sortColumn = column; sortAscending = true; }
-        renderData();
+        renderData(true);
     }
 
     function updateDashboard() {
@@ -1560,7 +1579,7 @@
         bar.innerHTML = `<ion-icon name="alert-circle" style="animation: pulseGlow 1s infinite; border-radius:50%;"></ion-icon> ACTION: ${follow} urgent follow-ups today!`;
     }
 
-    document.querySelectorAll('select, input[type="date"], input[type="time"]').forEach(el => {
+    document.querySelectorAll('select, input[type="date"]').forEach(el => {
         el.addEventListener('change', () => haptic('light'));
     });
 
@@ -1692,7 +1711,11 @@
             btn.disabled = false;
             if (saveSuccess) {
                 resetForm(); 
-                if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[1].click(); }
+                if(window.innerWidth <= 992) { 
+                    document.querySelectorAll('.tab-item')[1].click(); 
+                } else {
+                    window.scrollTo({top: lastDesktopScrollY, behavior: 'smooth'});
+                }
             } else {
                 btn.innerText = oldText;
             }
@@ -1843,7 +1866,11 @@
     }
 
     function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
-    function executeSwipeEdit() { closeActionMenu(); editLead(bsActionId); }
+    
+    function executeSwipeEdit() { 
+        closeActionMenu(); 
+        editLead(bsActionId); 
+    }
     
     function executeSwipeDel() {
         closeActionMenu();
@@ -1869,9 +1896,9 @@
         const c = clients.find(x => x.id === id); 
         if(!c) return;
         
-        currentHistoryLeadId = id; // Store ID globally so the Quick Remark can use it
+        currentHistoryLeadId = id; 
         document.getElementById('historyModalName').innerText = `👤 ${c.name} | 📞 ${c.phone}`;
-        document.getElementById('quickRemarkInput').value = ""; // Clear Quick Remark box
+        document.getElementById('quickRemarkInput').value = ""; 
         
         const container = document.getElementById('fullHistoryContainer');
         container.innerHTML = '';
@@ -1899,7 +1926,6 @@
         openModal('historyModal');
     }
 
-    /* 🔥 FAST NEW FEATURE: ADD REMARK STRAIGHT FROM HISTORY MODAL 🔥 */
     async function addQuickRemark(event) {
         if (!currentHistoryLeadId) return;
         const input = document.getElementById('quickRemarkInput');
@@ -1919,7 +1945,6 @@
         btn.disabled = true;
 
         let historyArray = c.history ? [...c.history] : [];
-        // Add new note to the beginning
         historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText });
 
         try {
@@ -1930,7 +1955,6 @@
             showNotification("Remark updated quickly!", "success");
             haptic('medium');
             
-            // Instantly refresh modal view
             openHistoryModal(currentHistoryLeadId);
         } catch(e) {
             showNotification("Error saving: " + e.message, "error");
@@ -1939,18 +1963,31 @@
             btn.disabled = false;
         }
     }
-    /* ============================================================= */
 
-    function renderData() { 
+    function renderData(animate = false) { 
         if (currentViewMode === 'table') {
-            renderTableOptimized(); 
+            renderTableOptimized(animate); 
         } else if (currentViewMode === 'kanban') {
-            renderKanban(); 
+            renderKanban(animate); 
         }
     }
 
-    function renderTableOptimized() {
+    function renderTableOptimized(animate = false) {
         const tableBody = document.getElementById('clientTable'); 
+        const tableContainer = document.getElementById('tableView');
+        
+        // 1. Save scroll position tightly
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        const scrollX = window.scrollX || window.pageXOffset || document.documentElement.scrollLeft;
+        const tableScrollTop = tableContainer.scrollTop;
+        const tableScrollLeft = tableContainer.scrollLeft;
+
+        // 2. Lock layout height to completely prevent bouncing
+        const currentHeight = tableContainer.scrollHeight;
+        if(currentHeight > 0) {
+            tableContainer.style.minHeight = currentHeight + 'px';
+        }
+
         tableBody.innerHTML = ''; 
         
         const today = getToday();
@@ -1992,8 +2029,8 @@
                 const safeNameAttr = safeName.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 
-                let animClass = i < 15 ? 'animate-row-enter' : '';
-                let animStyle = i < 15 ? `animation-delay: ${(i * 0.02)}s;` : '';
+                let animClass = (animate && i < 15) ? 'animate-row-enter' : '';
+                let animStyle = (animate && i < 15) ? `animation-delay: ${(i * 0.02)}s;` : '';
 
                 htmlChunk += `
                     <tr class="${highlight} ${animClass}" style="${animStyle}" title="Double-click to Edit, Tap ⋮ for Actions" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}" ondblclick="editLead('${c.id}')">
@@ -2022,19 +2059,38 @@
             
             if (currentIndex < exportData.length) {
                 requestAnimationFrame(renderChunk);
+            } else {
+                // 3. Unlock and restore
+                tableContainer.style.minHeight = '';
+                tableContainer.scrollTop = tableScrollTop;
+                tableContainer.scrollLeft = tableScrollLeft;
+                window.scrollTo(scrollX, scrollY);
             }
         }
         
         if(exportData.length > 0) requestAnimationFrame(renderChunk);
+        else tableContainer.style.minHeight = '';
     }
 
-    function renderKanban() {
+    function renderKanban(animate = false) {
         const exportData = getFilteredData();
         const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed'];
 
+        // 1. Save scroll position tightly
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        const scrollX = window.scrollX || window.pageXOffset || document.documentElement.scrollLeft;
+        const kanbanContainer = document.getElementById('kanbanView');
+        const kanbanScrollLeft = kanbanContainer.scrollLeft;
+        const zoneScrolls = {};
+
         validStatuses.forEach(status => {
             const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
-            if(zone) zone.innerHTML = '';
+            if(zone) {
+                zoneScrolls[status] = zone.scrollTop;
+                const currentHeight = zone.scrollHeight;
+                if(currentHeight > 0) zone.style.minHeight = currentHeight + 'px';
+                zone.innerHTML = '';
+            }
         });
 
         const CHUNK_SIZE = 40;
@@ -2060,7 +2116,7 @@
                 let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeUnit = sanitizeText(c.specificUnit||'');
 
-                let animDelay = i < 15 ? `${(i * 0.02)}s` : '0s';
+                let animDelay = (animate && i < 15) ? `${(i * 0.02)}s` : '0s';
 
                 htmlChunks[c.status] += `
                     <div class="k-card" style="animation-delay: ${animDelay}; touch-action: none;" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
@@ -2085,10 +2141,27 @@
             currentIndex = end;
             if(currentIndex < exportData.length) {
                 requestAnimationFrame(renderKanbanChunk);
+            } else {
+                // 3. Unlock and restore
+                validStatuses.forEach(status => {
+                    const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
+                    if(zone) {
+                        zone.style.minHeight = '';
+                        zone.scrollTop = zoneScrolls[status] || 0;
+                    }
+                });
+                kanbanContainer.scrollLeft = kanbanScrollLeft;
+                window.scrollTo(scrollX, scrollY);
             }
         }
         
         if(exportData.length > 0) requestAnimationFrame(renderKanbanChunk);
+        else {
+            validStatuses.forEach(status => {
+                const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
+                if(zone) zone.style.minHeight = '';
+            });
+        }
     }
 
     function editLead(id) {
@@ -2122,8 +2195,12 @@
         document.getElementById('newRemark').value = '';
         renderHistoryTimeline();
 
-        if(window.innerWidth <= 992) { document.querySelectorAll('.tab-item')[0].click(); } 
-        else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+        if(window.innerWidth <= 992) { 
+            document.querySelectorAll('.tab-item')[0].click(); 
+        } else { 
+            lastDesktopScrollY = window.scrollY || document.documentElement.scrollTop;
+            window.scrollTo({top: 0, behavior: 'smooth'}); 
+        }
     }
 
     function resetForm() {
@@ -2146,7 +2223,7 @@
         currentQuickFilter = 'All';
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
         document.getElementById('filterAll').classList.add('active-filter');
-        renderData();
+        renderData(true);
     }
 
     document.getElementById('csvFileInput').addEventListener('change', async function(e) {
@@ -2406,7 +2483,7 @@
     document.getElementById('search').addEventListener('input', e => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
-            requestAnimationFrame(() => renderData()); 
+            requestAnimationFrame(() => renderData(true)); 
         }, 350); 
     });
     
