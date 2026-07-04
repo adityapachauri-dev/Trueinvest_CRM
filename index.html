@@ -29,18 +29,16 @@
 
     <style>
         /* ====================================================
-           "PREMIUM WALNUT NOIR" THEME (90FPS Optimized)
+           "PREMIUM WALNUT NOIR" THEME (Ultra-Fast 90FPS)
            ==================================================== */
         :root {
-            /* Core Palette */
             --bg-color: #f4efe9; 
-            --card-bg: rgba(255, 255, 255, 0.75); 
+            --card-bg: rgba(255, 255, 255, 0.92); 
             --text-color: #2E1F1B; 
             --border-color: rgba(94, 75, 67, 0.15); 
             --border-highlight: rgba(255, 255, 255, 0.9);
-            --input-bg: rgba(255, 255, 255, 0.95); 
+            --input-bg: rgba(255, 255, 255, 0.98); 
             
-            /* Accents */
             --accent-brand: #5E4B43; 
             --accent-dark: #2E1F1B;
             --accent-glow: rgba(46, 31, 27, 0.12);
@@ -48,7 +46,6 @@
             --whatsapp-dark: #15803d; 
             --notify-red: #991b1b; 
             
-            /* Status Colors adapted to warm aesthetic */
             --highlight-today: rgba(245, 235, 220, 0.85); 
             --hot-bg: rgba(185, 28, 28, 0.08); 
             --hot-text: #991b1b; 
@@ -57,14 +54,12 @@
             --cold-bg: rgba(94, 75, 67, 0.08); 
             --cold-text: #5E4B43;
             
-            /* Shadows & Gradients */
             --shadow-sm: 0 4px 20px rgba(46, 31, 27, 0.05); 
             --shadow-lg: 0 10px 40px rgba(46, 31, 27, 0.1);
-            --nav-bg: rgba(255, 255, 255, 0.92);
+            --nav-bg: rgba(255, 255, 255, 0.95);
             --btn-gradient: linear-gradient(135deg, #2E1F1B, #5E4B43);
         }
         
-        /* Ultra-lightweight Static Cinematic Grain Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -89,9 +84,6 @@
 
         * { box-sizing: border-box; }
 
-        /* ====================================================
-           SPLASH SCREEN ANIMATION STYLES
-           ==================================================== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg-color);
@@ -158,7 +150,6 @@
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
 
-        /* Hardware Accelerated Animations */
         @keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -15px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 15px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale3d(0.92, 0.92, 1); } 100% { opacity: 1; transform: scale3d(1, 1, 1); } }
@@ -171,6 +162,7 @@
             animation: fadeRowIn 0.3s ease-out forwards;
         }
 
+        /* Removed GPU-heavy backdrop-filter from cards to make scrolling fast & furious */
         .glass-panel {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -179,8 +171,6 @@
             box-shadow: var(--shadow-sm);
             border-radius: 24px;
             transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             transform: translateZ(0); 
         }
 
@@ -202,6 +192,7 @@
             grid-column: span 2; display: flex; justify-content: space-between; align-items: center; 
             padding: 16px 24px; animation: fadeInDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             background: var(--nav-bg); border-radius: 24px; margin-bottom: 8px; width: 100%;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
         h1.main-title { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
         h1.main-title span.brand { background: var(--btn-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -324,7 +315,7 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle; transition: background-color 0.2s ease, border-color 0.3s ease;}
         
-        th { background: rgba(244, 239, 233, 0.95); font-weight: 800; font-size: 12px; color: var(--accent-brand); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
+        th { background: rgba(244, 239, 233, 0.98); font-weight: 800; font-size: 12px; color: var(--accent-brand); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
         th:hover { background: rgba(94, 75, 67, 0.05); color: var(--accent-dark); }
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
@@ -571,9 +562,6 @@
         .analytics-chart-container { position: relative; height: 250px; width: 100%; margin-bottom: 24px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateZ(0);}
         .analytics-chart-container:hover { transform: scale3d(1.02, 1.02, 1); }
 
-        /* ====================================================
-           ZEN MODE STYLES
-           ==================================================== */
         body.zen-mode .top-bar,
         body.zen-mode #statsWrapper,
         body.zen-mode .left-panel,
@@ -630,7 +618,7 @@
 <div id="loginView" class="container hidden" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
     <div class="login-card glass-panel" style="margin-top: calc(15vh + env(safe-area-inset-top));">
         <h1 style="margin-bottom:30px; font-size:36px; cursor: pointer;" onclick="window.location.reload();" title="Refresh Page"><span class="brand">TRUE</span> INVEST</h1>
-        <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important; backdrop-filter:none;">
+        <form id="loginForm" style="box-shadow:none; padding:0; border:none; background:transparent !important;">
             <label>Secure CRM Login</label>
             <input type="email" id="loginEmail" placeholder="Work Email" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
@@ -1123,29 +1111,33 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
+    /* 🔥 OPTIMIZED VIEW SWITCHER: Lazy renders only what is shown! 🔥 */
     function setViewMode(mode) {
         haptic('light');
         const t = document.getElementById('tableView'); 
         const k = document.getElementById('kanbanView');
+        const previousMode = currentViewMode;
+        currentViewMode = mode; 
+        
         if(mode === 'table') { 
             k.classList.add('hidden'); 
             t.classList.remove('hidden'); 
+            if (previousMode !== 'table') renderTableOptimized();
             requestAnimationFrame(() => {
                 t.style.animation = 'none';
-                void t.offsetWidth; /* trigger reflow */
+                void t.offsetWidth;
                 t.style.animation = 'fadeInUp 0.5s ease-out forwards';
             });
-            currentViewMode = 'table'; 
         }
         if(mode === 'kanban') { 
             t.classList.add('hidden'); 
             k.classList.remove('hidden'); 
+            if (previousMode !== 'kanban') renderKanban();
             requestAnimationFrame(() => {
                 k.style.animation = 'none';
                 void k.offsetWidth;
                 k.style.animation = 'fadeInUp 0.5s ease-out forwards';
             });
-            currentViewMode = 'kanban'; 
         }
     }
 
@@ -1901,38 +1893,35 @@
         openModal('historyModal');
     }
 
+    /* 🔥 RESTRICTED RENDER: Only renders the currently active tab to prevent lag! 🔥 */
     function renderData() { 
-        renderTableOptimized(); 
-        renderKanban(); 
+        if (currentViewMode === 'table') {
+            renderTableOptimized(); 
+        } else if (currentViewMode === 'kanban') {
+            renderKanban(); 
+        }
     }
 
+    /* 🔥 SUPER-FAST HTML STRING BATCHING FOR TABLE (C++ ENGINE) 🔥 */
     function renderTableOptimized() {
         const tableBody = document.getElementById('clientTable'); 
         tableBody.innerHTML = ''; 
         
         const today = getToday();
         const exportData = getFilteredData();
-        const CHUNK_SIZE = 50; 
+        const CHUNK_SIZE = 80; 
         let currentIndex = 0;
         let serial = 1;
 
         function renderChunk() {
-            const fragment = document.createDocumentFragment();
+            let htmlChunk = '';
             const end = Math.min(currentIndex + CHUNK_SIZE, exportData.length);
             
             for(let i = currentIndex; i < end; i++) {
                 const c = exportData[i];
-                const tr = document.createElement('tr');
-                
-                // Optimized Animation mapping
-                if(i < 15) {
-                    tr.classList.add('animate-row-enter');
-                    tr.style.animationDelay = `${(i * 0.03)}s`;
-                }
                 
                 const badge = (c.status === 'Hot' ? 'status-hot' : (c.status === 'Closed' ? 'status-closed' : 'status-default'));
                 const highlight = (c.followup === today && c.status !== 'Closed') ? 'row-highlight' : '';
-                if (highlight) tr.classList.add(highlight);
                 
                 const displayStatus = c.status;
                 const unitDisp = c.specificUnit ? `<br><span style="font-size:10px; opacity:0.7;">${sanitizeText(c.specificUnit)}</span>` : '';
@@ -1957,36 +1946,33 @@
 
                 const safeNameAttr = safeName.replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 const safeProjAttr = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+                
+                let animClass = i < 15 ? 'animate-row-enter' : '';
+                let animStyle = i < 15 ? `animation-delay: ${(i * 0.02)}s;` : '';
 
-                tr.title = "Double-click to Edit, Tap ⋮ for Actions";
-                tr.dataset.id = c.id;
-                tr.dataset.phone = c.phone;
-                tr.dataset.name = safeNameAttr;
-                tr.dataset.proj = safeProjAttr;
-                tr.ondblclick = () => editLead(c.id);
-
-                tr.innerHTML = `
-                    <td style="opacity:0.4; font-weight:700;">${serial++}</td>
-                    <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                    <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
-                    <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
-                    <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
-                    <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                    <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
-                    <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
-                    <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
-                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                        <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
-                    </td>
-                    <td style="display:flex; justify-content:center; align-items:center;">
-                        ${tickButton}
-                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                    </td>
+                htmlChunk += `
+                    <tr class="${highlight} ${animClass}" style="${animStyle}" title="Double-click to Edit, Tap ⋮ for Actions" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}" ondblclick="editLead('${c.id}')">
+                        <td style="opacity:0.4; font-weight:700;">${serial++}</td>
+                        <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
+                        <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
+                        <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
+                        <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
+                        <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
+                        <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                        <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
+                        <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}${timeDisplayFormatted}</td>
+                        <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                            <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
+                        </td>
+                        <td style="display:flex; justify-content:center; align-items:center;">
+                            ${tickButton}
+                            <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
+                        </td>
+                    </tr>
                 `;
-                fragment.appendChild(tr);
             }
             
-            tableBody.appendChild(fragment);
+            tableBody.insertAdjacentHTML('beforeend', htmlChunk);
             currentIndex = end;
             
             if (currentIndex < exportData.length) {
@@ -1997,11 +1983,12 @@
         if(exportData.length > 0) requestAnimationFrame(renderChunk);
     }
 
+    /* 🔥 SUPER-FAST HTML STRING BATCHING FOR KANBAN 🔥 */
     function renderKanban() {
-        const zones = { 'New': [], 'Follow-up': [], 'Hot': [], 'Broker': [], 'Closed': [] };
         const exportData = getFilteredData();
+        const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed'];
 
-        Object.keys(zones).forEach(status => {
+        validStatuses.forEach(status => {
             const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
             if(zone) zone.innerHTML = '';
         });
@@ -2011,9 +1998,11 @@
 
         function renderKanbanChunk() {
             const end = Math.min(currentIndex + CHUNK_SIZE, exportData.length);
+            const htmlChunks = { 'New': '', 'Follow-up': '', 'Hot': '', 'Broker': '', 'Closed': '' };
+            
             for(let i = currentIndex; i < end; i++) {
                 const c = exportData[i];
-                if(c.status === 'Not Interested' || !zones[c.status]) continue; 
+                if(c.status === 'Not Interested' || htmlChunks[c.status] === undefined) continue; 
                 
                 let timeDisplayFormatted = c.followupTime ? `<span style="font-weight:800; color:var(--accent-brand);">| <ion-icon name="time"></ion-icon> ${new Date(`2000-01-01T${c.followupTime}:00`).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', hour12: true})}</span>` : '';
                 
@@ -2029,9 +2018,9 @@
                 let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeUnit = sanitizeText(c.specificUnit||'');
 
-                let animDelay = i < 15 ? `${(i * 0.03)}s` : '0s';
+                let animDelay = i < 15 ? `${(i * 0.02)}s` : '0s';
 
-                const cardHTML = `
+                htmlChunks[c.status] += `
                     <div class="k-card" style="animation-delay: ${animDelay}; touch-action: none;" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
                         <div class="k-card-title">
                             <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${visitIcon}</span>
@@ -2042,16 +2031,18 @@
                         <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)} ${timeDisplayFormatted}</div>
                     </div>
                 `;
-                
-                const zone = document.querySelector(`.kanban-dropzone[data-status="${c.status}"]`);
-                if(zone) zone.insertAdjacentHTML('beforeend', cardHTML);
             }
+            
+            Object.keys(htmlChunks).forEach(status => {
+                if (htmlChunks[status]) {
+                    const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
+                    if (zone) zone.insertAdjacentHTML('beforeend', htmlChunks[status]);
+                }
+            });
             
             currentIndex = end;
             if(currentIndex < exportData.length) {
                 requestAnimationFrame(renderKanbanChunk);
-            } else {
-                addDragEvents();
             }
         }
         
@@ -2284,24 +2275,28 @@
     });
 
     let draggedCardId = null;
-    function addDragEvents() {
-        document.querySelectorAll('.k-card').forEach(card => {
-            card.addEventListener('dragstart', (e) => { 
+    /* 🔥 GLOBAL DELEGATED DRAG & DROP (Kills Memory Leaks) 🔥 */
+    function initDragAndDrop() {
+        const kanbanContainer = document.getElementById('kanbanView');
+        if (kanbanContainer) {
+            kanbanContainer.addEventListener('dragstart', (e) => { 
+                const card = e.target.closest('.k-card');
+                if (!card) return;
                 if(e.target.tagName === 'ION-ICON') { e.preventDefault(); return; } 
                 haptic('light');
-                draggedCardId = e.currentTarget.dataset.id; 
-                requestAnimationFrame(() => e.currentTarget.style.opacity = '0.5'); 
-                e.currentTarget.style.transform = 'scale3d(0.95, 0.95, 1)';
+                draggedCardId = card.dataset.id; 
+                requestAnimationFrame(() => card.style.opacity = '0.5'); 
+                card.style.transform = 'scale3d(0.95, 0.95, 1)';
             });
-            card.addEventListener('dragend', (e) => { 
-                e.currentTarget.style.opacity = '1'; 
-                e.currentTarget.style.transform = 'scale3d(1, 1, 1)';
+            kanbanContainer.addEventListener('dragend', (e) => { 
+                const card = e.target.closest('.k-card');
+                if (!card) return;
+                card.style.opacity = '1'; 
+                card.style.transform = 'scale3d(1, 1, 1)';
                 draggedCardId = null; 
             });
-        });
-    }
-    
-    function initDragAndDrop() {
+        }
+
         document.querySelectorAll('.kanban-dropzone').forEach(zone => {
             zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
             zone.addEventListener('dragleave', e => zone.classList.remove('drag-over'));
@@ -2373,7 +2368,7 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             requestAnimationFrame(() => renderData()); 
-        }, 500); 
+        }, 350); 
     });
     
     function downloadCSV() {
@@ -2547,7 +2542,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         try {
-            // Re-enabled VanillaTilt but restricted it ONLY to non-touch devices to save mobile RAM and battery
+            /* Restricted VanillaTilt to non-touch devices only (saves RAM & Battery on mobile) */
             if (typeof VanillaTilt !== 'undefined' && window.matchMedia("(hover: hover)").matches) {
                 VanillaTilt.init(document.querySelectorAll(".stat-card"), {
                     max: 8, speed: 400, glare: true, "max-glare": 0.15, scale: 1.05, transition: true
