@@ -2576,6 +2576,18 @@
         } catch(e) {}
     });
 
+    // ====================================================
+    // ZEN MODE GLOBAL SHORTCUT (CTRL + ENTER) - BUG FIXED
+    // ====================================================
+    window.addEventListener('keydown', function(e) {
+        // Checking for Ctrl or Cmd key + Enter key (keyCode 13 fallback)
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'Enter' || e.keyCode === 13)) {
+            e.preventDefault(); 
+            e.stopPropagation(); // Yeh ensure karega ki form ya koi aur script is event ko block na kare
+            toggleZenMode();
+        }
+    }, true); // 'true' ka matlab yeh Capture Phase mein chalega (sabse pehle execute hoga)
+
 </script>
 </body>
 </html>
