@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TRUE INVEST CRM - Premium Navy & Gold Edition</title>
+    <title>TRUE INVEST CRM - Elite Navy & Gold</title>
     
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
-    <meta name="theme-color" content="#f4f6f9" id="themeColorMeta">
+    <meta name="theme-color" content="#F1F5F9" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TrueInvest">
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001f3f'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23D4AF37' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23001f3f'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23D4AF37' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230A192F'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23C5A059' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230A192F'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23C5A059' text-anchor='middle'%3ETI%3C/text%3E%3C/svg%3E">
 
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
@@ -29,38 +29,49 @@
 
     <style>
         /* ====================================================
-           "PREMIUM NAVY & GOLD" THEME (Lag-Free 90FPS)
+           "ELITE NAVY & CHAMPAGNE GOLD" THEME (Lag-Free 90FPS)
            ==================================================== */
         :root {
-            --bg-color: #f4f6f9; 
-            --card-bg: rgba(255, 255, 255, 0.98); 
-            --text-color: #0a192f; 
-            --border-color: rgba(10, 25, 47, 0.12); 
-            --border-highlight: rgba(212, 175, 55, 0.6);
-            --input-bg: #ffffff; 
+            /* Smart, Clean Backgrounds */
+            --bg-color: #F1F5F9; 
+            --card-bg: #FFFFFF; 
+            --input-bg: #F8FAFC; 
             
-            --accent-brand: #003366; 
-            --accent-dark: #001f3f;
-            --accent-glow: rgba(212, 175, 55, 0.25);
-            --golden: #D4AF37;
-            --golden-light: #F3E5AB;
+            /* Text & Borders */
+            --text-color: #1E293B; 
+            --border-color: #E2E8F0; 
+            --border-highlight: rgba(197, 160, 89, 0.4);
             
-            --whatsapp-green: #16a34a; 
-            --whatsapp-dark: #15803d; 
-            --notify-red: #991b1b; 
+            /* The Elite Navy */
+            --accent-brand: #112240; 
+            --accent-dark: #0A192F;
             
-            --highlight-today: rgba(212, 175, 55, 0.1); 
-            --hot-bg: rgba(185, 28, 28, 0.08); 
-            --hot-text: #991b1b; 
-            --closed-bg: rgba(22, 163, 74, 0.08); 
-            --closed-text: #166534; 
-            --cold-bg: rgba(0, 51, 102, 0.06); 
-            --cold-text: #003366;
+            /* The Champagne Gold */
+            --golden: #C5A059;
+            --golden-light: #E3CFA8;
+            --golden-dark: #9A7B42;
+            --accent-glow: rgba(197, 160, 89, 0.25);
             
-            --shadow-sm: 0 4px 20px rgba(0, 31, 63, 0.06); 
-            --shadow-lg: 0 10px 40px rgba(0, 31, 63, 0.15);
-            --nav-bg: rgba(255, 255, 255, 0.98);
-            --btn-gradient: linear-gradient(135deg, #001f3f, #003366);
+            /* Status Colors */
+            --whatsapp-green: #059669; 
+            --whatsapp-dark: #047857; 
+            --notify-red: #DC2626; 
+            
+            --highlight-today: rgba(197, 160, 89, 0.08); 
+            --hot-bg: #FEF2F2; 
+            --hot-text: #B91C1C; 
+            --closed-bg: #F0FDF4; 
+            --closed-text: #15803D; 
+            --cold-bg: #F8FAFC; 
+            --cold-text: #334155;
+            
+            /* Layout & Shadows */
+            --shadow-sm: 0 4px 15px rgba(10, 25, 47, 0.04); 
+            --shadow-lg: 0 12px 35px rgba(10, 25, 47, 0.08);
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            
+            /* Gradients */
+            --btn-gradient: linear-gradient(135deg, #0A192F, #112240);
             --gold-gradient: linear-gradient(135deg, #D4AF37, #C5A059);
         }
         
@@ -70,7 +81,7 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
             z-index: 999999;
-            opacity: 0.03;
+            opacity: 0.02;
             background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAIAAAACAAIAAgIAAAICAgIDAwMDz/xXNAAAAcUlEQVQ4y2NgQAX8DIxg0sTExAgmTYE0E4h0Z2Bg0IGy0wwYdKDsNAOGFpB0YAAThnC6gTQ/C4MplN3MwGAK5bIwMDCDSTMwMIJJMzAwgEkzMDCCSX/G/18YGBjB/uQEqU/1/39gYGBgkPj/PzAwMABZ7iS6oV+nCQAAAABJRU5ErkJggg==");
             background-repeat: repeat;
         }
@@ -136,8 +147,8 @@
 
         @keyframes pulseGlowSplash {
             0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
         }
         
         @keyframes splashLoadAnim {
@@ -150,7 +161,7 @@
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 10px; transition: background-color 0.3s ease;}
+        ::-webkit-scrollbar-thumb { background: rgba(197, 160, 89, 0.5); border-radius: 10px; transition: background-color 0.3s ease;}
         ::-webkit-scrollbar-thumb:hover { background: var(--golden); }
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
@@ -176,7 +187,7 @@
             transform: translateZ(0); 
         }
 
-        .glass-panel:hover { box-shadow: var(--shadow-lg); border-color: rgba(212, 175, 55, 0.3); }
+        .glass-panel:hover { box-shadow: var(--shadow-lg); border-color: rgba(197, 160, 89, 0.3); }
 
         .workspace-layout { 
             display: grid; 
@@ -197,7 +208,7 @@
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color); border-bottom: 2px solid var(--golden);
         }
-        h1.main-title { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-color); letter-spacing: 0.5px; }
+        h1.main-title { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--accent-dark); letter-spacing: 0.5px; }
         h1.main-title span.brand { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
@@ -208,21 +219,21 @@
         
         .stat-card { padding: 18px 12px; text-align: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease, border-color 0.4s ease; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px;}
         .stat-card:active { transform: scale3d(0.96, 0.96, 1) !important; }
-        .stat-card.active-filter { border: 2px solid var(--golden); background: var(--input-bg); box-shadow: 0 0 25px var(--accent-glow); animation: pulseGlow 2s infinite; }
-        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: inherit; opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
+        .stat-card.active-filter { border: 2px solid var(--golden); background: var(--card-bg); box-shadow: 0 0 25px var(--accent-glow); animation: pulseGlow 2s infinite; }
+        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: var(--text-color); opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
         .stat-card span { font-size: 26px; font-weight: 900; display:inline-block; transition: color 0.3s ease;}
 
         .notification-bar { 
-            background: rgba(153, 27, 27, 0.95); 
+            background: rgba(220, 38, 38, 0.95); 
             color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; 
             font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
-            box-shadow: 0 4px 15px rgba(153, 27, 27, 0.25); border: none; 
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.25); border: none; 
         }
 
         form, .table-container, .kanban-container, .login-card { padding: 28px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both; width: 100%; contain: content;}
         .login-card { max-width: 420px; margin: 15vh auto; text-align: center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
 
-        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: inherit; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px;}
+        label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--text-color); opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px;}
         
         input, textarea, button, select { 
             padding: 16px 20px; margin: 0 0 20px 0; width: 100%; border: 1px solid var(--border-color); 
@@ -231,36 +242,36 @@
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; 
         }
         input[type="date"], input[type="time"], select { height: 54px; appearance: none; -webkit-appearance: none; cursor: pointer; }
-        input:focus, select:focus, textarea:focus { border-color: var(--golden); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: translate3d(0, -2px, 0); }
+        input:focus, select:focus, textarea:focus { border-color: var(--golden); outline: none; box-shadow: 0 0 0 4px var(--accent-glow); transform: translate3d(0, -2px, 0); background: #ffffff;}
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .flex-row { display: flex; gap: 12px; width: 100%; }
         .flex-row input, .flex-row select { margin-bottom: 0; }
 
         .segmented-control {
-            display: flex; gap: 8px; background: rgba(0, 51, 102, 0.05);
-            padding: 6px; border-radius: 16px; border: none;
+            display: flex; gap: 8px; background: #F1F5F9;
+            padding: 6px; border-radius: 16px; border: 1px solid var(--border-color);
             margin-bottom: 20px; transition: background-color 0.3s ease;
         }
         .segmented-control input[type="radio"] { display: none; }
         .segmented-control label {
             flex: 1; text-align: center; padding: 14px 0; margin: 0;
             border-radius: 12px; cursor: pointer; font-size: 13px;
-            font-weight: 700; opacity: 0.6; transition: opacity 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
+            font-weight: 700; color: #64748B; transition: color 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
             letter-spacing: 0.5px; text-transform: uppercase;
         }
-        .segmented-control label:hover { opacity: 0.9; transform: translate3d(0, -1px, 0); }
+        .segmented-control label:hover { color: var(--accent-dark); transform: translate3d(0, -1px, 0); }
         .segmented-control input[type="radio"]:checked + label {
-            opacity: 1; transform: scale3d(1.02, 1.02, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transform: scale3d(1.02, 1.02, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         .segmented-control input[type="radio"]:checked + .seg-hot {
-            background: #fdf2f2; color: #b91c1c; border: 1px solid rgba(185, 28, 28, 0.2);
+            background: #FEF2F2; color: #B91C1C; border: 1px solid rgba(185, 28, 28, 0.2);
         }
         .segmented-control input[type="radio"]:checked + .seg-warm {
-            background: #fffbeb; color: #b45309; border: 1px solid rgba(180, 83, 9, 0.2);
+            background: #FFFBEB; color: #B45309; border: 1px solid rgba(180, 83, 9, 0.2);
         }
         .segmented-control input[type="radio"]:checked + .seg-cold {
-            background: #f0fdf4; color: #15803d; border: 1px solid rgba(21, 128, 61, 0.2);
+            background: #F8FAFC; color: #334155; border: 1px solid rgba(51, 65, 85, 0.2);
         }
 
         .badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; display: inline-block; border: 1px solid transparent; letter-spacing: 0.3px; transition: background-color 0.3s ease, color 0.3s ease;}
@@ -273,45 +284,49 @@
         .score-badge { border: 1px solid; }
 
         .check-item { display: flex; align-items: center; gap: 14px; background: var(--input-bg); padding: 14px 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px; height: 54px; transition: border-color 0.3s ease, transform 0.2s ease, background-color 0.3s ease; cursor: pointer; }
-        .check-item:hover { border-color: var(--golden); transform: translate3d(0, -1px, 0); }
+        .check-item:hover { border-color: var(--golden); background: #ffffff; transform: translate3d(0, -1px, 0); }
         .check-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; cursor: pointer; border-radius: 6px; accent-color: var(--golden); transition: transform 0.2s ease;}
         .check-item input[type="checkbox"]:active { transform: scale3d(0.85, 0.85, 1); }
 
-        /* ================== PREMIUM BUTTON RE-DESIGN ================== */
+        /* ================== PREMIUM BUTTON RE-DESIGN (Smart & Refined) ================== */
         button { 
             cursor: pointer; 
             background: var(--btn-gradient); 
             color: var(--golden); /* Golden text inside main buttons */
-            border: 1px solid rgba(212, 175, 55, 0.3); /* Subtle golden border */
+            border: 1px solid var(--golden-dark); /* Refined golden border */
             font-weight: 800; 
             height: 54px; 
             border-radius: 18px; 
             font-size: 16px; 
             letter-spacing: 0.5px; 
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, box-shadow 0.3s ease; 
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
             position: relative; 
             z-index: 1; 
             transform: translateZ(0);
         }
         button::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: inherit; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25); /* Golden shadow */
+            border-radius: inherit; box-shadow: 0 8px 25px rgba(197, 160, 89, 0.25); /* Golden shadow */
             opacity: 0; transition: opacity 0.3s ease; z-index: -2;
         }
         button::after { 
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(212, 175, 55, 0.15); /* Golden hover glare instead of white */
+            background: rgba(197, 160, 89, 0.1); /* Soft golden hover glare */
             opacity: 0; transition: opacity 0.3s ease; z-index: -1; border-radius: inherit;
         }
-        button:hover { transform: translate3d(0, -3px, 0); color: var(--golden-light); }
+        button:hover { 
+            transform: translate3d(0, -3px, 0); 
+            color: var(--golden-light); 
+            border-color: var(--golden);
+        }
         button:hover::before { opacity: 1; }
         button:hover::after { opacity: 1; }
         button:active { transform: scale3d(0.96, 0.96, 1) translate3d(0, 0, 0); }
         button:active::before { opacity: 0.5; }
         
         .btn-secondary { 
-            background: var(--input-bg); 
-            color: var(--accent-dark); /* Navy text */
+            background: var(--card-bg); 
+            color: var(--accent-dark); 
             height: 48px; 
             font-size: 14px; 
             border: 1px solid var(--border-color); 
@@ -322,38 +337,39 @@
         .btn-secondary::after, .btn-secondary::before { display: none; }
         .btn-secondary:hover { 
             border-color: var(--golden); 
-            background: rgba(212, 175, 55, 0.05); /* Slight gold tint on hover */
-            color: var(--golden); 
+            background: #ffffff; 
+            color: var(--golden-dark); 
             transform: translate3d(0, -2px, 0); 
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.1);
         }
-        .btn-secondary:active { transform: scale3d(0.96, 0.96, 1); }
+        .btn-secondary:active { transform: scale3d(0.96, 0.96, 1); box-shadow: none;}
         /* ============================================================= */
 
         .controls-row { display: flex; gap: 12px; align-items: center; padding: 16px 20px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; margin-bottom: 0; width: 100%;}
-        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--border-color); height: 48px; border-radius: 16px; padding-left: 44px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%23D4AF37" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%23D4AF37" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 16px center; transition: border-color 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
-        .search-box:focus { border-color: var(--golden); transform: translate3d(0, -1px, 0);}
+        .search-box { margin: 0; flex-grow: 1; border: 1px solid var(--border-color); height: 48px; border-radius: 16px; padding-left: 44px; font-weight: 600; font-size: 15px; background: var(--input-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="%230A192F" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="%230A192F" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>') no-repeat 16px center; transition: border-color 0.3s ease, transform 0.2s ease, background-color 0.3s ease;}
+        .search-box:focus { border-color: var(--golden); transform: translate3d(0, -1px, 0); background-color: #ffffff;}
         .controls-row button { height: 48px; margin: 0; padding: 0 20px; width: auto; }
 
         .project-tabs { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 16px; width: 100%; max-width: max-content; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s both; align-items: center;}
         .tab-wrapper { position: relative; display: inline-flex; align-items: center; }
         .tab-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 38px; font-size: 13px; font-weight: 600; padding: 0 18px; margin: 0; border-radius: 12px; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease; box-shadow: none; }
-        .tab-btn:hover { border-color: var(--golden); transform: translate3d(0, -1px, 0); }
-        .tab-btn.active { background: var(--btn-gradient); color: var(--golden); border-color: var(--golden); font-weight: 800; transform: scale3d(1.03, 1.03, 1); }
+        .tab-btn:hover { border-color: var(--golden); transform: translate3d(0, -1px, 0); background-color:#ffffff; color: var(--accent-dark);}
+        .tab-btn.active { background: var(--btn-gradient); color: var(--golden); border-color: var(--golden-dark); font-weight: 800; transform: scale3d(1.03, 1.03, 1); }
         .tab-btn.active::before { opacity: 1; }
         
-        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: #b91c1c; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; opacity: 0; transform: scale3d(0.5, 0.5, 1); transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease; pointer-events: none; font-weight: bold;}
+        .tab-delete-btn { position: absolute; top: -6px; right: -6px; background: var(--notify-red); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; padding: 0; z-index: 10; opacity: 0; transform: scale3d(0.5, 0.5, 1); transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease; pointer-events: none; font-weight: bold;}
         .tab-wrapper:hover .tab-delete-btn { opacity: 1; transform: scale3d(1, 1, 1); pointer-events: auto; }
         .tab-delete-btn:hover { transform: scale3d(1.15, 1.15, 1) !important; background: #991b1b; color: white; }
         
         .tab-add-btn { background: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); height: 38px; width: 38px; padding: 0; font-size: 20px; font-weight: 700; border-radius: 12px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; margin: 0; box-shadow: none;}
-        .tab-add-btn:hover { transform: scale3d(1.1, 1.1, 1) rotate(90deg); border-color: var(--golden); color: var(--golden); }
+        .tab-add-btn:hover { transform: scale3d(1.1, 1.1, 1) rotate(90deg); border-color: var(--golden); color: var(--golden-dark); background-color:#ffffff;}
 
         .table-container { overflow-x: auto; padding: 0; animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 24px; position: relative; min-height: 200px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 850px; overflow: hidden; }
         th, td { padding: 18px 20px; border-bottom: 1px solid var(--border-color); text-align: center; vertical-align: middle; transition: background-color 0.2s ease, border-color 0.3s ease;}
         
-        th { background: rgba(244, 246, 249, 0.98); font-weight: 800; font-size: 12px; color: var(--accent-brand); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
-        th:hover { background: rgba(0, 51, 102, 0.05); color: var(--accent-dark); }
+        th { background: #F8FAFC; font-weight: 800; font-size: 12px; color: var(--accent-brand); text-transform: uppercase; position: sticky; top: 0; z-index: 5; letter-spacing: 0.5px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; white-space: nowrap; border-bottom: 2px solid var(--border-color);}
+        th:hover { background: #F1F5F9; color: var(--accent-dark); }
         
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
@@ -364,12 +380,12 @@
         } 
         tbody tr::after {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 31, 63, 0.06);
+            border-radius: 12px; box-shadow: 0 4px 12px rgba(10, 25, 47, 0.04);
             opacity: 0; transition: opacity 0.2s ease; z-index: -1; pointer-events: none;
         }
         tbody tr:hover {
             transform: translate3d(0, -2px, 0) scale3d(1.005, 1.005, 1);
-            background-color: rgba(0, 51, 102, 0.03);
+            background-color: #F8FAFC;
             border-radius: 12px;
             z-index: 2; position: relative;
         }
@@ -386,7 +402,7 @@
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px; transition: color 0.3s ease, border-color 0.3s ease;}
         
         .k-card { 
-            background: var(--input-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); 
+            background: var(--card-bg); padding: 20px; border-radius: 18px; margin-bottom: 16px; border: 1px solid var(--border-color); 
             cursor: grab; 
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s ease, background-color 0.3s ease; 
             position: relative; touch-action: pan-y;
@@ -413,7 +429,7 @@
         }
         .kanban-dropzone::-webkit-scrollbar { width: 4px; }
         .kanban-dropzone::-webkit-scrollbar-track { background: transparent; }
-        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(0, 51, 102, 0.2); border-radius: 4px;}
+        .kanban-dropzone::-webkit-scrollbar-thumb { background: rgba(10, 25, 47, 0.15); border-radius: 4px;}
         
         .drag-over { background: var(--accent-glow); border: 2px dashed var(--golden); transform: scale3d(1.02, 1.02, 1); }
 
@@ -423,14 +439,14 @@
         .history-meta { font-size: 11px; color: var(--accent-brand); font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;}
 
         .edit-history-btn { cursor: pointer; font-size: 16px; color: var(--accent-brand); padding: 4px; border-radius: 6px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease; user-select: none; }
-        .edit-history-btn:hover { background-color: rgba(0, 51, 102, 0.1); transform: scale3d(1.2, 1.2, 1) rotate(15deg); color: var(--golden); }
+        .edit-history-btn:hover { background-color: rgba(10, 25, 47, 0.08); transform: scale3d(1.2, 1.2, 1) rotate(15deg); color: var(--golden); }
         
         .delete-history-btn { cursor: pointer; font-size: 16px; color: var(--notify-red); padding: 4px; border-radius: 6px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease; margin-left: 6px; user-select: none;}
-        .delete-history-btn:hover { background-color: rgba(153, 27, 27, 0.1); transform: scale3d(1.2, 1.2, 1) rotate(-15deg); }
+        .delete-history-btn:hover { background-color: rgba(220, 38, 38, 0.1); transform: scale3d(1.2, 1.2, 1) rotate(-15deg); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.65); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);}
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale3d(0.95, 0.95, 1) translate3d(0, 20px, 0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0;}
+        .modal-content { padding: 32px; border-radius: 32px; width: 92%; max-width: 450px; transform: scale3d(0.95, 0.95, 1) translate3d(0, 20px, 0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease; max-height: 90vh; overflow-y: auto; opacity: 0; background: var(--card-bg);}
         .modal-overlay.active .modal-content { transform: scale3d(1, 1, 1) translate3d(0, 0, 0); opacity: 1; }
         .modal-close { float: right; background: var(--input-bg); border: 1px solid var(--border-color); font-size: 22px; color: var(--text-color); cursor: pointer; height: 44px; width: 44px; border-radius: 50%; padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; box-shadow:none; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;}
         .modal-close:hover { transform: rotate(90deg) scale3d(1.1, 1.1, 1); background: var(--notify-red); color: white; border-color: var(--notify-red); }
@@ -439,16 +455,16 @@
         .remark-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
         .remark-wrapper textarea { margin-bottom: 0; padding-bottom: 16px; padding-right: 16px; }
         
-        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(0, 51, 102, 0.5); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
-        .copyable:hover { color: var(--golden); transform: scale3d(1.02, 1.02, 1); }
+        .copyable { cursor: pointer; position: relative; border-bottom: 1px dashed rgba(10, 25, 47, 0.3); display: inline-block; transition: color 0.2s ease, transform 0.2s ease; }
+        .copyable:hover { color: var(--golden); transform: scale3d(1.02, 1.02, 1); border-color: var(--golden);}
         .copyable:active { opacity: 0.5; transform: scale3d(0.95, 0.95, 1); }
 
-        .history-link { color: var(--accent-brand); cursor: pointer; border-bottom: 1px dashed rgba(0, 51, 102, 0.4); transition: opacity 0.2s ease, transform 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .history-link:hover { opacity: 0.7; transform: scale3d(1.02, 1.02, 1); color: var(--golden); }
+        .history-link { color: var(--accent-brand); cursor: pointer; border-bottom: 1px dashed rgba(10, 25, 47, 0.3); transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease; display: inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .history-link:hover { opacity: 0.8; transform: scale3d(1.02, 1.02, 1); color: var(--golden); border-color: var(--golden);}
 
         .action-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 25, 47, 0.6); display: flex; align-items: flex-end; justify-content: center;
+            background: rgba(10, 25, 47, 0.65); display: flex; align-items: flex-end; justify-content: center;
             z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -485,55 +501,55 @@
         }
         .simple-action-btn::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: inherit; box-shadow: 0 8px 20px rgba(0, 31, 63, 0.15);
+            border-radius: inherit; box-shadow: 0 8px 20px rgba(10, 25, 47, 0.15);
             opacity: 1; transition: opacity 0.2s ease, box-shadow 0.2s ease; z-index: -1;
         }
-        .action-btn-wrapper:hover span { transform: translate3d(0, 2px, 0); color: var(--golden); }
+        .action-btn-wrapper:hover span { transform: translate3d(0, 2px, 0); color: var(--golden-dark); }
         .simple-action-btn:hover { transform: translate3d(0, -5px, 0) scale3d(1.1, 1.1, 1); }
-        .simple-action-btn:hover::before { box-shadow: 0 12px 25px rgba(212, 175, 55, 0.3); }
+        .simple-action-btn:hover::before { box-shadow: 0 12px 25px rgba(197, 160, 89, 0.3); }
         .simple-action-btn:active { transform: scale3d(0.9, 0.9, 1); }
         
-        .btn-call { background: #166534; color: #fff; }
-        .btn-wa { background: #003366; color: var(--golden); border: 1px solid var(--golden); }
-        .btn-edit { background: #D4AF37; color: #001f3f; }
-        .btn-del { background: #991b1b; color: #fff; }
+        .btn-call { background: #15803D; color: #fff; }
+        .btn-wa { background: #0A192F; color: var(--golden); border: 1px solid var(--golden-dark); }
+        .btn-edit { background: var(--golden); color: #0A192F; }
+        .btn-del { background: #DC2626; color: #fff; }
 
         .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 5px;}
         .call-status-btn { 
             width: 100%; height: 50px; border-radius: 14px; font-size: 13px; font-weight: 700; 
             background: transparent; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; padding: 0 4px; 
-            display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; color: var(--accent-dark);
+            display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; color: var(--text-color); border: 2px solid var(--border-color);
         }
-        .call-status-btn:hover { transform: translate3d(0, -2px, 0); }
+        .call-status-btn:hover { transform: translate3d(0, -2px, 0); border-color: var(--golden);}
         .call-status-btn:active { transform: scale3d(0.95, 0.95, 1); }
-        .call-status-btn.connected { border: 2px solid #16a34a; color: #16a34a; }
-        .call-status-btn.connected.active { background: #16a34a; color: white; box-shadow: 0 6px 15px rgba(22,163,74,0.25); transform: scale3d(1.03, 1.03, 1); }
-        .call-status-btn.no-answer { border: 2px solid #b45309; color: #b45309; }
-        .call-status-btn.no-answer.active { background: #b45309; color: white; box-shadow: 0 6px 15px rgba(180,83,9,0.25); transform: scale3d(1.03, 1.03, 1); }
-        .call-status-btn.busy { border: 2px solid #dc2626; color: #dc2626; }
-        .call-status-btn.busy.active { background: #dc2626; color: white; box-shadow: 0 6px 15px rgba(220,38,38,0.25); transform: scale3d(1.03, 1.03, 1); }
+        .call-status-btn.connected { border-color: #15803D; color: #15803D; }
+        .call-status-btn.connected.active { background: #15803D; color: white; box-shadow: 0 6px 15px rgba(21, 128, 61, 0.25); transform: scale3d(1.03, 1.03, 1); border-color: #15803D;}
+        .call-status-btn.no-answer { border-color: #B45309; color: #B45309; }
+        .call-status-btn.no-answer.active { background: #B45309; color: white; box-shadow: 0 6px 15px rgba(180, 83, 9, 0.25); transform: scale3d(1.03, 1.03, 1); border-color: #B45309;}
+        .call-status-btn.busy { border-color: #DC2626; color: #DC2626; }
+        .call-status-btn.busy.active { background: #DC2626; color: white; box-shadow: 0 6px 15px rgba(220, 38, 38, 0.25); transform: scale3d(1.03, 1.03, 1); border-color: #DC2626;}
 
         .action-dots {
-            font-size: 24px; color: var(--accent-brand); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease, background-color 0.2s ease;
+            font-size: 24px; color: var(--accent-brand); text-align: center; opacity: 0.7; padding: 10px; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
             min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
-        .action-dots:hover { opacity: 1; transform: scale3d(1.2, 1.2, 1); background-color: rgba(212, 175, 55, 0.1); color: var(--golden); }
+        .action-dots:hover { opacity: 1; transform: scale3d(1.2, 1.2, 1); background-color: rgba(197, 160, 89, 0.1); color: var(--golden-dark); }
         .action-dots:active { transform: scale3d(0.8, 0.8, 1); }
 
         .hidden { display: none !important; }
         .watermark { text-align: center; margin-top: auto; padding: 24px; opacity: 0.35; font-size: 11px; font-weight: 800; color: var(--text-color); letter-spacing: 1.5px; transition: opacity 0.3s ease, color 0.3s ease;}
-        .watermark:hover { opacity: 0.8; color: var(--golden); }
+        .watermark:hover { opacity: 0.8; color: var(--golden-dark); }
 
         #toastContainer { position: fixed; top: max(24px, env(safe-area-inset-top)); right: 24px; z-index: 10008; display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
-        .toast { border-left: 6px solid var(--golden); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translate3d(120%, 0, 0) scale3d(0.9, 0.9, 1); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.3s ease; display: flex; align-items: center; pointer-events: auto; min-width: 320px; }
+        .toast { border-left: 6px solid var(--golden); padding: 18px 24px; border-radius: 20px; color: var(--text-color); font-weight: 600; font-size: 15px; transform: translate3d(120%, 0, 0) scale3d(0.9, 0.9, 1); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.3s ease; display: flex; align-items: center; pointer-events: auto; min-width: 320px; box-shadow: var(--shadow-lg); background: var(--card-bg);}
         .toast.show { transform: translate3d(0, 0, 0) scale3d(1, 1, 1); opacity: 1; }
-        .toast.success { border-left-color: #16a34a; }
-        .toast.error { border-left-color: #dc2626; }
+        .toast.success { border-left-color: #059669; }
+        .toast.error { border-left-color: #DC2626; }
         .toast.warning { border-left-color: var(--golden); }
         .toast-icon { margin-right: 16px; font-size: 24px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; }
 
         .ios-bottom-nav { display: none; } 
-        .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--golden); letter-spacing: 0.5px;}
+        .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--golden-dark); letter-spacing: 0.5px;}
 
         @media (max-width: 992px) {
             .workspace-layout { 
@@ -558,17 +574,17 @@
                 bottom: max(20px, env(safe-area-inset-bottom)); 
                 left: 5%; width: 90%; 
                 background: var(--nav-bg); border: 1px solid var(--border-color); z-index: 9999; padding: 12px 0; justify-content: space-evenly; 
-                align-items: center; box-shadow: 0 10px 40px rgba(0,31,63,0.15); border-radius: 40px;
+                align-items: center; box-shadow: 0 10px 40px rgba(10,25,47,0.12); border-radius: 40px;
                 animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
                 transition: background-color 0.3s ease, border-color 0.3s ease;
-                backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
                 transform: translateZ(0);
             }
             
             .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, color 0.3s ease; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-            .tab-item.active { opacity: 1; color: var(--golden); transform: scale3d(1.05, 1.05, 1); }
-            .tab-item.active .icon { transform: scale3d(1.2, 1.2, 1) translate3d(0, -3px, 0); font-weight: bold;}
+            .tab-item.active { opacity: 1; color: var(--golden-dark); transform: scale3d(1.05, 1.05, 1); }
+            .tab-item.active .icon { transform: scale3d(1.2, 1.2, 1) translate3d(0, -3px, 0); font-weight: bold; color: var(--golden);}
             .tab-item:active { transform: scale3d(0.9, 0.9, 1); }
 
             .mobile-tab-content { display: none; width: 100%; animation: popIn 0.3s ease-out; }
@@ -634,6 +650,7 @@
             transform: scale3d(1.1, 1.1, 1);
             background: linear-gradient(135deg, #b91c1c, #ef4444);
             color: #fff;
+            border-color: #fff;
         }
     </style>
 
@@ -670,12 +687,12 @@
     <div class="workspace-layout">
         
         <div class="top-bar glass-panel">
-            <h1 class="main-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top;">PRO</span></h1>
+            <h1 class="main-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:800; opacity:0.6; padding-left:4px; vertical-align:top; color:var(--text-color);">PRO</span></h1>
             <div style="display:flex; gap:10px;">
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleZenMode()" title="Zen Mode (Focus)"><ion-icon name="scan-outline"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="renderAnalytics()" title="Analytics Dashboard"><ion-icon name="pie-chart"></ion-icon></button>
                 <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
-                <button class="btn-secondary" style="background-color:rgba(185, 28, 28, 0.05); color:#991b1b; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
+                <button class="btn-secondary" style="background-color:rgba(220, 38, 38, 0.05); color:#DC2626; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
             </div>
         </div>
 
@@ -791,7 +808,7 @@
                 <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
                 <button class="btn-secondary" onclick="document.getElementById('csvFileInput').click()"><ion-icon name="download"></ion-icon> Import</button>
                 <button class="btn-secondary" onclick="downloadCSV()"><ion-icon name="share"></ion-icon> Export</button>
-                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(185, 28, 28, 0.4);" title="Clean Options"><ion-icon name="trash"></ion-icon> Clean</button>
+                <button class="btn-secondary" onclick="openModal('cleanModal')" style="color: var(--notify-red); border-color: rgba(220, 38, 38, 0.4);" title="Clean Options"><ion-icon name="trash"></ion-icon> Clean</button>
             </div>
 
             <div class="project-tabs glass-panel" id="projectTabs"></div>
@@ -822,10 +839,10 @@
 
             <div class="kanban-container hidden glass-panel" id="kanbanView">
                 <div class="kanban-col"><h3 style="border-bottom-color:var(--accent-brand);">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#b45309;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#B45309;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:var(--notify-red);">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:var(--golden);">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:#16a34a;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:#15803D;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
         </div>
     </div>
@@ -880,7 +897,7 @@
         <label>Interest Rate (% p.a)</label><input type="number" id="emiRate" placeholder="e.g. 8.5" value="8.5" step="0.1" min="0">
         <label>Tenure (Years)</label><input type="number" id="emiYears" placeholder="e.g. 20" value="20" min="1">
         <button onclick="calculateEMI()" style="margin-bottom:20px; width:100%;">Calculate Breakdown</button>
-        <div id="emiResult" class="glass-panel" style="padding:20px; display:none; animation: popIn 0.3s ease;"></div>
+        <div id="emiResult" class="glass-panel" style="padding:20px; display:none; animation: popIn 0.3s ease; border-color:var(--golden);"></div>
     </div>
 </div>
 <div id="waModal" class="modal-overlay" onclick="handleModalClick(event, 'waModal')">
@@ -905,7 +922,7 @@
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-dark); resize:vertical; font-family:inherit;"></textarea>
             
-            <button id="waSendBtnObj" onclick="executeWaSend()" style="background-color:var(--whatsapp-dark); background-image:none; width:100%; margin-top:12px; box-shadow: 0 4px 15px rgba(22,163,74,0.3);">Send via WhatsApp App 🚀</button>
+            <button id="waSendBtnObj" onclick="executeWaSend()" style="background-color:var(--whatsapp-dark); background-image:none; border-color:transparent; color:#fff; width:100%; margin-top:12px; box-shadow: 0 4px 15px rgba(4,120,87,0.3);">Send via WhatsApp App 🚀</button>
         </div>
     </div>
 </div>
@@ -936,7 +953,7 @@
         <p style="text-align:center; font-size:13px; font-weight:600; margin:0; opacity:0.8; color:var(--accent-dark);">Choose what you want to clean</p>
         
         <button class="btn-secondary" onclick="removeDuplicates()" style="margin-top:16px;">🗑️ Remove Duplicates Only</button>
-        <button class="btn-secondary" onclick="deleteAllLeads()" style="background-color:#fdf2f2; color:var(--notify-red); border:1px solid rgba(185,28,28,0.2); margin-top:0;">⚠️ Delete ALL Leads</button>
+        <button class="btn-secondary" onclick="deleteAllLeads()" style="background-color:#FEF2F2; color:var(--notify-red); border:1px solid rgba(220,38,38,0.2); margin-top:0;">⚠️ Delete ALL Leads</button>
     </div>
 </div>
 
@@ -983,7 +1000,7 @@
     </div>
 </div>
 
-<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:64px; height:64px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(0,0,0,0.4); border:none; background: var(--btn-gradient); color: var(--golden); cursor: pointer; transform: translateZ(0);">
+<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:64px; height:64px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(10,25,47,0.3); border:1px solid var(--golden-dark); background: var(--btn-gradient); color: var(--golden); cursor: pointer; transform: translateZ(0);">
     <ion-icon name="close"></ion-icon>
 </button>
 
@@ -1034,7 +1051,7 @@
     }
 
     // =======================================================================
-    // EMI CALCULATOR FUNCTION IMPLEMENTATION (FIXED)
+    // EMI CALCULATOR FUNCTION IMPLEMENTATION (FIXED & FULLY FUNCTIONAL)
     // =======================================================================
     function calculateEMI() {
         haptic('medium');
@@ -1058,15 +1075,15 @@
         resDiv.style.display = 'block';
         resDiv.innerHTML = `
             <div style="text-align:center;">
-                <h3 style="color:var(--golden); margin: 0 0 10px 0; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Monthly EMI</h3>
+                <h3 style="color:var(--golden-dark); margin: 0 0 10px 0; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Monthly EMI</h3>
                 <div style="font-size:32px; font-weight:900; color:var(--accent-dark); margin-bottom:15px;">₹ ${Math.round(emi).toLocaleString('en-IN')}</div>
                 <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px; border-top:1px dashed var(--border-color); padding-top:10px;">
-                    <span style="opacity:0.7; font-weight:600;">Principal Amount</span>
-                    <span style="font-weight:800;">₹ ${Math.round(amount).toLocaleString('en-IN')}</span>
+                    <span style="opacity:0.7; font-weight:600; color:var(--text-color);">Principal Amount</span>
+                    <span style="font-weight:800; color:var(--text-color);">₹ ${Math.round(amount).toLocaleString('en-IN')}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px;">
-                    <span style="opacity:0.7; font-weight:600;">Total Interest</span>
-                    <span style="font-weight:800;">₹ ${Math.round(totalInterest).toLocaleString('en-IN')}</span>
+                    <span style="opacity:0.7; font-weight:600; color:var(--text-color);">Total Interest</span>
+                    <span style="font-weight:800; color:var(--text-color);">₹ ${Math.round(totalInterest).toLocaleString('en-IN')}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:900; color:var(--accent-brand); border-top:1px solid var(--border-color); padding-top:10px;">
                     <span>Total Payable</span>
@@ -1126,7 +1143,7 @@
                 <div style="background-color:var(--accent-glow); padding:16px; border-radius:16px; border:1px solid var(--golden); margin-bottom:20px; animation: popIn 0.5s ease; transform: translateZ(0);">
                     <h4 style="margin:0 0 10px 0; color:var(--accent-dark); font-size:14px; text-transform:uppercase;">📊 Business Insights</h4>
                     <ul style="margin:0; padding-left:20px; font-size:13px; color:var(--text-color); line-height:1.6;">
-                        <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#16a34a;">${displayRevenue}</span> ka business HOT stage par hai!</li>
+                        <li><b>💰 Pipeline Expected Revenue:</b> Approx <span style="font-weight:bold; color:#15803D;">${displayRevenue}</span> ka business HOT stage par hai!</li>
                         <li><b>📈 Conversion Rate:</b> <span style="font-weight:bold; color:var(--accent-dark);">${conversionRate}%</span> leads successfully close ho rahi hain.</li>
                         <li><b>🔥 Top Source:</b> Sabse zyada closing <span style="font-weight:bold; color:var(--accent-dark);">${bestSource}</span> se aa rahi hai.</li>
                         <li><b>⚠️ Attention Needed:</b> <span style="font-weight:bold; color:var(--notify-red);">${neglectedLeads}</span> High-priority leads ka follow-up date miss ho gaya hai, inko aaj hi call karein!</li>
@@ -1186,7 +1203,7 @@
 
     function fireConfetti() {
         if(typeof window.confetti === 'function') {
-            window.confetti({ zIndex: 10008, particleCount: 150, spread: 80, origin: {y: 0.6}, colors: ['#001f3f', '#003366', '#D4AF37'] });
+            window.confetti({ zIndex: 10008, particleCount: 150, spread: 80, origin: {y: 0.6}, colors: ['#0A192F', '#112240', '#C5A059', '#D4AF37'] });
         }
     }
 
@@ -1332,7 +1349,7 @@
                 sources[source] = (sources[source] || 0) + 1;
             });
 
-            const labelColor = '#0a192f';
+            const labelColor = '#1E293B';
 
             if(funnelChartInst) funnelChartInst.destroy();
             funnelChartInst = new Chart(ctxFunnel, {
@@ -1342,7 +1359,7 @@
                     datasets: [{
                         label: 'Leads Pipeline',
                         data: Object.values(stats),
-                        backgroundColor: ['#003366', '#b45309', '#991b1b', '#001f3f', '#166534'],
+                        backgroundColor: ['#112240', '#B45309', '#B91C1C', '#C5A059', '#15803D'],
                         borderRadius: 8
                     }]
                 },
@@ -1352,7 +1369,7 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { 
-                        y: { ticks: { color: labelColor }, grid: { color: 'rgba(0,51,102,0.1)' } },
+                        y: { ticks: { color: labelColor }, grid: { color: 'rgba(10,25,47,0.05)' } },
                         x: { ticks: { color: labelColor }, grid: { display: false } }
                     }
                 }
@@ -1365,7 +1382,7 @@
                     labels: Object.keys(sources),
                     datasets: [{
                         data: Object.values(sources),
-                        backgroundColor: ['#001f3f', '#003366', '#D4AF37', '#e2c875', '#f2e8c4', '#991b1b', '#166534'],
+                        backgroundColor: ['#0A192F', '#112240', '#C5A059', '#E3CFA8', '#D4AF37', '#DC2626', '#15803D'],
                         borderWidth: 0
                     }]
                 },
@@ -2090,14 +2107,14 @@
                 const safeName = sanitizeText(c.name);
 
                 const leadScore = calculateSmartScore(c);
-                const scoreColor = leadScore >= 70 ? '#16a34a' : (leadScore >= 40 ? '#b45309' : '#dc2626');
+                const scoreColor = leadScore >= 70 ? '#15803D' : (leadScore >= 40 ? '#B45309' : '#DC2626');
                 const scoreBadge = `<span class="score-badge" style="color:${scoreColor}; border-color:${scoreColor}60; background-color:${scoreColor}10;" title="AI Win Score"><ion-icon name="analytics"></ion-icon> ${leadScore}%</span>`;
 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempBadge = '';
-                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:rgba(185,28,28,0.1); color:#991b1b; border:1px solid rgba(185,28,28,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
-                else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:rgba(180,83,9,0.1); color:#b45309; border:1px solid rgba(180,83,9,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
-                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:rgba(0,51,102,0.1); color:#003366; border:1px solid rgba(0,51,102,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
+                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:#FEF2F2; color:#B91C1C; border:1px solid rgba(185,28,28,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
+                else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:#FFFBEB; color:#B45309; border:1px solid rgba(180,83,9,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
+                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:#F8FAFC; color:#334155; border:1px solid rgba(51,65,85,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
                 const visitBadge = c.visitDone ? `<br><span class="badge status-closed" style="margin-top: 6px; font-size: 10px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;"><ion-icon name="checkmark-done-circle"></ion-icon> VISITED</span>` : '';
 
@@ -2114,12 +2131,12 @@
                     <tr class="${highlight} ${animClass}" style="${animStyle}" title="Double-click to Edit, Tap ⋮ for Actions" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}" ondblclick="editLead('${c.id}')">
                         <td style="opacity:0.4; font-weight:700;">${serial++}</td>
                         <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                        <td style="font-weight:700; white-space:nowrap;">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
+                        <td style="font-weight:700; white-space:nowrap; color:var(--accent-dark);">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
                         <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
                         <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
                         <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                        <td style="font-size:12px; font-weight:700;">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
-                        <td style="color:var(--whatsapp-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
+                        <td style="font-size:12px; font-weight:700; color:var(--text-color);">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                        <td style="color:var(--golden-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
                         <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}</td>
                         <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                             <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
@@ -2184,11 +2201,11 @@
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
-                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#dc2626; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#b45309; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#003366; font-size:14px; margin-left:4px;"></ion-icon>';
+                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#DC2626; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#B45309; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#334155; font-size:14px; margin-left:4px;"></ion-icon>';
 
-                let visitIcon = c.visitDone ? '<ion-icon name="footsteps" title="Site Visit Done" style="color:#16a34a; font-size:14px; margin-left:4px;"></ion-icon>' : '';
+                let visitIcon = c.visitDone ? '<ion-icon name="footsteps" title="Site Visit Done" style="color:#15803D; font-size:14px; margin-left:4px;"></ion-icon>' : '';
 
                 let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
                 let safeProj = sanitizeText(c.projectCategory||'').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -2711,15 +2728,15 @@
     (function initSingleFilePWA() {
         try {
             const manifestData = {
-                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#ffffff", theme_color: "#001f3f", start_url: ".",
-                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23001f3f'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23D4AF37' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
+                name: "True Invest CRM Pro", short_name: "TrueInvest", display: "standalone", background_color: "#F1F5F9", theme_color: "#0A192F", start_url: ".",
+                icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230A192F'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23C5A059' text-anchor='middle'>TI</text></svg>", "sizes": "512x512", "type": "image/png"}]
             };
             const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'}); const manifestUrl = URL.createObjectURL(manifestBlob);
             const manifestLink = document.createElement('link'); manifestLink.rel = 'manifest'; manifestLink.href = manifestUrl; document.head.appendChild(manifestLink);
             
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'trueinvest-v6-cache';
+                    const CACHE_NAME = 'trueinvest-v7-cache';
                     self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME)));
                     self.addEventListener('fetch', e => {
                         e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
