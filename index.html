@@ -751,7 +751,6 @@
 </button>
 
 <script>
-    // Global Memory for Scroll Positons
     let lastDesktopScrollY = 0;
     let lastListScrollY = 0;
     let isFirstRender = true;
@@ -797,9 +796,6 @@
         window.requestAnimationFrame(step);
     }
 
-    // =======================================================================
-    // EMI CALCULATOR FUNCTION IMPLEMENTATION (FIXED & FULLY FUNCTIONAL)
-    // =======================================================================
     function calculateEMI() {
         haptic('medium');
         const amount = parseFloat(document.getElementById('emiAmount').value);
@@ -900,14 +896,6 @@
             `;
         }
     }
-
-    const parseHistoryDate = (dateStr) => {
-        if(!dateStr) return new Date();
-        const months = {Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11};
-        const parts = dateStr.split('-');
-        if(parts.length === 3) return new Date(parts[2], months[parts[1]], parts[0]);
-        return new Date(dateStr);
-    };
 
     function silentDataSanitizer() {
         let batch = db.batch();
@@ -1154,26 +1142,34 @@
         }, 300);
     }
 
+    const safeAtob = (str) => {
+        try { return atob(str.trim()); } 
+        catch (e) { console.error("Firebase decode error"); return ""; }
+    };
+
     const firebaseConfig = { 
-        apiKey: atob("QUl6YVN5QXNiOWN3WXAzTEpXTTdtb3RXU0s2VUF5MmN0N3QtNnpZ"), 
-        authDomain: atob("dHJ1ZWNybS02Y2Y4ZS5maXJlYmFzZWFwcC5jb20="), 
-        projectId: atob("dHJ1ZWNybS02Y2Y4ZQ=="), 
-        storageBucket: atob("dHJ1ZWNybS02Y2Y4ZS5maXJlYmFzZXN0b3JhZ2UuYXBw"), 
-        messagingSenderId: atob("NzkxMzgxNDA3NTM3"), 
-        appId: atob("MTo3OTEzODE0MDc1Mzc6d2ViOjQ1ZTk5NDZhOTM5ZjhkMjNiNTYyMTA=") 
+        apiKey: safeAtob("QUl6YVN5QXNiOWN3WXAzTEpXTTdtb3RXU0s2VUF5MmN0N3QtNnpZ"), 
+        authDomain: safeAtob("dHJ1ZWNybS02Y2Y4ZS5maXJlYmFzZWFwcC5jb20="), 
+        projectId: safeAtob("dHJ1ZWNybS02Y2Y4ZQ=="), 
+        storageBucket: safeAtob("dHJ1ZWNybS02Y2Y4ZS5maXJlYmFzZXN0b3JhZ2UuYXBw"), 
+        messagingSenderId: safeAtob("NzkxMzgxNDA3NTM3"), 
+        appId: safeAtob("MTo3OTEzODE0MDc1Mzc6d2ViOjQ1ZTk5NDZhOTM5ZjhkMjNiNTYyMTA=") 
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(); 
     const db = firebase.firestore();
 
-    db.enablePersistence({ synchronizeTabs: true }).catch(function(err) {
-        if (err.code == 'failed-precondition') {
-            console.warn("Multiple tabs open: Persistence works across tabs smoothly.");
-        } else if (err.code == 'unimplemented') {
-            console.warn("Browser lacks offline support.");
-        }
-    });
+    // Fix for Multiple Tabs crash in Firebase v10 Compat
+    try {
+        db.enableMultiTabIndexedDbPersistence().catch(function(err) {
+            if (err.code == 'failed-precondition') {
+                console.warn("Multiple tabs open: Persistence works across tabs smoothly.");
+            } else if (err.code == 'unimplemented') {
+                console.warn("Browser lacks offline support.");
+            }
+        });
+    } catch(e) { console.warn("Persistence fallback", e); }
 
     let clients = [];
     let customProjects = [];
@@ -1279,54 +1275,57 @@
 
     function logout() { auth.signOut(); showNotification('Logged out successfully', 'warning');}
 
-    // --- CRM SYNC FIX FOR WEBSITE LEADS ---
     function loadData() {
         if(!auth.currentUser) return;
         if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
 
-        // MAPPED WITH "WEBSITE_LEAD" FROM WEBSITE
-        unsubscribeSnapshot = db.collection("leads")
-            .where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"])
-            .onSnapshot(snap => {
-            clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-            
-            if(initialLoad) {
-                const loader = document.getElementById('skeletonLoader');
-                if (loader) loader.style.display = 'none';
-                initialLoad = false;
-            }
-
-            if (!hasSanitized) {
-                silentDataSanitizer();
-                hasSanitized = true;
-            }
-
-            let dbProjects = [];
-            clients.forEach(c => {
-                if(c.projectCategory) {
-                    c.projectCategory.split(' + ').forEach(p => {
-                        let cleanP = p.trim();
-                        if(cleanP && !dbProjects.includes(cleanP)) dbProjects.push(cleanP);
-                    });
+        try {
+            unsubscribeSnapshot = db.collection("leads")
+                .where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"])
+                .onSnapshot(snap => {
+                clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                
+                if(initialLoad) {
+                    const loader = document.getElementById('skeletonLoader');
+                    if (loader) loader.style.display = 'none';
+                    initialLoad = false;
                 }
-            });
-            let added = false;
-            dbProjects.forEach(p => {
-                if(!customProjects.includes(p)) { customProjects.push(p); added = true; }
-            });
 
-            if(added) {
-                localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
-                db.collection("users").doc(auth.currentUser.uid).set({projects: customProjects}, {merge: true});
-                renderProjectTabsAndDropdown();
-            }
+                if (!hasSanitized) {
+                    silentDataSanitizer();
+                    hasSanitized = true;
+                }
 
-            updateDashboard();
-            renderData(isFirstRender);
-            isFirstRender = false; 
-        }, error => {
-            showNotification("Data Sync Error: " + error.message, 'error');
-        });
+                let dbProjects = [];
+                clients.forEach(c => {
+                    if(c.projectCategory) {
+                        c.projectCategory.split(' + ').forEach(p => {
+                            let cleanP = p.trim();
+                            if(cleanP && !dbProjects.includes(cleanP)) dbProjects.push(cleanP);
+                        });
+                    }
+                });
+                let added = false;
+                dbProjects.forEach(p => {
+                    if(!customProjects.includes(p)) { customProjects.push(p); added = true; }
+                });
+
+                if(added) {
+                    localStorage.setItem('crm_projects_' + auth.currentUser.uid, JSON.stringify(customProjects));
+                    db.collection("users").doc(auth.currentUser.uid).set({projects: customProjects}, {merge: true});
+                    renderProjectTabsAndDropdown();
+                }
+
+                updateDashboard();
+                renderData(isFirstRender);
+                isFirstRender = false; 
+            }, error => {
+                showNotification("Missing index or permission error. Please verify Firebase Rules.", 'error');
+                console.error("Data Sync Error: ", error);
+            });
+        } catch (error) {
+            showNotification("Database query error. Refresh app.", "error");
+        }
     }
 
     function renderProjectTabsAndDropdown() {
@@ -1546,7 +1545,7 @@
         let finalFollowupDate = document.getElementById('followup').value;
 
         const data = {
-            ownerId: auth.currentUser.uid, // Website leads will be claimed by you on update
+            ownerId: auth.currentUser.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
             followup: finalFollowupDate,
             name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
@@ -1567,7 +1566,6 @@
                 await db.collection("leads").add(data); 
                 showNotification(`New Lead Saved!`, 'success'); 
                 
-                // ---- META PIXEL (NEW LEAD TRIGGER) ----
                 if(typeof fbq === 'function') {
                     fbq('track', 'Lead', {
                         content_name: data.name,
@@ -1582,7 +1580,6 @@
                 if(data.specificUnit) {
                     setTimeout(() => showNotification(`🏢 Live Inventory: ${data.specificUnit} marked as SOLD in database!`, 'success'), 1500);
                 }
-                // ---- META PIXEL (CONVERSION/PURCHASE TRIGGER) ----
                 if(typeof fbq === 'function') {
                     fbq('track', 'Purchase', { currency: 'INR', value: 1.00 }); 
                 }
@@ -1661,6 +1658,9 @@
 
     function closeActionMenu() {
         document.getElementById('actionModal').classList.remove('active');
+        setTimeout(() => {
+            bsActionId = ''; bsActionPhone = ''; bsActionName = ''; bsActionProj = '';
+        }, 300);
     }
 
     async function markFollowupDone(id) {
@@ -1710,6 +1710,7 @@
 
     function closeCallLogModal() {
         document.getElementById('callLogModal').classList.remove('active');
+        setTimeout(() => { callTargetId = null; }, 300);
     }
 
     function setCallStatus(status) {
@@ -1754,16 +1755,18 @@
     function executeSwipeWa() { closeActionMenu(); openWaModal(bsActionPhone, bsActionName, bsActionProj); }
     
     function executeSwipeEdit() { 
+        let tempId = bsActionId;
         closeActionMenu(); 
-        editLead(bsActionId); 
+        setTimeout(() => editLead(tempId), 50); 
     }
     
     function executeSwipeDel() {
+        let tempId = bsActionId;
         closeActionMenu();
         setTimeout(async () => {
             if (confirm("⚠️ Are you sure you want to permanently delete this lead?")) {
                 try { 
-                    await db.collection("leads").doc(bsActionId).delete(); 
+                    await db.collection("leads").doc(tempId).delete(); 
                     showNotification("Lead Permanently Deleted", "error"); 
                 } 
                 catch (err) { 
@@ -1798,17 +1801,20 @@
         if (historyArr.length === 0) {
             container.innerHTML = '<p style="text-align:center; opacity:0.6; font-weight:600; padding:20px;">History available nahi hai.</p>';
         } else {
+            const fragment = document.createDocumentFragment();
             historyArr.reverse().forEach((h, idx) => {
-                container.innerHTML += `
-                    <div style="background:var(--input-bg); padding:16px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:12px; animation: fadeInUp ${(idx*0.05)}s ease-out forwards; opacity:0; transform:translate3d(0, 10px, 0);">
-                        <div style="font-size:11px; color:var(--accent-brand); font-weight:800; margin-bottom:6px; display:flex; justify-content:space-between;">
-                            <span><ion-icon name="calendar"></ion-icon> ${h.date}</span>
-                            <span><ion-icon name="time"></ion-icon> ${h.time || 'N/A'}</span>
-                        </div>
-                        <div style="font-size:14px; color:var(--text-color); line-height:1.5;">${sanitizeText(h.note)}</div>
+                const div = document.createElement('div');
+                div.style.cssText = `background:var(--input-bg); padding:16px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:12px; animation: fadeInUp ${(idx*0.05)}s ease-out forwards; opacity:0; transform:translate3d(0, 10px, 0);`;
+                div.innerHTML = `
+                    <div style="font-size:11px; color:var(--accent-brand); font-weight:800; margin-bottom:6px; display:flex; justify-content:space-between;">
+                        <span><ion-icon name="calendar"></ion-icon> ${h.date}</span>
+                        <span><ion-icon name="time"></ion-icon> ${h.time || 'N/A'}</span>
                     </div>
+                    <div style="font-size:14px; color:var(--text-color); line-height:1.5;">${sanitizeText(h.note)}</div>
                 `;
+                fragment.appendChild(div);
             });
+            container.appendChild(fragment);
         }
         openModal('historyModal');
     }
@@ -1878,12 +1884,12 @@
         
         const today = getToday();
         const exportData = getFilteredData();
-        const CHUNK_SIZE = 80; 
+        const CHUNK_SIZE = 60; 
         let currentIndex = 0;
         let serial = 1;
 
-        function renderChunk() {
-            let htmlChunk = '';
+        function renderChunk(timestamp) {
+            const fragment = document.createDocumentFragment();
             const end = Math.min(currentIndex + CHUNK_SIZE, exportData.length);
             
             for(let i = currentIndex; i < end; i++) {
@@ -1918,29 +1924,38 @@
                 let animClass = (animate && i < 15) ? 'animate-row-enter' : '';
                 let animStyle = (animate && i < 15) ? `animation-delay: ${(i * 0.02)}s;` : '';
 
-                htmlChunk += `
-                    <tr class="${highlight} ${animClass}" style="${animStyle}" title="Double-click to Edit, Tap ⋮ for Actions" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeNameAttr}" data-proj="${safeProjAttr}" ondblclick="editLead('${c.id}')">
-                        <td style="opacity:0.4; font-weight:700;">${serial++}</td>
-                        <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
-                        <td style="font-weight:700; white-space:nowrap; color:var(--accent-dark);">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
-                        <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
-                        <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
-                        <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
-                        <td style="font-size:12px; font-weight:700; color:var(--text-color);">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
-                        <td style="color:var(--golden-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
-                        <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}</td>
-                        <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                            <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
-                        </td>
-                        <td style="display:flex; justify-content:center; align-items:center;">
-                            ${tickButton}
-                            <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                        </td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.className = `${highlight} ${animClass}`;
+                if(animStyle) tr.style.cssText = animStyle;
+                tr.title = "Double-click to Edit, Tap ⋮ for Actions";
+                tr.dataset.id = c.id;
+                tr.dataset.phone = c.phone;
+                tr.dataset.name = safeNameAttr;
+                tr.dataset.proj = safeProjAttr;
+                tr.ondblclick = () => editLead(c.id);
+
+                tr.innerHTML = `
+                    <td style="opacity:0.4; font-weight:700;">${serial++}</td>
+                    <td class="date-cell">${formatDisplayDate(c.leadDate)}</td>
+                    <td style="font-weight:700; white-space:nowrap; color:var(--accent-dark);">${safeName} <br> ${tempBadge} ${scoreBadge}</td>
+                    <td class="copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy">${c.phone}</td>
+                    <td><span class="badge ${badge}">${displayStatus}</span>${visitBadge}</td>
+                    <td style="font-size:11px; opacity:0.8;">${c.leadSource || '-'}</td>
+                    <td style="font-size:12px; font-weight:700; color:var(--text-color);">${sanitizeText(c.projectCategory) || '-'}${unitDisp}</td>
+                    <td style="color:var(--golden-dark); font-weight:800">${sanitizeText(c.budget) || '-'}</td>
+                    <td class="date-cell" style="font-weight:800; color:var(--text-color);">${formatDisplayDate(c.followup)}</td>
+                    <td style="font-size:12px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                        <span class="history-link" onclick="event.stopPropagation(); openHistoryModal('${c.id}')" title="Tap to read full history">${sanitizeText(latestNote)}</span>
+                    </td>
+                    <td style="display:flex; justify-content:center; align-items:center;">
+                        ${tickButton}
+                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
+                    </td>
                 `;
+                fragment.appendChild(tr);
             }
             
-            tableBody.insertAdjacentHTML('beforeend', htmlChunk);
+            tableBody.appendChild(fragment);
             currentIndex = end;
             
             if (currentIndex < exportData.length) {
@@ -1983,11 +1998,11 @@
 
         function renderKanbanChunk() {
             const end = Math.min(currentIndex + CHUNK_SIZE, exportData.length);
-            const htmlChunks = { 'New': '', 'Follow-up': '', 'Hot': '', 'Broker': '', 'Closed': '' };
+            const fragmentChunks = { 'New': document.createDocumentFragment(), 'Follow-up': document.createDocumentFragment(), 'Hot': document.createDocumentFragment(), 'Broker': document.createDocumentFragment(), 'Closed': document.createDocumentFragment() };
             
             for(let i = currentIndex; i < end; i++) {
                 const c = exportData[i];
-                if(c.status === 'Not Interested' || htmlChunks[c.status] === undefined) continue; 
+                if(c.status === 'Not Interested' || fragmentChunks[c.status] === undefined) continue; 
                 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempIcon = '';
@@ -2003,23 +2018,32 @@
 
                 let animDelay = (animate && i < 15) ? `${(i * 0.02)}s` : '0s';
 
-                htmlChunks[c.status] += `
-                    <div class="k-card" style="animation-delay: ${animDelay}; touch-action: none;" draggable="true" data-id="${c.id}" data-phone="${c.phone}" data-name="${safeName}" data-proj="${safeProj}" ondblclick="editLead('${c.id}')">
-                        <div class="k-card-title">
-                            <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${visitIcon}</span>
-                            <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
-                        </div>
-                        <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
-                        <div class="k-card-detail" style="color:var(--accent-dark); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
-                        <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)}</div>
+                const div = document.createElement('div');
+                div.className = "k-card";
+                div.style.cssText = `animation-delay: ${animDelay}; touch-action: none;`;
+                div.setAttribute("draggable", "true");
+                div.dataset.id = c.id;
+                div.dataset.phone = c.phone;
+                div.dataset.name = safeName;
+                div.dataset.proj = safeProj;
+                div.ondblclick = () => editLead(c.id);
+
+                div.innerHTML = `
+                    <div class="k-card-title">
+                        <span style="display:flex; align-items:center;">${safeName} ${tempIcon} ${visitIcon}</span>
+                        <span class="action-dots" onclick="event.stopPropagation(); triggerActionMenu(this)"><ion-icon name="ellipsis-vertical"></ion-icon></span>
                     </div>
+                    <div class="k-card-detail copyable" onclick="event.stopPropagation(); copyToClipboard('${c.phone}', 'Phone Number')" title="Tap to copy"><ion-icon name="call"></ion-icon> ${c.phone}</div>
+                    <div class="k-card-detail" style="color:var(--accent-dark); font-weight:700;"><ion-icon name="location"></ion-icon> ${safeUnit || safeProj || '-'}</div>
+                    <div class="k-card-detail">💰 ${sanitizeText(c.budget) || 'N/A'} | <ion-icon name="calendar"></ion-icon> ${formatDisplayDate(c.followup)}</div>
                 `;
+                fragmentChunks[c.status].appendChild(div);
             }
             
-            Object.keys(htmlChunks).forEach(status => {
-                if (htmlChunks[status]) {
+            Object.keys(fragmentChunks).forEach(status => {
+                if (fragmentChunks[status].childElementCount > 0) {
                     const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
-                    if (zone) zone.insertAdjacentHTML('beforeend', htmlChunks[status]);
+                    if (zone) zone.appendChild(fragmentChunks[status]);
                 }
             });
             
