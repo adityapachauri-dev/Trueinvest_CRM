@@ -41,6 +41,7 @@
       fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=722292507167643&ev=PageView&noscript=1"/></noscript>
+    
     <style>
         :root {
             --bg-color: #F1F5F9; 
@@ -84,7 +85,7 @@
             background-color: var(--bg-color); color: var(--text-color); 
             margin: 0; padding: 0; overflow-x: hidden; width: 100vw; 
             -webkit-font-smoothing: antialiased; 
-            min-height: 100dvh; /* Optimized for mobile address bars */
+            min-height: 100dvh;
         }
 
         * { box-sizing: border-box; }
@@ -135,7 +136,7 @@
             background: var(--card-bg); border: 1px solid var(--border-color); 
             box-shadow: var(--shadow-sm); border-radius: 24px; 
             transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease; 
-            transform: translateZ(0); 
+            transform: translateZ(0); will-change: transform, box-shadow;
         }
         .glass-panel:hover { box-shadow: var(--shadow-lg); border-color: rgba(197, 160, 89, 0.3); }
 
@@ -301,6 +302,7 @@
             .action-modal-overlay.active .action-modal-content { transform: scale3d(1, 1, 1) translate3d(0, 0, 0); opacity: 1; }
             .sheet-handle { display: none; }
         }
+        
         .action-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .action-btn-wrapper span { font-size: 13px; font-weight: 700; color: var(--text-color); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease; }
         .simple-action-btn { height: 64px; width: 64px; border: none; border-radius: 50%; font-size: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--golden); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
@@ -345,7 +347,7 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--golden-dark); letter-spacing: 0.5px;}
 
-        /* PERFORMANCE FIX: Disabling heavy CSS effects on Mobile Devices */
+        /* --- MOBILE OPTIMIZATIONS (FIXED OVERLAPS & GAYAB BUTTONS) --- */
         @media (max-width: 992px) {
             .glass-panel { 
                 backdrop-filter: none !important; 
@@ -356,22 +358,26 @@
             .modal-overlay, .action-modal-overlay {
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
-                background: rgba(10, 25, 47, 0.85); /* Darker solid fallback */
+                background: rgba(10, 25, 47, 0.85); 
             }
 
             .workspace-layout { display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: calc(110px + env(safe-area-inset-bottom)); min-height: 100dvh; }
             .top-bar { padding: 20px; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;}
             h1.main-title { font-size: 1.4rem; }
-            .top-bar .btn-secondary { height: 44px; width: 44px; font-size: 18px; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .stat-card { padding: 16px 8px; border-radius: 16px; }
-            .stat-card span { font-size: 22px; }
+            .top-bar .btn-secondary { height: 44px; width: 44px; font-size: 18px; flex-shrink: 0; }
+            
+            /* Stats Grid Fix for Mobile */
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 14px 6px; border-radius: 16px; }
+            .stat-card span { font-size: 20px; }
+            .stat-card label { font-size: 10px; margin-bottom: 4px; }
+            
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
 
-            .ios-bottom-nav { display: flex; position: fixed; bottom: max(20px, env(safe-area-inset-bottom)); left: 5%; width: 90%; background: var(--nav-bg); border: 1px solid var(--border-color); z-index: 9999; padding: 12px 0; justify-content: space-evenly; align-items: center; box-shadow: 0 10px 40px rgba(10,25,47,0.12); border-radius: 40px; animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transition: background-color 0.3s ease, border-color 0.3s ease; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; transform: translateZ(0); }
+            .ios-bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); border-top: 1px solid var(--border-color); border-radius: 0; z-index: 9999; padding: 12px 0 calc(12px + env(safe-area-inset-bottom)) 0; justify-content: space-evenly; align-items: center; box-shadow: 0 -10px 30px rgba(10,25,47,0.08); animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transition: background-color 0.3s ease, border-color 0.3s ease; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; transform: translateZ(0); }
             
-            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 30%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, color 0.3s ease; min-height: 44px;}
+            .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; color: inherit; opacity: 0.5; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, color 0.3s ease; min-height: 44px;}
             .tab-item .icon { font-size: 26px; margin-bottom: 6px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
             .tab-item.active { opacity: 1; color: var(--golden-dark); transform: scale3d(1.05, 1.05, 1); }
             .tab-item.active .icon { transform: scale3d(1.2, 1.2, 1) translate3d(0, -3px, 0); font-weight: bold; color: var(--golden);}
@@ -380,9 +386,11 @@
             .mobile-tab-content { display: none; width: 100%; animation: popIn 0.3s ease-out; }
             .mobile-tab-content.active { display: flex; flex-direction: column;}
 
-            .controls-row { flex-wrap: wrap; justify-content: space-between; padding: 20px; gap: 12px;}
-            .search-box { flex: 1 1 100%; margin: 0 !important; width: 100%; height: 50px; font-size: 16px;}
-            .controls-row button { flex: 1 1 calc(50% - 6px); padding: 0 10px; margin: 0 !important; font-size: 14px; height: 48px;}
+            /* Controls Layout Fix to prevent button hiding/squeezing */
+            .controls-row { display: grid; grid-template-columns: 1fr 1fr; padding: 20px; gap: 12px;}
+            .search-box { grid-column: span 2; width: 100%; margin: 0 !important; height: 50px; font-size: 16px;}
+            .controls-row button { margin: 0 !important; width: 100%; height: 48px; font-size: 14px;}
+            .controls-row button:last-child { grid-column: span 2; } /* Clean button full width */
 
             .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-radius: 20px;}
             .project-tabs::-webkit-scrollbar { display: none; }
@@ -397,7 +405,7 @@
             .kanban-container::-webkit-scrollbar { display: none; }
             .kanban-col { min-width: 85vw; scroll-snap-align: center; }
 
-            #toastContainer { top: max(16px, env(safe-area-inset-top)); right: 16px; left: 16px; align-items: center; }
+            #toastContainer { top: max(16px, env(safe-area-inset-top)); right: 16px; left: 16px; align-items: center; z-index: 10008;}
             .toast { width: 100%; min-width: unset; justify-content: center; transform: translate3d(0, -120%, 0) scale3d(0.9, 0.9, 1); font-size: 14px; border-radius: 20px; }
             .toast.show { transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
         }
@@ -416,10 +424,9 @@
         body.zen-mode .table-container,
         body.zen-mode .kanban-container { height: calc(100dvh - 150px) !important; flex-grow: 1; }
         
-        #exitZenBtn { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease; }
+        #exitZenBtn { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; }
         #exitZenBtn:hover { transform: scale3d(1.1, 1.1, 1); background: linear-gradient(135deg, #b91c1c, #ef4444); color: #fff; border-color: #fff; }
         
-        /* Fast DOM Filtering classes */
         .search-hidden-row { display: none !important; }
     </style>
 
@@ -668,6 +675,7 @@
         <div id="emiResult" class="glass-panel" style="padding:20px; display:none; animation: popIn 0.3s ease; border-color:var(--golden);"></div>
     </div>
 </div>
+
 <div id="waModal" class="modal-overlay" onclick="handleModalClick(event, 'waModal')">
     <div class="modal-content glass-panel swipeable-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -689,7 +697,6 @@
         <div id="waEditArea" style="display:none; animation: fadeInDown 0.3s ease-out forwards;">
             <label>Customize Your Message</label>
             <textarea id="waMessageText" rows="6" style="border-color:var(--whatsapp-dark); resize:vertical; font-family:inherit;"></textarea>
-            
             <button id="waSendBtnObj" onclick="executeWaSend()" style="background-color:var(--whatsapp-dark); background-image:none; border-color:transparent; color:#fff; width:100%; margin-top:12px; box-shadow: 0 4px 15px rgba(4,120,87,0.3);">Send via WhatsApp App 🚀</button>
         </div>
     </div>
@@ -714,6 +721,7 @@
         </div>
     </div>
 </div>
+
 <div id="cleanModal" class="action-modal-overlay" onclick="closeModal('cleanModal')">
     <div class="action-modal-content swipeable-sheet" style="flex-direction:column; gap:16px; align-items:stretch;" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -768,7 +776,7 @@
     </div>
 </div>
 
-<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; bottom:24px; right:24px; z-index:10005; border-radius:50%; width:64px; height:64px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(10,25,47,0.3); border:1px solid var(--golden-dark); background: var(--btn-gradient); color: var(--golden); cursor: pointer; transform: translateZ(0);">
+<button id="exitZenBtn" onclick="toggleZenMode()" class="hidden" style="position:fixed; z-index:10005; border-radius:50%; width:64px; height:64px; font-size:28px; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 40px rgba(10,25,47,0.3); border:1px solid var(--golden-dark); background: var(--btn-gradient); color: var(--golden); cursor: pointer; transform: translateZ(0);">
     <ion-icon name="close"></ion-icon>
 </button>
 
@@ -777,6 +785,22 @@
     let lastListScrollY = 0;
     let isFirstRender = true;
     let currentViewMode = 'table';
+
+    // RENDER CRASH FIX: Request IDs for preventing duplicate frame loops
+    let renderTableRequestId = null;
+    let renderKanbanRequestId = null;
+
+    // MOBILE FIX: Prevent keyboard from hiding input elements by pushing nav bar
+    document.addEventListener('focusin', (e) => {
+        if (window.innerWidth <= 992 && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+            document.getElementById('bottomNav').style.display = 'none';
+        }
+    });
+    document.addEventListener('focusout', (e) => {
+        if (window.innerWidth <= 992) {
+            document.getElementById('bottomNav').style.display = 'flex';
+        }
+    });
 
     function toggleZenMode() {
         haptic('medium');
@@ -799,7 +823,6 @@
         if (typeof MobileDragDrop !== 'undefined' && typeof MobileDragDrop.polyfill === 'function') {
             MobileDragDrop.polyfill({ dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride });
         }
-        // PERFORMANCE FIX: Only initialize tilt on static elements to avoid memory leaks
         try {
             if (typeof VanillaTilt !== 'undefined' && window.matchMedia("(hover: hover)").matches) {
                 VanillaTilt.init(document.querySelectorAll(".stat-card, .login-card"), {
@@ -1010,6 +1033,10 @@
                 t.style.animation = 'none';
                 void t.offsetWidth;
                 t.style.animation = 'fadeInUp 0.5s ease-out forwards';
+                
+                // Reapply search filter seamlessly
+                const searchVal = document.getElementById('search').value.toLowerCase().trim();
+                if (searchVal) applyDOMFilters(searchVal);
             });
         }
         if(mode === 'kanban') { 
@@ -1020,6 +1047,9 @@
                 k.style.animation = 'none';
                 void k.offsetWidth;
                 k.style.animation = 'fadeInUp 0.5s ease-out forwards';
+
+                const searchVal = document.getElementById('search').value.toLowerCase().trim();
+                if (searchVal) applyDOMFilters(searchVal);
             });
         }
     }
@@ -1063,15 +1093,18 @@
         }
     }
 
-    // PERFORMANCE FIX: Optimized Swipeable Sheets to prevent touch/scroll lock on Mobile
+    // SCROLL/SWIPE BUG FIX: Prevent scrolling areas from triggering modal closure
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
         let startY = 0;
         let currentY = 0;
         let isDragging = false;
-        let ticking = false; // Add ticking for rAF
+        let ticking = false; 
         
         sheet.addEventListener('touchstart', (e) => {
-            if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+            // Only allow dragging from the top handle or headers, so internal scrolling is safe
+            if(!e.target.classList.contains('sheet-handle') && e.target.tagName !== 'H2' && e.target.tagName !== 'H3') {
+                return; 
+            }
             startY = e.touches[0].clientY;
             isDragging = true;
             sheet.style.transition = 'none'; 
@@ -1281,6 +1314,11 @@
 
     window.addEventListener('resize', () => {
         if(auth.currentUser) {
+            // Only update Nav if inputs are not focused (keyboard handling is separate)
+            if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) && window.innerWidth <= 992) {
+                return;
+            }
+            
             document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
             if(window.innerWidth > 992) {
                 document.getElementById('tabAddForm').classList.add('active');
@@ -1315,7 +1353,6 @@
         if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
 
         try {
-            // PERFORMANCE FIX: Ensure onSnapshot only triggers DOM updates when needed
             unsubscribeSnapshot = db.collection("leads")
                 .where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"])
                 .onSnapshot(snap => {
@@ -1327,7 +1364,6 @@
                     initialLoad = false;
                 }
 
-                // Call sanitizer ONLY ONCE per session to avoid infinite write loops
                 if (!hasSanitized && clients.length > 0) {
                     silentDataSanitizer();
                     hasSanitized = true;
@@ -1432,7 +1468,7 @@
         document.getElementById('search').value = ''; currentQuickFilter = 'All';
         document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
         document.getElementById('filterAll').classList.add('active-filter');
-        renderData(false); // Quick render without full rebuild animation
+        renderData(false); 
     }
 
     function applyQuickFilter(type) {
@@ -1447,14 +1483,14 @@
             tabs[1].click(); 
         }
         document.getElementById('search').value = ''; 
-        renderData(false); // Quick render
+        renderData(false); 
     }
 
     function handleSort(column) {
         haptic('light');
         if(sortColumn === column) { sortAscending = !sortAscending; } 
         else { sortColumn = column; sortAscending = true; }
-        renderData(false); // Fast quick render
+        renderData(false); 
     }
 
     function updateDashboard() {
@@ -1649,7 +1685,8 @@
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
         
-        // Full sort initially
+        // Removed inner search filter loop from here. Handled by DOM fast filter for extreme speed.
+        
         data.sort((a, b) => {
             let valA = (a[sortColumn] || '').toString().toLowerCase();
             let valB = (b[sortColumn] || '').toString().toLowerCase();
@@ -1885,6 +1922,33 @@
         }
     }
 
+    // SEARCH CRASH FIX: Apply DOM-based ultra-fast filtering across BOTH views simultaneously
+    function applyDOMFilters(searchVal) {
+        document.querySelectorAll('#clientTable tr').forEach(tr => {
+            if(!searchVal || tr.innerText.toLowerCase().includes(searchVal)) {
+                tr.classList.remove('search-hidden-row');
+            } else {
+                tr.classList.add('search-hidden-row');
+            }
+        });
+        document.querySelectorAll('.k-card').forEach(card => {
+            if(!searchVal || card.innerText.toLowerCase().includes(searchVal)) {
+                card.classList.remove('search-hidden-row');
+            } else {
+                card.classList.add('search-hidden-row');
+            }
+        });
+    }
+
+    let searchTimeout;
+    document.getElementById('search').addEventListener('input', e => {
+        const searchVal = e.target.value.toLowerCase().trim();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            requestAnimationFrame(() => applyDOMFilters(searchVal)); 
+        }, 200); 
+    });
+
     function renderData(animate = false) { 
         if (currentViewMode === 'table') {
             renderTableOptimized(animate); 
@@ -1893,28 +1957,13 @@
         }
     }
 
-    // PERFORMANCE FIX: Debounced DOM Filtering for super-fast Search functionality
-    function applyDOMFilters(searchVal) {
-        if(currentViewMode === 'table') {
-            document.querySelectorAll('#clientTable tr').forEach(tr => {
-                if(!searchVal || tr.innerText.toLowerCase().includes(searchVal)) {
-                    tr.classList.remove('search-hidden-row');
-                } else {
-                    tr.classList.add('search-hidden-row');
-                }
-            });
-        } else {
-            document.querySelectorAll('.k-card').forEach(card => {
-                if(!searchVal || card.innerText.toLowerCase().includes(searchVal)) {
-                    card.classList.remove('search-hidden-row');
-                } else {
-                    card.classList.add('search-hidden-row');
-                }
-            });
-        }
-    }
-
     function renderTableOptimized(animate = false) {
+        // PERFORMANCE FIX: Cancel any overlapping rendering loop to prevent crashes
+        if (renderTableRequestId) {
+            cancelAnimationFrame(renderTableRequestId);
+            renderTableRequestId = null;
+        }
+
         const tableBody = document.getElementById('clientTable'); 
         const tableContainer = document.getElementById('tableView');
         if (!tableBody || !tableContainer) return;
@@ -2008,23 +2057,29 @@
             currentIndex = end;
             
             if (currentIndex < exportData.length) {
-                requestAnimationFrame(renderChunk);
+                renderTableRequestId = requestAnimationFrame(renderChunk);
             } else {
+                renderTableRequestId = null;
                 tableContainer.style.minHeight = '';
                 tableContainer.scrollTop = tableScrollTop;
                 tableContainer.scrollLeft = tableScrollLeft;
                 window.scrollTo(scrollX, scrollY);
-                // Reapply search filter if currently typed
+                
                 const searchVal = document.getElementById('search').value.toLowerCase().trim();
                 if (searchVal) applyDOMFilters(searchVal);
             }
         }
         
-        if(exportData.length > 0) requestAnimationFrame(renderChunk);
+        if(exportData.length > 0) renderTableRequestId = requestAnimationFrame(renderChunk);
         else tableContainer.style.minHeight = '';
     }
 
     function renderKanban(animate = false) {
+        if (renderKanbanRequestId) {
+            cancelAnimationFrame(renderKanbanRequestId);
+            renderKanbanRequestId = null;
+        }
+
         const exportData = getFilteredData();
         const validStatuses = ['New', 'Follow-up', 'Hot', 'Broker', 'Closed'];
 
@@ -2101,8 +2156,9 @@
             
             currentIndex = end;
             if(currentIndex < exportData.length) {
-                requestAnimationFrame(renderKanbanChunk);
+                renderKanbanRequestId = requestAnimationFrame(renderKanbanChunk);
             } else {
+                renderKanbanRequestId = null;
                 validStatuses.forEach(status => {
                     const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
                     if(zone) {
@@ -2112,13 +2168,13 @@
                 });
                 kanbanContainer.scrollLeft = kanbanScrollLeft;
                 window.scrollTo(scrollX, scrollY);
-                // Reapply search filter
+                
                 const searchVal = document.getElementById('search').value.toLowerCase().trim();
                 if (searchVal) applyDOMFilters(searchVal);
             }
         }
         
-        if(exportData.length > 0) requestAnimationFrame(renderKanbanChunk);
+        if(exportData.length > 0) renderKanbanRequestId = requestAnimationFrame(renderKanbanChunk);
         else {
             validStatuses.forEach(status => {
                 const zone = document.querySelector(`.kanban-dropzone[data-status="${status}"]`);
@@ -2401,61 +2457,6 @@
         });
     }
 
-    function openModal(id) { haptic('light'); document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { haptic('light'); document.getElementById(id).classList.remove('active'); }
-    
-    let currentWaName = ''; let currentWaProj = '';
-    function openWaModal(phone, name, project) {
-        currentWaName = name; currentWaProj = project || 'our premium properties';
-        document.getElementById('waTargetName').innerText = `👤 ${name}  |  📞 ${phone}`;
-        document.getElementById('waTargetPhone').value = phone; document.getElementById('waTemplateSelector').value = "";
-        document.getElementById('waEditArea').style.display = 'none'; openModal('waModal');
-    }
-    
-    function loadWaTemplate() {
-        const type = document.getElementById('waTemplateSelector').value;
-        const editArea = document.getElementById('waEditArea'); 
-        const textBox = document.getElementById('waMessageText');
-        
-        if (!type) { editArea.style.display = 'none'; return; } 
-        editArea.style.display = 'block'; 
-        let msg = '';
-        
-        if (type === '1') msg = `Hi ${currentWaName}, True Invest ki taraf se greetings! 🌟\n\nJaisa ki discuss hua tha, main aapko ${currentWaProj} ki details aur brochure bhej raha hoon.\n\nAgar aapko floor plans ya pricing ki aur details chahiye toh mujhe batayiye.`;
-        else if (type === '2') msg = `Hello ${currentWaName}, mujhe aapke site visit ka intezaar rahega! 📍\n\nYeh rahi ${currentWaProj} ki Google Maps location.\n\nJab aap aas-paas hon, toh mujhe call kar lijiye.`;
-        else if (type === '3') msg = `Hi ${currentWaName}, main ${currentWaProj} ki aapki enquiry ke regarding ek chota sa follow-up le raha tha.\n\nKya aap abhi bhi is segment me options dekh rahe hain? Batayiye kaise aage badhna hai! 🤝`;
-        else if (type === '4') msg = `Dear ${currentWaName},\n\nPricing ko lekar ek exciting update hai. Hamare paas ek limited-time offer hai jo aapke budget me fit aayega.\n\nEk quick call arrange karein? 📞`;
-        else if (type === '5') msg = `Hi ${currentWaName},\n\n`; 
-        
-        textBox.value = msg;
-    }
-    
-    function executeWaSend() {
-        haptic('light');
-        const btn = document.getElementById('waSendBtnObj');
-        const oldText = btn.innerText;
-        btn.innerText = "Connecting to API...";
-        
-        setTimeout(() => {
-            let phone = document.getElementById('waTargetPhone').value.replace(/\D/g, ''); 
-            if (phone.startsWith('0')) phone = phone.substring(1);
-            if (phone.length === 10) phone = '91' + phone;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(document.getElementById('waMessageText').value)}`, '_blank'); 
-            closeModal('waModal');
-            btn.innerText = oldText;
-        }, 500);
-    }
-
-    // PERFORMANCE FIX: DOM Based Search (Hiding rows instead of rebuilding whole table)
-    let searchTimeout;
-    document.getElementById('search').addEventListener('input', e => {
-        const searchVal = e.target.value.toLowerCase().trim();
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            requestAnimationFrame(() => applyDOMFilters(searchVal)); 
-        }, 200); 
-    });
-    
     function downloadCSV() {
         if(clients.length === 0) { showNotification("Export karne ke liye data nahi hai!", 'error'); return; }
         
@@ -2610,7 +2611,7 @@
             
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'trueinvest-v8-cache';
+                    const CACHE_NAME = 'trueinvest-v9-cache';
                     self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME)));
                     self.addEventListener('fetch', e => {
                         e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
