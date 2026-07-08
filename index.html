@@ -37,17 +37,11 @@
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
       
-      // REPLACE '722292507167643' WITH YOUR ACTUAL FACEBOOK PIXEL ID
       fbq('init', '722292507167643'); 
       fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=722292507167643&ev=PageView&noscript=1"
-    /></noscript>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=722292507167643&ev=PageView&noscript=1"/></noscript>
     <style>
-        /* ====================================================
-           "ELITE NAVY & CHAMPAGNE GOLD" THEME (Lag-Free 90FPS)
-           ==================================================== */
         :root {
             --bg-color: #F1F5F9; 
             --card-bg: #FFFFFF; 
@@ -498,6 +492,7 @@
                             <option value="99acres">99acres</option>
                             <option value="MagicBricks">MagicBricks</option>
                             <option value="Referral">Referral</option>
+                            <option value="Website Form">Website Form</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -1284,11 +1279,15 @@
 
     function logout() { auth.signOut(); showNotification('Logged out successfully', 'warning');}
 
+    // --- CRM SYNC FIX FOR WEBSITE LEADS ---
     function loadData() {
         if(!auth.currentUser) return;
         if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
 
-        unsubscribeSnapshot = db.collection("leads").where("ownerId", "==", auth.currentUser.uid).onSnapshot(snap => {
+        // MAPPED WITH "WEBSITE_LEAD" FROM WEBSITE
+        unsubscribeSnapshot = db.collection("leads")
+            .where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"])
+            .onSnapshot(snap => {
             clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
             
             if(initialLoad) {
@@ -1547,7 +1546,8 @@
         let finalFollowupDate = document.getElementById('followup').value;
 
         const data = {
-            ownerId: auth.currentUser.uid, leadDate: document.getElementById('leadDate').value || getToday(),
+            ownerId: auth.currentUser.uid, // Website leads will be claimed by you on update
+            leadDate: document.getElementById('leadDate').value || getToday(),
             followup: finalFollowupDate,
             name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
             leadSource: document.getElementById('leadSource').value, projectCategory: finalProjectCategory, 
