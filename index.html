@@ -27,6 +27,23 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      // REPLACE '722292507167643' WITH YOUR ACTUAL FACEBOOK PIXEL ID
+      fbq('init', '722292507167643'); 
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=722292507167643&ev=PageView&noscript=1"
+    /></noscript>
     <style>
         /* ====================================================
            "ELITE NAVY & CHAMPAGNE GOLD" THEME (Lag-Free 90FPS)
@@ -1542,13 +1559,32 @@
 
         let saveSuccess = false;
         try {
-            if (id) { await db.collection("leads").doc(id).update(data); showNotification(`Lead Updated: ${data.name}`, 'success'); } 
-            else { await db.collection("leads").add(data); showNotification(`New Lead Saved!`, 'success'); }
+            if (id) { 
+                await db.collection("leads").doc(id).update(data); 
+                showNotification(`Lead Updated: ${data.name}`, 'success'); 
+            } 
+            else { 
+                await db.collection("leads").add(data); 
+                showNotification(`New Lead Saved!`, 'success'); 
+                
+                // ---- META PIXEL (NEW LEAD TRIGGER) ----
+                if(typeof fbq === 'function') {
+                    fbq('track', 'Lead', {
+                        content_name: data.name,
+                        content_category: data.projectCategory,
+                        currency: 'INR'
+                    });
+                }
+            }
             
             if(statusVal === 'Closed') {
                 fireConfetti();
                 if(data.specificUnit) {
                     setTimeout(() => showNotification(`🏢 Live Inventory: ${data.specificUnit} marked as SOLD in database!`, 'success'), 1500);
+                }
+                // ---- META PIXEL (CONVERSION/PURCHASE TRIGGER) ----
+                if(typeof fbq === 'function') {
+                    fbq('track', 'Purchase', { currency: 'INR', value: 1.00 }); 
                 }
             } 
             else haptic('medium'); 
