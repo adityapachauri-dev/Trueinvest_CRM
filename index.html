@@ -21,6 +21,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- HIGH PERFORMANCE PDF GENERATOR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script defer src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/default.css">
     
@@ -291,7 +294,9 @@
 
         .action-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.65); display: flex; align-items: flex-end; justify-content: center; z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .action-modal-content { background: var(--nav-bg); width: 100%; max-width: 420px; padding: 24px 24px calc(40px + env(safe-area-inset-bottom)) 24px; border-radius: 32px 32px 0 0; transform: translate3d(0, 100%, 0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-top: 1px solid var(--border-highlight); display: flex; justify-content: space-around; position: relative; }
+        
+        /* Fixed Action Modal layout for 5 buttons without clipping */
+        .action-modal-content { background: var(--nav-bg); width: 100%; max-width: 450px; padding: 24px 16px calc(40px + env(safe-area-inset-bottom)) 16px; border-radius: 32px 32px 0 0; transform: translate3d(0, 100%, 0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-top: 1px solid var(--border-highlight); display: flex; justify-content: space-evenly; flex-wrap: wrap; position: relative; gap: 8px;}
         .action-modal-overlay.active .action-modal-content { transform: translate3d(0, 0, 0); }
         .sheet-handle { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 44px; height: 5px; background: var(--text-color); opacity: 0.15; border-radius: 10px; cursor: grab; transition: width 0.3s ease, opacity 0.3s ease; }
         .action-modal-content:active .sheet-handle { width: 54px; opacity: 0.3; }
@@ -303,9 +308,9 @@
             .sheet-handle { display: none; }
         }
         
-        .action-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .action-btn-wrapper span { font-size: 13px; font-weight: 700; color: var(--text-color); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease; }
-        .simple-action-btn { height: 64px; width: 64px; border: none; border-radius: 50%; font-size: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--golden); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .action-btn-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .action-btn-wrapper span { font-size: 12px; font-weight: 700; color: var(--text-color); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease; }
+        .simple-action-btn { height: 54px; width: 54px; border: none; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--golden); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
         .simple-action-btn::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: inherit; box-shadow: 0 8px 20px rgba(10, 25, 47, 0.15); opacity: 1; transition: opacity 0.2s ease, box-shadow 0.2s ease; z-index: -1; }
         .action-btn-wrapper:hover span { transform: translate3d(0, 2px, 0); color: var(--golden-dark); }
         .simple-action-btn:hover { transform: translate3d(0, -5px, 0) scale3d(1.1, 1.1, 1); }
@@ -316,6 +321,7 @@
         .btn-wa { background: #0A192F; color: var(--golden); border: 1px solid var(--golden-dark); }
         .btn-edit { background: var(--golden); color: #0A192F; }
         .btn-del { background: #DC2626; color: #fff; }
+        .btn-quote { background: #1E293B; color: #C5A059; border: 1px solid #C5A059;}
 
         .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 5px;}
         .call-status-btn { width: 100%; height: 50px; border-radius: 14px; font-size: 13px; font-weight: 700; background: transparent; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; padding: 0 4px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; color: var(--text-color); border: 2px solid var(--border-color); }
@@ -443,6 +449,67 @@
 </div>
 
 <div id="toastContainer"></div>
+
+<!-- ========================================== -->
+<!-- ELITE PDF TEMPLATE (HIDDEN SAFELY) -->
+<!-- ========================================== -->
+<div id="hiddenPdfWrapper" style="position: fixed; top: 0; left: 0; width: 210mm; z-index: -9999; visibility: hidden; pointer-events: none;">
+    <div id="quoteTemplate" style="width: 210mm; min-height: 297mm; padding: 50px; background: #ffffff; color: #1E293B; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; background-image: radial-gradient(circle at 100% 0%, #f8fafc 0%, transparent 40%);">
+        
+        <!-- Header Section -->
+        <div style="text-align:center; padding-bottom:30px; border-bottom: 2px solid #C5A059; margin-bottom: 40px;">
+            <h1 style="color:#0A192F; font-size:42px; margin:0; font-weight:900; letter-spacing: 2px;">TRUE <span style="color:#C5A059;">INVEST</span></h1>
+            <p style="margin:8px 0 0 0; color:#64748B; font-size:15px; letter-spacing: 2px; text-transform: uppercase; font-weight:700;">Official Property Quotation</p>
+        </div>
+        
+        <!-- Client Details Section -->
+        <div style="display: flex; justify-content: space-between; margin-bottom: 50px; background: #F8FAFC; padding: 25px; border-radius: 12px; border-left: 5px solid #C5A059;">
+            <div>
+                <h3 style="margin: 0 0 10px 0; color:#0A192F; font-size:15px; text-transform: uppercase; letter-spacing:1px;">Prepared For:</h3>
+                <p id="pdfClientName" style="margin: 0 0 5px 0; font-size:24px; font-weight:800; color:#1E293B;">Client Name</p>
+                <p id="pdfClientPhone" style="margin: 0; font-size:15px; color:#64748B; font-weight:600;">+91 9999999999</p>
+            </div>
+            <div style="text-align: right;">
+                <h3 style="margin: 0 0 10px 0; color:#0A192F; font-size:15px; text-transform: uppercase; letter-spacing:1px;">Quote Date:</h3>
+                <p id="pdfDate" style="margin: 0; font-size:20px; font-weight:700; color:#1E293B;">Date</p>
+            </div>
+        </div>
+
+        <!-- Property Table -->
+        <h2 style="color:#0A192F; font-size:22px; border-bottom:1px solid #E2E8F0; padding-bottom:10px; margin-bottom:25px;">Property Details</h2>
+        <table style="width:100%; border-collapse: collapse; margin-bottom:50px; font-size:16px;">
+            <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 18px 10px; font-weight:700; color:#64748B; width: 40%;">Project / Site</td>
+                    <td id="pdfProject" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Project Name</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 18px 10px; font-weight:700; color:#64748B;">Specific Unit</td>
+                    <td id="pdfUnit" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Unit No</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 18px 10px; font-weight:700; color:#64748B;">Locality</td>
+                    <td id="pdfLocation" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Location</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Total Box -->
+        <div style="background: #0A192F; color: white; padding: 40px; border-radius: 16px; text-align: center; margin-bottom: 50px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:-20px; right:-20px; width:120px; height:120px; background:rgba(197, 160, 89, 0.15); border-radius:50%;"></div>
+            <h3 style="margin: 0 0 10px 0; color:#C5A059; font-size:18px; text-transform: uppercase; letter-spacing:1px; font-weight:700;">Final Quoted Budget</h3>
+            <p id="pdfBudget" style="margin: 0; font-size:42px; font-weight:900; letter-spacing:1px;">₹ 0.00</p>
+        </div>
+
+        <!-- Footer -->
+        <div style="font-size:13px; color:#64748B; text-align:center; padding-top:40px; border-top:1px solid #E2E8F0; line-height:1.6;">
+            <p style="margin:0 0 5px 0; color:#0A192F;"><b>Thank you for choosing True Invest.</b></p>
+            <p style="margin:0;">This is an auto-generated quotation and does not serve as a final legal agreement.<br> Prices are subject to availability and developer terms.</p>
+        </div>
+    </div>
+</div>
+<!-- ========================================== -->
+
 
 <div id="loginView" class="container hidden" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
     <div class="login-card glass-panel" style="margin-top: calc(15vh + env(safe-area-inset-top));">
@@ -742,6 +809,11 @@
             <button class="simple-action-btn btn-wa" onclick="executeSwipeWa()"><ion-icon name="logo-whatsapp"></ion-icon></button>
             <span>WhatsApp</span>
         </div>
+        <!-- NEW QUOTE BUTTON -->
+        <div class="action-btn-wrapper">
+            <button class="simple-action-btn btn-quote" onclick="executeSwipeQuote()"><ion-icon name="document-text"></ion-icon></button>
+            <span>Quote</span>
+        </div>
         <div class="action-btn-wrapper">
             <button class="simple-action-btn btn-edit" onclick="executeSwipeEdit()"><ion-icon name="create"></ion-icon></button>
             <span>Edit</span>
@@ -785,21 +857,17 @@
         const t = text.toLowerCase();
         let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
 
-        // 1. Kal / Tomorrow
         if (/\b(kal|tomorrow|tom|tmrw)\b/.test(t)) {
             d.setDate(d.getDate() + 1);
             return formatDateCore(d);
         }
-        // 2. Parso / Day after tomorrow
         if (/\b(parso|day after tomorrow)\b/.test(t)) {
             d.setDate(d.getDate() + 2);
             return formatDateCore(d);
         }
-        // 3. Aaj / Today
         if (/\b(aaj|today)\b/.test(t)) {
             return formatDateCore(d);
         }
-        // 4. X din baad / in X days
         const daysMatch = t.match(/(\d+)\s*(din|days?)\s*(baad|later|k baad)|(?:in|after)\s*(\d+)\s*(din|days?)/);
         if (daysMatch) {
             let num = parseInt(daysMatch[1] || daysMatch[4]);
@@ -808,12 +876,10 @@
                 return formatDateCore(d);
             }
         }
-        // 5. Next week / Agle hafte
         if (/\b(agle hafte|next week)\b/.test(t)) {
             d.setDate(d.getDate() + 7);
             return formatDateCore(d);
         }
-        // 6. Days of week (Monday, Somvaar, etc)
         const days = {
             'sunday': 0, 'ravivar': 0, 'sun': 0,
             'monday': 1, 'somvar': 1, 'somvaar': 1, 'mon': 1,
@@ -828,12 +894,11 @@
                 let targetDay = days[key];
                 let currentDay = d.getDay();
                 let diff = targetDay - currentDay;
-                if (diff <= 0) diff += 7; // Next occurrence
+                if (diff <= 0) diff += 7; 
                 d.setDate(d.getDate() + diff);
                 return formatDateCore(d);
             }
         }
-        // 7. Explicit Dates (15 jan, 12th oct)
         const months = {'jan':0,'feb':1,'mar':2,'apr':3,'may':4,'jun':5,'jul':6,'aug':7,'sep':8,'oct':9,'nov':10,'dec':11};
         const dateMatch = t.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
         if (dateMatch) {
@@ -854,7 +919,6 @@
         return `${yyyy}-${mm}-${dd}`;
     }
 
-    // Bind real-time extraction to inputs
     document.addEventListener('DOMContentLoaded', () => {
         const handleSmartInput = (e, updateInputId) => {
             const parsed = extractSmartDate(e.target.value);
@@ -874,6 +938,79 @@
         if (newRemarkEl) newRemarkEl.addEventListener('input', (e) => handleSmartInput(e, 'followup'));
     });
     // --- END SMART NLP ---
+
+    // --- PUSH NOTIFICATION ENGINE ---
+    function initNotifications() {
+        if ("Notification" in window) {
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        }
+    }
+
+    function checkReminders() {
+        if ("Notification" in window && Notification.permission === "granted" && clients.length > 0) {
+            const today = getToday();
+            let notifiedList = JSON.parse(localStorage.getItem('notified_leads_' + today)) || [];
+            
+            let toNotify = clients.filter(c => c.followup === today && c.status !== 'Closed' && !notifiedList.includes(c.id));
+
+            if(toNotify.length > 0) {
+                toNotify.forEach(c => {
+                    let title = `🔥 TRUE INVEST Reminder!`;
+                    let bodyStr = `Call scheduled today for ${c.name}\nProject: ${c.projectCategory || 'N/A'}\nPhone: ${c.phone}`;
+                    
+                    try {
+                        new Notification(title, {
+                            body: bodyStr,
+                            icon: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230A192F'/><text x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='%23C5A059' text-anchor='middle'>TI</text></svg>"
+                        });
+                    } catch(e) { } 
+                    notifiedList.push(c.id);
+                });
+                localStorage.setItem('notified_leads_' + today, JSON.stringify(notifiedList));
+            }
+        }
+    }
+    // --- END PUSH NOTIFICATION ENGINE ---
+
+    // --- ELITE PDF GENERATOR FUNCTION ---
+    function executeSwipeQuote() {
+        closeActionMenu();
+        haptic('medium');
+        const c = clients.find(x => x.id === bsActionId);
+        if(!c) return;
+
+        showNotification('Generating Elite Quotation...', 'warning');
+
+        // Populate Template Data
+        document.getElementById('pdfClientName').innerText = c.name || '-';
+        document.getElementById('pdfClientPhone').innerText = c.phone || '-';
+        document.getElementById('pdfDate').innerText = formatDisplayDate(getToday());
+        
+        document.getElementById('pdfProject').innerText = c.projectCategory || 'N/A';
+        document.getElementById('pdfUnit').innerText = c.specificUnit || 'N/A';
+        document.getElementById('pdfLocation').innerText = c.location || 'N/A';
+        document.getElementById('pdfBudget').innerText = c.budget ? c.budget : 'TBD';
+
+        const element = document.getElementById('quoteTemplate');
+
+        const opt = {
+            margin:       0,
+            filename:     `TrueInvest_Quotation_${c.name.replace(/\s+/g, '_')}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            showNotification('PDF Downloaded successfully!', 'success');
+            fireConfetti();
+        }).catch(err => {
+            showNotification('Error creating PDF', 'error');
+        });
+    }
+    // --- END PDF GENERATOR ---
 
     let lastDesktopScrollY = 0;
     let lastListScrollY = 0;
@@ -1414,6 +1551,11 @@
             document.getElementById('bottomNav').style.display = window.innerWidth <= 992 ? 'flex' : 'none';
             document.getElementById('leadDate').value = getToday();
             
+            // --- INJECT: Push Notification Activation ---
+            initNotifications();
+            setInterval(checkReminders, 60000);
+            setTimeout(checkReminders, 3000);
+            
             db.collection("users").doc(user.uid).get().then(doc => {
                 if(doc.exists && doc.data().projects) {
                     customProjects = doc.data().projects;
@@ -1752,7 +1894,6 @@
         let selectedTemp = tempRadio ? tempRadio.value : 'Warm';
         let finalFollowupDate = document.getElementById('followup').value;
 
-        // Smart Date Override Check on Submit Form (in case typed but missed listener)
         if(newRemarkText) {
             const parsed = extractSmartDate(newRemarkText);
             if(parsed) finalFollowupDate = parsed;
@@ -1941,7 +2082,6 @@
                     let history = client.history || [];
                     history.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: finalRemark });
 
-                    // --- SMART NLP HOOK ---
                     const extractedDate = extractSmartDate(remark);
                     const payload = {
                         history: history,
@@ -2050,7 +2190,6 @@
         let historyArray = c.history ? [...c.history] : [];
         historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText });
 
-        // --- SMART NLP HOOK ---
         const extractedDate = extractSmartDate(newRemarkText);
         const payload = {
             history: historyArray,
