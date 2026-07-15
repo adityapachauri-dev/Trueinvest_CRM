@@ -347,7 +347,7 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--golden-dark); letter-spacing: 0.5px;}
 
-        /* --- MOBILE OPTIMIZATIONS (FIXED OVERLAPS & GAYAB BUTTONS) --- */
+        /* --- MOBILE OPTIMIZATIONS --- */
         @media (max-width: 992px) {
             .glass-panel { 
                 backdrop-filter: none !important; 
@@ -366,7 +366,6 @@
             h1.main-title { font-size: 1.4rem; }
             .top-bar .btn-secondary { height: 44px; width: 44px; font-size: 18px; flex-shrink: 0; }
             
-            /* Stats Grid Fix for Mobile */
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .stat-card { padding: 14px 6px; border-radius: 16px; }
             .stat-card span { font-size: 20px; }
@@ -386,11 +385,10 @@
             .mobile-tab-content { display: none; width: 100%; animation: popIn 0.3s ease-out; }
             .mobile-tab-content.active { display: flex; flex-direction: column;}
 
-            /* Controls Layout Fix to prevent button hiding/squeezing */
             .controls-row { display: grid; grid-template-columns: 1fr 1fr; padding: 20px; gap: 12px;}
             .search-box { grid-column: span 2; width: 100%; margin: 0 !important; height: 50px; font-size: 16px;}
             .controls-row button { margin: 0 !important; width: 100%; height: 48px; font-size: 14px;}
-            .controls-row button:last-child { grid-column: span 2; } /* Clean button full width */
+            .controls-row button:last-child { grid-column: span 2; } 
 
             .project-tabs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; justify-content: flex-start; padding: 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; border-radius: 20px;}
             .project-tabs::-webkit-scrollbar { display: none; }
@@ -567,7 +565,7 @@
                 
                 <label>Add Follow-up Remark</label>
                 <div class="remark-wrapper">
-                    <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical; padding-bottom:16px; padding-right:16px;"></textarea>
+                    <textarea id="newRemark" placeholder="Write new update (will be added to history)..." rows="2" style="resize:vertical; padding-bottom:16px; padding-right:16px; transition: box-shadow 0.3s ease;"></textarea>
                 </div>
                 
                 <button type="submit" id="saveBtn">Save Record</button>
@@ -715,7 +713,7 @@
         <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
             <label>Add Quick Remark</label>
             <div class="remark-wrapper" style="margin-bottom: 10px;">
-                <textarea id="quickRemarkInput" placeholder="Write new update here..." rows="2" style="resize:vertical;"></textarea>
+                <textarea id="quickRemarkInput" placeholder="Write new update here... (Type 'kal call' to auto-set date)" rows="2" style="resize:vertical; transition: box-shadow 0.3s ease;"></textarea>
             </div>
             <button onclick="addQuickRemark(event)" style="width: 100%; height: 48px; font-size: 14px;">Save Remark</button>
         </div>
@@ -770,7 +768,7 @@
         <input type="hidden" id="callLogStatus" value="Connected">
         
         <label style="margin-top:16px;">Follow-up Remark</label>
-        <textarea id="callLogRemark" placeholder="Write specific update..." rows="2" style="margin-bottom:0;"></textarea>
+        <textarea id="callLogRemark" placeholder="Write specific update... (Type 'aaj, kal, parso, in 2 days' to auto set date)" rows="2" style="margin-bottom:0; transition: box-shadow 0.3s ease;"></textarea>
         
         <button onclick="saveCallLog()" style="margin-top:16px; width:100%;">Save to History</button>
     </div>
@@ -781,16 +779,110 @@
 </button>
 
 <script>
+    // --- SMART NLP DATE EXTRACTOR (Fast & Local Engine) ---
+    function extractSmartDate(text) {
+        if (!text) return null;
+        const t = text.toLowerCase();
+        let d = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+
+        // 1. Kal / Tomorrow
+        if (/\b(kal|tomorrow|tom|tmrw)\b/.test(t)) {
+            d.setDate(d.getDate() + 1);
+            return formatDateCore(d);
+        }
+        // 2. Parso / Day after tomorrow
+        if (/\b(parso|day after tomorrow)\b/.test(t)) {
+            d.setDate(d.getDate() + 2);
+            return formatDateCore(d);
+        }
+        // 3. Aaj / Today
+        if (/\b(aaj|today)\b/.test(t)) {
+            return formatDateCore(d);
+        }
+        // 4. X din baad / in X days
+        const daysMatch = t.match(/(\d+)\s*(din|days?)\s*(baad|later|k baad)|(?:in|after)\s*(\d+)\s*(din|days?)/);
+        if (daysMatch) {
+            let num = parseInt(daysMatch[1] || daysMatch[4]);
+            if (!isNaN(num)) {
+                d.setDate(d.getDate() + num);
+                return formatDateCore(d);
+            }
+        }
+        // 5. Next week / Agle hafte
+        if (/\b(agle hafte|next week)\b/.test(t)) {
+            d.setDate(d.getDate() + 7);
+            return formatDateCore(d);
+        }
+        // 6. Days of week (Monday, Somvaar, etc)
+        const days = {
+            'sunday': 0, 'ravivar': 0, 'sun': 0,
+            'monday': 1, 'somvar': 1, 'somvaar': 1, 'mon': 1,
+            'tuesday': 2, 'mangalvar': 2, 'mangalvaar': 2, 'tue': 2,
+            'wednesday': 3, 'budhvar': 3, 'budhvaar': 3, 'wed': 3,
+            'thursday': 4, 'guruvar': 4, 'veervar': 4, 'thu': 4,
+            'friday': 5, 'shukravar': 5, 'shukravaar': 5, 'fri': 5,
+            'saturday': 6, 'shanivar': 6, 'shanivaar': 6, 'sat': 6
+        };
+        for (let key in days) {
+            if (new RegExp('\\b' + key + '\\b').test(t)) {
+                let targetDay = days[key];
+                let currentDay = d.getDay();
+                let diff = targetDay - currentDay;
+                if (diff <= 0) diff += 7; // Next occurrence
+                d.setDate(d.getDate() + diff);
+                return formatDateCore(d);
+            }
+        }
+        // 7. Explicit Dates (15 jan, 12th oct)
+        const months = {'jan':0,'feb':1,'mar':2,'apr':3,'may':4,'jun':5,'jul':6,'aug':7,'sep':8,'oct':9,'nov':10,'dec':11};
+        const dateMatch = t.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
+        if (dateMatch) {
+            let day = parseInt(dateMatch[1]);
+            let mo = months[dateMatch[2]];
+            d.setMonth(mo);
+            d.setDate(day);
+            if (d < new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}))) d.setFullYear(d.getFullYear() + 1); 
+            return formatDateCore(d);
+        }
+        return null;
+    }
+
+    function formatDateCore(d) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Bind real-time extraction to inputs
+    document.addEventListener('DOMContentLoaded', () => {
+        const handleSmartInput = (e, updateInputId) => {
+            const parsed = extractSmartDate(e.target.value);
+            if (parsed) {
+                const dateEl = document.getElementById(updateInputId);
+                if (dateEl && dateEl.value !== parsed) {
+                    dateEl.value = parsed;
+                    dateEl.style.boxShadow = "0 0 10px var(--whatsapp-green)";
+                    setTimeout(() => dateEl.style.boxShadow = "none", 1200);
+                    showNotification(`✨ Smart NLP: Follow-up set to ${formatDisplayDate(parsed)}`, 'success');
+                    haptic('light');
+                }
+            }
+        };
+
+        const newRemarkEl = document.getElementById('newRemark');
+        if (newRemarkEl) newRemarkEl.addEventListener('input', (e) => handleSmartInput(e, 'followup'));
+    });
+    // --- END SMART NLP ---
+
     let lastDesktopScrollY = 0;
     let lastListScrollY = 0;
     let isFirstRender = true;
     let currentViewMode = 'table';
 
-    // RENDER CRASH FIX: Request IDs for preventing duplicate frame loops
     let renderTableRequestId = null;
     let renderKanbanRequestId = null;
 
-    // --- INJECTED BUG FIX FUNCTIONS ---
     function openModal(modalId) {
         if (typeof haptic === 'function') haptic('light');
         const modal = document.getElementById(modalId);
@@ -836,9 +928,7 @@
         window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
         closeModal('waModal');
     }
-    // ----------------------------------
 
-    // MOBILE FIX: Prevent keyboard from hiding input elements by pushing nav bar
     document.addEventListener('focusin', (e) => {
         if (window.innerWidth <= 992 && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
             document.getElementById('bottomNav').style.display = 'none';
@@ -1082,7 +1172,6 @@
                 void t.offsetWidth;
                 t.style.animation = 'fadeInUp 0.5s ease-out forwards';
                 
-                // Reapply search filter seamlessly
                 const searchVal = document.getElementById('search').value.toLowerCase().trim();
                 if (searchVal) applyDOMFilters(searchVal);
             });
@@ -1141,7 +1230,6 @@
         }
     }
 
-    // SCROLL/SWIPE BUG FIX: Prevent scrolling areas from triggering modal closure
     document.querySelectorAll('.swipeable-sheet').forEach(sheet => {
         let startY = 0;
         let currentY = 0;
@@ -1149,7 +1237,6 @@
         let ticking = false; 
         
         sheet.addEventListener('touchstart', (e) => {
-            // Only allow dragging from the top handle or headers, so internal scrolling is safe
             if(!e.target.classList.contains('sheet-handle') && e.target.tagName !== 'H2' && e.target.tagName !== 'H3') {
                 return; 
             }
@@ -1362,7 +1449,6 @@
 
     window.addEventListener('resize', () => {
         if(auth.currentUser) {
-            // Only update Nav if inputs are not focused (keyboard handling is separate)
             if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) && window.innerWidth <= 992) {
                 return;
             }
@@ -1666,6 +1752,12 @@
         let selectedTemp = tempRadio ? tempRadio.value : 'Warm';
         let finalFollowupDate = document.getElementById('followup').value;
 
+        // Smart Date Override Check on Submit Form (in case typed but missed listener)
+        if(newRemarkText) {
+            const parsed = extractSmartDate(newRemarkText);
+            if(parsed) finalFollowupDate = parsed;
+        }
+
         const data = {
             ownerId: auth.currentUser.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
@@ -1732,8 +1824,6 @@
         
         if(currentQuickFilter === 'Hot') { data = data.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot'); } 
         else if (currentQuickFilter === 'Today') { const today = getToday(); data = data.filter(c => c.followup === today && c.status !== 'Closed'); }
-        
-        // Removed inner search filter loop from here. Handled by DOM fast filter for extreme speed.
         
         data.sort((a, b) => {
             let valA = (a[sortColumn] || '').toString().toLowerCase();
@@ -1851,11 +1941,18 @@
                     let history = client.history || [];
                     history.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: finalRemark });
 
-                    await db.collection("leads").doc(callTargetId).update({
+                    // --- SMART NLP HOOK ---
+                    const extractedDate = extractSmartDate(remark);
+                    const payload = {
                         history: history,
                         remark: finalRemark
-                    });
-                    showNotification("Call log save ho gaya!", "success");
+                    };
+                    if(extractedDate) payload.followup = extractedDate;
+
+                    await db.collection("leads").doc(callTargetId).update(payload);
+                    
+                    if(extractedDate) showNotification(`Smart NLP: Follow-up auto-set to ${formatDisplayDate(extractedDate)}`, "success");
+                    else showNotification("Call log save ho gaya!", "success");
                     haptic('medium');
                 }
             } catch(e) {
@@ -1953,14 +2050,21 @@
         let historyArray = c.history ? [...c.history] : [];
         historyArray.unshift({ date: formatDisplayDate(getToday()), time: getTime(), note: newRemarkText });
 
+        // --- SMART NLP HOOK ---
+        const extractedDate = extractSmartDate(newRemarkText);
+        const payload = {
+            history: historyArray,
+            remark: newRemarkText
+        };
+        if(extractedDate) payload.followup = extractedDate;
+
         try {
-            await db.collection("leads").doc(currentHistoryLeadId).update({
-                history: historyArray,
-                remark: newRemarkText
-            });
-            showNotification("Remark updated quickly!", "success");
-            haptic('medium');
+            await db.collection("leads").doc(currentHistoryLeadId).update(payload);
             
+            if(extractedDate) showNotification(`Smart Date: Follow-up set to ${formatDisplayDate(extractedDate)}`, "success");
+            else showNotification("Remark updated quickly!", "success");
+            
+            haptic('medium');
             openHistoryModal(currentHistoryLeadId);
         } catch(e) {
             showNotification("Error saving: " + e.message, "error");
@@ -1970,7 +2074,6 @@
         }
     }
 
-    // SEARCH CRASH FIX: Apply DOM-based ultra-fast filtering across BOTH views simultaneously
     function applyDOMFilters(searchVal) {
         document.querySelectorAll('#clientTable tr').forEach(tr => {
             if(!searchVal || tr.innerText.toLowerCase().includes(searchVal)) {
@@ -2006,7 +2109,6 @@
     }
 
     function renderTableOptimized(animate = false) {
-        // PERFORMANCE FIX: Cancel any overlapping rendering loop to prevent crashes
         if (renderTableRequestId) {
             cancelAnimationFrame(renderTableRequestId);
             renderTableRequestId = null;
