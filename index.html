@@ -21,9 +21,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- HIGH PERFORMANCE PDF GENERATOR -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
     <script defer src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@3.0.0-rc.0/default.css">
     
@@ -295,7 +292,7 @@
         .action-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.65); display: flex; align-items: flex-end; justify-content: center; z-index: 10006; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .action-modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        /* Fixed Action Modal layout for 5 buttons without clipping */
+        /* Fixed Action Modal layout for buttons without clipping */
         .action-modal-content { background: var(--nav-bg); width: 100%; max-width: 450px; padding: 24px 16px calc(40px + env(safe-area-inset-bottom)) 16px; border-radius: 32px 32px 0 0; transform: translate3d(0, 100%, 0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-top: 1px solid var(--border-highlight); display: flex; justify-content: space-evenly; flex-wrap: wrap; position: relative; gap: 8px;}
         .action-modal-overlay.active .action-modal-content { transform: translate3d(0, 0, 0); }
         .sheet-handle { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 44px; height: 5px; background: var(--text-color); opacity: 0.15; border-radius: 10px; cursor: grab; transition: width 0.3s ease, opacity 0.3s ease; }
@@ -321,7 +318,6 @@
         .btn-wa { background: #0A192F; color: var(--golden); border: 1px solid var(--golden-dark); }
         .btn-edit { background: var(--golden); color: #0A192F; }
         .btn-del { background: #DC2626; color: #fff; }
-        .btn-quote { background: #1E293B; color: #C5A059; border: 1px solid #C5A059;}
 
         .call-status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 5px;}
         .call-status-btn { width: 100%; height: 50px; border-radius: 14px; font-size: 13px; font-weight: 700; background: transparent; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; padding: 0 4px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; color: var(--text-color); border: 2px solid var(--border-color); }
@@ -450,67 +446,6 @@
 
 <div id="toastContainer"></div>
 
-<!-- ========================================== -->
-<!-- ELITE PDF TEMPLATE (HIDDEN SAFELY) -->
-<!-- ========================================== -->
-<div id="hiddenPdfWrapper" style="position: fixed; top: 0; left: 0; width: 210mm; z-index: -9999; visibility: hidden; pointer-events: none;">
-    <div id="quoteTemplate" style="width: 210mm; min-height: 297mm; padding: 50px; background: #ffffff; color: #1E293B; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; background-image: radial-gradient(circle at 100% 0%, #f8fafc 0%, transparent 40%);">
-        
-        <!-- Header Section -->
-        <div style="text-align:center; padding-bottom:30px; border-bottom: 2px solid #C5A059; margin-bottom: 40px;">
-            <h1 style="color:#0A192F; font-size:42px; margin:0; font-weight:900; letter-spacing: 2px;">TRUE <span style="color:#C5A059;">INVEST</span></h1>
-            <p style="margin:8px 0 0 0; color:#64748B; font-size:15px; letter-spacing: 2px; text-transform: uppercase; font-weight:700;">Official Property Quotation</p>
-        </div>
-        
-        <!-- Client Details Section -->
-        <div style="display: flex; justify-content: space-between; margin-bottom: 50px; background: #F8FAFC; padding: 25px; border-radius: 12px; border-left: 5px solid #C5A059;">
-            <div>
-                <h3 style="margin: 0 0 10px 0; color:#0A192F; font-size:15px; text-transform: uppercase; letter-spacing:1px;">Prepared For:</h3>
-                <p id="pdfClientName" style="margin: 0 0 5px 0; font-size:24px; font-weight:800; color:#1E293B;">Client Name</p>
-                <p id="pdfClientPhone" style="margin: 0; font-size:15px; color:#64748B; font-weight:600;">+91 9999999999</p>
-            </div>
-            <div style="text-align: right;">
-                <h3 style="margin: 0 0 10px 0; color:#0A192F; font-size:15px; text-transform: uppercase; letter-spacing:1px;">Quote Date:</h3>
-                <p id="pdfDate" style="margin: 0; font-size:20px; font-weight:700; color:#1E293B;">Date</p>
-            </div>
-        </div>
-
-        <!-- Property Table -->
-        <h2 style="color:#0A192F; font-size:22px; border-bottom:1px solid #E2E8F0; padding-bottom:10px; margin-bottom:25px;">Property Details</h2>
-        <table style="width:100%; border-collapse: collapse; margin-bottom:50px; font-size:16px;">
-            <tbody>
-                <tr style="border-bottom: 1px solid #E2E8F0;">
-                    <td style="padding: 18px 10px; font-weight:700; color:#64748B; width: 40%;">Project / Site</td>
-                    <td id="pdfProject" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Project Name</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #E2E8F0;">
-                    <td style="padding: 18px 10px; font-weight:700; color:#64748B;">Specific Unit</td>
-                    <td id="pdfUnit" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Unit No</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #E2E8F0;">
-                    <td style="padding: 18px 10px; font-weight:700; color:#64748B;">Locality</td>
-                    <td id="pdfLocation" style="padding: 18px 10px; font-weight:800; color:#0A192F; text-align:right;">Location</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Total Box -->
-        <div style="background: #0A192F; color: white; padding: 40px; border-radius: 16px; text-align: center; margin-bottom: 50px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:-20px; right:-20px; width:120px; height:120px; background:rgba(197, 160, 89, 0.15); border-radius:50%;"></div>
-            <h3 style="margin: 0 0 10px 0; color:#C5A059; font-size:18px; text-transform: uppercase; letter-spacing:1px; font-weight:700;">Final Quoted Budget</h3>
-            <p id="pdfBudget" style="margin: 0; font-size:42px; font-weight:900; letter-spacing:1px;">₹ 0.00</p>
-        </div>
-
-        <!-- Footer -->
-        <div style="font-size:13px; color:#64748B; text-align:center; padding-top:40px; border-top:1px solid #E2E8F0; line-height:1.6;">
-            <p style="margin:0 0 5px 0; color:#0A192F;"><b>Thank you for choosing True Invest.</b></p>
-            <p style="margin:0;">This is an auto-generated quotation and does not serve as a final legal agreement.<br> Prices are subject to availability and developer terms.</p>
-        </div>
-    </div>
-</div>
-<!-- ========================================== -->
-
-
 <div id="loginView" class="container hidden" style="width: 100%; max-width: 520px; margin: auto; padding: 16px;">
     <div class="login-card glass-panel" style="margin-top: calc(15vh + env(safe-area-inset-top));">
         <h1 style="margin-bottom:30px; font-size:36px; cursor: pointer;" onclick="window.location.reload();" title="Refresh Page"><span class="brand">TRUE</span> INVEST</h1>
@@ -562,7 +497,8 @@
 
                 <label>Client Details</label>
                 <input type="text" id="name" placeholder="Full Name" required>
-                <input type="tel" id="phone" placeholder="10-Digit Phone" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <!-- ENHANCED: Strict HTML pattern for 10 digits starting with 6-9 -->
+                <input type="tel" id="phone" placeholder="10-Digit Phone" required maxlength="10" pattern="[6-9][0-9]{9}" title="Phone number must start with 6-9 and be 10 digits long" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 
                 <label>Lead Priority (Temperature)</label>
                 <div class="segmented-control">
@@ -809,11 +745,6 @@
             <button class="simple-action-btn btn-wa" onclick="executeSwipeWa()"><ion-icon name="logo-whatsapp"></ion-icon></button>
             <span>WhatsApp</span>
         </div>
-        <!-- NEW QUOTE BUTTON -->
-        <div class="action-btn-wrapper">
-            <button class="simple-action-btn btn-quote" onclick="executeSwipeQuote()"><ion-icon name="document-text"></ion-icon></button>
-            <span>Quote</span>
-        </div>
         <div class="action-btn-wrapper">
             <button class="simple-action-btn btn-edit" onclick="executeSwipeEdit()"><ion-icon name="create"></ion-icon></button>
             <span>Edit</span>
@@ -937,7 +868,6 @@
         const newRemarkEl = document.getElementById('newRemark');
         if (newRemarkEl) newRemarkEl.addEventListener('input', (e) => handleSmartInput(e, 'followup'));
     });
-    // --- END SMART NLP ---
 
     // --- PUSH NOTIFICATION ENGINE ---
     function initNotifications() {
@@ -972,45 +902,6 @@
             }
         }
     }
-    // --- END PUSH NOTIFICATION ENGINE ---
-
-    // --- ELITE PDF GENERATOR FUNCTION ---
-    function executeSwipeQuote() {
-        closeActionMenu();
-        haptic('medium');
-        const c = clients.find(x => x.id === bsActionId);
-        if(!c) return;
-
-        showNotification('Generating Elite Quotation...', 'warning');
-
-        // Populate Template Data
-        document.getElementById('pdfClientName').innerText = c.name || '-';
-        document.getElementById('pdfClientPhone').innerText = c.phone || '-';
-        document.getElementById('pdfDate').innerText = formatDisplayDate(getToday());
-        
-        document.getElementById('pdfProject').innerText = c.projectCategory || 'N/A';
-        document.getElementById('pdfUnit').innerText = c.specificUnit || 'N/A';
-        document.getElementById('pdfLocation').innerText = c.location || 'N/A';
-        document.getElementById('pdfBudget').innerText = c.budget ? c.budget : 'TBD';
-
-        const element = document.getElementById('quoteTemplate');
-
-        const opt = {
-            margin:       0,
-            filename:     `TrueInvest_Quotation_${c.name.replace(/\s+/g, '_')}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, logging: false },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            showNotification('PDF Downloaded successfully!', 'success');
-            fireConfetti();
-        }).catch(err => {
-            showNotification('Error creating PDF', 'error');
-        });
-    }
-    // --- END PDF GENERATOR ---
 
     let lastDesktopScrollY = 0;
     let lastListScrollY = 0;
@@ -1629,8 +1520,10 @@
         if(unsubscribeSnapshot) { unsubscribeSnapshot(); }
 
         try {
+            // ENHANCED: Added .limit(1000) for Fast & Furious crash-free performance
             unsubscribeSnapshot = db.collection("leads")
                 .where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"])
+                .limit(1000) 
                 .onSnapshot(snap => {
                 clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
                 
@@ -1869,6 +1762,15 @@
 
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // ENHANCED: Strict Javascript Phone Validation
+        const phone = document.getElementById('phone').value.trim();
+        const phoneRegex = /^[6-9]\d{9}$/;
+        if (!phoneRegex.test(phone)) {
+            showNotification("Please enter a valid 10-digit Indian phone number (starting with 6-9).", "error");
+            return;
+        }
+
         const id = document.getElementById('editId').value;
         const statusVal = document.getElementById('status').value;
         const newRemarkText = document.getElementById('newRemark').value.trim();
@@ -1903,7 +1805,8 @@
             ownerId: auth.currentUser.uid,
             leadDate: document.getElementById('leadDate').value || getToday(),
             followup: finalFollowupDate,
-            name: document.getElementById('name').value.trim(), phone: document.getElementById('phone').value.trim(), 
+            name: document.getElementById('name').value.trim(), 
+            phone: phone, 
             leadSource: document.getElementById('leadSource').value, projectCategory: finalProjectCategory, 
             specificUnit: document.getElementById('specificUnit').value.trim(), location: document.getElementById('location').value, 
             status: statusVal, budget: document.getElementById('budget').value, visitDone: document.getElementById('visitDone').checked, 
