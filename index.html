@@ -125,6 +125,7 @@
 
         ion-icon { vertical-align: -0.125em; font-size: 1.2em; transition: transform 0.3s ease; }
 
+        /* --- MICRO ANIMATIONS (60FPS Optimized) --- */
         @keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -20px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 20px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale3d(0.90, 0.90, 1); } 100% { opacity: 1; transform: scale3d(1, 1, 1); } }
@@ -135,7 +136,22 @@
         .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 3.5s infinite ease-in-out; }
 
-        .animate-row-enter { animation: fadeRowIn 0.3s ease-out forwards; }
+        /* 🚀 NEW: Fire Flicker Animation for Hot Leads */
+        @keyframes fireFlicker {
+            0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.9; text-shadow: 0 0 5px rgba(220, 38, 38, 0.4); }
+            50% { transform: scale(1.15) rotate(2deg); opacity: 1; text-shadow: 0 0 10px rgba(220, 38, 38, 0.8), 0 0 20px rgba(245, 158, 11, 0.6); color: #F59E0B; }
+        }
+        .animate-fire { animation: fireFlicker 1.5s infinite ease-in-out; display: inline-block; color: var(--notify-red); will-change: transform, opacity; }
+
+        /* 🚀 NEW: Alarm Shake Animation for Today's Follow-up */
+        @keyframes alarmRing {
+            0%, 100% { transform: rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-8deg); }
+            20%, 40%, 60%, 80% { transform: rotate(8deg); }
+        }
+        .animate-alarm { animation: alarmRing 2.5s infinite ease-in-out; display: inline-block; transform-origin: top center; color: #B45309; will-change: transform; }
+
+        .animate-row-enter { animation: fadeRowIn 0.3s ease-out forwards; will-change: transform, opacity; }
         
         .glass-panel { 
             background: var(--card-bg); border: 1px solid var(--border-color); 
@@ -156,7 +172,7 @@
 
         .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px 12px; text-align: center; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px; will-change: transform;}
+        .stat-card { padding: 20px 12px; text-align: center; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px; will-change: transform, box-shadow;}
         .stat-card:active { transform: scale3d(0.95, 0.95, 1) !important; }
         .stat-card.active-filter { border: 2px solid var(--golden); background: var(--card-bg); box-shadow: 0 8px 25px var(--accent-glow); transform: translateY(-3px); }
         .stat-card label { display: block; font-size: 12px; font-weight: 800; color: var(--text-color); opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
@@ -198,7 +214,7 @@
         .check-item:hover { border-color: var(--golden); background: #ffffff; transform: translate3d(0, -2px, 0); box-shadow: 0 4px 15px rgba(10,25,47,0.05); }
         .check-item input[type="checkbox"] { width: 24px; height: 24px; margin: 0; cursor: pointer; border-radius: 6px; accent-color: var(--golden); transition: transform 0.2s ease;}
 
-        button { cursor: pointer; background: var(--btn-gradient); color: var(--golden); border: 1px solid var(--golden-dark); font-weight: 800; height: 54px; border-radius: 18px; font-size: 16px; letter-spacing: 0.5px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 1; transform: translateZ(0); }
+        button { cursor: pointer; background: var(--btn-gradient); color: var(--golden); border: 1px solid var(--golden-dark); font-weight: 800; height: 54px; border-radius: 18px; font-size: 16px; letter-spacing: 0.5px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 1; transform: translateZ(0); will-change: transform, box-shadow; }
         button::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: inherit; box-shadow: 0 8px 25px rgba(197, 160, 89, 0.3); opacity: 0; transition: opacity 0.3s ease; z-index: -2; }
         button:hover { transform: translate3d(0, -3px, 0); color: var(--golden-light); border-color: var(--golden); }
         button:hover::before { opacity: 1; }
@@ -232,7 +248,7 @@
         th:hover { background: #E2E8F0; color: var(--accent-dark); }
         .date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
 
-        tbody tr { cursor: pointer; background-color: transparent; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateZ(0); } 
+        tbody tr { cursor: pointer; background-color: transparent; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateZ(0); will-change: transform, opacity; } 
         tbody tr::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 12px; box-shadow: 0 4px 15px rgba(10, 25, 47, 0.05); opacity: 0; transition: opacity 0.2s ease; z-index: -1; pointer-events: none; }
         tbody tr:hover { transform: translate3d(0, -3px, 0) scale3d(1.005, 1.005, 1); background-color: #ffffff; border-radius: 12px; z-index: 2; position: relative; border: 1px solid var(--golden); }
         tbody tr:hover::after { opacity: 1; }
@@ -247,7 +263,7 @@
         .kanban-col { flex: 1; min-width: 320px; padding: 16px; display: flex; flex-direction: column; background: var(--input-bg); border-radius: 20px; border: 1px solid var(--border-color);}
         .kanban-col h3 { font-size: 14px; text-transform: uppercase; color: var(--text-color); margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); text-align: center; font-weight: 800; letter-spacing: 1px;}
         
-        .k-card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); cursor: grab; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; touch-action: pan-y; transform: translateZ(0); }
+        .k-card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border-color); cursor: grab; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; touch-action: pan-y; transform: translateZ(0); content-visibility: auto; contain-intrinsic-size: 120px; will-change: transform, opacity; }
         .k-card::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: inherit; box-shadow: var(--shadow-sm); opacity: 1; transition: opacity 0.2s ease; z-index: -1; }
         .k-card:hover { transform: translate3d(0, -5px, 0) scale3d(1.02, 1.02, 1); border-color: var(--golden); }
         .k-card:hover::after { box-shadow: var(--shadow-lg); }
@@ -460,8 +476,8 @@
             <div class="stats-master-grid">
                 <div class="stats-grid">
                     <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-dark)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:var(--notify-red);"></ion-icon> Hot Leads</label><span id="statHot" style="color:var(--notify-red)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label><ion-icon name="alarm"></ion-icon> Today's Action</label><span id="statFollow">0</span></div>
+                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:var(--notify-red);" class="animate-fire"></ion-icon> Hot Leads</label><span id="statHot" style="color:var(--notify-red)">0</span></div>
+                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label><ion-icon name="alarm" class="animate-alarm"></ion-icon> Today's Action</label><span id="statFollow">0</span></div>
                 </div>
             </div>
             <div id="reminderAlert" class="notification-bar"></div>
@@ -599,7 +615,7 @@
             <div class="kanban-container hidden glass-panel" id="kanbanView">
                 <div class="kanban-col"><h3 style="border-bottom-color:var(--accent-brand);">New</h3><div class="kanban-dropzone" data-status="New"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#B45309;">Follow-up</h3><div class="kanban-dropzone" data-status="Follow-up"></div></div>
-                <div class="kanban-col"><h3 style="border-bottom-color:var(--notify-red);">Hot <ion-icon name="flame"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
+                <div class="kanban-col"><h3 style="border-bottom-color:var(--notify-red);">Hot <ion-icon name="flame" class="animate-fire"></ion-icon></h3><div class="kanban-dropzone" data-status="Hot"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:var(--golden);">Broker</h3><div class="kanban-dropzone" data-status="Broker"></div></div>
                 <div class="kanban-col"><h3 style="border-bottom-color:#15803D;">Closed <ion-icon name="checkmark-circle-outline"></ion-icon></h3><div class="kanban-dropzone" data-status="Closed"></div></div>
             </div>
@@ -1239,7 +1255,7 @@
         if(unsubscribeSnapshot) unsubscribeSnapshot();
 
         try {
-            unsubscribeSnapshot = db.collection("leads").where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"]).limit(1000) 
+            unsubscribeSnapshot = db.collection("leads").where("ownerId", "in", [auth.currentUser.uid, "WEBSITE_LEAD"]).limit(1500) 
                 .onSnapshot(snap => {
                 clients = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
                 
@@ -1693,9 +1709,9 @@
 
                 const tempVal = c.leadTemperature || 'Warm';
                 let tempBadge = '';
-                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:#FEF2F2; color:#B91C1C; border:1px solid rgba(185,28,28,0.2);"><ion-icon name="flame"></ion-icon> HOT</span>';
+                if(tempVal === 'Hot') tempBadge = '<span class="temp-badge" style="background-color:var(--hot-bg); color:var(--hot-text); border:1px solid rgba(185,28,28,0.2);"><ion-icon name="flame" class="animate-fire"></ion-icon> HOT</span>';
                 else if(tempVal === 'Warm') tempBadge = '<span class="temp-badge" style="background-color:#FFFBEB; color:#B45309; border:1px solid rgba(180,83,9,0.2);"><ion-icon name="sunny"></ion-icon> WARM</span>';
-                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:#F8FAFC; color:#334155; border:1px solid rgba(51,65,85,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
+                else if(tempVal === 'Cold') tempBadge = '<span class="temp-badge" style="background-color:var(--cold-bg); color:var(--cold-text); border:1px solid rgba(51,65,85,0.2);"><ion-icon name="snow"></ion-icon> COLD</span>';
 
                 const visitBadge = c.visitDone ? `<br><span class="badge status-closed" style="margin-top: 6px; font-size: 10px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 10px rgba(21,128,61,0.2);"><ion-icon name="checkmark-done-circle"></ion-icon> VISITED</span>` : '';
 
@@ -1774,9 +1790,9 @@
                 const c = exportData[i]; if(c.status === 'Not Interested' || fragmentChunks[c.status] === undefined) continue; 
                 
                 const tempVal = c.leadTemperature || 'Warm'; let tempIcon = '';
-                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" style="color:#DC2626; font-size:14px; margin-left:4px;"></ion-icon>';
+                if(tempVal === 'Hot') tempIcon = '<ion-icon name="flame" title="Hot Priority" class="animate-fire" style="font-size:14px; margin-left:4px;"></ion-icon>';
                 else if(tempVal === 'Warm') tempIcon = '<ion-icon name="sunny" title="Warm Priority" style="color:#B45309; font-size:14px; margin-left:4px;"></ion-icon>';
-                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:#334155; font-size:14px; margin-left:4px;"></ion-icon>';
+                else if(tempVal === 'Cold') tempIcon = '<ion-icon name="snow" title="Cold Priority" style="color:var(--cold-text); font-size:14px; margin-left:4px;"></ion-icon>';
 
                 let visitIcon = c.visitDone ? '<ion-icon name="footsteps" title="Site Visit Done" style="color:#15803D; font-size:14px; margin-left:4px;"></ion-icon>' : '';
                 let safeName = sanitizeText(c.name).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
@@ -2080,7 +2096,7 @@
             
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'trueinvest-v11-cache';
+                    const CACHE_NAME = 'trueinvest-v13-cache';
                     self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME)));
                     self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(res => res || fetch(e.request))); });
                 `;
