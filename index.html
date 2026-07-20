@@ -136,20 +136,11 @@
         .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 3.5s infinite ease-in-out; }
 
-        /* 🚀 NEW: Fire Flicker Animation for Hot Leads */
         @keyframes fireFlicker {
             0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.9; text-shadow: 0 0 5px rgba(220, 38, 38, 0.4); }
             50% { transform: scale(1.15) rotate(2deg); opacity: 1; text-shadow: 0 0 10px rgba(220, 38, 38, 0.8), 0 0 20px rgba(245, 158, 11, 0.6); color: #F59E0B; }
         }
         .animate-fire { animation: fireFlicker 1.5s infinite ease-in-out; display: inline-block; color: var(--notify-red); will-change: transform, opacity; }
-
-        /* 🚀 NEW: Alarm Shake Animation for Today's Follow-up */
-        @keyframes alarmRing {
-            0%, 100% { transform: rotate(0); }
-            10%, 30%, 50%, 70%, 90% { transform: rotate(-8deg); }
-            20%, 40%, 60%, 80% { transform: rotate(8deg); }
-        }
-        .animate-alarm { animation: alarmRing 2.5s infinite ease-in-out; display: inline-block; transform-origin: top center; color: #B45309; will-change: transform; }
 
         .animate-row-enter { animation: fadeRowIn 0.3s ease-out forwards; will-change: transform, opacity; }
         
@@ -163,22 +154,38 @@
 
         .workspace-layout { display: grid; grid-template-columns: 420px 1fr; gap: 24px; max-width: 1750px; margin: 0 auto; padding: 24px; padding-top: max(24px, env(safe-area-inset-top)); padding-bottom: max(24px, env(safe-area-inset-bottom)); width: 100%; min-height: 100dvh;}
 
+        /* --- REDESIGNED HEADER & HOVER STATS --- */
         .top-bar { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; animation: fadeInDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: var(--nav-bg); border-radius: 24px; margin-bottom: 8px; width: 100%; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-bottom: 3px solid var(--golden); box-shadow: 0 10px 30px rgba(10,25,47,0.06); }
         h1.main-title { font-size: 1.6rem; font-weight: 900; margin: 0; color: var(--accent-dark); letter-spacing: 0.5px; display: flex; align-items: center;}
         h1.main-title span.brand { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-right: 6px;}
 
+        .header-actions-group { display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+        
+        /* Expandable Hover Pills */
+        .expandable-stat-pill {
+            background: var(--nav-bg); border: 1.5px solid var(--border-color); border-radius: 40px; height: 48px; display: flex; align-items: center; font-size: 13px; font-weight: 800; color: var(--text-color); cursor: pointer; transition: max-width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding 0.4s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; max-width: 48px; padding: 0; overflow: hidden; white-space: nowrap; will-change: max-width, padding;
+        }
+        .expandable-stat-pill .stat-icon { min-width: 48px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--accent-dark); transition: color 0.3s ease; }
+        .expandable-stat-pill.hot .stat-icon { color: var(--notify-red); }
+        .expandable-stat-pill .stat-content { opacity: 0; transform: translateX(-10px); transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s; display: flex; align-items: center; gap: 6px; }
+        
+        .expandable-stat-pill:hover { max-width: 180px; padding-right: 18px; border-color: var(--golden); background: #ffffff; box-shadow: 0 4px 15px rgba(10,25,47,0.05); }
+        .expandable-stat-pill:hover .stat-content { opacity: 1; transform: translateX(0); }
+        .expandable-stat-pill.active { border-color: var(--golden); background: #ffffff; }
+        .expandable-stat-pill.hot.active { border-color: var(--notify-red); background: var(--hot-bg); }
+        .expandable-stat-pill span { font-size: 16px; font-weight: 900; color: var(--accent-dark); }
+        .expandable-stat-pill.hot span { color: var(--notify-red); }
+
+        /* Standalone Notification Button */
+        .notification-btn { position: relative; height:48px; width:48px; padding:0; border-radius:50%; font-size:22px; margin:0; display:flex; align-items:center; justify-content:center; color: var(--accent-dark); border: 1.5px solid var(--border-color); background: var(--nav-bg); cursor: pointer; transition: all 0.3s ease; }
+        .notification-btn:hover { border-color: var(--golden); color: var(--golden-dark); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(10,25,47,0.05); }
+        .notification-badge { position: absolute; top: -2px; right: -2px; background: var(--notify-red); color: white; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 10px; border: 2px solid var(--nav-bg); line-height: 1; display: none; }
+        .pulse-anim { animation: pulseGlowSplash 1.5s infinite ease-in-out; }
+
         .left-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
         .right-panel { display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
 
-        .stats-master-grid { display: block; width: 100%; margin-bottom: 24px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .stat-card { padding: 20px 12px; text-align: center; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; cursor: pointer; border-radius: 20px; will-change: transform, box-shadow;}
-        .stat-card:active { transform: scale3d(0.95, 0.95, 1) !important; }
-        .stat-card.active-filter { border: 2px solid var(--golden); background: var(--card-bg); box-shadow: 0 8px 25px var(--accent-glow); transform: translateY(-3px); }
-        .stat-card label { display: block; font-size: 12px; font-weight: 800; color: var(--text-color); opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.3s ease;}
-        .stat-card span { font-size: 28px; font-weight: 900; display:inline-block; transition: color 0.3s ease;}
-
-        .notification-bar { background: rgba(220, 38, 38, 0.95); color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.25); border: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .notification-bar { background: rgba(220, 38, 38, 0.95); color: white; padding: 14px; text-align: center; border-radius: 16px; display: none; font-size: 13px; font-weight: bold; animation: fadeInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.25); border: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); margin-bottom: 20px;}
 
         form, .table-container, .kanban-container, .login-card { padding: 28px; animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both; width: 100%; contain: content;}
         .login-card { max-width: 420px; margin: 15vh auto; text-align: center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
@@ -363,7 +370,7 @@
         .ios-bottom-nav { display: none; } 
         .mobile-hint { display: none; font-size: 12px; text-align: center; opacity: 0.6; padding-bottom: 15px; font-weight: 800; color: var(--golden-dark); letter-spacing: 0.5px;}
 
-        /* --- MOBILE OPTIMIZATIONS --- */
+        /* --- MOBILE OPTIMIZATIONS (Adjusted for New Hover Stats) --- */
         @media (max-width: 992px) {
             .glass-panel { 
                 backdrop-filter: none !important; -webkit-backdrop-filter: none !important; 
@@ -372,14 +379,17 @@
             .modal-overlay, .action-modal-overlay { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(10, 25, 47, 0.85); }
 
             .workspace-layout { display: flex; flex-direction: column; padding: 16px; gap: 20px; overflow-x: hidden; width: 100vw; padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: calc(110px + env(safe-area-inset-bottom)); min-height: 100dvh; }
-            .top-bar { padding: 20px; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 20px;}
-            h1.main-title { font-size: 1.4rem; }
-            .top-bar .btn-secondary { height: 44px; width: 44px; font-size: 18px; flex-shrink: 0; }
             
-            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .stat-card { padding: 16px 6px; border-radius: 16px; }
-            .stat-card span { font-size: 22px; }
-            .stat-card label { font-size: 10px; margin-bottom: 4px; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; border-radius: 20px;}
+            .top-bar > div { flex-wrap: wrap; justify-content: center !important; gap: 8px; }
+            .main-title { text-align: center; justify-content: center; width: 100%; }
+            
+            /* Partially expand on mobile for visibility since hover is tapped */
+            .expandable-stat-pill { max-width: 140px; padding-right: 12px; }
+            .expandable-stat-pill .stat-content { opacity: 1; transform: translateX(0); font-size: 12px; }
+            .expandable-stat-pill span { font-size: 14px; }
+            
+            .top-bar .btn-secondary, .notification-btn { height: 48px; width: 48px; font-size: 20px; flex-shrink: 0; }
             
             .form-grid { grid-template-columns: 1fr; gap: 0; }
             .form-grid > div { width: 100%; }
@@ -465,21 +475,33 @@
         
         <div class="top-bar glass-panel">
             <h1 class="main-title" onclick="window.location.reload();" style="cursor: pointer;" title="Refresh Page"><span class="brand">TRUE</span> INVEST <span style="font-size:12px; font-weight:900; opacity:0.8; padding-left:6px; vertical-align:super; color:var(--text-color);">PRO</span></h1>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleZenMode()" title="Zen Mode (Focus)"><ion-icon name="scan-outline"></ion-icon></button>
-                <button class="btn-secondary" style="height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
-                <button class="btn-secondary" style="background-color:rgba(220, 38, 38, 0.05); color:#DC2626; border-color:transparent; height:44px; width:44px; padding:0; border-radius:50%; font-size:20px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
+            
+            <div class="header-actions-group">
+                <!-- 60 FPS Expandable Hover Stats -->
+                <div class="expandable-stat-pill active" id="filterAll" onclick="applyQuickFilter('All')" title="View All Leads">
+                    <div class="stat-icon"><ion-icon name="podium"></ion-icon></div>
+                    <div class="stat-content">Total: <span id="statTotal">0</span></div>
+                </div>
+                
+                <div class="expandable-stat-pill hot" id="filterHot" onclick="applyQuickFilter('Hot')" title="View Hot Leads">
+                    <div class="stat-icon"><ion-icon name="flame" class="animate-fire"></ion-icon></div>
+                    <div class="stat-content">Hot: <span id="statHot">0</span></div>
+                </div>
+
+                <!-- Dedicated Notification Bell -->
+                <button class="notification-btn" onclick="applyQuickFilter('Today'); showNotification('Filtering Today\'s Follow-ups', 'success');" title="View Today's Actions">
+                    <ion-icon name="notifications"></ion-icon>
+                    <span class="notification-badge" id="statFollowBadge">0</span>
+                </button>
+
+                <!-- Standard Actions -->
+                <button class="btn-secondary" style="height:48px; width:48px; padding:0; border-radius:50%; font-size:22px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="toggleZenMode()" title="Zen Mode (Focus)"><ion-icon name="scan-outline"></ion-icon></button>
+                <button class="btn-secondary" style="height:48px; width:48px; padding:0; border-radius:50%; font-size:22px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="openModal('emiModal')" title="Calculator"><ion-icon name="calculator"></ion-icon></button>
+                <button class="btn-secondary" style="background-color:rgba(220, 38, 38, 0.05); color:#DC2626; border-color:transparent; height:48px; width:48px; padding:0; border-radius:50%; font-size:22px; margin:0; display:flex; align-items:center; justify-content:center;" onclick="logout()" title="Logout"><ion-icon name="power"></ion-icon></button>
             </div>
         </div>
 
         <div style="grid-column: span 2; width:100%;" id="statsWrapper">
-            <div class="stats-master-grid">
-                <div class="stats-grid">
-                    <div class="stat-card glass-panel active-filter" id="filterAll" onclick="applyQuickFilter('All')"><label>Total Leads</label><span id="statTotal" style="color:var(--accent-dark)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterHot" onclick="applyQuickFilter('Hot')"><label><ion-icon name="flame" style="color:var(--notify-red);" class="animate-fire"></ion-icon> Hot Leads</label><span id="statHot" style="color:var(--notify-red)">0</span></div>
-                    <div class="stat-card glass-panel" id="filterToday" onclick="applyQuickFilter('Today')"><label><ion-icon name="alarm" class="animate-alarm"></ion-icon> Today's Action</label><span id="statFollow">0</span></div>
-                </div>
-            </div>
             <div id="reminderAlert" class="notification-bar"></div>
         </div>
 
@@ -1342,16 +1364,25 @@
         document.querySelectorAll('#projectTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
         if(btnElement) btnElement.classList.add('active');
         document.getElementById('search').value = ''; currentQuickFilter = 'All';
-        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
-        document.getElementById('filterAll').classList.add('active-filter');
+        
+        document.querySelectorAll('.expandable-stat-pill').forEach(c => c.classList.remove('active'));
+        const fAll = document.getElementById('filterAll');
+        if(fAll) fAll.classList.add('active');
         renderData(false); 
     }
 
     function applyQuickFilter(type) {
         haptic('light'); currentQuickFilter = type;
-        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
-        const activeCard = document.getElementById(`filter${type}`);
-        if (activeCard) activeCard.classList.add('active-filter');
+        
+        document.querySelectorAll('.expandable-stat-pill').forEach(c => c.classList.remove('active'));
+        
+        if(type === 'All') {
+            const fAll = document.getElementById('filterAll');
+            if(fAll) fAll.classList.add('active');
+        } else if (type === 'Hot') {
+            const fHot = document.getElementById('filterHot');
+            if(fHot) fHot.classList.add('active');
+        }
 
         const tabs = document.querySelectorAll('.tab-item');
         if(window.innerWidth <= 992 && currentQuickFilter !== 'All' && tabs.length > 1) { tabs[1].click(); }
@@ -1364,12 +1395,26 @@
         const today = getToday();
         const follow = clients.filter(c => c.followup === today && c.status !== 'Closed').length;
         
-        const totalEl = document.getElementById('statTotal'); const hotEl = document.getElementById('statHot'); const followEl = document.getElementById('statFollow');
-        const newTotal = clients.length; const newHot = clients.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot').length;
+        const totalEl = document.getElementById('statTotal'); 
+        const hotEl = document.getElementById('statHot'); 
+        const followBadge = document.getElementById('statFollowBadge');
+        
+        const newTotal = clients.length; 
+        const newHot = clients.filter(c => c.leadTemperature === 'Hot' || c.status === 'Hot').length;
 
         animateValue(totalEl, parseInt(totalEl.innerText) || 0, newTotal, 1200);
         animateValue(hotEl, parseInt(hotEl.innerText) || 0, newHot, 1200);
-        animateValue(followEl, parseInt(followEl.innerText) || 0, follow, 1200);
+        
+        if (followBadge) {
+            followBadge.innerText = follow;
+            if(follow > 0) {
+                followBadge.style.display = 'block';
+                followBadge.classList.add('pulse-anim');
+            } else {
+                followBadge.style.display = 'none';
+                followBadge.classList.remove('pulse-anim');
+            }
+        }
 
         const bar = document.getElementById('reminderAlert');
         if (bar) {
@@ -1880,8 +1925,9 @@
         window.currentEditHistory = []; renderHistoryTimeline();
         if(document.getElementById('tempWarm')) document.getElementById('tempWarm').checked = true;
         
-        currentQuickFilter = 'All'; document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
-        const allFilter = document.getElementById('filterAll'); if (allFilter) allFilter.classList.add('active-filter');
+        currentQuickFilter = 'All'; 
+        document.querySelectorAll('.expandable-stat-pill').forEach(c => c.classList.remove('active'));
+        const allFilter = document.getElementById('filterAll'); if (allFilter) allFilter.classList.add('active');
         renderData(false);
     }
 
